@@ -1,0 +1,121 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export function getStaticPaths() {
+  return [
+    { params: { slug: 'example-tool' } },
+  ];
+}
+
+const { slug } = Astro.params;
+---
+
+<Layout title="Example Tool | AI Discovery Platform">
+	<main class="w-full flex flex-col min-h-screen">
+		<nav class="bg-canvas border-b border-hairline px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+			<div class="flex items-center gap-6">
+				<a href="/" class="text-ink font-semibold tracking-tight text-lg">AI Discovery</a>
+				<div class="hidden md:flex items-center gap-2">
+					<a href="/tools" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">Discover</a>
+					<a href="/workflows" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">Workflows</a>
+				</div>
+			</div>
+		</nav>
+
+		<div class="w-full max-w-5xl mx-auto px-6 py-12">
+			<!-- Header -->
+			<div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-12">
+				<div class="flex items-start gap-6">
+					<div class="w-20 h-20 bg-hairline-soft rounded-lg flex-shrink-0 flex items-center justify-center text-4xl">
+						🚀
+					</div>
+					<div>
+						<h1 class="text-3xl font-semibold text-ink tracking-tight mb-2">Example Tool</h1>
+						<p class="text-lg text-body mb-4">A powerful AI tool to automate tasks.</p>
+						<div class="flex flex-wrap items-center gap-2">
+							<span class="text-xs font-medium bg-canvas-elevated border border-hairline px-2 py-1 rounded-sm text-ink">Free</span>
+							<span class="text-xs font-medium bg-canvas-elevated border border-hairline px-2 py-1 rounded-sm text-body">Automation</span>
+							<span class="text-xs font-medium bg-canvas-elevated border border-hairline px-2 py-1 rounded-sm text-body">✅ Verified 1 day ago</span>
+						</div>
+					</div>
+				</div>
+				<div class="flex flex-col sm:flex-row gap-3">
+					<button class="bg-canvas-elevated text-ink border border-hairline font-medium rounded-pill px-6 py-2 hover:bg-hairline-soft transition-colors whitespace-nowrap">
+						Bookmark
+					</button>
+					<a href="#" class="bg-ink text-on-primary font-medium rounded-pill px-6 py-2 hover:bg-black transition-colors whitespace-nowrap text-center">
+						Visit Official Website ↗
+					</a>
+				</div>
+			</div>
+
+			<!-- Content Tabs/Sections -->
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+				<div class="md:col-span-2 flex flex-col gap-10">
+					<section>
+						<h2 class="text-xl font-semibold text-ink tracking-tight mb-4 border-b border-hairline pb-2">Overview</h2>
+						<div class="prose prose-sm text-body max-w-none">
+							<p>Example Tool is the definitive solution for people who need to get things done without spending hours on repetitive work. Powered by the latest language models, it connects directly into your existing workflow.</p>
+							<p>Whether you're a creator, developer, or marketer, this tool saves time and increases output quality.</p>
+						</div>
+					</section>
+
+					<section>
+						<h2 class="text-xl font-semibold text-ink tracking-tight mb-4 border-b border-hairline pb-2">Features</h2>
+						<ul class="space-y-3">
+							<li class="flex items-start gap-2 text-sm text-body">
+								<span class="text-ink mt-0.5">✦</span> Text generation
+							</li>
+							<li class="flex items-start gap-2 text-sm text-body">
+								<span class="text-ink mt-0.5">✦</span> Automated posting
+							</li>
+							<li class="flex items-start gap-2 text-sm text-body">
+								<span class="text-ink mt-0.5">✦</span> Analytics dashboard
+							</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2 class="text-xl font-semibold text-ink tracking-tight mb-4 border-b border-hairline pb-2">Community Reviews</h2>
+						<div class="bg-canvas-elevated border border-hairline rounded-md p-6">
+							<div class="flex items-center gap-3 mb-3">
+								<div class="w-8 h-8 bg-hairline-soft rounded-full"></div>
+								<div>
+									<div class="text-sm font-medium text-ink">Jane Doe</div>
+									<div class="text-xs text-mute">⭐ 5/5 • 2 days ago</div>
+								</div>
+							</div>
+							<p class="text-sm text-body">This tool changed how I manage my entire workflow. Highly recommend it to anyone in the space.</p>
+						</div>
+					</section>
+				</div>
+
+				<aside class="flex flex-col gap-6">
+					<div class="bg-canvas-elevated border border-hairline rounded-md p-6">
+						<h3 class="font-semibold text-ink text-sm mb-4">Pricing Breakdown</h3>
+						<div class="space-y-3 text-sm">
+							<div class="flex justify-between items-center pb-2 border-b border-hairline">
+								<span class="text-body">Free Tier</span>
+								<span class="font-medium text-ink">Yes</span>
+							</div>
+							<div class="flex justify-between items-center pb-2 border-b border-hairline">
+								<span class="text-body">Starting Price</span>
+								<span class="font-medium text-ink">$15/mo</span>
+							</div>
+							<div class="flex justify-between items-center">
+								<span class="text-body">API Access</span>
+								<span class="font-medium text-ink">Pro only</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="bg-canvas-elevated border border-hairline rounded-md p-6">
+						<h3 class="font-semibold text-ink text-sm mb-4">Related Workflows</h3>
+						<a href="#" class="block text-sm text-link hover:text-link-deep transition-colors mb-2">Automate Twitter Threads →</a>
+						<a href="#" class="block text-sm text-link hover:text-link-deep transition-colors">Daily News Aggregation →</a>
+					</div>
+				</aside>
+			</div>
+		</div>
+	</main>
+</Layout>

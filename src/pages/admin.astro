@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Authentication check should happen here in the future
+// const session = await supabase.auth.getSession();
+// if (!session || session.user.role !== 'admin') { return Astro.redirect('/'); }
+---
+
+<Layout title="Admin Dashboard | AI Discovery Platform">
+	<div class="flex h-screen w-full bg-canvas overflow-hidden">
+		<!-- Sidebar -->
+		<aside class="w-64 border-r border-hairline bg-canvas flex flex-col hidden md:flex">
+			<div class="px-6 py-4 border-b border-hairline">
+				<div class="text-ink font-semibold tracking-tight">Admin Console</div>
+			</div>
+			<div class="p-4 flex flex-col gap-2">
+				<a href="/admin" class="px-3 py-2 bg-hairline-soft rounded-sm text-sm font-medium text-ink">Dashboard</a>
+				<a href="/admin/tools" class="px-3 py-2 hover:bg-hairline-soft rounded-sm text-sm text-body transition-colors">Manage Tools</a>
+				<a href="/admin/import" class="px-3 py-2 hover:bg-hairline-soft rounded-sm text-sm text-body transition-colors">Import CSV</a>
+				<a href="/admin/reviews" class="px-3 py-2 hover:bg-hairline-soft rounded-sm text-sm text-body transition-colors">Moderation</a>
+			</div>
+		</aside>
+
+		<!-- Main content -->
+		<main class="flex-1 flex flex-col overflow-y-auto">
+			<header class="px-8 py-4 border-b border-hairline flex items-center justify-between">
+				<h1 class="text-xl font-semibold text-ink">Dashboard Overview</h1>
+				<a href="/" class="text-sm text-link hover:text-link-deep transition-colors">← Back to Site</a>
+			</header>
+
+			<div class="p-8">
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+					<div class="bg-canvas-elevated border border-hairline p-6 rounded-md shadow-sm">
+						<div class="text-xs text-mute uppercase tracking-wider mb-2 font-mono">Total Tools</div>
+						<div class="text-3xl font-semibold text-ink">1,024</div>
+					</div>
+					<div class="bg-canvas-elevated border border-hairline p-6 rounded-md shadow-sm">
+						<div class="text-xs text-mute uppercase tracking-wider mb-2 font-mono">Pending Review</div>
+						<div class="text-3xl font-semibold text-warning">12</div>
+					</div>
+					<div class="bg-canvas-elevated border border-hairline p-6 rounded-md shadow-sm">
+						<div class="text-xs text-mute uppercase tracking-wider mb-2 font-mono">New Users (7d)</div>
+						<div class="text-3xl font-semibold text-ink">342</div>
+					</div>
+				</div>
+
+				<div class="bg-canvas-elevated border border-hairline rounded-md shadow-sm">
+					<div class="px-6 py-4 border-b border-hairline flex justify-between items-center">
+						<h2 class="text-sm font-semibold text-ink">Recent Submissions</h2>
+						<button class="bg-ink text-on-primary text-xs font-medium rounded-sm px-3 py-1">Import Data</button>
+					</div>
+					<div class="p-0">
+						<table class="w-full text-sm text-left">
+							<thead class="bg-canvas text-mute text-xs border-b border-hairline">
+								<tr>
+									<th class="px-6 py-3 font-medium">Tool Name</th>
+									<th class="px-6 py-3 font-medium">Category</th>
+									<th class="px-6 py-3 font-medium">Status</th>
+									<th class="px-6 py-3 font-medium text-right">Actions</th>
+								</tr>
+							</thead>
+							<tbody class="text-body">
+								<tr class="border-b border-hairline last:border-0 hover:bg-canvas transition-colors">
+									<td class="px-6 py-4 font-medium text-ink">Example Tool</td>
+									<td class="px-6 py-4">Automation</td>
+									<td class="px-6 py-4"><span class="px-2 py-1 bg-warning-soft text-warning-deep rounded-sm text-xs font-medium">Needs Review</span></td>
+									<td class="px-6 py-4 text-right">
+										<button class="text-link hover:text-link-deep">Edit</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+</Layout>

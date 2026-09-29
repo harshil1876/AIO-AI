@@ -1,0 +1,86 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="AI Tools Directory | AI Discovery Platform">
+	<main class="w-full flex flex-col min-h-screen">
+		<nav class="bg-canvas border-b border-hairline px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+			<div class="flex items-center gap-6">
+				<a href="/" class="text-ink font-semibold tracking-tight text-lg">AI Discovery</a>
+				<div class="hidden md:flex items-center gap-2">
+					<a href="/tools" class="text-ink font-medium px-2 py-1 transition-colors rounded-full bg-hairline-soft">Discover</a>
+					<a href="/workflows" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">Workflows</a>
+				</div>
+			</div>
+		</nav>
+
+		<div class="flex-1 w-full max-w-7xl mx-auto flex flex-col md:flex-row px-6 py-12 gap-8">
+			<!-- Sidebar Filters -->
+			<aside class="w-full md:w-64 flex flex-col gap-6 shrink-0">
+				<div>
+					<h3 class="text-ink font-semibold mb-3 text-sm">Categories</h3>
+					<div class="flex flex-col gap-2">
+						<label class="flex items-center gap-2 text-sm text-body cursor-pointer hover:text-ink">
+							<input type="checkbox" class="rounded-sm border-hairline accent-ink" /> Video
+						</label>
+						<label class="flex items-center gap-2 text-sm text-body cursor-pointer hover:text-ink">
+							<input type="checkbox" class="rounded-sm border-hairline accent-ink" /> Image
+						</label>
+						<label class="flex items-center gap-2 text-sm text-body cursor-pointer hover:text-ink">
+							<input type="checkbox" class="rounded-sm border-hairline accent-ink" /> Writing
+						</label>
+					</div>
+				</div>
+				
+				<div class="border-t border-hairline pt-6">
+					<h3 class="text-ink font-semibold mb-3 text-sm">Pricing</h3>
+					<div class="flex flex-col gap-2">
+						<label class="flex items-center gap-2 text-sm text-body cursor-pointer hover:text-ink">
+							<input type="checkbox" class="rounded-sm border-hairline accent-ink" /> Free
+						</label>
+						<label class="flex items-center gap-2 text-sm text-body cursor-pointer hover:text-ink">
+							<input type="checkbox" class="rounded-sm border-hairline accent-ink" /> Freemium
+						</label>
+						<label class="flex items-center gap-2 text-sm text-body cursor-pointer hover:text-ink">
+							<input type="checkbox" class="rounded-sm border-hairline accent-ink" /> Paid
+						</label>
+					</div>
+				</div>
+			</aside>
+
+			<!-- Main Directory Content -->
+			<div class="flex-1 flex flex-col">
+				<div class="flex items-center justify-between mb-6">
+					<h1 class="text-2xl font-semibold text-ink tracking-tight">All AI Tools</h1>
+					<div class="flex items-center gap-2">
+						<select class="bg-canvas-elevated border border-hairline text-body text-sm rounded-sm px-3 py-1.5 outline-none hover:border-faint transition-colors cursor-pointer">
+							<option>Trending</option>
+							<option>Newest</option>
+							<option>Platform Score</option>
+						</select>
+					</div>
+				</div>
+				
+				<div class="w-full bg-canvas-elevated border border-hairline rounded-md shadow-sm p-2 flex items-center mb-8">
+					<input type="text" placeholder="Search tools..." class="w-full bg-transparent text-ink placeholder-faint px-3 py-1 outline-none text-sm" />
+				</div>
+
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+					<!-- Tool Cards -->
+					<a href="/tools/example-tool" class="group bg-canvas-elevated border border-hairline rounded-md p-6 hover:shadow-sm transition-shadow block cursor-pointer">
+						<div class="flex items-start justify-between mb-4">
+							<div class="w-12 h-12 bg-hairline-soft rounded-md flex-shrink-0 flex items-center justify-center text-xl">🚀</div>
+							<span class="text-xs font-medium bg-hairline-soft px-2 py-1 rounded-sm text-ink">Free</span>
+						</div>
+						<h3 class="font-semibold text-ink mb-1 group-hover:text-link transition-colors">Example Tool</h3>
+						<p class="text-sm text-body mb-4 line-clamp-2">A powerful AI tool to automate your tasks and boost productivity effortlessly.</p>
+						<div class="flex items-center justify-between">
+							<span class="text-xs text-mute flex items-center gap-1">✅ Verified</span>
+							<span class="text-xs text-mute flex items-center">⭐ 4.9 (120)</span>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</main>
+</Layout>

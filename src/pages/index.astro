@@ -1,0 +1,88 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="AI Discovery Platform | Find the right AI for anything">
+	<main class="w-full flex flex-col">
+		<!-- Navigation Bar -->
+		<nav class="bg-canvas border-b border-hairline px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+			<div class="flex items-center gap-6">
+				<a href="/" class="text-ink font-semibold tracking-tight text-lg">AI Discovery</a>
+				<div class="hidden md:flex items-center gap-2">
+					<a href="/tools" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">Discover</a>
+					<a href="/workflows" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">Workflows</a>
+					<a href="/news" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">News</a>
+				</div>
+			</div>
+			<div class="flex items-center gap-3">
+				<a href="/login" class="text-ink text-sm font-medium border border-hairline rounded-sm px-3 py-1 hover:bg-hairline-soft transition-colors">Log In</a>
+				<a href="/signup" class="bg-ink text-on-primary text-sm font-medium rounded-sm px-3 py-1 hover:bg-black transition-colors">Sign Up</a>
+			</div>
+		</nav>
+
+		<!-- Hero Section -->
+		<section class="w-full px-6 py-24 md:py-32 flex flex-col items-center justify-center text-center max-w-5xl mx-auto">
+			<h1 class="text-5xl md:text-7xl font-semibold text-ink tracking-tight mb-6" style="letter-spacing: -2.4px;">
+				Find the right AI for anything.
+			</h1>
+			<p class="text-lg md:text-xl text-body mb-10 max-w-2xl">
+				Discover, compare, learn and use AI tools, workflows, open-source projects and creators in one place.
+			</p>
+			
+			<div class="w-full max-w-2xl bg-canvas-elevated border border-hairline rounded-lg shadow-sm p-2 flex items-center mb-6">
+				<input type="text" placeholder="What do you want to do?" class="w-full bg-transparent text-ink placeholder-faint px-4 py-2 outline-none text-lg" />
+				<button class="bg-ink text-on-primary font-medium rounded-pill px-6 py-2 ml-2 hover:bg-black transition-colors whitespace-nowrap">
+					Search
+				</button>
+			</div>
+			<div class="flex flex-wrap items-center justify-center gap-2 text-sm text-mute">
+				<span>Try:</span>
+				<button class="hover:text-ink transition-colors px-2 py-1 rounded-sm hover:bg-hairline-soft">free AI for YouTube Shorts</button>
+				<button class="hover:text-ink transition-colors px-2 py-1 rounded-sm hover:bg-hairline-soft">automate content creation</button>
+				<button class="hover:text-ink transition-colors px-2 py-1 rounded-sm hover:bg-hairline-soft">best AI PDF editor</button>
+			</div>
+		</section>
+
+		<!-- Trending Tools Placeholder -->
+		<section class="w-full max-w-6xl mx-auto px-6 py-16 border-t border-hairline">
+			<div class="flex items-center justify-between mb-8">
+				<h2 class="text-2xl font-semibold tracking-tight text-ink">Trending AI Tools</h2>
+				<a href="/tools" class="text-link text-sm font-medium hover:text-link-deep transition-colors">View all →</a>
+			</div>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+				<!-- Tool Card Skeleton -->
+				<div class="bg-canvas-elevated border border-hairline rounded-md p-6 hover:shadow-sm transition-shadow cursor-pointer">
+					<div class="w-10 h-10 bg-hairline-soft rounded-md mb-4"></div>
+					<h3 class="font-semibold text-ink mb-1">Example Tool</h3>
+					<p class="text-sm text-body mb-4 line-clamp-2">A placeholder tool showing the Vercel-style card structure.</p>
+					<div class="flex items-center justify-between">
+						<span class="text-xs font-medium bg-hairline-soft px-2 py-1 rounded-sm text-ink">Freemium</span>
+						<span class="text-xs text-mute flex items-center">⭐ 4.8</span>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<!-- Footer -->
+		<footer class="w-full border-t border-hairline bg-canvas px-6 py-16 mt-auto">
+			<div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
+				<div>
+					<div class="text-ink font-semibold tracking-tight mb-4">AI Discovery</div>
+					<p class="text-sm text-body max-w-xs">The trusted starting point for discovering and applying AI.</p>
+				</div>
+				<div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
+					<div class="flex flex-col gap-3">
+						<span class="font-medium text-ink">Discover</span>
+						<a href="/tools" class="text-body hover:text-ink transition-colors">Tools</a>
+						<a href="/categories" class="text-body hover:text-ink transition-colors">Categories</a>
+					</div>
+					<div class="flex flex-col gap-3">
+						<span class="font-medium text-ink">Ecosystem</span>
+						<a href="/news" class="text-body hover:text-ink transition-colors">News</a>
+						<a href="/workflows" class="text-body hover:text-ink transition-colors">Workflows</a>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</main>
+</Layout>
