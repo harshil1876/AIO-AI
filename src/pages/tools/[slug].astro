@@ -41,7 +41,7 @@ const getCategoryIcon = (categorySlug: string) => {
 ---
 
 <Layout 
-  title={`${tool.name} Review, Pricing & Alternatives | AI Discovery`}
+  title={`${tool.name} Review, Cost-to-Value & Alternatives | AI Discovery`}
   description={tool.tagline}
 >
   <Header currentPath="/tools" />
@@ -103,6 +103,11 @@ const getCategoryIcon = (categorySlug: string) => {
                 <span class="font-mono font-bold text-ink bg-hairline-soft px-1.5 py-0.5 rounded-xs">{tool.platformScore}/100</span>
               </div>
               <span>•</span>
+              <div class="flex items-center gap-1">
+                <span class="text-mute">Value Score:</span>
+                <span class="font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-xs">{tool.valueScore}/100</span>
+              </div>
+              <span>•</span>
               <span class="capitalize">{tool.pricingType}</span>
             </div>
           </div>
@@ -134,7 +139,7 @@ const getCategoryIcon = (categorySlug: string) => {
     <!-- Main Content & Sidebar -->
     <div class="w-full max-w-6xl mx-auto px-6 py-12">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <!-- Main Column (Overview, Features, Pros/Cons, Reviews) -->
+        <!-- Main Column (Overview, Cost-to-Value, Features, Pros/Cons, Reviews) -->
         <div class="lg:col-span-2 flex flex-col gap-12">
           <!-- Overview -->
           <section>
@@ -143,6 +148,58 @@ const getCategoryIcon = (categorySlug: string) => {
             </h2>
             <div class="text-sm md:text-base text-body leading-relaxed space-y-4">
               <p>{tool.description}</p>
+            </div>
+          </section>
+
+          <!-- UNIQUE FEATURE: Cost-to-Value Score Breakdown -->
+          <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 border-b border-hairline pb-4">
+              <div>
+                <div class="text-xs font-semibold uppercase tracking-wider text-emerald-700 mb-1 flex items-center gap-1.5">
+                  <span>⚡</span> Proprietary ROI Analysis
+                </div>
+                <h2 class="text-xl font-semibold text-ink tracking-tight">
+                  Cost-to-Value Score: <span class="font-mono text-emerald-600">{tool.valueScore}/100</span>
+                </h2>
+              </div>
+              <span class="text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full font-medium shrink-0">
+                Verified Benchmark
+              </span>
+            </div>
+
+            <!-- Value Verdict -->
+            <p class="text-sm text-body leading-relaxed mb-6 font-medium">
+              💡 <span class="text-ink">Executive Verdict:</span> {tool.valueVerdict}
+            </p>
+
+            <!-- Metrics Bars -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
+              <!-- Free Tier Generosity -->
+              <div class="p-4 rounded-md border border-hairline bg-canvas">
+                <div class="flex items-center justify-between text-xs mb-2">
+                  <span class="text-mute font-medium">Free Tier Generosity</span>
+                  <span class="font-mono font-bold text-ink">{tool.freeTierGenerosity} / 10</span>
+                </div>
+                <div class="w-full bg-hairline-soft h-2 rounded-full overflow-hidden">
+                  <div class="bg-ink h-full rounded-full" style={`width: ${tool.freeTierGenerosity * 10}%`}></div>
+                </div>
+              </div>
+
+              <!-- Pricing Scalability -->
+              <div class="p-4 rounded-md border border-hairline bg-canvas">
+                <div class="flex items-center justify-between text-xs mb-2">
+                  <span class="text-mute font-medium">Pricing Scalability</span>
+                  <span class="font-mono font-bold text-ink">{tool.pricingScalability} / 10</span>
+                </div>
+                <div class="w-full bg-hairline-soft h-2 rounded-full overflow-hidden">
+                  <div class="bg-ink h-full rounded-full" style={`width: ${tool.pricingScalability * 10}%`}></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hidden Costs Disclosure -->
+            <div class="p-3.5 rounded-md border border-hairline bg-hairline-soft/50 text-xs text-body">
+              <strong class="text-ink font-semibold">Transparency & Hidden Costs:</strong> {tool.hiddenCosts}
             </div>
           </section>
 
@@ -234,7 +291,7 @@ const getCategoryIcon = (categorySlug: string) => {
                         {alt.tagline}
                       </div>
                       <div class="mt-2 text-xs text-body font-mono">
-                        Score: {alt.platformScore} • {alt.pricingType}
+                        Score: {alt.platformScore} • Value: {alt.valueScore}
                       </div>
                     </div>
                     <span class="text-mute group-hover:text-ink transition-colors text-sm">→</span>
@@ -313,6 +370,28 @@ const getCategoryIcon = (categorySlug: string) => {
               </a>
             </div>
           </div>
+
+          <!-- UNIQUE FEATURE: The Self-Hosted / Open-Source Switch -->
+          {tool.openSourceAlternative && (
+            <div class="bg-purple-50/50 border border-purple-200 rounded-md p-6 shadow-xs">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-purple-800 mb-1 flex items-center gap-1.5">
+                <span>🔄</span> Self-Hosted Switch
+              </div>
+              <h4 class="text-base font-semibold text-purple-950 mb-2">
+                Want zero subscription costs?
+              </h4>
+              <p class="text-xs text-purple-900 leading-relaxed mb-4">
+                {tool.openSourceAlternative.savings}
+              </p>
+              <a 
+                href={`/tools/${tool.openSourceAlternative.slug}`}
+                class="inline-flex items-center justify-between w-full bg-purple-900 text-white font-medium text-xs rounded-pill px-4 py-2 hover:bg-purple-950 transition-colors"
+              >
+                <span>View {tool.openSourceAlternative.name}</span>
+                <span>→</span>
+              </a>
+            </div>
+          )}
 
           <!-- Metadata & Taxonomy -->
           <div class="bg-canvas-elevated border border-hairline rounded-md p-6 shadow-xs">

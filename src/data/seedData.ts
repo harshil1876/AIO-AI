@@ -20,6 +20,17 @@ export interface ToolData {
   alternatives: string[];
   isIndianAI?: boolean;
   badge?: string;
+  // Specialized Unique Metrics
+  valueScore: number; // 0 - 100
+  valueVerdict: string;
+  freeTierGenerosity: number; // 1 - 10
+  pricingScalability: number; // 1 - 10
+  hiddenCosts: string;
+  openSourceAlternative?: {
+    name: string;
+    slug: string;
+    savings: string;
+  };
 }
 
 export interface CategoryData {
@@ -67,6 +78,16 @@ export const TOOLS_DATA: ToolData[] = [
     freeTier: true,
     alternatives: ['claude', 'krutrim', 'llama-3'],
     badge: 'Trending #1',
+    valueScore: 96,
+    valueVerdict: 'Exceptional ROI across general tasks with a very capable free tier.',
+    freeTierGenerosity: 9,
+    pricingScalability: 8,
+    hiddenCosts: 'API tokens are billed separately from ChatGPT Plus web subscriptions.',
+    openSourceAlternative: {
+      name: 'Llama 3 (Meta) on Ollama',
+      slug: 'llama-3',
+      savings: 'Save $240/year per user by self-hosting weights locally.'
+    }
   },
   {
     slug: 'claude',
@@ -88,6 +109,16 @@ export const TOOLS_DATA: ToolData[] = [
     freeTier: true,
     alternatives: ['chatgpt', 'github-copilot'],
     badge: 'Staff Pick',
+    valueScore: 97,
+    valueVerdict: 'Industry gold standard for software engineering and technical writing.',
+    freeTierGenerosity: 8,
+    pricingScalability: 8,
+    hiddenCosts: 'High-frequency message limits kick in faster on long conversation histories.',
+    openSourceAlternative: {
+      name: 'Llama 3 70B',
+      slug: 'llama-3',
+      savings: 'Save $240/year with self-hosted open-weights inference.'
+    }
   },
   {
     slug: 'midjourney',
@@ -109,6 +140,16 @@ export const TOOLS_DATA: ToolData[] = [
     freeTier: false,
     alternatives: ['runway'],
     badge: 'Popular',
+    valueScore: 91,
+    valueVerdict: 'Unmatched visual aesthetic, but lacks a free tier for casual experimenters.',
+    freeTierGenerosity: 1,
+    pricingScalability: 8,
+    hiddenCosts: 'Fast GPU hours exhaust quickly; relaxed generation mode is slower during peak times.',
+    openSourceAlternative: {
+      name: 'Stable Diffusion WebUI',
+      slug: 'hugging-face',
+      savings: 'Save $120–$720/year by generating locally on an NVIDIA GPU.'
+    }
   },
   {
     slug: 'github-copilot',
@@ -129,6 +170,16 @@ export const TOOLS_DATA: ToolData[] = [
     startingPrice: '$10/mo',
     freeTier: false,
     alternatives: ['claude'],
+    valueScore: 94,
+    valueVerdict: 'Pays for itself in minutes by drastically eliminating boilerplate code.',
+    freeTierGenerosity: 2,
+    pricingScalability: 9,
+    hiddenCosts: 'Requires individual seat subscriptions per developer on GitHub organizations.',
+    openSourceAlternative: {
+      name: 'Continue.dev with Ollama',
+      slug: 'llama-3',
+      savings: 'Save $120/year per engineer with 100% offline local telemetry.'
+    }
   },
   {
     slug: 'notion-ai',
@@ -149,6 +200,11 @@ export const TOOLS_DATA: ToolData[] = [
     startingPrice: '$10/member/mo',
     freeTier: false,
     alternatives: ['chatgpt'],
+    valueScore: 84,
+    valueVerdict: 'High workflow convenience if your team already operates entirely in Notion.',
+    freeTierGenerosity: 2,
+    pricingScalability: 7,
+    hiddenCosts: 'Cannot be purchased standalone; must be added on top of Notion workspace plans.',
   },
   {
     slug: 'make',
@@ -170,6 +226,16 @@ export const TOOLS_DATA: ToolData[] = [
     freeTier: true,
     alternatives: ['zapier', 'n8n'],
     badge: 'Automation Pick',
+    valueScore: 95,
+    valueVerdict: 'Superb cost efficiency: provides 10,000 operations for less than Zapier charges for 750.',
+    freeTierGenerosity: 8,
+    pricingScalability: 9,
+    hiddenCosts: 'Excess operations beyond monthly tier limit are billed per 10k batch.',
+    openSourceAlternative: {
+      name: 'n8n (Fair-code)',
+      slug: 'n8n',
+      savings: 'Save $108–$1,200/year with unlimited self-hosted workflow executions.'
+    }
   },
   {
     slug: 'zapier',
@@ -190,6 +256,16 @@ export const TOOLS_DATA: ToolData[] = [
     startingPrice: '$19.99/mo',
     freeTier: true,
     alternatives: ['make', 'n8n'],
+    valueScore: 82,
+    valueVerdict: 'Premium pricing for maximum simplicity and the largest connector ecosystem.',
+    freeTierGenerosity: 5,
+    pricingScalability: 6,
+    hiddenCosts: 'Multi-step zaps require paid tiers; task overages cost significantly more than competitors.',
+    openSourceAlternative: {
+      name: 'n8n',
+      slug: 'n8n',
+      savings: 'Save $240–$2,400/year by switching to self-hosted n8n.'
+    }
   },
   {
     slug: 'n8n',
@@ -211,6 +287,11 @@ export const TOOLS_DATA: ToolData[] = [
     freeTier: true,
     alternatives: ['make', 'zapier'],
     badge: 'Open Source',
+    valueScore: 99,
+    valueVerdict: 'The absolute king of ROI for technical teams willing to run Docker.',
+    freeTierGenerosity: 10,
+    pricingScalability: 10,
+    hiddenCosts: 'Hosting server cost (~$5/mo VPS or free on homelab hardware).',
   },
   {
     slug: 'elevenlabs',
@@ -232,6 +313,16 @@ export const TOOLS_DATA: ToolData[] = [
     freeTier: true,
     alternatives: ['runway'],
     badge: 'Creator Essential',
+    valueScore: 93,
+    valueVerdict: 'Elite voice synthesis that transforms audio productions without studio equipment.',
+    freeTierGenerosity: 7,
+    pricingScalability: 8,
+    hiddenCosts: 'Character counts are consumed quickly when regenerating clips multiple times.',
+    openSourceAlternative: {
+      name: 'Coqui TTS / Piper',
+      slug: 'hugging-face',
+      savings: 'Save $60–$1,000/year for high-volume audiobook narration.'
+    }
   },
   {
     slug: 'runway',
@@ -253,6 +344,11 @@ export const TOOLS_DATA: ToolData[] = [
     freeTier: true,
     alternatives: ['midjourney'],
     badge: 'Top Video Tool',
+    valueScore: 89,
+    valueVerdict: 'Unmatched cinematic motion fidelity; credit management is essential.',
+    freeTierGenerosity: 6,
+    pricingScalability: 7,
+    hiddenCosts: 'Gen-3 Alpha video runs consume roughly 100 credits per 10-second clip.',
   },
   {
     slug: 'sarvam-ai',
@@ -275,6 +371,11 @@ export const TOOLS_DATA: ToolData[] = [
     alternatives: ['krutrim', 'llama-3'],
     isIndianAI: true,
     badge: 'India-First AI',
+    valueScore: 98,
+    valueVerdict: 'Incredible value for the Indian market with generous free developer access.',
+    freeTierGenerosity: 10,
+    pricingScalability: 9,
+    hiddenCosts: 'None currently on public developer tier.',
   },
   {
     slug: 'krutrim',
@@ -297,6 +398,11 @@ export const TOOLS_DATA: ToolData[] = [
     alternatives: ['sarvam-ai', 'chatgpt'],
     isIndianAI: true,
     badge: 'India Sovereign',
+    valueScore: 95,
+    valueVerdict: 'Completely free consumer tier with native Indic language support.',
+    freeTierGenerosity: 10,
+    pricingScalability: 8,
+    hiddenCosts: 'Enterprise cloud GPUs and API tokens are billed in INR.',
   },
   {
     slug: 'llama-3',
@@ -318,6 +424,11 @@ export const TOOLS_DATA: ToolData[] = [
     freeTier: true,
     alternatives: ['hugging-face', 'claude'],
     badge: 'Open Weights Leader',
+    valueScore: 100,
+    valueVerdict: 'Infinite ROI: state-of-the-art reasoning weights available 100% free forever.',
+    freeTierGenerosity: 10,
+    pricingScalability: 10,
+    hiddenCosts: 'Requires your own compute or GPU cloud provider (e.g. RunPod, Together AI).',
   },
   {
     slug: 'hugging-face',
@@ -339,5 +450,10 @@ export const TOOLS_DATA: ToolData[] = [
     freeTier: true,
     alternatives: ['llama-3'],
     badge: 'Essential Hub',
+    valueScore: 99,
+    valueVerdict: 'Unparalleled free resources for developers, researchers, and builders.',
+    freeTierGenerosity: 10,
+    pricingScalability: 9,
+    hiddenCosts: 'Serverless dedicated endpoints charge per GPU-second.',
   },
 ];

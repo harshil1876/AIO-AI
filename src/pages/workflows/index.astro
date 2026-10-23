@@ -84,12 +84,21 @@ import { WORKFLOWS_DATA } from '../../data/workflowsData';
             <div class="text-emerald-950">
               <strong class="font-semibold text-emerald-900">Final Deliverable:</strong> {workflow.output}
             </div>
-            <button 
-              class="copy-workflow-btn shrink-0 bg-ink text-on-primary hover:bg-black px-3.5 py-1.5 rounded-pill font-medium transition-colors cursor-pointer"
-              data-title={workflow.title}
-            >
-              Copy Blueprint
-            </button>
+            <div class="flex items-center gap-2">
+              <a 
+                href={`/workflows/${workflow.id}`}
+                class="shrink-0 bg-ink text-on-primary hover:bg-black px-4 py-1.5 rounded-pill font-medium transition-colors cursor-pointer inline-flex items-center gap-1"
+              >
+                <span>Interactive Map</span>
+                <span>→</span>
+              </a>
+              <button 
+                class="copy-workflow-btn shrink-0 bg-canvas-elevated border border-hairline hover:border-faint text-ink px-3.5 py-1.5 rounded-pill font-medium transition-colors cursor-pointer"
+                data-title={workflow.title}
+              >
+                Copy
+              </button>
+            </div>
           </div>
         </div>
       ))}
