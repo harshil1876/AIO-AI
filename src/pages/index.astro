@@ -1,88 +1,166 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ToolCard from '../components/ToolCard.astro';
+import { getTrendingTools, getAllCategories, getIndianAITools, getFreeTools } from '../services/dataService';
+
+const trendingTools = await getTrendingTools(6);
+const categories = await getAllCategories();
+const indianTools = await getIndianAITools();
+const freeTools = await getFreeTools(4);
 ---
 
-<Layout title="AI Discovery Platform | Find the right AI for anything">
-	<main class="w-full flex flex-col">
-		<!-- Navigation Bar -->
-		<nav class="bg-canvas border-b border-hairline px-6 py-3 flex items-center justify-between sticky top-0 z-50">
-			<div class="flex items-center gap-6">
-				<a href="/" class="text-ink font-semibold tracking-tight text-lg">AI Discovery</a>
-				<div class="hidden md:flex items-center gap-2">
-					<a href="/tools" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">Discover</a>
-					<a href="/workflows" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">Workflows</a>
-					<a href="/news" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">News</a>
-				</div>
-			</div>
-			<div class="flex items-center gap-3">
-				<a href="/login" class="text-ink text-sm font-medium border border-hairline rounded-sm px-3 py-1 hover:bg-hairline-soft transition-colors">Log In</a>
-				<a href="/signup" class="bg-ink text-on-primary text-sm font-medium rounded-sm px-3 py-1 hover:bg-black transition-colors">Sign Up</a>
-			</div>
-		</nav>
+<Layout title="AI Discovery Platform | Find the right AI for anything" description="Discover, compare, and apply the best AI tools, workflows, open-source models, and creator intelligence.">
+  <Header currentPath="/" />
 
-		<!-- Hero Section -->
-		<section class="w-full px-6 py-24 md:py-32 flex flex-col items-center justify-center text-center max-w-5xl mx-auto">
-			<h1 class="text-5xl md:text-7xl font-semibold text-ink tracking-tight mb-6" style="letter-spacing: -2.4px;">
-				Find the right AI for anything.
-			</h1>
-			<p class="text-lg md:text-xl text-body mb-10 max-w-2xl">
-				Discover, compare, learn and use AI tools, workflows, open-source projects and creators in one place.
-			</p>
-			
-			<div class="w-full max-w-2xl bg-canvas-elevated border border-hairline rounded-lg shadow-sm p-2 flex items-center mb-6">
-				<input type="text" placeholder="What do you want to do?" class="w-full bg-transparent text-ink placeholder-faint px-4 py-2 outline-none text-lg" />
-				<button class="bg-ink text-on-primary font-medium rounded-pill px-6 py-2 ml-2 hover:bg-black transition-colors whitespace-nowrap">
-					Search
-				</button>
-			</div>
-			<div class="flex flex-wrap items-center justify-center gap-2 text-sm text-mute">
-				<span>Try:</span>
-				<button class="hover:text-ink transition-colors px-2 py-1 rounded-sm hover:bg-hairline-soft">free AI for YouTube Shorts</button>
-				<button class="hover:text-ink transition-colors px-2 py-1 rounded-sm hover:bg-hairline-soft">automate content creation</button>
-				<button class="hover:text-ink transition-colors px-2 py-1 rounded-sm hover:bg-hairline-soft">best AI PDF editor</button>
-			</div>
-		</section>
+  <main class="w-full flex flex-col">
+    <!-- Hero Section -->
+    <section class="w-full px-6 pt-20 pb-16 md:pt-28 md:pb-24 flex flex-col items-center justify-center text-center max-w-5xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-hairline bg-canvas-elevated text-xs font-medium text-mute mb-8 shadow-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Over 14+ foundational & verified AI models cataloged</span>
+      </div>
 
-		<!-- Trending Tools Placeholder -->
-		<section class="w-full max-w-6xl mx-auto px-6 py-16 border-t border-hairline">
-			<div class="flex items-center justify-between mb-8">
-				<h2 class="text-2xl font-semibold tracking-tight text-ink">Trending AI Tools</h2>
-				<a href="/tools" class="text-link text-sm font-medium hover:text-link-deep transition-colors">View all →</a>
-			</div>
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-				<!-- Tool Card Skeleton -->
-				<div class="bg-canvas-elevated border border-hairline rounded-md p-6 hover:shadow-sm transition-shadow cursor-pointer">
-					<div class="w-10 h-10 bg-hairline-soft rounded-md mb-4"></div>
-					<h3 class="font-semibold text-ink mb-1">Example Tool</h3>
-					<p class="text-sm text-body mb-4 line-clamp-2">A placeholder tool showing the Vercel-style card structure.</p>
-					<div class="flex items-center justify-between">
-						<span class="text-xs font-medium bg-hairline-soft px-2 py-1 rounded-sm text-ink">Freemium</span>
-						<span class="text-xs text-mute flex items-center">⭐ 4.8</span>
-					</div>
-				</div>
-			</div>
-		</section>
-		
-		<!-- Footer -->
-		<footer class="w-full border-t border-hairline bg-canvas px-6 py-16 mt-auto">
-			<div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
-				<div>
-					<div class="text-ink font-semibold tracking-tight mb-4">AI Discovery</div>
-					<p class="text-sm text-body max-w-xs">The trusted starting point for discovering and applying AI.</p>
-				</div>
-				<div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
-					<div class="flex flex-col gap-3">
-						<span class="font-medium text-ink">Discover</span>
-						<a href="/tools" class="text-body hover:text-ink transition-colors">Tools</a>
-						<a href="/categories" class="text-body hover:text-ink transition-colors">Categories</a>
-					</div>
-					<div class="flex flex-col gap-3">
-						<span class="font-medium text-ink">Ecosystem</span>
-						<a href="/news" class="text-body hover:text-ink transition-colors">News</a>
-						<a href="/workflows" class="text-body hover:text-ink transition-colors">Workflows</a>
-					</div>
-				</div>
-			</div>
-		</footer>
-	</main>
+      <h1 class="text-5xl md:text-7xl font-semibold text-ink tracking-tight mb-6" style="letter-spacing: -2.4px;">
+        Find the right AI for anything.
+      </h1>
+      
+      <p class="text-lg md:text-xl text-body mb-10 max-w-2xl font-normal leading-relaxed">
+        Discover, compare, and connect AI tools, workflows, open-source models, and developer ecosystems in one unified place.
+      </p>
+      
+      <!-- Search Input Container -->
+      <form action="/tools" method="GET" class="w-full max-w-2xl bg-canvas-elevated border border-hairline hover:border-faint focus-within:border-ink rounded-lg shadow-sm p-1.5 flex items-center mb-6 transition-all">
+        <span class="pl-4 text-mute text-base">🔍</span>
+        <input 
+          type="text" 
+          name="q"
+          placeholder="What do you want to do? (e.g. automate video editing, voice cloning)" 
+          class="w-full bg-transparent text-ink placeholder-faint px-3 py-2.5 outline-none text-base" 
+        />
+        <button type="submit" class="bg-ink text-on-primary font-medium text-sm rounded-pill px-6 py-2.5 hover:bg-black transition-colors whitespace-nowrap cursor-pointer">
+          Search
+        </button>
+      </form>
+
+      <!-- Quick intent chips -->
+      <div class="flex flex-wrap items-center justify-center gap-2 text-xs text-mute max-w-2xl">
+        <span class="font-medium text-body">Popular:</span>
+        <a href="/tools?q=video" class="hover:text-ink transition-colors px-2.5 py-1 rounded-full border border-hairline bg-canvas-elevated">YouTube Shorts video</a>
+        <a href="/tools?q=automation" class="hover:text-ink transition-colors px-2.5 py-1 rounded-full border border-hairline bg-canvas-elevated">Automate workflows</a>
+        <a href="/tools?category=code-assistants" class="hover:text-ink transition-colors px-2.5 py-1 rounded-full border border-hairline bg-canvas-elevated">AI coding pair</a>
+        <a href="/tools?category=india-first" class="hover:text-ink transition-colors px-2.5 py-1 rounded-full border border-hairline bg-canvas-elevated">India-First AI</a>
+        <a href="/finder" class="hover:text-link transition-colors px-2.5 py-1 rounded-full border border-link-soft bg-link-soft/30 text-link">Natural language finder →</a>
+      </div>
+    </section>
+
+    <!-- Trending Tools Section -->
+    <section class="w-full max-w-7xl mx-auto px-6 py-16 border-t border-hairline">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl font-semibold tracking-tight text-ink mb-1">Trending AI Tools</h2>
+          <p class="text-sm text-mute">Highest-scoring verified models and platforms this week.</p>
+        </div>
+        <a href="/tools" class="text-ink text-sm font-medium hover:text-link transition-colors flex items-center gap-1">
+          Explore all ({trendingTools.length}) →
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {trendingTools.map(tool => (
+          <ToolCard tool={tool} />
+        ))}
+      </div>
+    </section>
+
+    <!-- Categories Taxonomy Section -->
+    <section class="w-full max-w-7xl mx-auto px-6 py-16 border-t border-hairline">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl font-semibold tracking-tight text-ink mb-1">Explore by Category</h2>
+          <p class="text-sm text-mute">Intent-based taxonomy mapping tasks to the right tools.</p>
+        </div>
+        <a href="/categories" class="text-ink text-sm font-medium hover:text-link transition-colors">
+          All categories →
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        {categories.slice(0, 12).map(cat => (
+          <a 
+            href={`/tools?category=${cat.slug}`}
+            class="bg-canvas-elevated border border-hairline rounded-md p-4 flex flex-col items-start hover:border-faint transition-all hover:shadow-xs group"
+          >
+            <span class="text-2xl mb-2 group-hover:scale-110 transition-transform">{cat.icon}</span>
+            <span class="font-medium text-sm text-ink group-hover:text-link transition-colors line-clamp-1">{cat.name}</span>
+            <span class="text-xs text-mute mt-1">{cat.count || 0} tools</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- India-First & Regional Spotlight -->
+    {indianTools.length > 0 && (
+      <section class="w-full max-w-7xl mx-auto px-6 py-16 border-t border-hairline">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <div class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-orange-700 bg-orange-50 border border-orange-200 px-2 py-0.5 rounded-xs mb-2">
+              <span>🇮🇳</span> Regional AI Innovation
+            </div>
+            <h2 class="text-2xl font-semibold tracking-tight text-ink mb-1">India-First AI Ecosystem</h2>
+            <p class="text-sm text-mute">Indigenous sovereign models, Indic language intelligence, and localized solutions.</p>
+          </div>
+          <a href="/tools?category=india-first" class="text-ink text-sm font-medium hover:text-link transition-colors">
+            View Indian AI →
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {indianTools.map(tool => (
+            <ToolCard tool={tool} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Free & Open Source Spotlight -->
+    <section class="w-full max-w-7xl mx-auto px-6 py-16 border-t border-hairline">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl font-semibold tracking-tight text-ink mb-1">Free & Open Source AI</h2>
+          <p class="text-sm text-mute">Zero-cost tiers, open weights, and self-hostable workflows.</p>
+        </div>
+        <a href="/tools?pricing=Free" class="text-ink text-sm font-medium hover:text-link transition-colors">
+          Browse free tools →
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {freeTools.map(tool => (
+          <ToolCard tool={tool} />
+        ))}
+      </div>
+    </section>
+
+    <!-- AI Finder Banner CTA -->
+    <section class="w-full max-w-7xl mx-auto px-6 py-16 border-t border-hairline">
+      <div class="bg-canvas-elevated border border-hairline rounded-lg p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xs">
+        <div class="max-w-xl text-left">
+          <span class="text-xs font-semibold uppercase tracking-wider text-link mb-2 block">Interactive Matching</span>
+          <h3 class="text-3xl font-semibold text-ink tracking-tight mb-3">Not sure which tool fits your task?</h3>
+          <p class="text-body text-base leading-relaxed">
+            Tell our AI Finder what you want to achieve in plain English. We analyze your requirements and recommend the best free, freemium, and alternative tools with step-by-step guidance.
+          </p>
+        </div>
+        <div class="shrink-0">
+          <a href="/finder" class="bg-ink text-on-primary font-medium text-sm rounded-pill px-8 py-3.5 hover:bg-black transition-colors shadow-xs inline-block text-center">
+            Launch AI Finder →
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
 </Layout>

@@ -1,0 +1,88 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { OPEN_SOURCE_REPOS } from '../../data/openSourceData';
+---
+
+<Layout 
+  title="Open Source AI Projects & Repositories | AI Discovery"
+  description="Discover trending open-source AI frameworks, local LLM runners, model serving engines, and autonomous agent tools on GitHub."
+>
+  <Header currentPath="/open-source" />
+
+  <main class="w-full flex flex-col min-h-screen">
+    <!-- Header -->
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <div class="text-xs text-mute uppercase font-mono tracking-wider mb-2">Open Source</div>
+          <h1 class="text-3xl md:text-4xl font-semibold text-ink tracking-tight mb-2">
+            Trending Open-Source AI Repositories
+          </h1>
+          <p class="text-sm md:text-base text-body max-w-2xl leading-relaxed">
+            Curated GitHub projects, self-hostable tools, and local inference engines with verified licenses and real metrics.
+          </p>
+        </div>
+
+        <a 
+          href="https://github.com/trending" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="text-xs text-mute hover:text-ink font-medium border border-hairline px-3 py-2 rounded-md hover:bg-hairline-soft transition-colors shrink-0"
+        >
+          View GitHub Trending ↗
+        </a>
+      </div>
+    </section>
+
+    <!-- Repositories Grid -->
+    <div class="w-full max-w-7xl mx-auto px-6 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {OPEN_SOURCE_REPOS.map(repo => (
+          <div class="bg-canvas-elevated border border-hairline rounded-md p-6 flex flex-col justify-between hover:border-faint transition-all shadow-xs">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-mono font-medium text-mute">{repo.category}</span>
+                <span class={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${
+                  repo.difficulty === 'Beginner'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : repo.difficulty === 'Intermediate'
+                    ? 'bg-blue-50 text-blue-700 border-blue-200'
+                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                }`}>
+                  {repo.difficulty}
+                </span>
+              </div>
+
+              <h2 class="text-lg font-semibold text-ink tracking-tight mb-1">
+                <a href={repo.url} target="_blank" rel="noopener noreferrer" class="hover:text-link transition-colors inline-flex items-center gap-1.5">
+                  <span>{repo.name}</span>
+                  <span class="text-xs text-mute">↗</span>
+                </a>
+              </h2>
+              <div class="text-xs font-mono text-mute mb-3">{repo.repo}</div>
+
+              <p class="text-xs md:text-sm text-body leading-relaxed mb-6">
+                {repo.description}
+              </p>
+            </div>
+
+            <div class="pt-4 border-t border-hairline flex items-center justify-between text-xs text-mute">
+              <div class="flex items-center gap-3">
+                <span>⭐ {repo.stars}</span>
+                <span>🍴 {repo.forks}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-mono bg-hairline-soft px-1.5 py-0.5 rounded-xs text-ink">{repo.language}</span>
+                <span>{repo.license}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

@@ -1,86 +1,283 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { getAllTools, getAllCategories } from '../../services/dataService';
+
+const tools = await getAllTools();
+const categories = await getAllCategories();
+
+// Server-side query parameter inspection
+const queryParam = Astro.url.searchParams.get('q') || '';
+const categoryParam = Astro.url.searchParams.get('category') || 'all';
+const pricingParam = Astro.url.searchParams.get('pricing') || 'all';
+const sortParam = Astro.url.searchParams.get('sort') || 'score';
 ---
 
-<Layout title="AI Tools Directory | AI Discovery Platform">
-	<main class="w-full flex flex-col min-h-screen">
-		<nav class="bg-canvas border-b border-hairline px-6 py-3 flex items-center justify-between sticky top-0 z-50">
-			<div class="flex items-center gap-6">
-				<a href="/" class="text-ink font-semibold tracking-tight text-lg">AI Discovery</a>
-				<div class="hidden md:flex items-center gap-2">
-					<a href="/tools" class="text-ink font-medium px-2 py-1 transition-colors rounded-full bg-hairline-soft">Discover</a>
-					<a href="/workflows" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">Workflows</a>
-				</div>
-			</div>
-		</nav>
+<Layout title="AI Tools Directory | AI Discovery Platform" description="Explore verified AI tools with real user ratings, pricing models, platform scores, and category filters.">
+  <Header currentPath="/tools" />
 
-		<div class="flex-1 w-full max-w-7xl mx-auto flex flex-col md:flex-row px-6 py-12 gap-8">
-			<!-- Sidebar Filters -->
-			<aside class="w-full md:w-64 flex flex-col gap-6 shrink-0">
-				<div>
-					<h3 class="text-ink font-semibold mb-3 text-sm">Categories</h3>
-					<div class="flex flex-col gap-2">
-						<label class="flex items-center gap-2 text-sm text-body cursor-pointer hover:text-ink">
-							<input type="checkbox" class="rounded-sm border-hairline accent-ink" /> Video
-						</label>
-						<label class="flex items-center gap-2 text-sm text-body cursor-pointer hover:text-ink">
-							<input type="checkbox" class="rounded-sm border-hairline accent-ink" /> Image
-						</label>
-						<label class="flex items-center gap-2 text-sm text-body cursor-pointer hover:text-ink">
-							<input type="checkbox" class="rounded-sm border-hairline accent-ink" /> Writing
-						</label>
-					</div>
-				</div>
-				
-				<div class="border-t border-hairline pt-6">
-					<h3 class="text-ink font-semibold mb-3 text-sm">Pricing</h3>
-					<div class="flex flex-col gap-2">
-						<label class="flex items-center gap-2 text-sm text-body cursor-pointer hover:text-ink">
-							<input type="checkbox" class="rounded-sm border-hairline accent-ink" /> Free
-						</label>
-						<label class="flex items-center gap-2 text-sm text-body cursor-pointer hover:text-ink">
-							<input type="checkbox" class="rounded-sm border-hairline accent-ink" /> Freemium
-						</label>
-						<label class="flex items-center gap-2 text-sm text-body cursor-pointer hover:text-ink">
-							<input type="checkbox" class="rounded-sm border-hairline accent-ink" /> Paid
-						</label>
-					</div>
-				</div>
-			</aside>
+  <main class="w-full flex flex-col min-h-screen">
+    <!-- Subheader -->
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-8">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="text-xs text-mute uppercase font-mono tracking-wider mb-1">Directory</div>
+          <h1 class="text-3xl font-semibold text-ink tracking-tight">AI Tools Catalog</h1>
+          <p class="text-sm text-body mt-1">
+            Browse {tools.length} verified AI tools across creative, developer, workflow, and enterprise categories.
+          </p>
+        </div>
 
-			<!-- Main Directory Content -->
-			<div class="flex-1 flex flex-col">
-				<div class="flex items-center justify-between mb-6">
-					<h1 class="text-2xl font-semibold text-ink tracking-tight">All AI Tools</h1>
-					<div class="flex items-center gap-2">
-						<select class="bg-canvas-elevated border border-hairline text-body text-sm rounded-sm px-3 py-1.5 outline-none hover:border-faint transition-colors cursor-pointer">
-							<option>Trending</option>
-							<option>Newest</option>
-							<option>Platform Score</option>
-						</select>
-					</div>
-				</div>
-				
-				<div class="w-full bg-canvas-elevated border border-hairline rounded-md shadow-sm p-2 flex items-center mb-8">
-					<input type="text" placeholder="Search tools..." class="w-full bg-transparent text-ink placeholder-faint px-3 py-1 outline-none text-sm" />
-				</div>
+        <!-- Search Bar -->
+        <div class="w-full md:w-96">
+          <div class="relative flex items-center">
+            <span class="absolute left-3 text-mute text-sm">🔍</span>
+            <input 
+              id="directorySearch" 
+              type="text" 
+              value={queryParam}
+              placeholder="Search by name, task, or feature..." 
+              class="w-full bg-canvas border border-hairline hover:border-faint focus:border-ink rounded-md pl-9 pr-3 py-2 text-sm text-ink placeholder-faint outline-none transition-colors"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
 
-				<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-					<!-- Tool Cards -->
-					<a href="/tools/example-tool" class="group bg-canvas-elevated border border-hairline rounded-md p-6 hover:shadow-sm transition-shadow block cursor-pointer">
-						<div class="flex items-start justify-between mb-4">
-							<div class="w-12 h-12 bg-hairline-soft rounded-md flex-shrink-0 flex items-center justify-center text-xl">🚀</div>
-							<span class="text-xs font-medium bg-hairline-soft px-2 py-1 rounded-sm text-ink">Free</span>
-						</div>
-						<h3 class="font-semibold text-ink mb-1 group-hover:text-link transition-colors">Example Tool</h3>
-						<p class="text-sm text-body mb-4 line-clamp-2">A powerful AI tool to automate your tasks and boost productivity effortlessly.</p>
-						<div class="flex items-center justify-between">
-							<span class="text-xs text-mute flex items-center gap-1">✅ Verified</span>
-							<span class="text-xs text-mute flex items-center">⭐ 4.9 (120)</span>
-						</div>
-					</a>
-				</div>
-			</div>
-		</div>
-	</main>
+    <!-- Content Area: Sidebar + Grid -->
+    <div class="flex-1 w-full max-w-7xl mx-auto flex flex-col md:flex-row px-6 py-8 gap-8">
+      <!-- Sidebar Filters -->
+      <aside class="w-full md:w-60 flex flex-col gap-6 shrink-0">
+        <!-- Pricing Filter -->
+        <div>
+          <h3 class="text-xs font-semibold text-mute uppercase tracking-wider mb-2.5">Pricing Model</h3>
+          <div class="flex flex-col gap-1.5" id="pricingFilters">
+            {[
+              { id: 'all', label: 'All Pricing' },
+              { id: 'Free', label: 'Free' },
+              { id: 'Freemium', label: 'Freemium' },
+              { id: 'Paid', label: 'Paid' },
+              { id: 'Open Source', label: 'Open Source' },
+            ].map(p => (
+              <label class="flex items-center justify-between text-sm text-body hover:text-ink cursor-pointer px-2 py-1 rounded-sm hover:bg-hairline-soft transition-colors">
+                <span class="flex items-center gap-2">
+                  <input 
+                    type="radio" 
+                    name="pricing" 
+                    value={p.id} 
+                    checked={pricingParam.toLowerCase() === p.id.toLowerCase() || (p.id === 'all' && pricingParam === 'all')}
+                    class="accent-ink cursor-pointer filter-pricing" 
+                  />
+                  <span>{p.label}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <!-- Categories Filter -->
+        <div class="border-t border-hairline pt-5">
+          <div class="flex items-center justify-between mb-2.5">
+            <h3 class="text-xs font-semibold text-mute uppercase tracking-wider">Categories</h3>
+            <button id="resetCategoryBtn" class="text-[11px] text-mute hover:text-ink transition-colors cursor-pointer">
+              Reset
+            </button>
+          </div>
+          <div class="flex flex-col gap-1 max-h-[420px] overflow-y-auto pr-1" id="categoryFilters">
+            <label class="flex items-center justify-between text-sm text-body hover:text-ink cursor-pointer px-2 py-1 rounded-sm hover:bg-hairline-soft transition-colors">
+              <span class="flex items-center gap-2">
+                <input 
+                  type="radio" 
+                  name="category" 
+                  value="all" 
+                  checked={categoryParam === 'all'}
+                  class="accent-ink cursor-pointer filter-category" 
+                />
+                <span>All Categories</span>
+              </span>
+              <span class="text-xs text-mute font-mono">{tools.length}</span>
+            </label>
+            {categories.map(c => (
+              <label class="flex items-center justify-between text-sm text-body hover:text-ink cursor-pointer px-2 py-1 rounded-sm hover:bg-hairline-soft transition-colors">
+                <span class="flex items-center gap-2 truncate">
+                  <input 
+                    type="radio" 
+                    name="category" 
+                    value={c.slug} 
+                    checked={categoryParam === c.slug}
+                    class="accent-ink cursor-pointer filter-category" 
+                  />
+                  <span class="truncate">{c.name}</span>
+                </span>
+                <span class="text-xs text-mute font-mono">{c.count || 0}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Tools Area -->
+      <div class="flex-1 flex flex-col">
+        <!-- Results Bar -->
+        <div class="flex items-center justify-between mb-6 pb-3 border-b border-hairline">
+          <div class="text-xs text-mute">
+            Showing <span id="toolCount" class="font-medium text-ink font-mono">{tools.length}</span> tools
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-mute">Sort by:</span>
+            <select 
+              id="sortSelect" 
+              class="bg-canvas-elevated border border-hairline text-ink text-xs rounded-sm px-2.5 py-1.5 outline-none hover:border-faint transition-colors cursor-pointer font-medium"
+            >
+              <option value="score" selected={sortParam === 'score'}>Platform Score (Highest)</option>
+              <option value="rating" selected={sortParam === 'rating'}>User Rating (Highest)</option>
+              <option value="name" selected={sortParam === 'name'}>Name (A-Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tool Cards Grid -->
+        <div id="toolsGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {tools.map(tool => (
+            <div 
+              class="tool-card-wrapper" 
+              data-name={tool.name.toLowerCase()}
+              data-tagline={tool.tagline.toLowerCase()}
+              data-pricing={tool.pricingType}
+              data-categories={tool.categorySlugs.join(',')}
+              data-score={tool.platformScore}
+              data-rating={tool.rating}
+              data-free={tool.freeTier ? 'true' : 'false'}
+            >
+              <ToolCard tool={tool} />
+            </div>
+          ))}
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden flex-col items-center justify-center py-16 text-center border border-dashed border-hairline rounded-md bg-canvas-elevated">
+          <span class="text-4xl mb-3">🔍</span>
+          <h3 class="text-base font-semibold text-ink mb-1">No AI tools matched your filters</h3>
+          <p class="text-xs text-mute max-w-sm mb-4">Try clearing your search term, selecting "All Categories", or switching pricing to "All".</p>
+          <button id="clearAllBtn" class="bg-ink text-on-primary text-xs font-medium px-4 py-2 rounded-pill hover:bg-black transition-colors cursor-pointer">
+            Reset All Filters
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
 </Layout>
+
+<script is:inline>
+  // Interactive client-side filtering script
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('directorySearch');
+    const sortSelect = document.getElementById('sortSelect');
+    const toolWrappers = Array.from(document.querySelectorAll('.tool-card-wrapper'));
+    const toolCount = document.getElementById('toolCount');
+    const emptyState = document.getElementById('emptyState');
+    const grid = document.getElementById('toolsGrid');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    const resetCategoryBtn = document.getElementById('resetCategoryBtn');
+
+    function applyFilters() {
+      const query = (searchInput?.value || '').toLowerCase().trim();
+      const selectedPricing = (document.querySelector('input[name="pricing"]:checked')?.value || 'all');
+      const selectedCategory = (document.querySelector('input[name="category"]:checked')?.value || 'all');
+      const sortBy = sortSelect?.value || 'score';
+
+      let visibleCount = 0;
+
+      // Filter
+      toolWrappers.forEach(el => {
+        const name = el.getAttribute('data-name') || '';
+        const tagline = el.getAttribute('data-tagline') || '';
+        const pricing = el.getAttribute('data-pricing') || '';
+        const categories = (el.getAttribute('data-categories') || '').split(',');
+        const freeTier = el.getAttribute('data-free') === 'true';
+
+        let matchesSearch = !query || name.includes(query) || tagline.includes(query) || categories.some(c => c.includes(query));
+        
+        let matchesPricing = selectedPricing === 'all';
+        if (selectedPricing === 'Free') {
+          matchesPricing = pricing === 'Free' || freeTier;
+        } else if (selectedPricing !== 'all') {
+          matchesPricing = pricing.toLowerCase() === selectedPricing.toLowerCase();
+        }
+
+        let matchesCategory = selectedCategory === 'all' || categories.includes(selectedCategory);
+
+        if (matchesSearch && matchesPricing && matchesCategory) {
+          el.style.display = '';
+          visibleCount++;
+        } else {
+          el.style.display = 'none';
+        }
+      });
+
+      // Sort visible wrappers
+      const visibleWrappers = toolWrappers.filter(el => el.style.display !== 'none');
+      visibleWrappers.sort((a, b) => {
+        if (sortBy === 'score') {
+          return Number(b.getAttribute('data-score')) - Number(a.getAttribute('data-score'));
+        } else if (sortBy === 'rating') {
+          return Number(b.getAttribute('data-rating')) - Number(a.getAttribute('data-rating'));
+        } else if (sortBy === 'name') {
+          return (a.getAttribute('data-name') || '').localeCompare(b.getAttribute('data-name') || '');
+        }
+        return 0;
+      });
+
+      // Re-append sorted elements
+      visibleWrappers.forEach(el => grid.appendChild(el));
+
+      // Update counter and empty state
+      if (toolCount) toolCount.textContent = visibleCount.toString();
+      if (emptyState) {
+        if (visibleCount === 0) {
+          emptyState.classList.remove('hidden');
+          emptyState.classList.add('flex');
+        } else {
+          emptyState.classList.add('hidden');
+          emptyState.classList.remove('flex');
+        }
+      }
+    }
+
+    searchInput?.addEventListener('input', applyFilters);
+    sortSelect?.addEventListener('change', applyFilters);
+
+    document.querySelectorAll('.filter-pricing').forEach(radio => {
+      radio.addEventListener('change', applyFilters);
+    });
+
+    document.querySelectorAll('.filter-category').forEach(radio => {
+      radio.addEventListener('change', applyFilters);
+    });
+
+    resetCategoryBtn?.addEventListener('click', () => {
+      const allRadio = document.querySelector('input[name="category"][value="all"]');
+      if (allRadio) {
+        allRadio.checked = true;
+        applyFilters();
+      }
+    });
+
+    clearAllBtn?.addEventListener('click', () => {
+      if (searchInput) searchInput.value = '';
+      const allPricing = document.querySelector('input[name="pricing"][value="all"]');
+      const allCat = document.querySelector('input[name="category"][value="all"]');
+      if (allPricing) allPricing.checked = true;
+      if (allCat) allCat.checked = true;
+      applyFilters();
+    });
+
+    // Run initial filter check on load
+    applyFilters();
+  });
+</script>

@@ -1,0 +1,109 @@
+---
+import type { ToolData } from '../data/seedData';
+
+interface Props {
+  tool: ToolData;
+}
+
+const { tool } = Astro.props;
+
+// Determine category icon or placeholder
+const getCategoryIcon = (categorySlug: string) => {
+  switch (categorySlug) {
+    case 'video-generation': return '🎬';
+    case 'image-art': return '🎨';
+    case 'audio-voice': return '🎙️';
+    case 'writing-copy': return '✍️';
+    case 'code-assistants': return '💻';
+    case 'web-app-builders': return '🛠️';
+    case 'open-source-models': return '🧠';
+    case 'research-analysis': return '📊';
+    case 'automation-workflows': return '⚡';
+    case 'india-first': return '🇮🇳';
+    default: return '🤖';
+  }
+};
+
+const primaryCategory = tool.categorySlugs[0] || 'general-chatbots';
+---
+
+<div class="group relative bg-canvas-elevated border border-hairline rounded-md p-5 flex flex-col justify-between hover:border-faint transition-all shadow-xs hover:shadow-sm">
+  <div>
+    <!-- Top row: Icon, Name & Badges -->
+    <div class="flex items-start justify-between gap-3 mb-3">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-md bg-hairline-soft flex items-center justify-center text-xl shrink-0 border border-hairline">
+          {getCategoryIcon(primaryCategory)}
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <a href={`/tools/${tool.slug}`} class="font-semibold text-ink hover:text-link transition-colors text-base tracking-tight">
+              {tool.name}
+            </a>
+            {tool.isVerified && (
+              <span class="inline-flex items-center text-[11px] text-mute font-normal" title="Verified official tool">
+                ✓
+              </span>
+            )}
+            {tool.isIndianAI && (
+              <span class="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-xs bg-orange-50 text-orange-700 border border-orange-200">
+                India
+              </span>
+            )}
+          </div>
+          <div class="flex items-center gap-2 mt-0.5 text-xs text-mute">
+            <span>⭐ {tool.rating.toFixed(1)}</span>
+            <span>•</span>
+            <span class="text-ink font-mono font-medium">Score: {tool.platformScore}</span>
+          </div>
+        </div>
+      </div>
+
+      <span class={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${
+        tool.pricingType === 'Free' 
+          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+          : tool.pricingType === 'Open Source'
+          ? 'bg-purple-50 text-purple-700 border-purple-200'
+          : tool.pricingType === 'Freemium'
+          ? 'bg-blue-50 text-blue-700 border-blue-200'
+          : 'bg-hairline-soft text-ink border-hairline'
+      }`}>
+        {tool.pricingType}
+      </span>
+    </div>
+
+    <!-- Tagline -->
+    <p class="text-sm text-body leading-relaxed mb-4 line-clamp-2">
+      {tool.tagline}
+    </p>
+  </div>
+
+  <!-- Footer Actions -->
+  <div class="pt-3 border-t border-hairline flex items-center justify-between gap-2 text-xs">
+    <div class="flex items-center gap-1.5 flex-wrap">
+      {tool.categorySlugs.slice(0, 2).map(cat => (
+        <a href={`/tools?category=${cat}`} class="text-mute hover:text-ink transition-colors capitalize">
+          #{cat.replace('-', ' ')}
+        </a>
+      ))}
+    </div>
+
+    <div class="flex items-center gap-2 shrink-0">
+      <a 
+        href={`/tools/${tool.slug}`} 
+        class="text-body hover:text-ink font-medium px-2 py-1 rounded-sm hover:bg-hairline-soft transition-colors"
+      >
+        Details
+      </a>
+      <a 
+        href={tool.websiteUrl} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="text-ink hover:text-link font-medium inline-flex items-center gap-0.5 px-2 py-1 rounded-sm hover:bg-hairline-soft transition-colors"
+        title="Visit official website"
+      >
+        Visit ↗
+      </a>
+    </div>
+  </div>
+</div>

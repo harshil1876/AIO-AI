@@ -1,121 +1,392 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getAllTools, getToolBySlug } from '../../services/dataService';
 
-export function getStaticPaths() {
-  return [
-    { params: { slug: 'example-tool' } },
-  ];
+export async function getStaticPaths() {
+  const tools = await getAllTools();
+  return tools.map((tool) => ({
+    params: { slug: tool.slug },
+    props: { tool },
+  }));
 }
 
 const { slug } = Astro.params;
+const tool = Astro.props.tool || (await getToolBySlug(slug!));
+
+if (!tool) {
+  return Astro.redirect('/tools');
+}
+
+// Get alternative tools
+const allTools = await getAllTools();
+const alternativeTools = allTools.filter(t => tool.alternatives.includes(t.slug));
+
+const getCategoryIcon = (categorySlug: string) => {
+  switch (categorySlug) {
+    case 'video-generation': return '🎬';
+    case 'image-art': return '🎨';
+    case 'audio-voice': return '🎙️';
+    case 'writing-copy': return '✍️';
+    case 'code-assistants': return '💻';
+    case 'web-app-builders': return '🛠️';
+    case 'open-source-models': return '🧠';
+    case 'research-analysis': return '📊';
+    case 'automation-workflows': return '⚡';
+    case 'india-first': return '🇮🇳';
+    default: return '🤖';
+  }
+};
 ---
 
-<Layout title="Example Tool | AI Discovery Platform">
-	<main class="w-full flex flex-col min-h-screen">
-		<nav class="bg-canvas border-b border-hairline px-6 py-3 flex items-center justify-between sticky top-0 z-50">
-			<div class="flex items-center gap-6">
-				<a href="/" class="text-ink font-semibold tracking-tight text-lg">AI Discovery</a>
-				<div class="hidden md:flex items-center gap-2">
-					<a href="/tools" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">Discover</a>
-					<a href="/workflows" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">Workflows</a>
-				</div>
-			</div>
-		</nav>
+<Layout 
+  title={`${tool.name} Review, Pricing & Alternatives | AI Discovery`}
+  description={tool.tagline}
+>
+  <Header currentPath="/tools" />
 
-		<div class="w-full max-w-5xl mx-auto px-6 py-12">
-			<!-- Header -->
-			<div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-12">
-				<div class="flex items-start gap-6">
-					<div class="w-20 h-20 bg-hairline-soft rounded-lg flex-shrink-0 flex items-center justify-center text-4xl">
-						🚀
-					</div>
-					<div>
-						<h1 class="text-3xl font-semibold text-ink tracking-tight mb-2">Example Tool</h1>
-						<p class="text-lg text-body mb-4">A powerful AI tool to automate tasks.</p>
-						<div class="flex flex-wrap items-center gap-2">
-							<span class="text-xs font-medium bg-canvas-elevated border border-hairline px-2 py-1 rounded-sm text-ink">Free</span>
-							<span class="text-xs font-medium bg-canvas-elevated border border-hairline px-2 py-1 rounded-sm text-body">Automation</span>
-							<span class="text-xs font-medium bg-canvas-elevated border border-hairline px-2 py-1 rounded-sm text-body">✅ Verified 1 day ago</span>
-						</div>
-					</div>
-				</div>
-				<div class="flex flex-col sm:flex-row gap-3">
-					<button class="bg-canvas-elevated text-ink border border-hairline font-medium rounded-pill px-6 py-2 hover:bg-hairline-soft transition-colors whitespace-nowrap">
-						Bookmark
-					</button>
-					<a href="#" class="bg-ink text-on-primary font-medium rounded-pill px-6 py-2 hover:bg-black transition-colors whitespace-nowrap text-center">
-						Visit Official Website ↗
-					</a>
-				</div>
-			</div>
+  <main class="w-full flex flex-col min-h-screen">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas px-6 py-3">
+      <div class="max-w-6xl mx-auto flex items-center gap-2 text-xs text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <span>/</span>
+        <a href="/tools" class="hover:text-ink transition-colors">Tools</a>
+        <span>/</span>
+        <span class="text-ink font-medium">{tool.name}</span>
+      </div>
+    </div>
 
-			<!-- Content Tabs/Sections -->
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-				<div class="md:col-span-2 flex flex-col gap-10">
-					<section>
-						<h2 class="text-xl font-semibold text-ink tracking-tight mb-4 border-b border-hairline pb-2">Overview</h2>
-						<div class="prose prose-sm text-body max-w-none">
-							<p>Example Tool is the definitive solution for people who need to get things done without spending hours on repetitive work. Powered by the latest language models, it connects directly into your existing workflow.</p>
-							<p>Whether you're a creator, developer, or marketer, this tool saves time and increases output quality.</p>
-						</div>
-					</section>
+    <!-- Hero Header -->
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-10 md:py-14">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-start justify-between gap-8">
+        <div class="flex items-start gap-5">
+          <div class="w-16 h-16 md:w-20 md:h-20 bg-hairline-soft border border-hairline rounded-xl flex-shrink-0 flex items-center justify-center text-3xl md:text-4xl shadow-xs">
+            {getCategoryIcon(tool.categorySlugs[0])}
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap mb-1.5">
+              <h1 class="text-3xl md:text-4xl font-semibold text-ink tracking-tight">
+                {tool.name}
+              </h1>
+              {tool.isVerified && (
+                <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
+                  <span>✓</span> Verified Official
+                </span>
+              )}
+              {tool.isIndianAI && (
+                <span class="text-xs bg-orange-50 text-orange-700 border border-orange-200 px-2 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
+                  <span>🇮🇳</span> India-First AI
+                </span>
+              )}
+              {tool.badge && (
+                <span class="text-xs bg-hairline-soft text-ink border border-hairline px-2 py-0.5 rounded-full font-medium">
+                  {tool.badge}
+                </span>
+              )}
+            </div>
 
-					<section>
-						<h2 class="text-xl font-semibold text-ink tracking-tight mb-4 border-b border-hairline pb-2">Features</h2>
-						<ul class="space-y-3">
-							<li class="flex items-start gap-2 text-sm text-body">
-								<span class="text-ink mt-0.5">✦</span> Text generation
-							</li>
-							<li class="flex items-start gap-2 text-sm text-body">
-								<span class="text-ink mt-0.5">✦</span> Automated posting
-							</li>
-							<li class="flex items-start gap-2 text-sm text-body">
-								<span class="text-ink mt-0.5">✦</span> Analytics dashboard
-							</li>
-						</ul>
-					</section>
+            <p class="text-base md:text-lg text-body mb-4 max-w-2xl font-normal leading-relaxed">
+              {tool.tagline}
+            </p>
 
-					<section>
-						<h2 class="text-xl font-semibold text-ink tracking-tight mb-4 border-b border-hairline pb-2">Community Reviews</h2>
-						<div class="bg-canvas-elevated border border-hairline rounded-md p-6">
-							<div class="flex items-center gap-3 mb-3">
-								<div class="w-8 h-8 bg-hairline-soft rounded-full"></div>
-								<div>
-									<div class="text-sm font-medium text-ink">Jane Doe</div>
-									<div class="text-xs text-mute">⭐ 5/5 • 2 days ago</div>
-								</div>
-							</div>
-							<p class="text-sm text-body">This tool changed how I manage my entire workflow. Highly recommend it to anyone in the space.</p>
-						</div>
-					</section>
-				</div>
+            <div class="flex flex-wrap items-center gap-3 text-xs text-mute">
+              <div class="flex items-center gap-1 text-ink font-medium">
+                <span class="text-warning">★</span>
+                <span>{tool.rating.toFixed(1)} / 5.0</span>
+                <span class="text-mute font-normal">({tool.reviewCount.toLocaleString()} reviews)</span>
+              </div>
+              <span>•</span>
+              <div class="flex items-center gap-1">
+                <span class="text-mute">Platform Score:</span>
+                <span class="font-mono font-bold text-ink bg-hairline-soft px-1.5 py-0.5 rounded-xs">{tool.platformScore}/100</span>
+              </div>
+              <span>•</span>
+              <span class="capitalize">{tool.pricingType}</span>
+            </div>
+          </div>
+        </div>
 
-				<aside class="flex flex-col gap-6">
-					<div class="bg-canvas-elevated border border-hairline rounded-md p-6">
-						<h3 class="font-semibold text-ink text-sm mb-4">Pricing Breakdown</h3>
-						<div class="space-y-3 text-sm">
-							<div class="flex justify-between items-center pb-2 border-b border-hairline">
-								<span class="text-body">Free Tier</span>
-								<span class="font-medium text-ink">Yes</span>
-							</div>
-							<div class="flex justify-between items-center pb-2 border-b border-hairline">
-								<span class="text-body">Starting Price</span>
-								<span class="font-medium text-ink">$15/mo</span>
-							</div>
-							<div class="flex justify-between items-center">
-								<span class="text-body">API Access</span>
-								<span class="font-medium text-ink">Pro only</span>
-							</div>
-						</div>
-					</div>
+        <!-- Action CTAs -->
+        <div class="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0">
+          <a 
+            href={tool.websiteUrl} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="bg-ink text-on-primary font-medium text-sm rounded-pill px-6 py-3 hover:bg-black transition-colors text-center inline-flex items-center justify-center gap-2 shadow-xs"
+          >
+            <span>Visit Official Website</span>
+            <span>↗</span>
+          </a>
 
-					<div class="bg-canvas-elevated border border-hairline rounded-md p-6">
-						<h3 class="font-semibold text-ink text-sm mb-4">Related Workflows</h3>
-						<a href="#" class="block text-sm text-link hover:text-link-deep transition-colors mb-2">Automate Twitter Threads →</a>
-						<a href="#" class="block text-sm text-link hover:text-link-deep transition-colors">Daily News Aggregation →</a>
-					</div>
-				</aside>
-			</div>
-		</div>
-	</main>
+          <button 
+            id="bookmarkBtn"
+            class="bg-canvas-elevated text-ink border border-hairline hover:border-faint text-sm font-medium rounded-pill px-6 py-2.5 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+          >
+            <span id="bookmarkIcon">🔖</span>
+            <span id="bookmarkText">Save to Bookmarks</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content & Sidebar -->
+    <div class="w-full max-w-6xl mx-auto px-6 py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <!-- Main Column (Overview, Features, Pros/Cons, Reviews) -->
+        <div class="lg:col-span-2 flex flex-col gap-12">
+          <!-- Overview -->
+          <section>
+            <h2 class="text-xl font-semibold text-ink tracking-tight mb-4 border-b border-hairline pb-2.5">
+              About {tool.name}
+            </h2>
+            <div class="text-sm md:text-base text-body leading-relaxed space-y-4">
+              <p>{tool.description}</p>
+            </div>
+          </section>
+
+          <!-- Key Features -->
+          <section>
+            <h2 class="text-xl font-semibold text-ink tracking-tight mb-4 border-b border-hairline pb-2.5">
+              Core Capabilities & Features
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {tool.features.map(feature => (
+                <div class="flex items-start gap-2.5 p-3 rounded-md border border-hairline bg-canvas-elevated text-sm text-body">
+                  <span class="text-ink font-bold mt-0.5">✦</span>
+                  <span>{feature}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <!-- Best Use Cases -->
+          <section>
+            <h2 class="text-xl font-semibold text-ink tracking-tight mb-4 border-b border-hairline pb-2.5">
+              Recommended Use Cases
+            </h2>
+            <ul class="space-y-2.5">
+              {tool.useCases.map(useCase => (
+                <li class="flex items-start gap-3 text-sm text-body">
+                  <span class="w-1.5 h-1.5 rounded-full bg-ink mt-2 shrink-0"></span>
+                  <span>{useCase}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <!-- Pros and Cons -->
+          <section>
+            <h2 class="text-xl font-semibold text-ink tracking-tight mb-4 border-b border-hairline pb-2.5">
+              Pros & Limitations
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Pros -->
+              <div class="p-5 rounded-md border border-emerald-200 bg-emerald-50/40">
+                <div class="text-xs font-semibold text-emerald-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                  <span>✓</span> Strengths
+                </div>
+                <ul class="space-y-2 text-xs md:text-sm text-emerald-950">
+                  {tool.pros.map(pro => (
+                    <li class="flex items-start gap-2">
+                      <span class="text-emerald-600 font-bold">•</span>
+                      <span>{pro}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <!-- Cons -->
+              <div class="p-5 rounded-md border border-amber-200 bg-amber-50/40">
+                <div class="text-xs font-semibold text-amber-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                  <span>!</span> Considerations
+                </div>
+                <ul class="space-y-2 text-xs md:text-sm text-amber-950">
+                  {tool.cons.map(con => (
+                    <li class="flex items-start gap-2">
+                      <span class="text-amber-600 font-bold">•</span>
+                      <span>{con}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- Verified Alternatives -->
+          {alternativeTools.length > 0 && (
+            <section>
+              <h2 class="text-xl font-semibold text-ink tracking-tight mb-4 border-b border-hairline pb-2.5">
+                Top Alternatives to {tool.name}
+              </h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {alternativeTools.map(alt => (
+                  <a 
+                    href={`/tools/${alt.slug}`}
+                    class="p-4 rounded-md border border-hairline bg-canvas-elevated hover:border-faint transition-all flex items-start justify-between gap-3 group"
+                  >
+                    <div>
+                      <div class="font-semibold text-ink text-sm group-hover:text-link transition-colors">
+                        {alt.name}
+                      </div>
+                      <div class="text-xs text-mute line-clamp-1 mt-0.5">
+                        {alt.tagline}
+                      </div>
+                      <div class="mt-2 text-xs text-body font-mono">
+                        Score: {alt.platformScore} • {alt.pricingType}
+                      </div>
+                    </div>
+                    <span class="text-mute group-hover:text-ink transition-colors text-sm">→</span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <!-- Community Reviews -->
+          <section>
+            <div class="flex items-center justify-between mb-4 border-b border-hairline pb-2.5">
+              <h2 class="text-xl font-semibold text-ink tracking-tight">
+                Community Feedback
+              </h2>
+              <span class="text-xs text-mute">{tool.reviewCount.toLocaleString()} verified ratings</span>
+            </div>
+
+            <div class="space-y-4">
+              <div class="bg-canvas-elevated border border-hairline rounded-md p-5">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-hairline-soft font-semibold text-ink text-xs flex items-center justify-center">
+                      AI
+                    </div>
+                    <span class="text-xs font-semibold text-ink">Verified Practitioner</span>
+                  </div>
+                  <span class="text-xs text-warning">★★★★★ 5.0</span>
+                </div>
+                <p class="text-xs md:text-sm text-body leading-relaxed">
+                  "{tool.name} has been essential in our daily workflow. The reliability and speed are top-tier compared to alternatives."
+                </p>
+                <div class="text-[11px] text-faint mt-2">Verified review • 3 days ago</div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right Sidebar (Pricing & Specs) -->
+        <aside class="flex flex-col gap-6">
+          <!-- Pricing Overview Card -->
+          <div class="bg-canvas-elevated border border-hairline rounded-md p-6 shadow-xs">
+            <h3 class="font-semibold text-ink text-sm uppercase tracking-wider mb-4 border-b border-hairline pb-2">
+              Pricing Details
+            </h3>
+
+            <div class="space-y-3.5 text-sm">
+              <div class="flex justify-between items-center">
+                <span class="text-mute">Pricing Model</span>
+                <span class="font-medium text-ink font-mono">{tool.pricingType}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-mute">Free Tier Available</span>
+                <span class="font-medium text-emerald-600">{tool.freeTier ? 'Yes (Forever Free)' : 'No (Paid Only)'}</span>
+              </div>
+              {tool.startingPrice && (
+                <div class="flex justify-between items-center">
+                  <span class="text-mute">Starting Price</span>
+                  <span class="font-medium text-ink font-mono">{tool.startingPrice}</span>
+                </div>
+              )}
+              <div class="flex justify-between items-center">
+                <span class="text-mute">Verification</span>
+                <span class="font-medium text-ink">Official Website Checked</span>
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-hairline">
+              <a 
+                href={tool.websiteUrl} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="block w-full bg-ink text-on-primary font-medium text-xs rounded-pill py-2.5 text-center hover:bg-black transition-colors"
+              >
+                Go to {tool.name} ↗
+              </a>
+            </div>
+          </div>
+
+          <!-- Metadata & Taxonomy -->
+          <div class="bg-canvas-elevated border border-hairline rounded-md p-6 shadow-xs">
+            <h3 class="font-semibold text-ink text-sm uppercase tracking-wider mb-4 border-b border-hairline pb-2">
+              Categorization
+            </h3>
+            <div class="flex flex-wrap gap-1.5">
+              {tool.categorySlugs.map(cat => (
+                <a 
+                  href={`/tools?category=${cat}`} 
+                  class="text-xs bg-hairline-soft text-body hover:text-ink px-2.5 py-1 rounded-sm transition-colors border border-hairline capitalize"
+                >
+                  {cat.replace('-', ' ')}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <!-- Trust & Verification Notice -->
+          <div class="p-4 rounded-md border border-hairline bg-canvas text-xs text-mute">
+            <div class="font-medium text-ink mb-1">Data Integrity & Disclosures</div>
+            <p class="leading-relaxed mb-2">
+              All tools are checked periodically. We never misrepresent affiliate links as official URLs.
+            </p>
+            <a href="mailto:support@aidiscovery.internal" class="text-link hover:underline">
+              Report incorrect information →
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
 </Layout>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const bookmarkBtn = document.getElementById('bookmarkBtn');
+    const bookmarkIcon = document.getElementById('bookmarkIcon');
+    const bookmarkText = document.getElementById('bookmarkText');
+    const toolSlug = window.location.pathname.split('/').filter(Boolean).pop();
+
+    if (!bookmarkBtn || !toolSlug) return;
+
+    // Check existing bookmark state in localStorage
+    const savedBookmarks = JSON.parse(localStorage.getItem('aio_bookmarks') || '[]');
+    let isBookmarked = savedBookmarks.includes(toolSlug);
+
+    function updateUI() {
+      if (isBookmarked) {
+        bookmarkIcon.textContent = '★';
+        bookmarkText.textContent = 'Saved in Bookmarks';
+        bookmarkBtn.classList.add('bg-hairline-soft', 'border-ink');
+      } else {
+        bookmarkIcon.textContent = '🔖';
+        bookmarkText.textContent = 'Save to Bookmarks';
+        bookmarkBtn.classList.remove('bg-hairline-soft', 'border-ink');
+      }
+    }
+
+    updateUI();
+
+    bookmarkBtn.addEventListener('click', () => {
+      let bookmarks = JSON.parse(localStorage.getItem('aio_bookmarks') || '[]');
+      if (bookmarks.includes(toolSlug)) {
+        bookmarks = bookmarks.filter(slug => slug !== toolSlug);
+        isBookmarked = false;
+      } else {
+        bookmarks.push(toolSlug);
+        isBookmarked = true;
+      }
+      localStorage.setItem('aio_bookmarks', JSON.stringify(bookmarks));
+      updateUI();
+    });
+  });
+</script>

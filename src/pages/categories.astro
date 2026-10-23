@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getAllCategories } from '../services/dataService';
+
+const categories = await getAllCategories();
+
+const DOMAINS = [
+  {
+    title: 'Content & Creative',
+    description: 'Tools for visual, audio, video, and written media creation.',
+    slugs: ['video-generation', 'image-art', 'audio-voice', 'writing-copy']
+  },
+  {
+    title: 'Development & IT',
+    description: 'Autonomous coding, pair programming, and model weight deployment.',
+    slugs: ['code-assistants', 'web-app-builders', 'open-source-models']
+  },
+  {
+    title: 'Business & Productivity',
+    description: 'Automating multi-step tasks, research summarization, and outbound ops.',
+    slugs: ['research-analysis', 'automation-workflows', 'sales-marketing']
+  },
+  {
+    title: 'Conversational & Agents',
+    description: 'Omni-chatbots, reasoning systems, and autonomous task agents.',
+    slugs: ['general-chatbots', 'autonomous-agents']
+  },
+  {
+    title: 'Regional & Specialized Innovation',
+    description: 'Indigenous LLMs, Indic translation, and regional data sovereignty.',
+    slugs: ['india-first']
+  }
+];
+---
+
+<Layout 
+  title="AI Categories & Taxonomy | AI Discovery Platform"
+  description="Explore our comprehensive 5-domain taxonomy covering all creative, development, automation, and regional AI tools."
+>
+  <Header currentPath="/categories" />
+
+  <main class="w-full flex flex-col min-h-screen">
+    <!-- Header -->
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-xs text-mute uppercase font-mono tracking-wider mb-2">Taxonomy</div>
+        <h1 class="text-3xl md:text-4xl font-semibold text-ink tracking-tight mb-2">
+          Explore AI Categories
+        </h1>
+        <p class="text-sm md:text-base text-body max-w-2xl leading-relaxed">
+          Structured by domain and user intent, helping you locate specialized models and workflows in seconds.
+        </p>
+      </div>
+    </section>
+
+    <!-- Domains and Category Groups -->
+    <div class="w-full max-w-7xl mx-auto px-6 py-12 flex flex-col gap-14">
+      {DOMAINS.map(domain => {
+        const domainCats = categories.filter(c => domain.slugs.includes(c.slug));
+        return (
+          <section>
+            <div class="border-b border-hairline pb-3 mb-6">
+              <h2 class="text-xl font-semibold text-ink tracking-tight">{domain.title}</h2>
+              <p class="text-xs text-mute mt-0.5">{domain.description}</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {domainCats.map(cat => (
+                <a 
+                  href={`/tools?category=${cat.slug}`}
+                  class="bg-canvas-elevated border border-hairline rounded-md p-5 flex flex-col justify-between hover:border-faint transition-all hover:shadow-xs group"
+                >
+                  <div>
+                    <div class="text-2xl mb-3 group-hover:scale-110 transition-transform">{cat.icon}</div>
+                    <h3 class="font-semibold text-ink text-base group-hover:text-link transition-colors mb-1.5">
+                      {cat.name}
+                    </h3>
+                    <p class="text-xs text-body leading-relaxed mb-4">
+                      {cat.description}
+                    </p>
+                  </div>
+                  <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs text-mute">
+                    <span class="font-mono">{cat.count || 0} tools</span>
+                    <span class="group-hover:text-ink transition-colors font-medium">Browse →</span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

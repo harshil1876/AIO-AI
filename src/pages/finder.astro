@@ -1,64 +1,278 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getAllTools } from '../services/dataService';
+
+const allTools = await getAllTools();
 ---
 
-<Layout title="AI Finder | AI Discovery Platform">
-	<main class="w-full flex flex-col min-h-screen">
-		<nav class="bg-canvas border-b border-hairline px-6 py-3 flex items-center justify-between sticky top-0 z-50">
-			<div class="flex items-center gap-6">
-				<a href="/" class="text-ink font-semibold tracking-tight text-lg">AI Discovery</a>
-				<div class="hidden md:flex items-center gap-2">
-					<a href="/tools" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">Discover</a>
-					<a href="/workflows" class="text-body text-sm hover:text-ink px-2 py-1 transition-colors rounded-full hover:bg-hairline-soft">Workflows</a>
-				</div>
-			</div>
-		</nav>
+<Layout 
+  title="AI Finder | Intent-Driven AI Solution Matcher"
+  description="Describe your task in natural language. We analyze your requirements and recommend the best free, premium, and open-source tools with transparent explanations."
+>
+  <Header currentPath="/finder" />
 
-		<div class="flex-1 flex flex-col items-center justify-center w-full px-6 py-12 max-w-4xl mx-auto text-center">
-			<h1 class="text-4xl md:text-5xl font-semibold text-ink tracking-tight mb-4" style="letter-spacing: -1.28px;">
-				AI Finder
-			</h1>
-			<p class="text-body text-lg mb-8 max-w-xl">
-				Describe what you want to do in natural language, and we'll recommend the best tools and workflows.
-			</p>
-			
-			<div class="w-full bg-canvas-elevated border border-hairline rounded-lg shadow-sm p-4 mb-12 text-left">
-				<form class="flex flex-col gap-4" onsubmit="event.preventDefault(); document.getElementById('results').classList.remove('hidden');">
-					<textarea 
-						placeholder="E.g., I want to automatically create and publish three Instagram posts every day from a Google Sheet. I prefer free or freemium tools." 
-						class="w-full h-32 bg-transparent text-ink placeholder-faint resize-none outline-none text-base"
-					></textarea>
-					<div class="flex justify-end">
-						<button type="submit" class="bg-ink text-on-primary font-medium rounded-pill px-6 py-2 hover:bg-black transition-colors">
-							Find Solutions
-						</button>
-					</div>
-				</form>
-			</div>
+  <main class="w-full flex flex-col min-h-screen">
+    <!-- Header -->
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16 text-center">
+      <div class="max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-hairline bg-canvas text-xs font-medium text-mute mb-4">
+          <span>⚡</span>
+          <span>Rule-Based Intent & Metadata Matching Engine</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-semibold text-ink tracking-tight mb-4" style="letter-spacing: -1.4px;">
+          AI Finder
+        </h1>
+        <p class="text-body text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+          Describe the exact problem or workflow you want to solve. We'll match you with the best tools, free alternatives, and workflows.
+        </p>
+      </div>
+    </section>
 
-			<div id="results" class="hidden w-full text-left flex flex-col gap-8">
-				<h2 class="text-2xl font-semibold text-ink tracking-tight border-b border-hairline pb-4">Recommendations</h2>
-				
-				<div class="bg-canvas-elevated border border-hairline rounded-md p-6 relative overflow-hidden">
-					<div class="absolute top-0 left-0 w-1 h-full bg-link"></div>
-					<div class="flex items-center gap-2 mb-2">
-						<span class="text-xs font-semibold uppercase tracking-wider text-link">Best Match</span>
-					</div>
-					<h3 class="text-lg font-semibold text-ink mb-2">Example Tool + Automation</h3>
-					<p class="text-sm text-body mb-4">Based on your requirement for free/freemium tools to automate Instagram posting from Google Sheets, this combination offers the best reliability under a free tier.</p>
-					
-					<div class="flex flex-col sm:flex-row gap-4">
-						<a href="/tools/example-tool" class="flex-1 border border-hairline rounded-sm p-4 hover:bg-hairline-soft transition-colors block">
-							<div class="text-sm font-semibold text-ink mb-1">Example Tool</div>
-							<div class="text-xs text-mute">Freemium • Automation</div>
-						</a>
-						<a href="/workflows" class="flex-1 border border-hairline rounded-sm p-4 hover:bg-hairline-soft transition-colors block">
-							<div class="text-sm font-semibold text-ink mb-1">View the Workflow</div>
-							<div class="text-xs text-mute">Step-by-step guide</div>
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</main>
+    <!-- Interactive Finder Form -->
+    <div class="w-full max-w-4xl mx-auto px-6 py-10">
+      <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
+        <label for="taskPrompt" class="block text-xs font-semibold uppercase tracking-wider text-mute mb-2">
+          Your Goal or Task Description
+        </label>
+        
+        <textarea 
+          id="taskPrompt"
+          rows="3"
+          placeholder="e.g. I need a free AI to generate voiceovers for YouTube shorts in Indian languages, or automate my social media schedule." 
+          class="w-full bg-canvas border border-hairline hover:border-faint focus:border-ink rounded-md p-3.5 text-ink placeholder-faint resize-none outline-none text-sm leading-relaxed transition-colors mb-4"
+        ></textarea>
+
+        <!-- Quick Example Prompts -->
+        <div class="mb-5">
+          <div class="text-xs text-mute mb-2 font-medium">Quick examples to test:</div>
+          <div class="flex flex-wrap gap-2">
+            <button class="example-btn text-xs bg-hairline-soft hover:bg-hairline text-body hover:text-ink px-2.5 py-1.5 rounded-full border border-hairline transition-colors cursor-pointer text-left">
+              🎥 Video generation for YouTube Shorts
+            </button>
+            <button class="example-btn text-xs bg-hairline-soft hover:bg-hairline text-body hover:text-ink px-2.5 py-1.5 rounded-full border border-hairline transition-colors cursor-pointer text-left">
+              🎙️ Free realistic voice cloning & speech
+            </button>
+            <button class="example-btn text-xs bg-hairline-soft hover:bg-hairline text-body hover:text-ink px-2.5 py-1.5 rounded-full border border-hairline transition-colors cursor-pointer text-left">
+              💻 AI coding pair for refactoring code
+            </button>
+            <button class="example-btn text-xs bg-hairline-soft hover:bg-hairline text-body hover:text-ink px-2.5 py-1.5 rounded-full border border-hairline transition-colors cursor-pointer text-left">
+              🇮🇳 Indian language Indic translation
+            </button>
+            <button class="example-btn text-xs bg-hairline-soft hover:bg-hairline text-body hover:text-ink px-2.5 py-1.5 rounded-full border border-hairline transition-colors cursor-pointer text-left">
+              ⚡ Open source self-hosted workflow automation
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-4 border-t border-hairline">
+          <span class="text-xs text-mute">Instant offline metadata analysis</span>
+          <button 
+            id="matchBtn"
+            class="bg-ink text-on-primary font-medium text-sm rounded-pill px-6 py-2.5 hover:bg-black transition-colors cursor-pointer shadow-xs inline-flex items-center gap-1.5"
+          >
+            <span>Find Recommendations</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Container -->
+      <div id="resultsSection" class="hidden mt-12 flex-col gap-6">
+        <div class="flex items-center justify-between border-b border-hairline pb-3">
+          <div>
+            <h2 class="text-xl font-semibold text-ink tracking-tight">Recommended AI Solutions</h2>
+            <p id="queryEcho" class="text-xs text-mute mt-0.5"></p>
+          </div>
+          <button id="resetFinderBtn" class="text-xs text-mute hover:text-ink transition-colors">
+            Clear Results
+          </button>
+        </div>
+
+        <!-- Cards Container -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5" id="recommendationCards">
+          <!-- Dynamically populated by script -->
+        </div>
+
+        <!-- Workflow Recommendation -->
+        <div class="bg-canvas-elevated border border-hairline rounded-md p-6 shadow-xs">
+          <div class="text-xs font-semibold text-link uppercase tracking-wider mb-1">Recommended Workflow Strategy</div>
+          <h3 id="workflowTitle" class="text-base font-semibold text-ink mb-2">Multi-Tool Pipeline</h3>
+          <p id="workflowDesc" class="text-sm text-body leading-relaxed mb-4"></p>
+          <div class="flex items-center gap-2">
+            <a href="/workflows" class="text-xs text-link hover:text-link-deep font-medium inline-flex items-center gap-1">
+              <span>Explore all workflows</span>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
 </Layout>
+
+<!-- Client Tools Data Injection -->
+<script is:inline define:vars={{ allTools }}>
+  window.AIO_TOOLS = allTools;
+</script>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const textarea = document.getElementById('taskPrompt');
+    const matchBtn = document.getElementById('matchBtn');
+    const resultsSection = document.getElementById('resultsSection');
+    const recommendationCards = document.getElementById('recommendationCards');
+    const queryEcho = document.getElementById('queryEcho');
+    const workflowTitle = document.getElementById('workflowTitle');
+    const workflowDesc = document.getElementById('workflowDesc');
+    const resetFinderBtn = document.getElementById('resetFinderBtn');
+    const exampleBtns = document.querySelectorAll('.example-btn');
+
+    const tools = window.AIO_TOOLS || [];
+
+    exampleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        textarea.value = btn.textContent.trim().replace(/^[\u{1F300}-\u{1F9FF}\s]+/u, '');
+        runMatching();
+      });
+    });
+
+    matchBtn?.addEventListener('click', runMatching);
+    resetFinderBtn?.addEventListener('click', () => {
+      resultsSection.classList.add('hidden');
+      textarea.value = '';
+    });
+
+    function runMatching() {
+      const query = (textarea?.value || '').toLowerCase().trim();
+      if (!query) {
+        textarea?.focus();
+        return;
+      }
+
+      const wantsFree = query.includes('free') || query.includes('open source') || query.includes('zero cost') || query.includes('self host');
+      const isVideo = query.includes('video') || query.includes('shorts') || query.includes('reels') || query.includes('animation');
+      const isVoice = query.includes('voice') || query.includes('speech') || query.includes('audio') || query.includes('podcast') || query.includes('clone');
+      const isCode = query.includes('code') || query.includes('programming') || query.includes('developer') || query.includes('refactor');
+      const isIndia = query.includes('india') || query.includes('indic') || query.includes('hindi') || query.includes('regional');
+      const isAutomation = query.includes('automate') || query.includes('workflow') || query.includes('sheet') || query.includes('connect');
+      const isImage = query.includes('image') || query.includes('art') || query.includes('photo') || query.includes('logo');
+
+      // Rank tools based on intent score
+      const scored = tools.map(t => {
+        let matchScore = 0;
+        let reasons = [];
+
+        if (isVideo && t.categorySlugs.includes('video-generation')) {
+          matchScore += 40;
+          reasons.push('Specialized in generative video & camera controls');
+        }
+        if (isVoice && t.categorySlugs.includes('audio-voice')) {
+          matchScore += 40;
+          reasons.push('Industry standard for voice synthesis & cloning');
+        }
+        if (isCode && t.categorySlugs.includes('code-assistants')) {
+          matchScore += 40;
+          reasons.push('Deep programming & IDE assistance');
+        }
+        if (isIndia && (t.isIndianAI || t.categorySlugs.includes('india-first'))) {
+          matchScore += 50;
+          reasons.push('Native Indic language support & sovereign hosting');
+        }
+        if (isAutomation && t.categorySlugs.includes('automation-workflows')) {
+          matchScore += 40;
+          reasons.push('Connects webhooks, apps, and AI triggers seamlessly');
+        }
+        if (isImage && t.categorySlugs.includes('image-art')) {
+          matchScore += 40;
+          reasons.push('Exceptional visual generation quality');
+        }
+
+        if (wantsFree && (t.pricingType === 'Free' || t.freeTier || t.pricingType === 'Open Source')) {
+          matchScore += 20;
+          reasons.push(`Accessible zero-cost tier (${t.pricingType})`);
+        }
+
+        // Generic text match fallback
+        if (t.tagline.toLowerCase().includes(query) || t.description.toLowerCase().includes(query)) {
+          matchScore += 15;
+        }
+
+        // Platform quality base score
+        matchScore += (t.platformScore / 10);
+
+        return {
+          tool: t,
+          score: matchScore,
+          reason: reasons.length > 0 ? reasons.join(' • ') : `High overall platform reliability (${t.platformScore}/100)`
+        };
+      });
+
+      scored.sort((a, b) => b.score - a.score);
+
+      const topPicks = scored.slice(0, 4);
+
+      // Render cards
+      recommendationCards.innerHTML = topPicks.map((item, idx) => {
+        const badgeLabel = idx === 0 ? 'Top Match' : idx === 1 ? 'Alternative Pick' : idx === 2 ? 'Free / Open Option' : 'Recommended Addition';
+        return `
+          <div class="bg-canvas-elevated border border-hairline rounded-md p-5 flex flex-col justify-between hover:border-faint transition-all shadow-xs">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[11px] font-semibold uppercase tracking-wider ${idx === 0 ? 'text-link bg-link-soft/40 px-2 py-0.5 rounded-xs' : 'text-mute'}">
+                  ${badgeLabel}
+                </span>
+                <span class="text-xs font-mono font-medium text-ink bg-hairline-soft px-1.5 py-0.5 rounded-xs">
+                  ${item.tool.pricingType}
+                </span>
+              </div>
+              <h3 class="font-semibold text-ink text-lg mb-1">
+                <a href="/tools/${item.tool.slug}" class="hover:text-link transition-colors">
+                  ${item.tool.name}
+                </a>
+              </h3>
+              <p class="text-xs text-body leading-relaxed mb-3">
+                ${item.tool.tagline}
+              </p>
+              <div class="p-2.5 rounded-sm bg-hairline-soft/60 border border-hairline text-xs text-body mb-4">
+                <span class="font-medium text-ink">Why recommended:</span> ${item.reason}
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-3 border-t border-hairline text-xs">
+              <span class="text-mute">Score: <strong class="text-ink">${item.tool.platformScore}/100</strong></span>
+              <div class="flex items-center gap-2">
+                <a href="/tools/${item.tool.slug}" class="text-body hover:text-ink font-medium">Details</a>
+                <a href="${item.tool.websiteUrl}" target="_blank" rel="noopener noreferrer" class="text-ink font-medium hover:text-link">Visit Official ↗</a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Formulate workflow recommendation
+      if (isVideo) {
+        workflowTitle.textContent = 'Automated Short-Form Video Pipeline';
+        workflowDesc.textContent = 'Use Claude or ChatGPT to script the video hook, synthesize natural audio with ElevenLabs, generate visuals with Runway or Midjourney, and stitch with an automated editor.';
+      } else if (isCode) {
+        workflowTitle.textContent = 'Full-Stack Development Workflow';
+        workflowDesc.textContent = 'Pair GitHub Copilot for instant inline completions inside your IDE with Claude 3.5 Sonnet for architectural reviews, large-scale refactors, and test generation.';
+      } else if (isIndia) {
+        workflowTitle.textContent = 'Indic Regional Localization Stack';
+        workflowDesc.textContent = 'Leverage Sarvam AI for vernacular speech-to-text and Krutrim for multilingual conversational assistance, hosted within compliant sovereign infrastructure.';
+      } else {
+        workflowTitle.textContent = 'Modular AI Automation Stack';
+        workflowDesc.textContent = 'Connect Make or n8n with OpenAI/Claude APIs to trigger instant automated responses, content updates, and customer data enrichment from spreadsheets and webhooks.';
+      }
+
+      if (queryEcho) {
+        queryEcho.textContent = `Matched for intent: "${textarea.value.trim()}"`;
+      }
+
+      resultsSection.classList.remove('hidden');
+      resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+</script>

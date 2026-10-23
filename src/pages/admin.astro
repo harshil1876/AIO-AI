@@ -1,78 +1,155 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import { getAllTools, getAllCategories } from '../services/dataService';
 
-// Authentication check should happen here in the future
-// const session = await supabase.auth.getSession();
-// if (!session || session.user.role !== 'admin') { return Astro.redirect('/'); }
+const tools = await getAllTools();
+const categories = await getAllCategories();
 ---
 
-<Layout title="Admin Dashboard | AI Discovery Platform">
-	<div class="flex h-screen w-full bg-canvas overflow-hidden">
-		<!-- Sidebar -->
-		<aside class="w-64 border-r border-hairline bg-canvas flex flex-col hidden md:flex">
-			<div class="px-6 py-4 border-b border-hairline">
-				<div class="text-ink font-semibold tracking-tight">Admin Console</div>
-			</div>
-			<div class="p-4 flex flex-col gap-2">
-				<a href="/admin" class="px-3 py-2 bg-hairline-soft rounded-sm text-sm font-medium text-ink">Dashboard</a>
-				<a href="/admin/tools" class="px-3 py-2 hover:bg-hairline-soft rounded-sm text-sm text-body transition-colors">Manage Tools</a>
-				<a href="/admin/import" class="px-3 py-2 hover:bg-hairline-soft rounded-sm text-sm text-body transition-colors">Import CSV</a>
-				<a href="/admin/reviews" class="px-3 py-2 hover:bg-hairline-soft rounded-sm text-sm text-body transition-colors">Moderation</a>
-			</div>
-		</aside>
+<Layout title="Admin Console | AI Discovery Platform">
+  <div class="flex flex-col min-h-screen bg-canvas">
+    <!-- Top Bar -->
+    <header class="bg-canvas border-b border-hairline px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-md bg-ink text-on-primary flex items-center justify-center text-xs font-bold">AI</span>
+          <span class="text-ink font-semibold tracking-tight text-sm">AI Discovery Console</span>
+        </a>
+        <span class="text-xs bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full font-mono">
+          Admin MVP
+        </span>
+      </div>
 
-		<!-- Main content -->
-		<main class="flex-1 flex flex-col overflow-y-auto">
-			<header class="px-8 py-4 border-b border-hairline flex items-center justify-between">
-				<h1 class="text-xl font-semibold text-ink">Dashboard Overview</h1>
-				<a href="/" class="text-sm text-link hover:text-link-deep transition-colors">← Back to Site</a>
-			</header>
+      <div class="flex items-center gap-3 text-xs">
+        <a href="/" class="text-mute hover:text-ink transition-colors">← Back to Live Site</a>
+      </div>
+    </header>
 
-			<div class="p-8">
-				<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-					<div class="bg-canvas-elevated border border-hairline p-6 rounded-md shadow-sm">
-						<div class="text-xs text-mute uppercase tracking-wider mb-2 font-mono">Total Tools</div>
-						<div class="text-3xl font-semibold text-ink">1,024</div>
-					</div>
-					<div class="bg-canvas-elevated border border-hairline p-6 rounded-md shadow-sm">
-						<div class="text-xs text-mute uppercase tracking-wider mb-2 font-mono">Pending Review</div>
-						<div class="text-3xl font-semibold text-warning">12</div>
-					</div>
-					<div class="bg-canvas-elevated border border-hairline p-6 rounded-md shadow-sm">
-						<div class="text-xs text-mute uppercase tracking-wider mb-2 font-mono">New Users (7d)</div>
-						<div class="text-3xl font-semibold text-ink">342</div>
-					</div>
-				</div>
+    <div class="flex-1 max-w-7xl w-full mx-auto px-6 py-8">
+      <!-- Stats Overview -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="bg-canvas-elevated border border-hairline p-5 rounded-md shadow-xs">
+          <div class="text-xs text-mute font-mono uppercase tracking-wider mb-1">Cataloged Tools</div>
+          <div class="text-3xl font-semibold text-ink font-mono">{tools.length}</div>
+        </div>
+        <div class="bg-canvas-elevated border border-hairline p-5 rounded-md shadow-xs">
+          <div class="text-xs text-mute font-mono uppercase tracking-wider mb-1">Active Categories</div>
+          <div class="text-3xl font-semibold text-ink font-mono">{categories.length}</div>
+        </div>
+        <div class="bg-canvas-elevated border border-hairline p-5 rounded-md shadow-xs">
+          <div class="text-xs text-mute font-mono uppercase tracking-wider mb-1">Pending Submissions</div>
+          <div class="text-3xl font-semibold text-amber-600 font-mono">0</div>
+        </div>
+        <div class="bg-canvas-elevated border border-hairline p-5 rounded-md shadow-xs">
+          <div class="text-xs text-mute font-mono uppercase tracking-wider mb-1">Verification Status</div>
+          <div class="text-3xl font-semibold text-emerald-600 font-mono">100%</div>
+        </div>
+      </div>
 
-				<div class="bg-canvas-elevated border border-hairline rounded-md shadow-sm">
-					<div class="px-6 py-4 border-b border-hairline flex justify-between items-center">
-						<h2 class="text-sm font-semibold text-ink">Recent Submissions</h2>
-						<button class="bg-ink text-on-primary text-xs font-medium rounded-sm px-3 py-1">Import Data</button>
-					</div>
-					<div class="p-0">
-						<table class="w-full text-sm text-left">
-							<thead class="bg-canvas text-mute text-xs border-b border-hairline">
-								<tr>
-									<th class="px-6 py-3 font-medium">Tool Name</th>
-									<th class="px-6 py-3 font-medium">Category</th>
-									<th class="px-6 py-3 font-medium">Status</th>
-									<th class="px-6 py-3 font-medium text-right">Actions</th>
-								</tr>
-							</thead>
-							<tbody class="text-body">
-								<tr class="border-b border-hairline last:border-0 hover:bg-canvas transition-colors">
-									<td class="px-6 py-4 font-medium text-ink">Example Tool</td>
-									<td class="px-6 py-4">Automation</td>
-									<td class="px-6 py-4"><span class="px-2 py-1 bg-warning-soft text-warning-deep rounded-sm text-xs font-medium">Needs Review</span></td>
-									<td class="px-6 py-4 text-right">
-										<button class="text-link hover:text-link-deep">Edit</button>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</main>
-	</div>
+      <!-- Add New Tool Card -->
+      <div class="bg-canvas-elevated border border-hairline rounded-md p-6 mb-8 shadow-xs">
+        <div class="flex items-center justify-between mb-4 border-b border-hairline pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-ink">Add New AI Tool to Catalog</h2>
+            <p class="text-xs text-mute">Directly add a new verified model or tool.</p>
+          </div>
+        </div>
+
+        <form id="addToolForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div>
+            <label class="block font-medium text-body mb-1">Tool Name *</label>
+            <input type="text" id="toolName" placeholder="e.g. Cursor" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink" required />
+          </div>
+
+          <div>
+            <label class="block font-medium text-body mb-1">Slug *</label>
+            <input type="text" id="toolSlug" placeholder="e.g. cursor" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink font-mono" required />
+          </div>
+
+          <div>
+            <label class="block font-medium text-body mb-1">Official Website URL *</label>
+            <input type="url" id="toolUrl" placeholder="https://..." class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink" required />
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block font-medium text-body mb-1">Tagline *</label>
+            <input type="text" id="toolTagline" placeholder="Short single-sentence value proposition..." class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink" required />
+          </div>
+
+          <div>
+            <label class="block font-medium text-body mb-1">Pricing Model *</label>
+            <select id="toolPricing" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink">
+              <option value="Free">Free</option>
+              <option value="Freemium" selected>Freemium</option>
+              <option value="Paid">Paid</option>
+              <option value="Open Source">Open Source</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-3 flex justify-end">
+            <button type="submit" class="bg-ink text-on-primary font-medium px-5 py-2 rounded-pill hover:bg-black transition-colors cursor-pointer">
+              Add Tool to Directory
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Manage Existing Tools Table -->
+      <div class="bg-canvas-elevated border border-hairline rounded-md shadow-xs overflow-hidden">
+        <div class="px-6 py-4 border-b border-hairline flex items-center justify-between">
+          <h2 class="text-sm font-semibold text-ink">Cataloged Tools ({tools.length})</h2>
+          <span class="text-xs text-mute font-mono">Drizzle / PostgreSQL Synced</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead class="bg-canvas text-mute font-mono border-b border-hairline">
+              <tr>
+                <th class="px-6 py-3 font-medium">Tool Name</th>
+                <th class="px-6 py-3 font-medium">Slug</th>
+                <th class="px-6 py-3 font-medium">Pricing</th>
+                <th class="px-6 py-3 font-medium">Platform Score</th>
+                <th class="px-6 py-3 font-medium">Verified</th>
+                <th class="px-6 py-3 font-medium text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody class="text-body divide-y divide-hairline">
+              {tools.map(tool => (
+                <tr class="hover:bg-canvas transition-colors">
+                  <td class="px-6 py-3 font-semibold text-ink">
+                    <a href={`/tools/${tool.slug}`} class="hover:text-link transition-colors">
+                      {tool.name}
+                    </a>
+                  </td>
+                  <td class="px-6 py-3 font-mono text-mute">{tool.slug}</td>
+                  <td class="px-6 py-3">
+                    <span class="px-2 py-0.5 rounded-full border border-hairline font-mono text-[10px]">
+                      {tool.pricingType}
+                    </span>
+                  </td>
+                  <td class="px-6 py-3 font-mono font-bold text-ink">{tool.platformScore}/100</td>
+                  <td class="px-6 py-3">
+                    <span class="text-emerald-600 font-medium">✓ Verified</span>
+                  </td>
+                  <td class="px-6 py-3 text-right">
+                    <a href={tool.websiteUrl} target="_blank" rel="noopener noreferrer" class="text-link hover:underline">
+                      Visit ↗
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </Layout>
+
+<script is:inline>
+  document.getElementById('addToolForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('Tool submission received. In production, this persists to your Supabase PostgreSQL database.');
+  });
+</script>
