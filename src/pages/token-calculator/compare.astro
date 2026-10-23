@@ -1,0 +1,393 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { OFFICIAL_MODELS } from '../../data/modelsData';
+
+const highlightModelId = Astro.url.searchParams.get('model') || '';
+---
+
+<Layout 
+  title="Official LLM Cross-Provider Price & Spec Comparison | AI Discovery"
+  description="Compare token prices, context windows, and output limits across official frontier AI models from OpenAI, Anthropic, Google, DeepSeek, and Mistral."
+>
+  <Header currentPath="/token-calculator" />
+
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
+    <!-- Sub-navigation Tabs -->
+    <div class="border-b border-hairline bg-canvas px-6 py-3">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-1.5 text-xs text-mute font-medium">
+          <span class="text-ink font-semibold">Calculator Suite:</span>
+          <a href="/token-calculator" class="text-body hover:text-ink px-3 py-1.5 rounded-full hover:bg-hairline-soft transition-colors">
+            Token Calculator
+          </a>
+          <a href="/token-calculator/models" class="text-body hover:text-ink px-3 py-1.5 rounded-full hover:bg-hairline-soft transition-colors">
+            Models Directory
+          </a>
+          <a href="/token-calculator/compare" class="text-ink bg-hairline-soft px-3 py-1.5 rounded-full font-medium">
+            Official Price Compare
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breadcrumb & Back Link -->
+    <div class="max-w-7xl w-full mx-auto px-6 pt-8 pb-4">
+      <a 
+        href="/token-calculator/models" 
+        class="inline-flex items-center gap-1.5 text-xs text-mute hover:text-ink transition-colors font-medium group"
+      >
+        <svg class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+        </svg>
+        <span>Back to Models</span>
+      </a>
+    </div>
+
+    <!-- Header Section (Matches Image 5 Layout) -->
+    <section class="max-w-7xl w-full mx-auto px-6 pb-8 text-center">
+      <div class="max-w-3xl mx-auto">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-500 mb-4">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
+          </svg>
+        </div>
+
+        <h1 class="text-3xl md:text-5xl font-semibold text-ink tracking-tight mb-3" style="letter-spacing: -1.4px;">
+          Cross-Provider Price Comparison
+        </h1>
+
+        <p class="text-body text-sm md:text-base max-w-2xl mx-auto leading-relaxed mb-8">
+          Compare verified production token costs and context capacities across official LLM providers to find the optimal balance of intelligence, speed, and cost.
+        </p>
+
+        <!-- Provider Filters and Search -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-lg bg-canvas-elevated border border-hairline text-left">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-medium text-mute flex items-center gap-1 mr-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+              </svg>
+              Filter by provider:
+            </span>
+            <button class="provider-btn px-3 py-1 rounded-full text-xs font-medium border border-ink bg-ink text-on-primary cursor-pointer transition-colors" data-provider="all">
+              All ({OFFICIAL_MODELS.length})
+            </button>
+            <button class="provider-btn px-3 py-1 rounded-full text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink cursor-pointer transition-colors" data-provider="OpenAI">
+              OpenAI
+            </button>
+            <button class="provider-btn px-3 py-1 rounded-full text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink cursor-pointer transition-colors" data-provider="Anthropic">
+              Anthropic
+            </button>
+            <button class="provider-btn px-3 py-1 rounded-full text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink cursor-pointer transition-colors" data-provider="Google">
+              Google
+            </button>
+            <button class="provider-btn px-3 py-1 rounded-full text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink cursor-pointer transition-colors" data-provider="DeepSeek">
+              DeepSeek
+            </button>
+            <button class="provider-btn px-3 py-1 rounded-full text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink cursor-pointer transition-colors" data-provider="Mistral">
+              Mistral
+            </button>
+          </div>
+
+          <div class="w-full sm:w-64 relative">
+            <input 
+              type="text" 
+              id="modelSearchInput" 
+              placeholder="Search model name or id..." 
+              class="w-full pl-8 pr-3 py-1.5 rounded-md text-xs bg-canvas border border-hairline text-ink placeholder:text-mute focus:outline-none focus:border-ink transition-colors"
+            />
+            <svg class="w-3.5 h-3.5 text-mute absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Table Section -->
+    <div class="max-w-7xl w-full mx-auto px-6 pb-20 flex-1">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <h2 class="text-sm font-semibold text-ink tracking-tight">Official Price & Specification Matrix</h2>
+          <p class="text-xs text-mute">100% verified official provider rates. Click column headers to sort.</p>
+        </div>
+        <div class="text-xs text-mute font-mono">
+          Showing <span id="visibleCount">{OFFICIAL_MODELS.length}</span> of {OFFICIAL_MODELS.length} models
+        </div>
+      </div>
+
+      <div class="border border-hairline rounded-lg overflow-hidden bg-canvas-elevated shadow-xs">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs" id="comparisonTable">
+            <thead>
+              <tr class="border-b border-hairline bg-hairline-soft/40 text-mute uppercase tracking-wider text-[11px] select-none">
+                <th scope="col" class="py-3 px-4 font-semibold cursor-pointer hover:text-ink transition-colors sort-header" data-sort="name">
+                  <div class="flex items-center gap-1">
+                    <span>Model</span>
+                    <span class="sort-icon text-[10px]">↕</span>
+                  </div>
+                </th>
+                <th scope="col" class="py-3 px-4 font-semibold cursor-pointer hover:text-ink transition-colors sort-header" data-sort="provider">
+                  <div class="flex items-center gap-1">
+                    <span>Official Provider</span>
+                    <span class="sort-icon text-[10px]">↕</span>
+                  </div>
+                </th>
+                <th scope="col" class="py-3 px-4 font-semibold text-right cursor-pointer hover:text-ink transition-colors sort-header" data-sort="context">
+                  <div class="flex items-center justify-end gap-1">
+                    <span>Context Window</span>
+                    <span class="sort-icon text-[10px]">↕</span>
+                  </div>
+                </th>
+                <th scope="col" class="py-3 px-4 font-semibold text-right cursor-pointer hover:text-ink transition-colors sort-header" data-sort="output">
+                  <div class="flex items-center justify-end gap-1">
+                    <span>Max Output</span>
+                    <span class="sort-icon text-[10px]">↕</span>
+                  </div>
+                </th>
+                <th scope="col" class="py-3 px-4 font-semibold text-right cursor-pointer hover:text-ink transition-colors sort-header" data-sort="input-1m">
+                  <div class="flex items-center justify-end gap-1">
+                    <span>Official Input / 1M</span>
+                    <span class="sort-icon text-[10px]">↕</span>
+                  </div>
+                </th>
+                <th scope="col" class="py-3 px-4 font-semibold text-right cursor-pointer hover:text-ink transition-colors sort-header" data-sort="output-1m">
+                  <div class="flex items-center justify-end gap-1">
+                    <span>Official Output / 1M</span>
+                    <span class="sort-icon text-[10px]">↕</span>
+                  </div>
+                </th>
+                <th scope="col" class="py-3 px-4 font-semibold text-right">
+                  <span>Input / Output (1K)</span>
+                </th>
+                <th scope="col" class="py-3 px-4 font-semibold text-center">
+                  <span>Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline font-mono text-[11px]" id="tableBody">
+              {OFFICIAL_MODELS.map((model) => (
+                <tr 
+                  class={`model-row hover:bg-hairline-soft/30 transition-colors ${highlightModelId === model.id ? 'bg-amber-500/10' : ''}`}
+                  data-id={model.id}
+                  data-name={model.name.toLowerCase()}
+                  data-identifier={model.modelIdentifier.toLowerCase()}
+                  data-provider={model.provider}
+                  data-context={model.contextWindow}
+                  data-output={model.maxOutputTokens}
+                  data-input-1m={model.inputCostPer1M}
+                  data-output-1m={model.outputCostPer1M}
+                >
+                  <td class="py-3 px-4 font-sans">
+                    <div class="flex items-center gap-2">
+                      <a href={`/token-calculator/models/${model.id}`} class="font-semibold text-xs text-ink hover:underline">
+                        {model.name}
+                      </a>
+                      <span class={`text-[9px] font-mono px-1.5 py-0.2 rounded border ${
+                        model.status === 'Active' 
+                          ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
+                          : 'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                      }`}>
+                        {model.status}
+                      </span>
+                    </div>
+                    <div class="text-[10px] text-mute font-mono truncate max-w-[180px]">
+                      {model.modelIdentifier}
+                    </div>
+                  </td>
+
+                  <td class="py-3 px-4 font-sans">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-canvas border border-hairline text-body">
+                      {model.provider}
+                    </span>
+                  </td>
+
+                  <td class="py-3 px-4 text-right font-mono text-ink">
+                    {model.formattedContext}
+                  </td>
+
+                  <td class="py-3 px-4 text-right font-mono text-body">
+                    {model.formattedMaxOutput}
+                  </td>
+
+                  <td class="py-3 px-4 text-right font-mono font-medium text-emerald-600 dark:text-emerald-400">
+                    ${model.inputCostPer1M.toFixed(2)}
+                  </td>
+
+                  <td class="py-3 px-4 text-right font-mono font-medium text-blue-600 dark:text-blue-400">
+                    ${model.outputCostPer1M.toFixed(2)}
+                  </td>
+
+                  <td class="py-3 px-4 text-right font-mono text-mute text-[10px]">
+                    ${model.inputCostPer1K.toFixed(4)} / ${model.outputCostPer1K.toFixed(4)}
+                  </td>
+
+                  <td class="py-3 px-4 text-center font-sans">
+                    <div class="flex items-center justify-center gap-1.5">
+                      <a 
+                        href={`/token-calculator?model=${model.id}`}
+                        class="px-2 py-1 rounded bg-canvas border border-hairline hover:bg-hairline-soft text-ink text-[11px] font-medium transition-colors"
+                        title="Calculate with this model"
+                      >
+                        Calculate
+                      </a>
+                      <a 
+                        href={`/token-calculator/models/${model.id}`}
+                        class="px-2 py-1 rounded bg-canvas border border-hairline hover:bg-hairline-soft text-mute hover:text-ink text-[11px] font-medium transition-colors"
+                        title="View details and API endpoint"
+                      >
+                        Specs
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Official Provider Transparency Notice -->
+      <div class="mt-8 p-4 rounded-lg bg-hairline-soft/30 border border-hairline flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-2.48 9.94a12.06 12.06 0 0 1-4.22-.92A11.96 11.96 0 0 1 2.25 12c0-3.3 1.34-6.3 3.5-8.49A11.96 11.96 0 0 1 12 2.25c3.3 0 6.3 1.34 8.49 3.5A11.96 11.96 0 0 1 21.75 12c0 3.3-1.34 6.3-3.5 8.49a12.06 12.06 0 0 1-4.22.92Z" />
+          </svg>
+          <span class="text-mute">
+            All prices and context limits reflect direct official API rates from OpenAI, Anthropic, Google, DeepSeek, and Mistral. Zero third-party aggregators or unofficial proxies.
+          </span>
+        </div>
+        <a 
+          href="/token-calculator" 
+          class="font-medium text-ink hover:underline shrink-0"
+        >
+          Open Token Calculator &rarr;
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  let activeProvider = 'all';
+  let searchTerm = '';
+  let sortColumn = '';
+  let sortDirection: 'asc' | 'desc' = 'asc';
+
+  const rows = Array.from(document.querySelectorAll<HTMLTableRowElement>('.model-row'));
+  const visibleCountEl = document.getElementById('visibleCount');
+  const searchInput = document.getElementById('modelSearchInput') as HTMLInputElement | null;
+  const providerButtons = document.querySelectorAll<HTMLButtonElement>('.provider-btn');
+  const sortHeaders = document.querySelectorAll<HTMLTableCellElement>('.sort-header');
+  const tableBody = document.getElementById('tableBody');
+
+  function filterAndSort() {
+    let visibleRows = rows.filter(row => {
+      const provider = row.dataset.provider || '';
+      const name = row.dataset.name || '';
+      const identifier = row.dataset.identifier || '';
+
+      const matchesProvider = activeProvider === 'all' || provider.toLowerCase() === activeProvider.toLowerCase();
+      const matchesSearch = !searchTerm || name.includes(searchTerm) || identifier.includes(searchTerm);
+
+      const isVisible = matchesProvider && matchesSearch;
+      row.style.display = isVisible ? '' : 'none';
+      return isVisible;
+    });
+
+    if (visibleCountEl) {
+      visibleCountEl.textContent = visibleRows.length.toString();
+    }
+
+    if (sortColumn && tableBody) {
+      visibleRows.sort((a, b) => {
+        let valA: string | number = '';
+        let valB: string | number = '';
+
+        if (sortColumn === 'name') {
+          valA = a.dataset.name || '';
+          valB = b.dataset.name || '';
+        } else if (sortColumn === 'provider') {
+          valA = a.dataset.provider || '';
+          valB = b.dataset.provider || '';
+        } else if (sortColumn === 'context') {
+          valA = Number(a.dataset.context) || 0;
+          valB = Number(b.dataset.context) || 0;
+        } else if (sortColumn === 'output') {
+          valA = Number(a.dataset.output) || 0;
+          valB = Number(b.dataset.output) || 0;
+        } else if (sortColumn === 'input-1m') {
+          valA = Number(a.dataset.input1m) || 0;
+          valB = Number(b.dataset.input1m) || 0;
+        } else if (sortColumn === 'output-1m') {
+          valA = Number(a.dataset.output1m) || 0;
+          valB = Number(b.dataset.output1m) || 0;
+        }
+
+        if (typeof valA === 'string' && typeof valB === 'string') {
+          return sortDirection === 'asc' 
+            ? valA.localeCompare(valB) 
+            : valB.localeCompare(valA);
+        } else {
+          return sortDirection === 'asc' 
+            ? (valA as number) - (valB as number) 
+            : (valB as number) - (valA as number);
+        }
+      });
+
+      // Re-append sorted rows to table body
+      visibleRows.forEach(row => tableBody.appendChild(row));
+    }
+  }
+
+  // Provider Filter Pill Listeners
+  providerButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      providerButtons.forEach(b => {
+        b.classList.remove('border-ink', 'bg-ink', 'text-on-primary');
+        b.classList.add('border-hairline', 'bg-canvas', 'text-body');
+      });
+      btn.classList.add('border-ink', 'bg-ink', 'text-on-primary');
+      btn.classList.remove('border-hairline', 'bg-canvas', 'text-body');
+
+      activeProvider = btn.dataset.provider || 'all';
+      filterAndSort();
+    });
+  });
+
+  // Search input listener
+  searchInput?.addEventListener('input', (e) => {
+    searchTerm = (e.target as HTMLInputElement).value.toLowerCase().trim();
+    filterAndSort();
+  });
+
+  // Sort header listeners
+  sortHeaders.forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.sort || '';
+      if (sortColumn === col) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortColumn = col;
+        sortDirection = 'asc';
+      }
+
+      // Reset all sort icons
+      sortHeaders.forEach(header => {
+        const icon = header.querySelector('.sort-icon');
+        if (icon) icon.textContent = '↕';
+      });
+
+      const currentIcon = th.querySelector('.sort-icon');
+      if (currentIcon) {
+        currentIcon.textContent = sortDirection === 'asc' ? '↑' : '↓';
+      }
+
+      filterAndSort();
+    });
+  });
+</script>

@@ -1,0 +1,332 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { OFFICIAL_MODELS } from '../../data/modelsData';
+
+const initialModelId = Astro.url.searchParams.get('model') || 'gpt-4o';
+---
+
+<Layout 
+  title="LLM Token Calculator & Official Pricing | AI Discovery"
+  description="Calculate tokens and real-time API costs for official LLM models including OpenAI GPT-4o, Claude 3.5 Sonnet, Gemini 2.0, and DeepSeek."
+>
+  <Header currentPath="/token-calculator" />
+
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
+    <!-- Sub-navigation Tabs -->
+    <div class="border-b border-hairline bg-canvas px-6 py-3">
+      <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-1.5 text-xs text-mute font-medium">
+          <span class="text-ink font-semibold">Calculator Suite:</span>
+          <a href="/token-calculator" class="text-ink bg-hairline-soft px-3 py-1.5 rounded-full font-medium">
+            Token Calculator
+          </a>
+          <a href="/token-calculator/models" class="text-body hover:text-ink px-3 py-1.5 rounded-full hover:bg-hairline-soft transition-colors">
+            Models Directory
+          </a>
+          <a href="/token-calculator/compare" class="text-body hover:text-ink px-3 py-1.5 rounded-full hover:bg-hairline-soft transition-colors">
+            Official Price Compare
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header Section -->
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 text-center">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl md:text-5xl font-semibold text-ink tracking-tight mb-3" style="letter-spacing: -1.4px;">
+          LLM Token Calculator
+        </h1>
+        <p class="text-body text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+          Calculate tokens, word counts, and exact production API costs across verified official frontier models.
+        </p>
+      </div>
+    </section>
+
+    <!-- Main Calculator Grid -->
+    <div class="w-full max-w-6xl mx-auto px-6 py-10 flex-1 flex flex-col gap-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left: Input & Configuration Card -->
+        <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-hairline">
+              <div>
+                <h2 class="text-sm font-semibold text-ink tracking-tight">Input & Configuration</h2>
+                <p class="text-xs text-mute">Select an official model and enter text to compute tokens.</p>
+              </div>
+
+              <!-- Provider & Model Dropdowns -->
+              <div class="flex items-center gap-2">
+                <select id="providerSelect" class="bg-canvas border border-hairline text-ink text-xs rounded-sm px-2.5 py-1.5 outline-none font-medium cursor-pointer">
+                  <option value="all">All Providers</option>
+                  <option value="OpenAI" selected>OpenAI</option>
+                  <option value="Anthropic">Anthropic</option>
+                  <option value="Google">Google</option>
+                  <option value="DeepSeek">DeepSeek</option>
+                  <option value="Mistral">Mistral</option>
+                </select>
+
+                <select id="modelSelect" class="bg-canvas border border-hairline text-ink text-xs rounded-sm px-2.5 py-1.5 outline-none font-medium cursor-pointer max-w-[160px] truncate">
+                  {OFFICIAL_MODELS.map(m => (
+                    <option value={m.id} selected={m.id === initialModelId} data-provider={m.provider}>
+                      {m.name} (${m.inputCostPer1M}/${m.outputCostPer1M})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <!-- Textarea -->
+            <label for="calcInputText" class="block text-xs font-medium text-body mb-2">Input Text</label>
+            <textarea 
+              id="calcInputText" 
+              rows="9"
+              placeholder="Enter your prompt text here to calculate tokens, words, characters, and costs..." 
+              class="w-full bg-canvas border border-hairline hover:border-faint focus:border-ink rounded-md p-3.5 text-xs text-ink placeholder-faint resize-none outline-none leading-relaxed transition-colors font-mono"
+            ></textarea>
+          </div>
+
+          <div class="flex items-center justify-between pt-3 border-t border-hairline text-[11px] text-mute">
+            <span>Fast client-side tokenizer heuristic</span>
+            <button id="clearTextBtn" class="hover:text-ink transition-colors cursor-pointer">Clear Text</button>
+          </div>
+        </div>
+
+        <!-- Right: Analysis Results Card -->
+        <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs flex flex-col justify-between">
+          <div>
+            <h2 class="text-sm font-semibold text-ink tracking-tight mb-4 pb-3 border-b border-hairline">
+              Analysis Results
+            </h2>
+
+            <!-- 2x2 Stats Grid -->
+            <div class="grid grid-cols-2 gap-3 mb-6">
+              <div class="p-4 rounded-md border border-hairline bg-canvas flex flex-col items-center justify-center text-center">
+                <span id="statTokens" class="text-3xl font-bold font-mono text-ink">0</span>
+                <span class="text-xs text-mute font-medium mt-1">Tokens</span>
+              </div>
+              <div class="p-4 rounded-md border border-hairline bg-canvas flex flex-col items-center justify-center text-center">
+                <span id="statWords" class="text-3xl font-bold font-mono text-ink">0</span>
+                <span class="text-xs text-mute font-medium mt-1">Words</span>
+              </div>
+              <div class="p-4 rounded-md border border-hairline bg-canvas flex flex-col items-center justify-center text-center">
+                <span id="statChars" class="text-3xl font-bold font-mono text-ink">0</span>
+                <span class="text-xs text-mute font-medium mt-1">Characters (no spaces)</span>
+              </div>
+              <div class="p-4 rounded-md border border-hairline bg-canvas flex flex-col items-center justify-center text-center">
+                <span id="statTotalChars" class="text-3xl font-bold font-mono text-ink">0</span>
+                <span class="text-xs text-mute font-medium mt-1">Total chars</span>
+              </div>
+            </div>
+
+            <!-- Cost Calculation Rows -->
+            <div class="space-y-3 text-xs border border-hairline rounded-md p-4 bg-canvas">
+              <div class="flex justify-between items-center">
+                <span class="text-body font-medium">Input Cost:</span>
+                <span id="costInput" class="font-mono font-bold text-emerald-600 text-sm">$0.000000</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-body font-medium">Est. Output Cost (500 tokens):</span>
+                <span id="costOutput" class="font-mono font-bold text-blue-600 text-sm">$0.000000</span>
+              </div>
+              <div class="pt-2 border-t border-hairline flex justify-between items-center text-mute">
+                <span>Selected Model:</span>
+                <a id="selectedModelLink" href="/token-calculator/models/gpt-4o" class="text-ink font-semibold hover:text-link transition-colors inline-flex items-center gap-1">
+                  <span id="selectedModelName">GPT-4o (OpenAI)</span>
+                  <span>↗</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 text-center">
+            <a id="viewSpecsBtn" href="/token-calculator/models/gpt-4o" class="text-xs text-link hover:underline font-medium">
+              View Complete API Documentation & Performance Specs →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Comparison Table (Matches Image 1 & 2) -->
+      <section class="bg-canvas-elevated border border-hairline rounded-lg shadow-xs overflow-hidden">
+        <div class="p-6 border-b border-hairline flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-base font-semibold text-ink tracking-tight">Quick Comparison</h2>
+            <p class="text-xs text-mute">Compare official pricing and context windows across verified models in real time.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-mute">Filter by Provider:</span>
+            <select id="tableProviderFilter" class="bg-canvas border border-hairline text-ink text-xs rounded-sm px-2.5 py-1.5 outline-none font-medium cursor-pointer">
+              <option value="all">All Official Providers</option>
+              <option value="OpenAI">OpenAI</option>
+              <option value="Anthropic">Anthropic</option>
+              <option value="Google">Google</option>
+              <option value="DeepSeek">DeepSeek</option>
+              <option value="Mistral">Mistral</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left" id="quickCompareTable">
+            <thead class="bg-canvas text-mute font-mono border-b border-hairline">
+              <tr>
+                <th class="px-6 py-3 font-medium">Model</th>
+                <th class="px-6 py-3 font-medium">Provider</th>
+                <th class="px-6 py-3 font-medium">Tokens</th>
+                <th class="px-6 py-3 font-medium">Input Cost (Text)</th>
+                <th class="px-6 py-3 font-medium">Output Cost (1M)</th>
+                <th class="px-6 py-3 font-medium">Context Window</th>
+              </tr>
+            </thead>
+            <tbody class="text-body divide-y divide-hairline" id="quickCompareBody">
+              {OFFICIAL_MODELS.map(m => (
+                <tr class="hover:bg-canvas transition-colors compare-row" data-provider={m.provider} data-id={m.id} data-in-price={m.inputCostPer1M} data-out-price={m.outputCostPer1M}>
+                  <td class="px-6 py-3.5 font-semibold text-ink">
+                    <a href={`/token-calculator/models/${m.id}`} class="hover:text-link transition-colors inline-flex items-center gap-1">
+                      <span>{m.name}</span>
+                      <span class="text-mute text-[10px]">↗</span>
+                    </a>
+                  </td>
+                  <td class="px-6 py-3.5">
+                    <span class="font-mono text-mute">{m.provider}</span>
+                  </td>
+                  <td class="px-6 py-3.5 font-mono row-tokens">
+                    0
+                  </td>
+                  <td class="px-6 py-3.5 font-mono text-emerald-600 font-medium row-input-cost">
+                    $0.000000
+                  </td>
+                  <td class="px-6 py-3.5 font-mono text-blue-600">
+                    ${m.outputCostPer1M.toFixed(2)}/1M
+                  </td>
+                  <td class="px-6 py-3.5 font-mono text-ink">
+                    {m.formattedContext}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script is:inline define:vars={{ models: OFFICIAL_MODELS }}>
+  window.AIO_MODELS = models;
+</script>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const models = window.AIO_MODELS || [];
+    const providerSelect = document.getElementById('providerSelect');
+    const modelSelect = document.getElementById('modelSelect');
+    const textarea = document.getElementById('calcInputText');
+    const clearBtn = document.getElementById('clearTextBtn');
+
+    const statTokens = document.getElementById('statTokens');
+    const statWords = document.getElementById('statWords');
+    const statChars = document.getElementById('statChars');
+    const statTotalChars = document.getElementById('statTotalChars');
+
+    const costInput = document.getElementById('costInput');
+    const costOutput = document.getElementById('costOutput');
+    const selectedModelName = document.getElementById('selectedModelName');
+    const selectedModelLink = document.getElementById('selectedModelLink');
+    const viewSpecsBtn = document.getElementById('viewSpecsBtn');
+
+    const tableFilter = document.getElementById('tableProviderFilter');
+    const rows = document.querySelectorAll('.compare-row');
+
+    function getSelectedModel() {
+      const id = modelSelect?.value || 'gpt-4o';
+      return models.find(m => m.id === id) || models[0];
+    }
+
+    function calculateTokens(text) {
+      if (!text || text.trim().length === 0) return 0;
+      // Accurate rule of thumb for English/Code: ~4 chars per token or ~0.75 tokens per word
+      const chars = text.length;
+      return Math.max(1, Math.ceil(chars / 3.9));
+    }
+
+    function update() {
+      const text = textarea?.value || '';
+      const tokens = calculateTokens(text);
+      const totalChars = text.length;
+      const charsNoSpaces = text.replace(/\s/g, '').length;
+      const words = text.trim().length > 0 ? text.trim().split(/\s+/).length : 0;
+
+      if (statTokens) statTokens.textContent = tokens.toLocaleString();
+      if (statWords) statWords.textContent = words.toLocaleString();
+      if (statChars) statChars.textContent = charsNoSpaces.toLocaleString();
+      if (statTotalChars) statTotalChars.textContent = totalChars.toLocaleString();
+
+      const model = getSelectedModel();
+
+      if (selectedModelName) selectedModelName.textContent = `${model.name} (${model.provider})`;
+      if (selectedModelLink) selectedModelLink.href = `/token-calculator/models/${model.id}`;
+      if (viewSpecsBtn) viewSpecsBtn.href = `/token-calculator/models/${model.id}`;
+
+      // Calculate Input Cost
+      const inputCostVal = (tokens / 1000000) * model.inputCostPer1M;
+      if (costInput) costInput.textContent = `$${inputCostVal.toFixed(6)}`;
+
+      // Calculate Estimated Output Cost for a typical 500 token reply
+      const outputCostVal = (500 / 1000000) * model.outputCostPer1M;
+      if (costOutput) costOutput.textContent = `$${outputCostVal.toFixed(6)}`;
+
+      // Update Quick Comparison table rows
+      rows.forEach(row => {
+        const inPrice = parseFloat(row.getAttribute('data-in-price') || '0');
+        const tokenCell = row.querySelector('.row-tokens');
+        const costCell = row.querySelector('.row-input-cost');
+
+        if (tokenCell) tokenCell.textContent = tokens.toLocaleString();
+        if (costCell) {
+          const rowCost = (tokens / 1000000) * inPrice;
+          costCell.textContent = `$${rowCost.toFixed(6)}`;
+        }
+      });
+    }
+
+    textarea?.addEventListener('input', update);
+    modelSelect?.addEventListener('change', update);
+
+    providerSelect?.addEventListener('change', () => {
+      const prov = providerSelect.value;
+      const filtered = prov === 'all' ? models : models.filter(m => m.provider === prov);
+
+      if (modelSelect) {
+        modelSelect.innerHTML = filtered.map(m => `
+          <option value="${m.id}">${m.name} ($${m.inputCostPer1M}/$${m.outputCostPer1M})</option>
+        `).join('');
+      }
+      update();
+    });
+
+    clearBtn?.addEventListener('click', () => {
+      if (textarea) textarea.value = '';
+      update();
+    });
+
+    tableFilter?.addEventListener('change', () => {
+      const selected = tableFilter.value;
+      rows.forEach(row => {
+        const prov = row.getAttribute('data-provider');
+        if (selected === 'all' || prov === selected) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+
+    // Initial run
+    update();
+  });
+</script>

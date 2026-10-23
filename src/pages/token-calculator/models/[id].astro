@@ -1,0 +1,367 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import { OFFICIAL_MODELS, type LLMModel } from '../../../data/modelsData';
+
+export function getStaticPaths() {
+  return OFFICIAL_MODELS.map((model) => ({
+    params: { id: model.id },
+    props: { model }
+  }));
+}
+
+interface Props {
+  model: LLMModel;
+}
+
+const { model } = Astro.props;
+---
+
+<Layout 
+  title={`${model.name} Official Pricing & Token Specs | AI Discovery`}
+  description={`Official API endpoint, context limits, and token pricing for ${model.name} by ${model.provider}. Input: $${model.inputCostPer1M}/1M, Output: $${model.outputCostPer1M}/1M.`}
+>
+  <Header currentPath="/token-calculator" />
+
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
+    <!-- Sub-navigation Tabs -->
+    <div class="border-b border-hairline bg-canvas px-6 py-3">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-1.5 text-xs text-mute font-medium">
+          <span class="text-ink font-semibold">Calculator Suite:</span>
+          <a href="/token-calculator" class="text-body hover:text-ink px-3 py-1.5 rounded-full hover:bg-hairline-soft transition-colors">
+            Token Calculator
+          </a>
+          <a href="/token-calculator/models" class="text-ink bg-hairline-soft px-3 py-1.5 rounded-full font-medium">
+            Models Directory
+          </a>
+          <a href="/token-calculator/compare" class="text-body hover:text-ink px-3 py-1.5 rounded-full hover:bg-hairline-soft transition-colors">
+            Official Price Compare
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breadcrumb & Back Link -->
+    <div class="max-w-7xl w-full mx-auto px-6 pt-8 pb-4">
+      <a 
+        href="/token-calculator/models" 
+        class="inline-flex items-center gap-1.5 text-xs text-mute hover:text-ink transition-colors font-medium group"
+      >
+        <svg class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+        </svg>
+        <span>Back to Models</span>
+      </a>
+    </div>
+
+    <!-- Model Header Banner -->
+    <section class="max-w-7xl w-full mx-auto px-6 pb-8">
+      <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 pb-6 border-b border-hairline">
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-2">
+            <h1 class="text-3xl md:text-4xl font-semibold text-ink tracking-tight" style="letter-spacing: -1px;">
+              {model.name}
+            </h1>
+            <span class={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full border ${
+              model.status === 'Active' 
+                ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
+                : 'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400'
+            }`}>
+              <span class={`w-1.5 h-1.5 rounded-full ${model.status === 'Active' ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+              {model.status}
+            </span>
+          </div>
+
+          <p class="text-sm font-medium text-mute mb-3">
+            by <span class="text-ink font-semibold">{model.provider}</span>
+          </p>
+
+          <p class="text-body text-sm max-w-2xl leading-relaxed mb-6">
+            {model.description}
+          </p>
+
+          <!-- Action Buttons (Matches Image 4) -->
+          <div class="flex flex-wrap items-center gap-3">
+            <a 
+              href={`/token-calculator?model=${model.id}`}
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-ink text-on-primary hover:bg-neutral-800 text-xs font-medium transition-colors shadow-xs"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18m-7.5-12h12a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-12a1.5 1.5 0 0 1-1.5-1.5V7.5A1.5 1.5 0 0 1 6 6Z" />
+              </svg>
+              <span>Calculate Tokens</span>
+            </a>
+
+            <a 
+              href={`/token-calculator/compare?model=${model.id}`}
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-body hover:text-ink text-xs font-medium transition-colors shadow-xs"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+              </svg>
+              <span>Compare Models</span>
+            </a>
+
+            <a 
+              href={model.officialDocsUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-mute hover:text-ink transition-colors"
+            >
+              <span>Official Provider Docs</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detail Cards (Matches Image 4 Layout: Pricing, Performance, API Information) -->
+    <div class="max-w-7xl w-full mx-auto px-6 pb-16 flex-1">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Card 1: Pricing -->
+        <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="w-5 h-5 rounded-full bg-hairline-soft flex items-center justify-center text-xs font-bold text-ink">$</span>
+              <h2 class="text-sm font-semibold text-ink tracking-tight">Pricing</h2>
+            </div>
+            <p class="text-xs text-mute mb-6">Token costs per 1K and 1M tokens</p>
+
+            <!-- 1K Rates -->
+            <div class="space-y-3 pb-6 border-b border-hairline">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-mute">Input (1K tokens)</span>
+                <span class="font-mono font-medium text-ink">${model.inputCostPer1K.toFixed(4)}</span>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-mute">Output (1K tokens)</span>
+                <span class="font-mono font-medium text-ink">${model.outputCostPer1K.toFixed(4)}</span>
+              </div>
+            </div>
+
+            <!-- 1M Rates -->
+            <div class="space-y-3 pt-6">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-mute">Input (1M tokens)</span>
+                <span class="font-mono font-semibold text-ink text-sm">${model.inputCostPer1M.toFixed(2)}</span>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-mute">Output (1M tokens)</span>
+                <span class="font-mono font-semibold text-ink text-sm">${model.outputCostPer1M.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-hairline text-[11px] text-mute flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            <span>Direct official API rate with zero markup or intermediaries</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Performance -->
+        <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <svg class="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+              </svg>
+              <h2 class="text-sm font-semibold text-ink tracking-tight">Performance</h2>
+            </div>
+            <p class="text-xs text-mute mb-6">Model capabilities and limits</p>
+
+            <div class="space-y-4">
+              <div class="flex items-center justify-between text-xs py-2 border-b border-hairline">
+                <span class="text-mute">Max Output Tokens</span>
+                <span class="font-mono font-semibold text-ink">{model.formattedMaxOutput}</span>
+              </div>
+
+              <div class="flex items-center justify-between text-xs py-2 border-b border-hairline">
+                <span class="text-mute">Context Window</span>
+                <span class="font-mono font-semibold text-ink">{model.formattedContext}</span>
+              </div>
+
+              <div class="flex items-center justify-between text-xs py-2 border-b border-hairline">
+                <span class="text-mute">Provider</span>
+                <span class="font-medium text-ink">{model.provider}</span>
+              </div>
+
+              <div class="flex items-center justify-between text-xs py-2">
+                <span class="text-mute">Deployment Status</span>
+                <span class="font-medium text-ink">{model.status}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-hairline">
+            <a 
+              href={`/token-calculator?model=${model.id}`}
+              class="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md border border-hairline bg-canvas hover:bg-hairline-soft text-ink text-xs font-medium transition-colors"
+            >
+              <span>Test Context in Calculator</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 3: API Information (Official Provider Only) -->
+        <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <svg class="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
+              </svg>
+              <h2 class="text-sm font-semibold text-ink tracking-tight">API Information</h2>
+            </div>
+            <p class="text-xs text-mute mb-5">Model API endpoint and identifier for developers</p>
+
+            <!-- Model Identifier Field -->
+            <div class="mb-4">
+              <label class="block text-[11px] font-medium text-mute mb-1.5 uppercase tracking-wider">
+                Model Identifier
+              </label>
+              <div class="flex items-center justify-between px-3 py-2 bg-canvas border border-hairline rounded-md font-mono text-xs text-ink group">
+                <span class="truncate select-all">{model.modelIdentifier}</span>
+                <button 
+                  type="button" 
+                  class="copy-btn text-mute hover:text-ink transition-colors ml-2 shrink-0 cursor-pointer"
+                  data-clipboard={model.modelIdentifier}
+                  title="Copy model identifier"
+                >
+                  <svg class="w-3.5 h-3.5 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.849A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.599m9.666 0c.266.906.199 1.88-.344 2.651-.543.771-1.42 1.25-2.322 1.25H9.666c-.902 0-1.779-.479-2.322-1.25-.543-.771-.61-1.745-.344-2.651m9.666 0H19.5a2.25 2.25 0 0 1 2.25 2.25v10.5A2.25 2.25 0 0 1 19.5 21h-15a2.25 2.25 0 0 1-2.25-2.25V6a2.25 2.25 0 0 1 2.25-2.25h1.834" />
+                  </svg>
+                  <span class="copied-indicator hidden text-[10px] text-emerald-500 font-sans font-medium">Copied!</span>
+                </button>
+              </div>
+              <p class="text-[11px] text-mute mt-1">
+                Use this identifier when making API calls to {model.provider}
+              </p>
+            </div>
+
+            <!-- API Endpoint URL Field -->
+            <div class="mb-5">
+              <label class="block text-[11px] font-medium text-mute mb-1.5 uppercase tracking-wider">
+                API Endpoint URL
+              </label>
+              <div class="flex items-center justify-between px-3 py-2 bg-canvas border border-hairline rounded-md font-mono text-xs text-ink group">
+                <span class="truncate select-all text-[11px]">{model.endpointUrl}</span>
+                <button 
+                  type="button" 
+                  class="copy-btn text-mute hover:text-ink transition-colors ml-2 shrink-0 cursor-pointer"
+                  data-clipboard={model.endpointUrl}
+                  title="Copy API endpoint URL"
+                >
+                  <svg class="w-3.5 h-3.5 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.849A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.599m9.666 0c.266.906.199 1.88-.344 2.651-.543.771-1.42 1.25-2.322 1.25H9.666c-.902 0-1.779-.479-2.322-1.25-.543-.771-.61-1.745-.344-2.651m9.666 0H19.5a2.25 2.25 0 0 1 2.25 2.25v10.5A2.25 2.25 0 0 1 19.5 21h-15a2.25 2.25 0 0 1-2.25-2.25V6a2.25 2.25 0 0 1 2.25-2.25h1.834" />
+                  </svg>
+                  <span class="copied-indicator hidden text-[10px] text-emerald-500 font-sans font-medium">Copied!</span>
+                </button>
+              </div>
+              <p class="text-[11px] text-mute mt-1">
+                Official {model.provider} API endpoint for chat completions
+              </p>
+            </div>
+
+            <!-- API Provider Section -->
+            <div class="mb-5 pt-3 border-t border-hairline">
+              <p class="text-[11px] font-medium text-mute uppercase tracking-wider mb-2">
+                API Provider
+              </p>
+              <div class="p-3 bg-canvas border border-hairline rounded-md">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-semibold text-ink">{model.provider} Official API</span>
+                  <span class="text-[10px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                    Direct Official
+                  </span>
+                </div>
+                <p class="text-[11px] text-mute">
+                  Developed and maintained directly by {model.provider}
+                </p>
+              </div>
+            </div>
+
+            <!-- Integration Details -->
+            <div class="pt-3 border-t border-hairline">
+              <p class="text-[11px] font-medium text-mute uppercase tracking-wider mb-2">
+                Integration Details
+              </p>
+              <ul class="space-y-1.5 text-xs text-mute font-mono">
+                <li class="flex items-center gap-1.5">
+                  <span class="w-1 h-1 rounded-full bg-mute shrink-0"></span>
+                  <span>Context Window: <strong class="text-ink font-semibold">{model.formattedContext}</strong> tokens</span>
+                </li>
+                <li class="flex items-center gap-1.5">
+                  <span class="w-1 h-1 rounded-full bg-mute shrink-0"></span>
+                  <span>Max Output: <strong class="text-ink font-semibold">{model.formattedMaxOutput}</strong> tokens</span>
+                </li>
+                <li class="flex items-center gap-1.5">
+                  <span class="w-1 h-1 rounded-full bg-mute shrink-0"></span>
+                  <span>Input Pricing: <strong class="text-ink font-semibold">${model.inputCostPer1M.toFixed(2)}</strong> / 1M</span>
+                </li>
+                <li class="flex items-center gap-1.5">
+                  <span class="w-1 h-1 rounded-full bg-mute shrink-0"></span>
+                  <span>Output Pricing: <strong class="text-ink font-semibold">${model.outputCostPer1M.toFixed(2)}</strong> / 1M</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-hairline">
+            <a 
+              href={model.officialDocsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-ink text-on-primary hover:bg-neutral-800 text-xs font-medium transition-colors"
+            >
+              <span>View Official API Documentation</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  // Copy to clipboard helper
+  document.querySelectorAll('.copy-btn').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const textToCopy = button.getAttribute('data-clipboard');
+      if (!textToCopy) return;
+
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        const icon = button.querySelector('.copy-icon');
+        const indicator = button.querySelector('.copied-indicator');
+
+        if (icon && indicator) {
+          icon.classList.add('hidden');
+          indicator.classList.remove('hidden');
+
+          setTimeout(() => {
+            icon.classList.remove('hidden');
+            indicator.classList.add('hidden');
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+      }
+    });
+  });
+</script>

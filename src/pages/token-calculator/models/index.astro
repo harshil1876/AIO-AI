@@ -1,0 +1,181 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import { OFFICIAL_MODELS } from '../../../data/modelsData';
+---
+
+<Layout 
+  title="Official LLM Models Directory & Pricing Specs | AI Discovery"
+  description="Compare token costs, context windows, and technical capabilities across verified official frontier language models."
+>
+  <Header currentPath="/token-calculator" />
+
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
+    <!-- Sub-navigation Tabs -->
+    <div class="border-b border-hairline bg-canvas px-6 py-3">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-1.5 text-xs text-mute font-medium">
+          <span class="text-ink font-semibold">Calculator Suite:</span>
+          <a href="/token-calculator" class="text-body hover:text-ink px-3 py-1.5 rounded-full hover:bg-hairline-soft transition-colors">
+            Token Calculator
+          </a>
+          <a href="/token-calculator/models" class="text-ink bg-hairline-soft px-3 py-1.5 rounded-full font-medium">
+            Models Directory
+          </a>
+          <a href="/token-calculator/compare" class="text-body hover:text-ink px-3 py-1.5 rounded-full hover:bg-hairline-soft transition-colors">
+            Official Price Compare
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header Section -->
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 text-center">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl md:text-5xl font-semibold text-ink tracking-tight mb-3" style="letter-spacing: -1.4px;">
+          LLM Models Comparison
+        </h1>
+        <p class="text-body text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+          Compare token costs, context windows, and capabilities across verified official language models.
+        </p>
+
+        <!-- Provider Filter Pills -->
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-2" id="providerFilterPills">
+          <button class="filter-pill px-4 py-1.5 rounded-full border border-ink bg-ink text-on-primary text-xs font-medium transition-colors cursor-pointer" data-provider="all">
+            All Official Models ({OFFICIAL_MODELS.length})
+          </button>
+          <button class="filter-pill px-4 py-1.5 rounded-full border border-hairline bg-canvas-elevated text-body hover:text-ink hover:border-faint text-xs font-medium transition-colors cursor-pointer" data-provider="OpenAI">
+            OpenAI
+          </button>
+          <button class="filter-pill px-4 py-1.5 rounded-full border border-hairline bg-canvas-elevated text-body hover:text-ink hover:border-faint text-xs font-medium transition-colors cursor-pointer" data-provider="Anthropic">
+            Anthropic
+          </button>
+          <button class="filter-pill px-4 py-1.5 rounded-full border border-hairline bg-canvas-elevated text-body hover:text-ink hover:border-faint text-xs font-medium transition-colors cursor-pointer" data-provider="Google">
+            Google
+          </button>
+          <button class="filter-pill px-4 py-1.5 rounded-full border border-hairline bg-canvas-elevated text-body hover:text-ink hover:border-faint text-xs font-medium transition-colors cursor-pointer" data-provider="DeepSeek">
+            DeepSeek
+          </button>
+          <button class="filter-pill px-4 py-1.5 rounded-full border border-hairline bg-canvas-elevated text-body hover:text-ink hover:border-faint text-xs font-medium transition-colors cursor-pointer" data-provider="Mistral">
+            Mistral
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Models Grid (Matches Image 3) -->
+    <div class="w-full max-w-7xl mx-auto px-6 py-12 flex-1">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="modelsGrid">
+        {OFFICIAL_MODELS.map(m => (
+          <div class="model-card bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs hover:border-faint transition-all flex flex-col justify-between" data-provider={m.provider}>
+            <div>
+              <!-- Top Row -->
+              <div class="flex items-start justify-between gap-3 mb-2">
+                <div>
+                  <h2 class="text-xl font-bold text-ink tracking-tight">{m.name}</h2>
+                  <span class="text-xs text-mute font-mono">{m.provider}</span>
+                </div>
+                <span class="text-[11px] font-mono font-medium px-2.5 py-1 rounded-sm bg-hairline-soft border border-hairline text-ink shrink-0">
+                  {m.formattedContext} tokens
+                </span>
+              </div>
+
+              <!-- Description -->
+              <p class="text-xs text-body leading-relaxed mb-6 min-h-[40px] line-clamp-2">
+                {m.description}
+              </p>
+
+              <!-- Technical Specs -->
+              <div class="space-y-2 mb-6 text-xs border-y border-hairline py-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-mute flex items-center gap-1 font-medium">
+                    <svg class="w-3 h-3 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                    </svg>
+                    <span>Max Output Tokens:</span>
+                  </span>
+                  <span class="font-mono font-semibold text-ink">{m.formattedMaxOutput}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-mute flex items-center gap-1 font-medium">
+                    <svg class="w-3 h-3 text-mute" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    <span>Context Window:</span>
+                  </span>
+                  <span class="font-mono font-semibold text-ink">{m.formattedContext}</span>
+                </div>
+              </div>
+
+              <!-- Pricing Metrics -->
+              <div class="space-y-1.5 mb-6 text-xs">
+                <div class="flex justify-between items-center">
+                  <span class="text-mute">Input:</span>
+                  <span class="font-mono font-bold text-emerald-600">${m.inputCostPer1M.toFixed(2)}/1M tokens</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-mute">Output:</span>
+                  <span class="font-mono font-bold text-blue-600">${m.outputCostPer1M.toFixed(2)}/1M tokens</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons (Matches Image 3) -->
+            <div class="flex flex-col gap-2 pt-2">
+              <a 
+                href={`/token-calculator?model=${m.id}`}
+                class="w-full bg-ink text-on-primary text-xs font-medium py-2 rounded-sm text-center hover:bg-black transition-colors flex items-center justify-center gap-1.5"
+              >
+                <svg class="w-3.5 h-3.5 text-on-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18m2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM8.25 6h7.5m-7.5 3h7.5M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+                <span>Calculate Tokens</span>
+              </a>
+
+              <a 
+                href={`/token-calculator/models/${m.id}`}
+                class="w-full bg-canvas border border-hairline hover:border-faint text-ink text-xs font-medium py-2 rounded-sm text-center transition-colors flex items-center justify-center gap-1"
+              >
+                <span>Learn More</span>
+                <span class="text-mute">↗</span>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const pills = document.querySelectorAll('.filter-pill');
+    const cards = document.querySelectorAll('.model-card');
+
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => {
+          p.classList.remove('border-ink', 'bg-ink', 'text-on-primary');
+          p.classList.add('border-hairline', 'bg-canvas-elevated', 'text-body');
+        });
+
+        pill.classList.remove('border-hairline', 'bg-canvas-elevated', 'text-body');
+        pill.classList.add('border-ink', 'bg-ink', 'text-on-primary');
+
+        const selectedProvider = pill.getAttribute('data-provider');
+
+        cards.forEach(card => {
+          const prov = card.getAttribute('data-provider');
+          if (selectedProvider === 'all' || prov === selectedProvider) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  });
+</script>
