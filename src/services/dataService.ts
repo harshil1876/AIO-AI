@@ -133,7 +133,7 @@ export async function filterTools(filters: SearchFilters): Promise<ToolData[]> {
   }
 
   if (filters.sort === 'rating') {
-    list.sort((a, b) => b.rating - a.rating);
+    list.sort((a, b) => ((b.rating ?? 0) - (a.rating ?? 0)));
   } else {
     list.sort((a, b) => b.platformScore - a.platformScore);
   }

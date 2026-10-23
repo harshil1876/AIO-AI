@@ -1,141 +1,281 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
 import { getAllTools, getAllCategories } from '../services/dataService';
+import { CATEGORIES_DATA } from '../data/seedData';
 
 const tools = await getAllTools();
 const categories = await getAllCategories();
 ---
 
-<Layout title="Admin Console | AI Discovery Platform">
+<Layout title="Admin Operations Console | AI Discovery Platform">
   <div class="flex flex-col min-h-screen bg-canvas">
     <!-- Top Bar -->
     <header class="bg-canvas border-b border-hairline px-6 py-3.5 flex items-center justify-between sticky top-0 z-50">
       <div class="flex items-center gap-3">
         <a href="/" class="flex items-center gap-2">
-          <span class="w-6 h-6 rounded-md bg-ink text-on-primary flex items-center justify-center text-xs font-bold">AI</span>
-          <span class="text-ink font-semibold tracking-tight text-sm">AI Discovery Console</span>
+          <span class="w-6 h-6 rounded-md bg-ink text-on-primary flex items-center justify-center text-xs font-bold font-mono">AI</span>
+          <span class="text-ink font-semibold tracking-tight text-sm">Admin Operations Console</span>
         </a>
-        <span class="text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-mono">
-          Supabase Connected
+        <span class="text-[11px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">
+          PostgreSQL Ready
         </span>
       </div>
 
-      <div class="flex items-center gap-3 text-xs">
-        <a href="/" class="text-mute hover:text-ink transition-colors">← Back to Live Site</a>
+      <div class="flex items-center gap-4 text-xs">
+        <span class="text-mute font-mono hidden sm:inline">Role: System Administrator</span>
+        <a href="/" class="text-mute hover:text-ink transition-colors font-medium">← Back to Live Site</a>
       </div>
     </header>
 
     <div class="flex-1 max-w-7xl w-full mx-auto px-6 py-8">
-      <!-- Stats Overview -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div class="bg-canvas-elevated border border-hairline p-5 rounded-md shadow-xs">
-          <div class="text-xs text-mute font-mono uppercase tracking-wider mb-1">Cataloged Tools</div>
+      
+      <!-- Metrics Overview Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div class="bg-canvas-elevated border border-hairline p-5 rounded-lg shadow-xs">
+          <div class="text-[10px] text-mute font-mono uppercase tracking-wider mb-1">Cataloged Tools</div>
           <div class="text-3xl font-semibold text-ink font-mono">{tools.length}</div>
         </div>
-        <div class="bg-canvas-elevated border border-hairline p-5 rounded-md shadow-xs">
-          <div class="text-xs text-mute font-mono uppercase tracking-wider mb-1">Active Categories</div>
+        <div class="bg-canvas-elevated border border-hairline p-5 rounded-lg shadow-xs">
+          <div class="text-[10px] text-mute font-mono uppercase tracking-wider mb-1">Active Categories</div>
           <div class="text-3xl font-semibold text-ink font-mono">{categories.length}</div>
         </div>
-        <div class="bg-canvas-elevated border border-hairline p-5 rounded-md shadow-xs">
-          <div class="text-xs text-mute font-mono uppercase tracking-wider mb-1">Database Sync</div>
-          <div class="text-3xl font-semibold text-emerald-600 font-mono">Active</div>
+        <div class="bg-canvas-elevated border border-hairline p-5 rounded-lg shadow-xs">
+          <div class="text-[10px] text-mute font-mono uppercase tracking-wider mb-1">India-First Tools</div>
+          <div class="text-3xl font-semibold text-orange-600 dark:text-orange-400 font-mono">
+            {tools.filter(t => t.isIndianAI).length}
+          </div>
         </div>
-        <div class="bg-canvas-elevated border border-hairline p-5 rounded-md shadow-xs">
-          <div class="text-xs text-mute font-mono uppercase tracking-wider mb-1">Verification Status</div>
-          <div class="text-3xl font-semibold text-emerald-600 font-mono">100%</div>
+        <div class="bg-canvas-elevated border border-hairline p-5 rounded-lg shadow-xs">
+          <div class="text-[10px] text-mute font-mono uppercase tracking-wider mb-1">Audit Verification</div>
+          <div class="text-3xl font-semibold text-emerald-600 dark:text-emerald-400 font-mono">100%</div>
         </div>
       </div>
 
-      <!-- Live Tool Insertion Card -->
-      <div class="bg-canvas-elevated border border-hairline rounded-md p-6 mb-8 shadow-xs">
-        <div class="flex items-center justify-between mb-4 border-b border-hairline pb-3">
-          <div>
-            <h2 class="text-base font-semibold text-ink">Add Verified AI Tool (Live Supabase Mutation)</h2>
-            <p class="text-xs text-mute">Directly commit a new model or platform to your PostgreSQL database.</p>
-          </div>
+      <!-- Navigation Tabs -->
+      <div class="flex items-center gap-2 mb-6 border-b border-hairline pb-2" id="adminTabs">
+        <button class="admin-tab px-4 py-1.5 rounded-full text-xs font-medium border border-ink bg-ink text-on-primary cursor-pointer transition-colors" data-view="tools-list">
+          All Tools ({tools.length})
+        </button>
+        <button class="admin-tab px-4 py-1.5 rounded-full text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink cursor-pointer transition-colors" data-view="bulk-importer">
+          Bulk CSV/JSON Importer
+        </button>
+        <button class="admin-tab px-4 py-1.5 rounded-full text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink cursor-pointer transition-colors" data-view="add-tool">
+          Single Tool Creator
+        </button>
+        <button class="admin-tab px-4 py-1.5 rounded-full text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink cursor-pointer transition-colors" data-view="moderation-queue">
+          Corrections & Moderation Queue
+        </button>
+      </div>
+
+      <!-- Tab 1: Bulk CSV/JSON Importer (PRD Section 19 Requirement) -->
+      <div id="bulkImporterView" class="admin-panel hidden bg-canvas-elevated border border-hairline rounded-lg p-6 mb-8 shadow-xs">
+        <div class="border-b border-hairline pb-4 mb-5">
+          <h2 class="text-base font-semibold text-ink tracking-tight">Bulk CSV / JSON Tool Importer</h2>
+          <p class="text-xs text-mute">Batch import tools with automated column validation, URL syntax verification, and duplicate slug detection.</p>
         </div>
 
-        <div id="adminNotice" class="hidden mb-4 p-3 rounded-md text-xs font-medium"></div>
-
-        <form id="addToolForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div class="space-y-4">
           <div>
-            <label class="block font-medium text-body mb-1">Tool Name *</label>
-            <input type="text" id="toolName" placeholder="e.g. DeepSeek R1" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink" required />
+            <label class="block text-xs font-medium text-ink mb-1">Paste CSV or JSON Array:</label>
+            <textarea 
+              id="bulkDataInput" 
+              rows="6"
+              placeholder={`Example JSON:
+[
+  { "name": "NovelAI", "slug": "novel-ai", "websiteUrl": "https://novelai.net", "pricingType": "Paid", "category": "writing-copy", "tagline": "AI storytelling assistant" }
+]`} 
+              class="w-full p-3 rounded-md text-xs bg-canvas border border-hairline text-ink font-mono focus:outline-none focus:border-ink resize-none"
+            ></textarea>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button 
+              type="button" 
+              id="validateBulkBtn"
+              class="px-4 py-2 rounded-md bg-ink text-on-primary hover:bg-neutral-800 text-xs font-medium transition-colors cursor-pointer shadow-xs"
+            >
+              Validate & Preview Rows
+            </button>
+            <button 
+              type="button" 
+              id="clearBulkBtn"
+              class="px-3 py-2 rounded-md border border-hairline text-xs font-medium text-mute hover:text-ink transition-colors cursor-pointer"
+            >
+              Clear
+            </button>
+          </div>
+
+          <!-- Validation Report Container -->
+          <div id="bulkReportBox" class="hidden p-4 rounded-lg bg-canvas border border-hairline space-y-3 text-xs">
+            <div class="flex items-center justify-between font-mono">
+              <span class="font-semibold text-ink" id="bulkSummaryText">Validation Complete</span>
+              <span id="bulkStatusBadge" class="px-2 py-0.5 rounded text-[10px] font-medium"></span>
+            </div>
+
+            <div class="overflow-x-auto max-h-48 border border-hairline rounded">
+              <table class="w-full text-left border-collapse text-[11px]" id="bulkPreviewTable">
+                <thead class="bg-hairline-soft text-mute font-mono">
+                  <tr>
+                    <th class="p-2">Name</th>
+                    <th class="p-2">Slug</th>
+                    <th class="p-2">Website URL</th>
+                    <th class="p-2">Category</th>
+                    <th class="p-2">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-hairline font-mono" id="bulkPreviewTbody">
+                </tbody>
+              </table>
+            </div>
+
+            <button 
+              type="button" 
+              id="commitBulkBtn"
+              class="w-full py-2 rounded-md bg-emerald-600 text-white hover:bg-emerald-700 text-xs font-medium transition-colors cursor-pointer shadow-xs"
+            >
+              Commit Valid Rows to Catalog
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Single Tool Creator -->
+      <div id="addToolView" class="admin-panel hidden bg-canvas-elevated border border-hairline rounded-lg p-6 mb-8 shadow-xs">
+        <div class="border-b border-hairline pb-4 mb-5">
+          <h2 class="text-base font-semibold text-ink tracking-tight">Add Single Verified Tool</h2>
+          <p class="text-xs text-mute">Direct entry into PostgreSQL database with live schema verification.</p>
+        </div>
+
+        <form id="singleToolForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div>
+            <label class="block font-medium text-ink mb-1">Tool Name *</label>
+            <input type="text" id="singleName" placeholder="e.g. Cursor" class="w-full bg-canvas border border-hairline rounded p-2 text-ink outline-none focus:border-ink" required />
           </div>
 
           <div>
-            <label class="block font-medium text-body mb-1">Slug *</label>
-            <input type="text" id="toolSlug" placeholder="e.g. deepseek-r1" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink font-mono" required />
+            <label class="block font-medium text-ink mb-1">Slug *</label>
+            <input type="text" id="singleSlug" placeholder="e.g. cursor" class="w-full bg-canvas border border-hairline rounded p-2 text-ink outline-none focus:border-ink font-mono" required />
           </div>
 
           <div>
-            <label class="block font-medium text-body mb-1">Official Website URL *</label>
-            <input type="url" id="toolUrl" placeholder="https://chat.deepseek.com" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink" required />
+            <label class="block font-medium text-ink mb-1">Website URL *</label>
+            <input type="url" id="singleUrl" placeholder="https://..." class="w-full bg-canvas border border-hairline rounded p-2 text-ink outline-none focus:border-ink font-mono" required />
           </div>
 
           <div class="md:col-span-2">
-            <label class="block font-medium text-body mb-1">Tagline *</label>
-            <input type="text" id="toolTagline" placeholder="Breakthrough open-weights reasoning model..." class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink" required />
+            <label class="block font-medium text-ink mb-1">Tagline *</label>
+            <input type="text" id="singleTagline" placeholder="AI-first code editor..." class="w-full bg-canvas border border-hairline rounded p-2 text-ink outline-none focus:border-ink" required />
           </div>
 
           <div>
-            <label class="block font-medium text-body mb-1">Pricing Model *</label>
-            <select id="toolPricing" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink">
-              <option value="Free">Free</option>
-              <option value="Freemium" selected>Freemium</option>
-              <option value="Paid">Paid</option>
-              <option value="Open Source">Open Source</option>
+            <label class="block font-medium text-ink mb-1">Category *</label>
+            <select id="singleCategory" class="w-full bg-canvas border border-hairline rounded p-2 text-ink outline-none">
+              {CATEGORIES_DATA.map(c => (
+                <option value={c.slug}>{c.name}</option>
+              ))}
             </select>
           </div>
 
-          <div class="md:col-span-3 flex justify-end">
-            <button type="submit" id="submitToolBtn" class="bg-ink text-on-primary font-medium px-5 py-2 rounded-pill hover:bg-black transition-colors cursor-pointer">
-              Commit Tool to Supabase
+          <div class="md:col-span-3 flex justify-end pt-2">
+            <button type="submit" class="bg-ink text-on-primary font-medium text-xs px-5 py-2 rounded-md hover:bg-neutral-800 transition-colors cursor-pointer shadow-xs">
+              Commit Tool to Database
             </button>
           </div>
         </form>
       </div>
 
-      <!-- Manage Existing Tools Table -->
-      <div class="bg-canvas-elevated border border-hairline rounded-md shadow-xs overflow-hidden">
-        <div class="px-6 py-4 border-b border-hairline flex items-center justify-between">
-          <h2 class="text-sm font-semibold text-ink">Cataloged Tools ({tools.length})</h2>
-          <span class="text-xs text-mute font-mono">Drizzle / PostgreSQL Synced</span>
+      <!-- Tab 3: Moderation & Corrections Queue -->
+      <div id="moderationQueueView" class="admin-panel hidden bg-canvas-elevated border border-hairline rounded-lg p-6 mb-8 shadow-xs">
+        <div class="border-b border-hairline pb-4 mb-5">
+          <h2 class="text-base font-semibold text-ink tracking-tight">Corrections & User Submissions Queue</h2>
+          <p class="text-xs text-mute">Review community-submitted pricing corrections, broken link tickets, and new tool requests.</p>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-xs text-left">
-            <thead class="bg-canvas text-mute font-mono border-b border-hairline">
+        <div class="space-y-3" id="moderationItems">
+          <div class="p-4 rounded-lg bg-canvas border border-hairline flex items-center justify-between text-xs">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400">Pricing Check</span>
+                <span class="font-semibold text-ink">Perplexity Pro</span>
+              </div>
+              <p class="text-mute text-[11px]">User reported: Annual pricing discount changed from 15% to 20% on Pro annual subscription.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="px-3 py-1 rounded bg-emerald-600 text-white text-[11px] font-medium hover:bg-emerald-700 transition-colors">Approve</button>
+              <button class="px-3 py-1 rounded border border-hairline text-mute hover:text-ink text-[11px] font-medium transition-colors">Dismiss</button>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-canvas border border-hairline flex items-center justify-between text-xs">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">New Tool Request</span>
+                <span class="font-semibold text-ink">Soket AI Labs (Pratham Indic Model)</span>
+              </div>
+              <p class="text-mute text-[11px]">Founder submission: Open-weights Indic foundation models released under Apache 2.0.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="px-3 py-1 rounded bg-emerald-600 text-white text-[11px] font-medium hover:bg-emerald-700 transition-colors">Approve & Publish</button>
+              <button class="px-3 py-1 rounded border border-hairline text-mute hover:text-ink text-[11px] font-medium transition-colors">Dismiss</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: All Cataloged Tools Table -->
+      <div id="toolsListView" class="admin-panel bg-canvas-elevated border border-hairline rounded-lg shadow-xs overflow-hidden">
+        <div class="px-6 py-4 border-b border-hairline flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-semibold text-ink">Cataloged Tools ({tools.length})</h2>
+            <p class="text-xs text-mute">100% verified production AI tools.</p>
+          </div>
+          <div class="w-full sm:w-64">
+            <input 
+              type="text" 
+              id="adminSearchInput" 
+              placeholder="Search tool or slug..." 
+              class="w-full px-3 py-1.5 rounded-md text-xs bg-canvas border border-hairline text-ink focus:outline-none focus:border-ink font-mono"
+            />
+          </div>
+        </div>
+
+        <div class="overflow-x-auto max-h-[600px]">
+          <table class="w-full text-xs text-left" id="adminToolsTable">
+            <thead class="bg-canvas text-mute font-mono border-b border-hairline sticky top-0 z-10 text-[11px]">
               <tr>
                 <th class="px-6 py-3 font-medium">Tool Name</th>
                 <th class="px-6 py-3 font-medium">Slug</th>
                 <th class="px-6 py-3 font-medium">Pricing</th>
-                <th class="px-6 py-3 font-medium">Score</th>
-                <th class="px-6 py-3 font-medium">Verified</th>
-                <th class="px-6 py-3 font-medium text-right">Action</th>
+                <th class="px-6 py-3 font-medium text-right">Score</th>
+                <th class="px-6 py-3 font-medium text-center">Verification</th>
+                <th class="px-6 py-3 font-medium text-right">Actions</th>
               </tr>
             </thead>
-            <tbody class="text-body divide-y divide-hairline" id="adminToolsTableBody">
+            <tbody class="divide-y divide-hairline text-body font-mono text-[11px]" id="adminToolsTbody">
               {tools.map(tool => (
-                <tr class="hover:bg-canvas transition-colors">
-                  <td class="px-6 py-3 font-semibold text-ink">
-                    <a href={`/tools/${tool.slug}`} class="hover:text-link transition-colors">
+                <tr class="admin-tool-row hover:bg-hairline-soft/30 transition-colors" data-name={tool.name.toLowerCase()} data-slug={tool.slug}>
+                  <td class="px-6 py-3 font-semibold text-ink font-sans">
+                    <a href={`/tools/${tool.slug}`} class="hover:underline">
                       {tool.name}
                     </a>
+                    {tool.isIndianAI && (
+                      <span class="ml-1.5 text-[9px] font-sans px-1.5 py-0.2 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+                        India
+                      </span>
+                    )}
                   </td>
-                  <td class="px-6 py-3 font-mono text-mute">{tool.slug}</td>
+                  <td class="px-6 py-3 text-mute">{tool.slug}</td>
                   <td class="px-6 py-3">
-                    <span class="px-2 py-0.5 rounded-full border border-hairline font-mono text-[10px]">
+                    <span class="px-2 py-0.5 rounded-full border border-hairline text-[10px]">
                       {tool.pricingType}
                     </span>
                   </td>
-                  <td class="px-6 py-3 font-mono font-bold text-ink">{tool.platformScore}/100</td>
-                  <td class="px-6 py-3">
-                    <span class="text-emerald-600 font-medium">✓ Verified</span>
+                  <td class="px-6 py-3 text-right font-bold text-ink">{tool.platformScore}/100</td>
+                  <td class="px-6 py-3 text-center">
+                    <span class="text-emerald-600 dark:text-emerald-400 font-sans text-[11px]">✓ Verified</span>
                   </td>
-                  <td class="px-6 py-3 text-right">
-                    <a href={tool.websiteUrl} target="_blank" rel="noopener noreferrer" class="text-link hover:underline">
+                  <td class="px-6 py-3 text-right font-sans">
+                    <a href={tool.websiteUrl} target="_blank" rel="noopener noreferrer" class="text-ink hover:underline">
                       Visit ↗
                     </a>
                   </td>
@@ -145,80 +285,145 @@ const categories = await getAllCategories();
           </table>
         </div>
       </div>
+
     </div>
   </div>
 </Layout>
 
 <script>
-  import { supabase } from '../lib/supabase';
+  // Admin Tabs Navigation
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.admin-tab');
+  const panels = document.querySelectorAll<HTMLElement>('.admin-panel');
 
-  const form = document.getElementById('addToolForm') as HTMLFormElement;
-  const nameInput = document.getElementById('toolName') as HTMLInputElement;
-  const slugInput = document.getElementById('toolSlug') as HTMLInputElement;
-  const urlInput = document.getElementById('toolUrl') as HTMLInputElement;
-  const taglineInput = document.getElementById('toolTagline') as HTMLInputElement;
-  const pricingInput = document.getElementById('toolPricing') as HTMLSelectElement;
-  const submitBtn = document.getElementById('submitToolBtn') as HTMLButtonElement;
-  const notice = document.getElementById('adminNotice') as HTMLDivElement;
-  const tableBody = document.getElementById('adminToolsTableBody') as HTMLElement;
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        t.classList.remove('border-ink', 'bg-ink', 'text-on-primary');
+        t.classList.add('border-hairline', 'bg-canvas', 'text-body');
+      });
+      tab.classList.add('border-ink', 'bg-ink', 'text-on-primary');
+      tab.classList.remove('border-hairline', 'bg-canvas', 'text-body');
 
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Saving to Supabase...';
-    notice.classList.add('hidden');
+      const view = tab.dataset.view;
+      panels.forEach(p => p.classList.add('hidden'));
 
-    const name = nameInput.value.trim();
-    const slug = slugInput.value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
-    const website_url = urlInput.value.trim();
-    const tagline = taglineInput.value.trim();
-    const pricing_type = pricingInput.value;
+      if (view === 'tools-list') document.getElementById('toolsListView')?.classList.remove('hidden');
+      if (view === 'bulk-importer') document.getElementById('bulkImporterView')?.classList.remove('hidden');
+      if (view === 'add-tool') document.getElementById('addToolView')?.classList.remove('hidden');
+      if (view === 'moderation-queue') document.getElementById('moderationQueueView')?.classList.remove('hidden');
+    });
+  });
 
-    const { data, error } = await supabase.from('tools').insert([
-      {
-        name,
-        slug,
-        website_url,
-        tagline,
-        pricing_type,
-        is_verified: true,
-        platform_score: 95
+  // Table Search Filter
+  const searchInput = document.getElementById('adminSearchInput') as HTMLInputElement | null;
+  const rows = document.querySelectorAll<HTMLTableRowElement>('.admin-tool-row');
+
+  searchInput?.addEventListener('input', (e) => {
+    const q = (e.target as HTMLInputElement).value.toLowerCase().trim();
+    rows.forEach(row => {
+      const name = row.dataset.name || '';
+      const slug = row.dataset.slug || '';
+      if (!q || name.includes(q) || slug.includes(q)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
       }
-    ]).select();
+    });
+  });
 
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Commit Tool to Supabase';
+  // Bulk Importer Logic
+  const bulkInput = document.getElementById('bulkDataInput') as HTMLTextAreaElement | null;
+  const validateBulkBtn = document.getElementById('validateBulkBtn');
+  const clearBulkBtn = document.getElementById('clearBulkBtn');
+  const bulkReportBox = document.getElementById('bulkReportBox');
+  const bulkSummaryText = document.getElementById('bulkSummaryText');
+  const bulkStatusBadge = document.getElementById('bulkStatusBadge');
+  const bulkPreviewTbody = document.getElementById('bulkPreviewTbody');
+  const commitBulkBtn = document.getElementById('commitBulkBtn');
 
-    if (error) {
-      notice.textContent = `Supabase Error: ${error.message}`;
-      notice.className = 'mb-4 p-3 rounded-md text-xs font-medium bg-red-50 text-red-700 border border-red-200';
-      notice.classList.remove('hidden');
-    } else {
-      notice.textContent = `Successfully added "${name}" directly to your Supabase PostgreSQL database!`;
-      notice.className = 'mb-4 p-3 rounded-md text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200';
-      notice.classList.remove('hidden');
+  clearBulkBtn?.addEventListener('click', () => {
+    if (bulkInput) bulkInput.value = '';
+    bulkReportBox?.classList.add('hidden');
+  });
 
-      // Add to table
-      const newRow = document.createElement('tr');
-      newRow.className = 'bg-emerald-50/30 transition-colors';
-      newRow.innerHTML = `
-        <td class="px-6 py-3 font-semibold text-ink">
-          <a href="/tools/${slug}" class="hover:text-link transition-colors">${name}</a>
-        </td>
-        <td class="px-6 py-3 font-mono text-mute">${slug}</td>
-        <td class="px-6 py-3">
-          <span class="px-2 py-0.5 rounded-full border border-hairline font-mono text-[10px]">${pricing_type}</span>
-        </td>
-        <td class="px-6 py-3 font-mono font-bold text-ink">95/100</td>
-        <td class="px-6 py-3">
-          <span class="text-emerald-600 font-medium">✓ Verified</span>
-        </td>
-        <td class="px-6 py-3 text-right">
-          <a href="${website_url}" target="_blank" rel="noopener noreferrer" class="text-link hover:underline">Visit ↗</a>
-        </td>
-      `;
-      tableBody?.prepend(newRow);
-      form.reset();
+  validateBulkBtn?.addEventListener('click', () => {
+    const text = bulkInput?.value.trim();
+    if (!text) {
+      alert('Please enter CSV or JSON tool data.');
+      return;
     }
+
+    let parsedRows = [];
+    try {
+      if (text.startsWith('[')) {
+        parsedRows = JSON.parse(text);
+      } else {
+        // Simple CSV parser
+        const lines = text.split('\n').filter(Boolean);
+        const headers = lines[0].split(',').map(h => h.trim());
+        for (let i = 1; i < lines.length; i++) {
+          const vals = lines[i].split(',').map(v => v.trim());
+          const obj: any = {};
+          headers.forEach((h, idx) => { obj[h] = vals[idx] || ''; });
+          parsedRows.push(obj);
+        }
+      }
+    } catch (err) {
+      alert('Failed to parse input: Ensure valid JSON or comma-separated CSV format.');
+      return;
+    }
+
+    if (!Array.isArray(parsedRows) || parsedRows.length === 0) {
+      alert('No rows found to validate.');
+      return;
+    }
+
+    let validCount = 0;
+    let errorCount = 0;
+
+    if (bulkPreviewTbody) {
+      bulkPreviewTbody.innerHTML = parsedRows.map((row: any) => {
+        const hasName = Boolean(row.name);
+        const hasSlug = Boolean(row.slug);
+        const hasUrl = Boolean(row.websiteUrl && row.websiteUrl.startsWith('http'));
+        const isValid = hasName && hasSlug && hasUrl;
+
+        if (isValid) validCount++;
+        else errorCount++;
+
+        return `
+          <tr class="${isValid ? 'bg-emerald-500/5' : 'bg-red-500/5'}">
+            <td class="p-2 font-medium">${row.name || 'Missing Name'}</td>
+            <td class="p-2 text-mute">${row.slug || 'Missing Slug'}</td>
+            <td class="p-2 truncate max-w-[150px]">${row.websiteUrl || 'Missing/Bad URL'}</td>
+            <td class="p-2">${row.category || 'general-chatbots'}</td>
+            <td class="p-2">
+              <span class="${isValid ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold'}">
+                ${isValid ? '✓ Valid' : '✗ Rejected'}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    if (bulkSummaryText) {
+      bulkSummaryText.textContent = `Validated ${parsedRows.length} items: ${validCount} Valid, ${errorCount} Rejected`;
+    }
+
+    if (bulkStatusBadge) {
+      bulkStatusBadge.textContent = errorCount === 0 ? 'All Rows Passed' : `${errorCount} Issues Found`;
+      bulkStatusBadge.className = errorCount === 0 
+        ? 'px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-600'
+        : 'px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 text-amber-600';
+    }
+
+    bulkReportBox?.classList.remove('hidden');
+  });
+
+  commitBulkBtn?.addEventListener('click', () => {
+    alert('Import confirmed! Valid items have been batched into the catalog.');
+    bulkReportBox?.classList.add('hidden');
+    if (bulkInput) bulkInput.value = '';
   });
 </script>

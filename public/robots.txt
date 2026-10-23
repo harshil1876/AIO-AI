@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aio-ai.pages.dev/sitemap.xml

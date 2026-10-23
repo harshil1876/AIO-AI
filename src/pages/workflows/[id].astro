@@ -149,18 +149,34 @@ if (!workflow) {
             </p>
           </div>
 
-          <!-- Executable Prompt Template -->
-          <div class="border border-hairline rounded-md bg-canvas p-4">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-mono font-medium text-mute">Prompt / Configuration Snippet</span>
-              <button 
-                id="copySnippetBtn"
-                class="text-xs text-ink hover:text-link font-medium cursor-pointer transition-colors"
-              >
-                Copy Snippet
-              </button>
+          <!-- Executable Prompt Template / Gated Blueprint -->
+          <div class="border border-hairline rounded-lg bg-canvas p-5 shadow-xs">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono font-semibold text-ink">Production Prompt & Node Configuration</span>
+              <div class="flex items-center gap-2">
+                <button 
+                  id="copySnippetBtn"
+                  class="text-xs text-mute hover:text-ink font-medium cursor-pointer transition-colors px-2.5 py-1 rounded border border-hairline bg-canvas-elevated shadow-xs"
+                >
+                  Copy Snippet
+                </button>
+              </div>
             </div>
-            <pre id="inspectSnippet" class="text-xs font-mono text-body bg-canvas-elevated border border-hairline p-3 rounded-sm overflow-x-auto whitespace-pre-wrap">{workflow.steps[0].promptTemplate || 'Standard API / Webhook payload'}</pre>
+            <pre id="inspectSnippet" class="text-xs font-mono text-body bg-canvas-elevated border border-hairline p-3.5 rounded-md overflow-x-auto whitespace-pre-wrap max-h-48">{workflow.steps[0].promptTemplate || 'Standard API / Webhook payload'}</pre>
+            
+            <!-- Pro Blueprint Gating Notice (PRD Section 30) -->
+            <div class="mt-4 p-3.5 rounded-md bg-hairline-soft/60 border border-hairline flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+              <div class="flex items-center gap-2 text-mute">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>Need the full multi-branch n8n/Make JSON payload & API credentials guide?</span>
+              </div>
+              <a 
+                href="/login" 
+                class="font-semibold text-ink hover:underline shrink-0"
+              >
+                Sign In to Export Full Blueprint &rarr;
+              </a>
+            </div>
           </div>
         </div>
 

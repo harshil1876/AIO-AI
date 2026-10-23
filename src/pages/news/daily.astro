@@ -1,0 +1,91 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { NEWS_STORIES } from '../../data/newsData';
+---
+
+<Layout 
+  title="Daily AI Briefing & Intelligence Digest | AI Discovery"
+  description="Curated daily briefing on breakthrough AI models, open-weights releases, and ecosystem updates."
+>
+  <Header currentPath="/news" />
+
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
+    <!-- Header -->
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16">
+      <div class="max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-hairline bg-canvas text-xs font-medium text-mute mb-4">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Live Daily Intelligence</span>
+        </div>
+        <h1 class="text-3xl md:text-5xl font-semibold text-ink tracking-tight mb-4" style="letter-spacing: -1.4px;">
+          Daily AI Executive Briefing
+        </h1>
+        <p class="text-sm md:text-base text-body max-w-2xl leading-relaxed">
+          The essential 3-minute read on what shifted in artificial intelligence today, why it matters for engineers and founders, and verified source links.
+        </p>
+      </div>
+    </section>
+
+    <!-- Briefing Feed -->
+    <div class="w-full max-w-4xl mx-auto px-6 py-12 flex-1 flex flex-col gap-8">
+      {NEWS_STORIES.map((story, idx) => (
+        <article class="bg-canvas-elevated border border-hairline rounded-lg p-6 md:p-8 hover:border-faint transition-all shadow-xs">
+          <div class="flex items-center justify-between text-xs text-mute mb-3">
+            <span class="font-mono bg-hairline-soft px-2.5 py-0.5 rounded text-ink text-[11px] font-medium">
+              Item #{idx + 1} &bull; {story.category}
+            </span>
+            <span class="text-[11px]">{story.publishedDate} via {story.source}</span>
+          </div>
+
+          <h2 class="text-xl md:text-2xl font-semibold text-ink tracking-tight mb-3">
+            <a href={`/news/${story.id}`} class="hover:underline">
+              {story.title}
+            </a>
+          </h2>
+
+          <p class="text-sm text-body leading-relaxed mb-4">
+            {story.summary}
+          </p>
+
+          <div class="p-4 rounded-md border border-hairline bg-canvas text-xs leading-relaxed text-body mb-5">
+            <span class="text-ink font-semibold uppercase tracking-wider text-[10px] block mb-1">Strategic Significance</span>
+            {story.whyItMatters}
+          </div>
+
+          <div class="flex items-center justify-between pt-4 border-t border-hairline text-xs">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-mute text-[11px]">Related:</span>
+              {story.relatedEntities.map(e => (
+                <span class="bg-hairline-soft text-ink px-2 py-0.5 rounded text-[11px] font-mono">{e}</span>
+              ))}
+            </div>
+
+            <div class="flex items-center gap-3">
+              <a 
+                href={`/news/${story.id}`}
+                class="font-medium text-xs text-ink hover:underline"
+              >
+                Deep Dive &rarr;
+              </a>
+              <a 
+                href={story.sourceUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="font-medium text-xs text-mute hover:text-ink transition-colors inline-flex items-center gap-1"
+              >
+                <span>Original Source</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

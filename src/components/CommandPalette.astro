@@ -1,0 +1,252 @@
+---
+import { TOOLS_DATA } from '../data/seedData';
+import { WORKFLOWS_DATA } from '../data/workflowsData';
+import { OFFICIAL_MODELS } from '../data/modelsData';
+import { OPEN_SOURCE_REPOS } from '../data/openSourceData';
+import { CREATORS_DATA } from '../data/creatorsData';
+
+// Prepare a searchable index of entities
+const searchIndex = [
+  ...TOOLS_DATA.map(t => ({
+    title: t.name,
+    subtitle: t.tagline,
+    url: `/tools/${t.slug}`,
+    category: 'AI Tool',
+    tag: t.pricingType
+  })),
+  ...OFFICIAL_MODELS.map(m => ({
+    title: m.name,
+    subtitle: `${m.provider} - Context: ${m.formattedContext} tokens`,
+    url: `/token-calculator/models/${m.id}`,
+    category: 'LLM Model',
+    tag: `$${m.inputCostPer1M}/1M`
+  })),
+  ...WORKFLOWS_DATA.map(w => ({
+    title: w.title,
+    subtitle: w.goal,
+    url: `/workflows/${w.id}`,
+    category: 'Workflow',
+    tag: w.difficulty
+  })),
+  ...CREATORS_DATA.map(c => ({
+    title: c.channelName,
+    subtitle: c.description,
+    url: `/creators/${c.slug}`,
+    category: 'Creator',
+    tag: c.primaryCategory
+  })),
+  ...OPEN_SOURCE_REPOS.map(r => ({
+    title: r.name,
+    subtitle: r.description,
+    url: `/open-source/${r.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+    category: 'Open Source',
+    tag: `${r.stars} stars`
+  })),
+  {
+    title: 'LLM Token Calculator',
+    subtitle: 'Live token counter & multi-provider cost estimation',
+    url: '/token-calculator',
+    category: 'Utility',
+    tag: 'Built-in'
+  },
+  {
+    title: 'Prompt Improver',
+    subtitle: 'Generate structured system prompts with delimiters',
+    url: '/utilities#prompt-improver',
+    category: 'Utility',
+    tag: 'Built-in'
+  },
+  {
+    title: 'YouTube Hook & Title Generator',
+    subtitle: 'Generate viral CTR titles and 3-second retention hooks',
+    url: '/utilities#hook-generator',
+    category: 'Utility',
+    tag: 'Built-in'
+  },
+  {
+    title: 'Image Resizer & WebP Converter',
+    subtitle: 'Client-side private image compression & WebP export',
+    url: '/utilities#image-resizer',
+    category: 'Utility',
+    tag: 'Built-in'
+  },
+  {
+    title: 'QR Code Generator',
+    subtitle: 'Generate high-res SVG & PNG QR codes',
+    url: '/utilities#qr-generator',
+    category: 'Utility',
+    tag: 'Built-in'
+  }
+];
+---
+
+<!-- Global Command Palette Modal Dialog -->
+<div 
+  id="commandPaletteModal" 
+  class="fixed inset-0 z-50 bg-neutral-950/60 backdrop-blur-sm hidden items-start justify-center pt-20 px-4"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Global Search Palette"
+>
+  <div class="w-full max-w-xl bg-canvas-elevated border border-hairline rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[75vh] animate-in fade-in zoom-in-95 duration-150">
+    
+    <!-- Search Input Header -->
+    <div class="flex items-center px-4 py-3.5 border-b border-hairline bg-canvas">
+      <svg class="w-4 h-4 text-mute shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+      </svg>
+      <input 
+        type="text" 
+        id="commandPaletteInput" 
+        placeholder="Type to search tools, models, workflows, creators, utilities... (Esc to exit)" 
+        class="w-full bg-transparent text-sm text-ink placeholder:text-mute focus:outline-none font-sans"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <kbd class="px-2 py-0.5 text-[10px] font-mono text-mute bg-hairline-soft rounded border border-hairline shrink-0">
+        ESC
+      </kbd>
+    </div>
+
+    <!-- Results List -->
+    <div class="overflow-y-auto p-2 flex-1 divide-y divide-hairline/40" id="commandResultsList">
+      <!-- Injected dynamically via script -->
+    </div>
+
+    <!-- Footer Shortcuts -->
+    <div class="px-4 py-2 bg-canvas border-t border-hairline flex items-center justify-between text-[11px] text-mute font-mono">
+      <div class="flex items-center gap-3">
+        <span><kbd class="px-1.5 py-0.5 bg-hairline-soft rounded border border-hairline">↑</kbd> <kbd class="px-1.5 py-0.5 bg-hairline-soft rounded border border-hairline">↓</kbd> Navigate</span>
+        <span><kbd class="px-1.5 py-0.5 bg-hairline-soft rounded border border-hairline">↵</kbd> Select</span>
+      </div>
+      <span><kbd class="px-1.5 py-0.5 bg-hairline-soft rounded border border-hairline">⌘K</kbd> / <kbd class="px-1.5 py-0.5 bg-hairline-soft rounded border border-hairline">Ctrl+K</kbd></span>
+    </div>
+
+  </div>
+</div>
+
+<script define:vars={{ searchIndex }}>
+  let isOpen = false;
+  let selectedIndex = 0;
+  let currentResults = [];
+
+  const modal = document.getElementById('commandPaletteModal');
+  const input = document.getElementById('commandPaletteInput');
+  const resultsContainer = document.getElementById('commandResultsList');
+
+  function openPalette() {
+    isOpen = true;
+    modal?.classList.remove('hidden');
+    modal?.classList.add('flex');
+    input?.focus();
+    renderResults(input?.value || '');
+  }
+
+  function closePalette() {
+    isOpen = false;
+    modal?.classList.add('hidden');
+    modal?.classList.remove('flex');
+    if (input) input.value = '';
+  }
+
+  function renderResults(query) {
+    const q = query.toLowerCase().trim();
+    if (!q) {
+      currentResults = searchIndex.slice(0, 8);
+    } else {
+      currentResults = searchIndex.filter(item => 
+        item.title.toLowerCase().includes(q) ||
+        item.subtitle.toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q)
+      ).slice(0, 10);
+    }
+
+    selectedIndex = 0;
+
+    if (!resultsContainer) return;
+
+    if (currentResults.length === 0) {
+      resultsContainer.innerHTML = `
+        <div class="p-8 text-center text-xs text-mute">
+          No matches found for "${query}". Try searching for ChatGPT, Cursor, DeepSeek, or Workflows.
+        </div>
+      `;
+      return;
+    }
+
+    resultsContainer.innerHTML = currentResults.map((item, idx) => `
+      <a 
+        href="${item.url}" 
+        class="command-item flex items-center justify-between p-2.5 rounded-lg text-xs transition-colors cursor-pointer ${idx === 0 ? 'bg-hairline-soft text-ink font-medium' : 'text-body hover:bg-hairline-soft/60 hover:text-ink'}"
+        data-index="${idx}"
+      >
+        <div class="flex items-center gap-2.5 min-w-0 pr-3">
+          <span class="px-2 py-0.5 rounded text-[10px] font-mono shrink-0 bg-canvas border border-hairline text-mute">
+            ${item.category}
+          </span>
+          <div class="truncate">
+            <span class="font-semibold text-ink">${item.title}</span>
+            <span class="text-mute truncate ml-1 text-[11px]">${item.subtitle}</span>
+          </div>
+        </div>
+        <span class="text-[10px] text-faint font-mono shrink-0">${item.tag}</span>
+      </a>
+    `).join('');
+  }
+
+  // Keyboard shortcut listeners (Cmd+K / Ctrl+K)
+  window.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (isOpen) closePalette();
+      else openPalette();
+    }
+
+    if (e.key === 'Escape' && isOpen) {
+      closePalette();
+    }
+
+    if (isOpen && currentResults.length > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = (selectedIndex + 1) % currentResults.length;
+        updateItemSelection();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex = (selectedIndex - 1 + currentResults.length) % currentResults.length;
+        updateItemSelection();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const selected = currentResults[selectedIndex];
+        if (selected) {
+          window.location.href = selected.url;
+        }
+      }
+    }
+  });
+
+  function updateItemSelection() {
+    const items = document.querySelectorAll('.command-item');
+    items.forEach((item, idx) => {
+      if (idx === selectedIndex) {
+        item.classList.add('bg-hairline-soft', 'text-ink', 'font-medium');
+        item.classList.remove('text-body');
+        item.scrollIntoView({ block: 'nearest' });
+      } else {
+        item.classList.remove('bg-hairline-soft', 'text-ink', 'font-medium');
+        item.classList.add('text-body');
+      }
+    });
+  }
+
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closePalette();
+  });
+
+  input?.addEventListener('input', (e) => {
+    renderResults(e.target.value);
+  });
+
+  // Export opener for header button
+  window.openCommandPalette = openPalette;
+</script>

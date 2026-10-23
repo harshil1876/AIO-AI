@@ -15,3 +15,13 @@
 **Decision**: Strictly adhere to the MVP scope (Phase 1-4 & 9) before expanding to News, Creators, and Workflows.
 **Alternatives**: Build everything concurrently.
 **Reason**: PRD Section 3 "CRITICAL SCOPE RULE" mandates not implementing every future feature in the first pass to ensure the core directory and MVP are launchable.
+
+## Decision 003: Entity Graph Expansion, Zero-Fake-Activity Hardening & Command Palette
+**Date**: 2026-10-23
+**Problem**: The audit revealed pure SSG limitations, schema mismatches with 8 flat tables vs. PRD 11 domains, fake synthetic reviews in seed data violating PRD Rule 44, and broken routes.
+**Decision**: 
+1. Expand Drizzle ORM schema to full 11-domain entity graph covering tools with 6 pricing states, workflows, repositories, newsStories, creators, models, reviews, bookmarks, stacks, communityPosts, votes, and corrections.
+2. Strip all fabricated user reviews and synthetic upvotes to strictly adhere to PRD Rule 44; keep Platform Score as an editorial 0-100 metric.
+3. Expand seed catalog to 113 real verified tools including 16 India-First AI innovators.
+4. Implement global Cmd+K / Ctrl+K Command Palette powered by fuzzy search across all entities.
+5. Build all missing routes: Creator Discovery Hub (/creators, /creators/[slug]), Daily News (/news/daily, /news/[slug]), Trending Open Source (/open-source/trending, /open-source/[slug]), Client-Side Creator Utilities (/utilities), and Community Submissions (/submit).

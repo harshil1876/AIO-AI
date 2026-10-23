@@ -1,24 +1,62 @@
 ---
 import '../styles/global.css';
+import CommandPalette from '../components/CommandPalette.astro';
 
 interface Props {
-	title?: string;
-	description?: string;
+  title?: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogType?: string;
+  jsonLd?: Record<string, any>;
 }
 
-const { title = "AI Discovery Platform", description = "Find the right AI for anything." } = Astro.props;
+const { 
+  title = "AI Discovery Platform — Verified AI Tools, Workflows & Creators", 
+  description = "The trusted, intent-driven discovery platform for verified AI tools, executable workflows, open-source models, and creator intelligence.",
+  canonicalUrl = Astro.url.href,
+  ogType = "website",
+  jsonLd
+} = Astro.props;
+
+const defaultJsonLd = jsonLd || {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "AI Discovery Platform",
+  "url": Astro.site ? Astro.site.toString() : "https://aio-ai.pages.dev",
+  "description": description
+};
 ---
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-		<meta name="description" content={description} />
-	</head>
-	<body class="bg-canvas text-body font-sans antialiased">
-		<slot />
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalUrl} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+
+    <!-- Structured JSON-LD Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(defaultJsonLd)} />
+  </head>
+  <body class="bg-canvas text-body font-sans antialiased selection:bg-neutral-800 selection:text-white">
+    <slot />
+    <CommandPalette />
+  </body>
 </html>

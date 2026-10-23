@@ -234,7 +234,7 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
         if (sortBy === 'score') {
           return Number(b.getAttribute('data-score')) - Number(a.getAttribute('data-score'));
         } else if (sortBy === 'rating') {
-          return Number(b.getAttribute('data-rating')) - Number(a.getAttribute('data-rating'));
+          return (Number(b.getAttribute('data-rating')) || 0) - (Number(a.getAttribute('data-rating')) || 0);
         } else if (sortBy === 'name') {
           return (a.getAttribute('data-name') || '').localeCompare(b.getAttribute('data-name') || '');
         }

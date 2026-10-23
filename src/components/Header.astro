@@ -9,12 +9,12 @@ const navLinks = [
   { href: '/tools', label: 'Explore Tools' },
   { href: '/compare', label: 'Compare' },
   { href: '/finder', label: 'AI Finder' },
-  { href: '/categories', label: 'Categories' },
   { href: '/workflows', label: 'Workflows' },
-  { href: '/stack-builder', label: 'Stack Builder' },
-  { href: '/community', label: 'Community' },
+  { href: '/creators', label: 'Creators' },
+  { href: '/open-source', label: 'Open Source' },
   { href: '/token-calculator', label: 'Token Calculator' },
-  { href: '/news', label: 'AI News' },
+  { href: '/utilities', label: 'Utilities' },
+  { href: '/community', label: 'Community' },
 ];
 ---
 
@@ -46,6 +46,19 @@ const navLinks = [
     </div>
 
     <div class="flex items-center gap-3">
+      <button
+        type="button"
+        onclick="window.openCommandPalette && window.openCommandPalette()"
+        class="inline-flex items-center gap-2 text-xs text-mute border border-hairline bg-canvas-elevated hover:text-ink hover:border-faint px-3 py-1.5 rounded-full transition-all shadow-xs cursor-pointer"
+        title="Open Command Palette (Cmd+K / Ctrl+K)"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+        <span class="hidden sm:inline">Search</span>
+        <kbd class="text-[10px] font-mono text-faint bg-hairline-soft px-1.5 py-0.5 rounded border border-hairline">⌘K</kbd>
+      </button>
+
       <a
         href="/finder"
         class="hidden sm:inline-flex items-center gap-1.5 text-xs text-mute border border-hairline bg-canvas-elevated hover:text-ink hover:border-faint px-3 py-1.5 rounded-full transition-all shadow-xs"

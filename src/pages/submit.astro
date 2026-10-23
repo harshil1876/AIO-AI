@@ -1,0 +1,229 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { CATEGORIES_DATA } from '../data/seedData';
+---
+
+<Layout 
+  title="Submit an AI Tool, Workflow, or Correction | AI Discovery"
+  description="Submit a new verified AI tool, open-source model repository, YouTube creator channel, or report outdated pricing information."
+>
+  <Header currentPath="/submit" />
+
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
+    <!-- Header -->
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16 text-center">
+      <div class="max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-hairline bg-canvas text-xs font-medium text-mute mb-4">
+          <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          <span>Editorial Integrity &bull; Zero Pay-for-Placement</span>
+        </div>
+
+        <h1 class="text-3xl md:text-5xl font-semibold text-ink tracking-tight mb-4" style="letter-spacing: -1.4px;">
+          Community Submission Portal
+        </h1>
+        <p class="text-body text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+          Submit a new verified AI tool, open-source repository, YouTube creator channel, or report outdated pricing. All submissions are reviewed by human maintainers.
+        </p>
+
+        <!-- Tab Switcher -->
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-2" id="submissionTabs">
+          <button class="submit-tab px-4 py-1.5 rounded-full border border-ink bg-ink text-on-primary text-xs font-medium cursor-pointer transition-colors" data-tab="tool">
+            Submit AI Tool
+          </button>
+          <button class="submit-tab px-4 py-1.5 rounded-full border border-hairline bg-canvas text-body hover:text-ink text-xs font-medium cursor-pointer transition-colors" data-tab="correction">
+            Report Outdated Info
+          </button>
+          <button class="submit-tab px-4 py-1.5 rounded-full border border-hairline bg-canvas text-body hover:text-ink text-xs font-medium cursor-pointer transition-colors" data-tab="creator">
+            Suggest Creator Channel
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Submission Form Container -->
+    <div class="w-full max-w-2xl mx-auto px-6 py-12 flex-1">
+      
+      <!-- Tab 1: Submit Tool -->
+      <form id="toolForm" class="submission-panel bg-canvas-elevated border border-hairline rounded-lg p-6 md:p-8 shadow-xs space-y-5">
+        <h2 class="text-base font-semibold text-ink tracking-tight border-b border-hairline pb-3">
+          Submit a New AI Tool
+        </h2>
+
+        <div>
+          <label class="block text-xs font-medium text-ink mb-1.5">Tool Name *</label>
+          <input type="text" required placeholder="e.g. Cursor" class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink focus:outline-none focus:border-ink font-sans" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-ink mb-1.5">Official Website URL *</label>
+          <input type="url" required placeholder="https://..." class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink font-mono focus:outline-none focus:border-ink" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-ink mb-1.5">Primary Category *</label>
+            <select class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink focus:outline-none">
+              {CATEGORIES_DATA.map(c => (
+                <option value={c.slug}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-ink mb-1.5">Pricing Model *</label>
+            <select class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink focus:outline-none">
+              <option value="freemium">Freemium (Free tier available)</option>
+              <option value="free">100% Free</option>
+              <option value="open_source">Open Source</option>
+              <option value="free_trial">Free Trial (Card required)</option>
+              <option value="paid">Paid Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-ink mb-1.5">Short Tagline (under 120 chars) *</label>
+          <input type="text" required maxlength="120" placeholder="e.g. AI-powered code editor built on VS Code" class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink focus:outline-none focus:border-ink" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-ink mb-1.5">Description & Key Capabilities *</label>
+          <textarea rows="4" required placeholder="Describe what the tool does, who it is for, and why it is significant..." class="w-full p-3 rounded-md text-xs bg-canvas border border-hairline text-ink focus:outline-none focus:border-ink resize-none"></textarea>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="isIndiaTool" class="rounded border-hairline accent-ink" />
+          <label for="isIndiaTool" class="text-xs text-body">This is an India-First or Indian-founded AI tool</label>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-md bg-ink text-on-primary hover:bg-neutral-800 text-xs font-medium transition-colors cursor-pointer shadow-xs">
+          Submit Tool for Editorial Review
+        </button>
+      </form>
+
+      <!-- Tab 2: Report Correction -->
+      <form id="correctionForm" class="submission-panel hidden bg-canvas-elevated border border-hairline rounded-lg p-6 md:p-8 shadow-xs space-y-5">
+        <h2 class="text-base font-semibold text-ink tracking-tight border-b border-hairline pb-3">
+          Report Outdated Pricing or Broken Link
+        </h2>
+
+        <div>
+          <label class="block text-xs font-medium text-ink mb-1.5">Tool Name or Slug *</label>
+          <input type="text" required placeholder="e.g. ChatGPT or /tools/chatgpt" class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink focus:outline-none focus:border-ink font-sans" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-ink mb-1.5">What is outdated? *</label>
+          <select class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink focus:outline-none">
+            <option value="pricing">Pricing changed or free tier removed</option>
+            <option value="broken_link">Website URL or documentation link is broken</option>
+            <option value="deprecated">Tool has been acquired or shut down</option>
+            <option value="features">New model or major feature released</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-ink mb-1.5">Accurate New Information *</label>
+          <textarea rows="3" required placeholder="Explain the exact new pricing or corrected details..." class="w-full p-3 rounded-md text-xs bg-canvas border border-hairline text-ink focus:outline-none focus:border-ink resize-none"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-ink mb-1.5">Proof / Official Source URL *</label>
+          <input type="url" required placeholder="https://company.com/pricing" class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink font-mono focus:outline-none focus:border-ink" />
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-md bg-ink text-on-primary hover:bg-neutral-800 text-xs font-medium transition-colors cursor-pointer shadow-xs">
+          Submit Correction Ticket
+        </button>
+      </form>
+
+      <!-- Tab 3: Suggest Creator -->
+      <form id="creatorForm" class="submission-panel hidden bg-canvas-elevated border border-hairline rounded-lg p-6 md:p-8 shadow-xs space-y-5">
+        <h2 class="text-base font-semibold text-ink tracking-tight border-b border-hairline pb-3">
+          Suggest a YouTube AI Educator
+        </h2>
+
+        <div>
+          <label class="block text-xs font-medium text-ink mb-1.5">Channel Name *</label>
+          <input type="text" required placeholder="e.g. Andrej Karpathy" class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink focus:outline-none focus:border-ink" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-ink mb-1.5">YouTube Channel URL *</label>
+          <input type="url" required placeholder="https://youtube.com/@channel" class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink font-mono focus:outline-none focus:border-ink" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-ink mb-1.5">Primary Teaching Focus *</label>
+          <select class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink focus:outline-none">
+            <option value="AI Coding">AI Coding & IDEs</option>
+            <option value="AI Tutorials">AI Tutorials & Local LLMs</option>
+            <option value="AI Research">AI Research & Neural Networks</option>
+            <option value="AI Agents">AI Agents & Automations</option>
+            <option value="Indian AI">Indian AI Educator</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-ink mb-1.5">Link to Top Recommended Video</label>
+          <input type="url" placeholder="https://youtube.com/watch?v=..." class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink font-mono focus:outline-none focus:border-ink" />
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-md bg-ink text-on-primary hover:bg-neutral-800 text-xs font-medium transition-colors cursor-pointer shadow-xs">
+          Submit Channel for Review
+        </button>
+      </form>
+
+      <!-- Confirmation Toast Modal -->
+      <div id="submitSuccessAlert" class="hidden mt-6 p-4 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          <span>Submission received successfully! Our editorial team reviews tickets within 24 hours.</span>
+        </div>
+        <button type="button" class="font-medium underline ml-2 cursor-pointer" onclick="document.getElementById('submitSuccessAlert').classList.add('hidden')">Dismiss</button>
+      </div>
+
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.submit-tab');
+  const panels = document.querySelectorAll<HTMLFormElement>('.submission-panel');
+  const alertBox = document.getElementById('submitSuccessAlert');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        t.classList.remove('border-ink', 'bg-ink', 'text-on-primary');
+        t.classList.add('border-hairline', 'bg-canvas', 'text-body');
+      });
+      tab.classList.add('border-ink', 'bg-ink', 'text-on-primary');
+      tab.classList.remove('border-hairline', 'bg-canvas', 'text-body');
+
+      const target = tab.dataset.tab;
+      panels.forEach(p => p.classList.add('hidden'));
+
+      if (target === 'tool') document.getElementById('toolForm')?.classList.remove('hidden');
+      if (target === 'correction') document.getElementById('correctionForm')?.classList.remove('hidden');
+      if (target === 'creator') document.getElementById('creatorForm')?.classList.remove('hidden');
+    });
+  });
+
+  panels.forEach(form => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      form.reset();
+      alertBox?.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>

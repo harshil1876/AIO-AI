@@ -1,0 +1,180 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { CREATORS_DATA } from '../../data/creatorsData';
+---
+
+<Layout 
+  title="AI & Tech YouTube Creators Hub | AI Discovery"
+  description="Discover the highest-signal AI educators, researchers, and engineers teaching modern AI, coding agents, and machine learning."
+>
+  <Header currentPath="/creators" />
+
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
+    <!-- Header Section -->
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16 text-center">
+      <div class="max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-hairline bg-canvas text-xs font-medium text-mute mb-4">
+          <svg class="w-3.5 h-3.5 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+          </svg>
+          <span>Curated AI Educators & Researchers</span>
+        </div>
+
+        <h1 class="text-3xl md:text-5xl font-semibold text-ink tracking-tight mb-4" style="letter-spacing: -1.4px;">
+          AI & Tech Creator Hub
+        </h1>
+        <p class="text-body text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+          Learn directly from top practitioners, researchers, and engineers. Verified tutorials on LLM architecture, agent frameworks, local models, and real-world AI coding.
+        </p>
+
+        <!-- Category Filters -->
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-2" id="creatorFilterPills">
+          <button class="creator-filter px-3.5 py-1.5 rounded-full border border-ink bg-ink text-on-primary text-xs font-medium transition-colors cursor-pointer" data-category="all">
+            All Educators ({CREATORS_DATA.length})
+          </button>
+          <button class="creator-filter px-3.5 py-1.5 rounded-full border border-hairline bg-canvas text-body hover:text-ink text-xs font-medium transition-colors cursor-pointer" data-category="AI Coding">
+            AI Coding
+          </button>
+          <button class="creator-filter px-3.5 py-1.5 rounded-full border border-hairline bg-canvas text-body hover:text-ink text-xs font-medium transition-colors cursor-pointer" data-category="AI Tutorials">
+            AI Tutorials
+          </button>
+          <button class="creator-filter px-3.5 py-1.5 rounded-full border border-hairline bg-canvas text-body hover:text-ink text-xs font-medium transition-colors cursor-pointer" data-category="AI Research">
+            AI Research
+          </button>
+          <button class="creator-filter px-3.5 py-1.5 rounded-full border border-hairline bg-canvas text-body hover:text-ink text-xs font-medium transition-colors cursor-pointer" data-category="AI Agents">
+            AI Agents
+          </button>
+          <button class="creator-filter px-3.5 py-1.5 rounded-full border border-hairline bg-canvas text-body hover:text-ink text-xs font-medium transition-colors cursor-pointer" data-category="Indian AI">
+            Indian AI Educators
+          </button>
+          <button class="creator-filter px-3.5 py-1.5 rounded-full border border-hairline bg-canvas text-body hover:text-ink text-xs font-medium transition-colors cursor-pointer" data-category="AI News">
+            AI News
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Creator Grid -->
+    <div class="w-full max-w-7xl mx-auto px-6 py-12 flex-1">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="creatorsGrid">
+        {CREATORS_DATA.map((creator) => (
+          <div 
+            class="creator-card bg-canvas-elevated border border-hairline hover:border-faint transition-all duration-200 rounded-lg p-6 shadow-xs flex flex-col justify-between group"
+            data-category={creator.primaryCategory}
+            data-name={creator.channelName.toLowerCase()}
+          >
+            <div>
+              <!-- Top Row: Avatar & Metadata -->
+              <div class="flex items-start justify-between gap-4 mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-full bg-hairline-soft overflow-hidden border border-hairline shrink-0 flex items-center justify-center font-bold text-ink text-sm">
+                    {creator.channelName.substring(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <a href={`/creators/${creator.slug}`} class="text-base font-semibold text-ink group-hover:text-primary transition-colors block">
+                      {creator.channelName}
+                    </a>
+                    <span class="text-xs text-mute font-mono">{creator.handle}</span>
+                  </div>
+                </div>
+
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-canvas border border-hairline text-body shrink-0">
+                  {creator.primaryCategory}
+                </span>
+              </div>
+
+              <!-- Channel Description -->
+              <p class="text-xs text-body leading-relaxed mb-4 line-clamp-3">
+                {creator.description}
+              </p>
+
+              <!-- Stats Pill -->
+              <div class="flex items-center gap-4 text-xs text-mute border-y border-hairline py-2.5 mb-4">
+                <div>
+                  <span class="text-[10px] uppercase tracking-wider block text-faint">Audience</span>
+                  <span class="font-semibold text-ink font-mono">{creator.subscribersEstimate}</span>
+                </div>
+                <div>
+                  <span class="text-[10px] uppercase tracking-wider block text-faint">Cadence</span>
+                  <span class="font-medium text-ink">{creator.uploadCadence}</span>
+                </div>
+                <div>
+                  <span class="text-[10px] uppercase tracking-wider block text-faint">Score</span>
+                  <span class="font-semibold text-emerald-600 dark:text-emerald-400 font-mono">{creator.educationalScore}/100</span>
+                </div>
+              </div>
+
+              <!-- Top Learning Topics -->
+              <div class="mb-4">
+                <span class="text-[10px] font-semibold text-faint uppercase tracking-wider block mb-1.5">Top Focus Areas</span>
+                <div class="flex flex-wrap gap-1">
+                  {creator.topTopics.slice(0, 3).map((topic) => (
+                    <span class="text-[11px] px-2 py-0.5 rounded bg-hairline-soft text-body">
+                      {topic}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Bottom Action -->
+            <div class="pt-4 border-t border-hairline flex items-center justify-between">
+              <a 
+                href={`/creators/${creator.slug}`}
+                class="text-xs font-semibold text-ink hover:underline inline-flex items-center gap-1"
+              >
+                <span>View Channel Profile</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                </svg>
+              </a>
+
+              <a 
+                href={creator.youtubeUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="text-xs text-mute hover:text-ink transition-colors inline-flex items-center gap-1 font-medium"
+              >
+                <span>YouTube</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  const filterPills = document.querySelectorAll<HTMLButtonElement>('.creator-filter');
+  const cards = document.querySelectorAll<HTMLElement>('.creator-card');
+
+  filterPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      filterPills.forEach(p => {
+        p.classList.remove('border-ink', 'bg-ink', 'text-on-primary');
+        p.classList.add('border-hairline', 'bg-canvas', 'text-body');
+      });
+      pill.classList.add('border-ink', 'bg-ink', 'text-on-primary');
+      pill.classList.remove('border-hairline', 'bg-canvas', 'text-body');
+
+      const cat = pill.dataset.category || 'all';
+
+      cards.forEach(card => {
+        const cardCat = card.dataset.category || '';
+        if (cat === 'all' || cardCat === cat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
