@@ -44,9 +44,14 @@ if (!workflow) {
             <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-hairline-soft border border-hairline text-ink">
               {workflow.difficulty}
             </span>
-            <span class="text-xs text-mute font-mono">⏱ {workflow.time}</span>
+            <span class="text-xs text-mute font-mono inline-flex items-center gap-1">
+              <svg class="w-3.5 h-3.5 text-mute" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+              <span>{workflow.time}</span>
+            </span>
             <span class="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-mono">
-              💰 {workflow.estimatedCost}
+              Est: {workflow.estimatedCost}
             </span>
           </div>
 

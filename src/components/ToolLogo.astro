@@ -1,0 +1,46 @@
+---
+interface Props {
+  websiteUrl: string;
+  name: string;
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { websiteUrl, name, size = 'md', class: customClass = '' } = Astro.props;
+
+// Extract domain
+let domain = 'ai';
+try {
+  const url = new URL(websiteUrl);
+  domain = url.hostname.replace('www.', '');
+} catch {
+  domain = name.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com';
+}
+
+const sizeClasses = {
+  sm: 'w-7 h-7 text-xs rounded-sm',
+  md: 'w-11 h-11 text-sm rounded-md',
+  lg: 'w-16 h-16 md:w-20 md:h-20 text-xl rounded-xl'
+};
+
+const imgSizes = {
+  sm: 'w-4 h-4',
+  md: 'w-6 h-6',
+  lg: 'w-10 h-10 md:w-12 md:h-12'
+};
+
+const logoSrc = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+---
+
+<div class={`bg-canvas-elevated border border-hairline flex items-center justify-center shrink-0 overflow-hidden shadow-2xs relative ${sizeClasses[size]} ${customClass}`}>
+  <img 
+    src={logoSrc} 
+    alt={`${name} official logo`} 
+    loading="lazy"
+    class={`object-contain ${imgSizes[size]}`}
+    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+  />
+  <span class="hidden font-mono font-bold text-ink uppercase items-center justify-center">
+    {name.charAt(0)}
+  </span>
+</div>

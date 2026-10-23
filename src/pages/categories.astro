@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CategoryIcon from '../components/CategoryIcon.astro';
 import { getAllCategories } from '../services/dataService';
 
 const categories = await getAllCategories();
@@ -73,7 +74,9 @@ const DOMAINS = [
                   class="bg-canvas-elevated border border-hairline rounded-md p-5 flex flex-col justify-between hover:border-faint transition-all hover:shadow-xs group"
                 >
                   <div>
-                    <div class="text-2xl mb-3 group-hover:scale-110 transition-transform">{cat.icon}</div>
+                    <div class="mb-3 p-2 rounded-md bg-hairline-soft/80 w-fit group-hover:scale-105 transition-transform">
+                      <CategoryIcon slug={cat.slug} class="w-6 h-6 text-ink" />
+                    </div>
                     <h3 class="font-semibold text-ink text-base group-hover:text-link transition-colors mb-1.5">
                       {cat.name}
                     </h3>

@@ -64,7 +64,7 @@ const INITIAL_TOOLS = [
 ];
 
 async function seed() {
-  console.log("🌱 Starting database seed...");
+  console.log("Starting database seed...");
 
   // 1. Seed Categories
   for (const cat of INITIAL_CATEGORIES) {
@@ -103,7 +103,7 @@ async function seed() {
   }
 
   console.log(`✅ Seeded ${toolsInserted} new tools with category links.`);
-  console.log("🎉 Seeding complete!");
+  console.log("Seeding complete!");
   process.exit(0);
 }
 

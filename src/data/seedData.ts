@@ -42,19 +42,19 @@ export interface CategoryData {
 }
 
 export const CATEGORIES_DATA: CategoryData[] = [
-  { slug: 'video-generation', name: 'Video Generation', description: 'Create shorts, edit videos, and generate avatars.', icon: '🎬' },
-  { slug: 'image-art', name: 'Image & Art', description: 'Generate logos, stock photos, and edit visuals.', icon: '🎨' },
-  { slug: 'audio-voice', name: 'Audio & Voice', description: 'Voiceovers, speech synthesis, music, and podcasts.', icon: '🎙️' },
-  { slug: 'writing-copy', name: 'Writing & Copy', description: 'SEO articles, marketing emails, and scripts.', icon: '✍️' },
-  { slug: 'code-assistants', name: 'Code Assistants', description: 'AI autocomplete, refactoring, and code review.', icon: '💻' },
-  { slug: 'web-app-builders', name: 'Web & App Builders', description: 'No-code web apps and rapid landing pages.', icon: '🛠️' },
-  { slug: 'open-source-models', name: 'Open Source Models', description: 'Self-hosted weights, Llama, and Hugging Face models.', icon: '🧠' },
-  { slug: 'research-analysis', name: 'Research & Analysis', description: 'PDF summarizers, paper analysis, and data insight.', icon: '📊' },
-  { slug: 'automation-workflows', name: 'Automation & Workflows', description: 'Connecting webhooks, apps, and triggers.', icon: '⚡' },
-  { slug: 'sales-marketing', name: 'Sales & Marketing', description: 'Lead discovery, outbound copy, and CRM sync.', icon: '📈' },
-  { slug: 'general-chatbots', name: 'General Chatbots', description: 'Omni-assistants, reasoning, and conversational search.', icon: '💬' },
-  { slug: 'autonomous-agents', name: 'Autonomous Agents', description: 'Multi-step autonomous execution and tool use.', icon: '🤖' },
-  { slug: 'india-first', name: 'India-First AI', description: 'Indic language translation, local compliance, and native LLMs.', icon: '🇮🇳' },
+  { slug: 'video-generation', name: 'Video Generation', description: 'Create shorts, edit videos, and generate avatars.', icon: 'video-generation' },
+  { slug: 'image-art', name: 'Image & Art', description: 'Generate logos, stock photos, and edit visuals.', icon: 'image-art' },
+  { slug: 'audio-voice', name: 'Audio & Voice', description: 'Voiceovers, speech synthesis, music, and podcasts.', icon: 'audio-voice' },
+  { slug: 'writing-copy', name: 'Writing & Copy', description: 'SEO articles, marketing emails, and scripts.', icon: 'writing-copy' },
+  { slug: 'code-assistants', name: 'Code Assistants', description: 'AI autocomplete, refactoring, and code review.', icon: 'code-assistants' },
+  { slug: 'web-app-builders', name: 'Web & App Builders', description: 'No-code web apps and rapid landing pages.', icon: 'web-app-builders' },
+  { slug: 'open-source-models', name: 'Open Source Models', description: 'Self-hosted weights, Llama, and Hugging Face models.', icon: 'open-source-models' },
+  { slug: 'research-analysis', name: 'Research & Analysis', description: 'PDF summarizers, paper analysis, and data insight.', icon: 'research-analysis' },
+  { slug: 'automation-workflows', name: 'Automation & Workflows', description: 'Connecting webhooks, apps, and triggers.', icon: 'automation-workflows' },
+  { slug: 'sales-marketing', name: 'Sales & Marketing', description: 'Lead discovery, outbound copy, and CRM sync.', icon: 'sales-marketing' },
+  { slug: 'general-chatbots', name: 'General Chatbots', description: 'Omni-assistants, reasoning, and conversational search.', icon: 'general-chatbots' },
+  { slug: 'autonomous-agents', name: 'Autonomous Agents', description: 'Multi-step autonomous execution and tool use.', icon: 'autonomous-agents' },
+  { slug: 'india-first', name: 'India-First AI', description: 'Indic language translation, local compliance, and native LLMs.', icon: 'india-first' },
 ];
 
 export const TOOLS_DATA: ToolData[] = [

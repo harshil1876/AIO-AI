@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ToolCard from '../components/ToolCard.astro';
+import CategoryIcon from '../components/CategoryIcon.astro';
 import { getTrendingTools, getAllCategories, getIndianAITools, getFreeTools } from '../services/dataService';
 
 const trendingTools = await getTrendingTools(6);
@@ -32,7 +33,11 @@ const freeTools = await getFreeTools(4);
       
       <!-- Search Input Container -->
       <form action="/tools" method="GET" class="w-full max-w-2xl bg-canvas-elevated border border-hairline hover:border-faint focus-within:border-ink rounded-lg shadow-sm p-1.5 flex items-center mb-6 transition-all">
-        <span class="pl-4 text-mute text-base">🔍</span>
+        <span class="pl-4 text-mute">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+        </span>
         <input 
           type="text" 
           name="q"
@@ -92,7 +97,9 @@ const freeTools = await getFreeTools(4);
             href={`/tools?category=${cat.slug}`}
             class="bg-canvas-elevated border border-hairline rounded-md p-4 flex flex-col items-start hover:border-faint transition-all hover:shadow-xs group"
           >
-            <span class="text-2xl mb-2 group-hover:scale-110 transition-transform">{cat.icon}</span>
+            <div class="mb-2 p-1.5 rounded-sm bg-hairline-soft/80 group-hover:scale-105 transition-transform">
+              <CategoryIcon slug={cat.slug} class="w-5 h-5 text-ink" />
+            </div>
             <span class="font-medium text-sm text-ink group-hover:text-link transition-colors line-clamp-1">{cat.name}</span>
             <span class="text-xs text-mute mt-1">{cat.count || 0} tools</span>
           </a>
@@ -106,7 +113,7 @@ const freeTools = await getFreeTools(4);
         <div class="flex items-center justify-between mb-8">
           <div>
             <div class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-orange-700 bg-orange-50 border border-orange-200 px-2 py-0.5 rounded-xs mb-2">
-              <span>🇮🇳</span> Regional AI Innovation
+              <span>Sovereign & Indic</span> Regional AI Innovation
             </div>
             <h2 class="text-2xl font-semibold tracking-tight text-ink mb-1">India-First AI Ecosystem</h2>
             <p class="text-sm text-mute">Indigenous sovereign models, Indic language intelligence, and localized solutions.</p>

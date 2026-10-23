@@ -1,0 +1,147 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="User Profile | AI Discovery Platform" description="Manage your saved AI tools and account settings.">
+  <Header currentPath="/profile" />
+
+  <main class="w-full flex-1 max-w-5xl mx-auto px-6 py-12">
+    <!-- Unauthenticated State -->
+    <div id="unauthView" class="hidden text-center py-20 bg-canvas-elevated border border-hairline rounded-lg p-8 shadow-xs">
+      <div class="w-12 h-12 rounded-full bg-hairline-soft flex items-center justify-center mx-auto mb-4 text-mute">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+        </svg>
+      </div>
+      <h1 class="text-2xl font-semibold text-ink tracking-tight mb-2">Sign in to view your profile</h1>
+      <p class="text-sm text-mute max-w-sm mx-auto mb-6">Create a profile to sync your bookmarks across devices and submit verified community reviews.</p>
+      <div class="flex items-center justify-center gap-3">
+        <a href="/login" class="bg-ink text-on-primary text-xs font-medium px-5 py-2.5 rounded-pill hover:bg-black transition-colors">
+          Log In
+        </a>
+        <a href="/signup" class="bg-canvas border border-hairline hover:border-faint text-ink text-xs font-medium px-5 py-2.5 rounded-pill transition-colors">
+          Create Account
+        </a>
+      </div>
+    </div>
+
+    <!-- Authenticated State -->
+    <div id="authView" class="hidden flex-col gap-8">
+      <!-- Profile Card -->
+      <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xs">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-full bg-ink text-on-primary font-bold text-lg flex items-center justify-center font-mono">
+            <span id="userAvatarText">U</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 id="userEmail" class="text-xl font-semibold text-ink tracking-tight">user@example.com</h1>
+              <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-mono">
+                Verified Member
+              </span>
+            </div>
+            <p id="userId" class="text-xs text-mute font-mono mt-1">ID: ...</p>
+          </div>
+        </div>
+
+        <button 
+          id="logoutBtn"
+          class="bg-canvas border border-hairline hover:border-faint text-ink text-xs font-medium px-4 py-2 rounded-pill transition-colors cursor-pointer self-start sm:self-auto"
+        >
+          Sign Out
+        </button>
+      </div>
+
+      <!-- Saved Bookmarks Section -->
+      <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 md:p-8 shadow-xs">
+        <div class="flex items-center justify-between border-b border-hairline pb-4 mb-6">
+          <div>
+            <h2 class="text-lg font-semibold text-ink tracking-tight">Saved Tools & Bookmarks</h2>
+            <p class="text-xs text-mute mt-0.5">Quick access to tools you've saved for your stack.</p>
+          </div>
+          <span id="bookmarkCount" class="text-xs font-mono font-medium text-ink bg-hairline-soft px-2 py-0.5 rounded-xs">
+            0 tools
+          </span>
+        </div>
+
+        <div id="bookmarksList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Populated by script -->
+        </div>
+
+        <div id="emptyBookmarks" class="hidden text-center py-12 text-mute text-xs">
+          You haven't bookmarked any AI tools yet. <a href="/tools" class="text-ink font-medium hover:underline">Browse the catalog</a> to save tools.
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  async function initProfile() {
+    const unauthView = document.getElementById('unauthView');
+    const authView = document.getElementById('authView');
+    const userEmail = document.getElementById('userEmail');
+    const userId = document.getElementById('userId');
+    const userAvatarText = document.getElementById('userAvatarText');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const bookmarksList = document.getElementById('bookmarksList');
+    const emptyBookmarks = document.getElementById('emptyBookmarks');
+    const bookmarkCount = document.getElementById('bookmarkCount');
+
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session || !session.user) {
+      unauthView?.classList.remove('hidden');
+      authView?.classList.add('hidden');
+      return;
+    }
+
+    // Authenticated
+    unauthView?.classList.add('hidden');
+    authView?.classList.remove('hidden');
+    authView?.classList.add('flex');
+
+    if (userEmail) userEmail.textContent = session.user.email || 'Member';
+    if (userId) userId.textContent = `ID: ${session.user.id.substring(0, 12)}...`;
+    if (userAvatarText && session.user.email) {
+      userAvatarText.textContent = session.user.email.charAt(0).toUpperCase();
+    }
+
+    // Render bookmarks
+    const savedSlugs: string[] = JSON.parse(localStorage.getItem('aio_bookmarks') || '[]');
+    if (bookmarkCount) bookmarkCount.textContent = `${savedSlugs.length} saved`;
+
+    if (savedSlugs.length === 0) {
+      emptyBookmarks?.classList.remove('hidden');
+    } else {
+      emptyBookmarks?.classList.add('hidden');
+      if (bookmarksList) {
+        bookmarksList.innerHTML = savedSlugs.map(slug => {
+          const formattedName = slug.split('-').map((s: string) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+          return `
+            <a href="/tools/${slug}" class="p-4 rounded-md border border-hairline bg-canvas hover:border-faint transition-all flex items-center justify-between group">
+              <div>
+                <span class="font-semibold text-ink text-sm group-hover:text-link transition-colors">${formattedName}</span>
+                <span class="text-xs text-mute block mt-0.5 font-mono">/tools/${slug}</span>
+              </div>
+              <span class="text-xs text-mute group-hover:text-ink transition-colors">→</span>
+            </a>
+          `;
+        }).join('');
+      }
+    }
+
+    logoutBtn?.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    });
+  }
+
+  initProfile();
+</script>
