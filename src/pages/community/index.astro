@@ -1,0 +1,208 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { COMMUNITY_POSTS } from '../../data/communityData';
+---
+
+<Layout 
+  title="AI Community & Discussions | AI Discovery Platform"
+  description="Connect with engineers, creators, and practitioners. Share workflows, benchmark models, and solve technical AI challenges."
+>
+  <Header currentPath="/community" />
+
+  <main class="w-full flex flex-col min-h-screen">
+    <!-- Header -->
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <div class="text-xs text-mute uppercase font-mono tracking-wider mb-2">Ecosystem Discussions</div>
+          <h1 class="text-3xl md:text-4xl font-semibold text-ink tracking-tight mb-2">
+            Practitioner Community
+          </h1>
+          <p class="text-sm md:text-base text-body max-w-2xl leading-relaxed">
+            Real questions, unbiased benchmarks, and workflow recipes from builders applying generative AI in production.
+          </p>
+        </div>
+
+        <button 
+          id="newDiscussionBtn"
+          class="bg-ink text-on-primary text-xs font-medium px-5 py-2.5 rounded-pill hover:bg-black transition-colors cursor-pointer shadow-xs shrink-0"
+        >
+          Start a Discussion +
+        </button>
+      </div>
+    </section>
+
+    <div class="w-full max-w-6xl mx-auto px-6 py-10 flex-1">
+      <!-- Create Post Form (Toggled) -->
+      <div id="postFormContainer" class="hidden mb-10 bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
+        <h2 class="text-base font-semibold text-ink mb-1">Create Community Post</h2>
+        <p class="text-xs text-mute mb-4">Share a workflow, benchmark data, or ask technical questions.</p>
+
+        <form id="createPostForm" class="flex flex-col gap-4 text-xs">
+          <div>
+            <label class="block font-medium text-body mb-1">Topic Title *</label>
+            <input type="text" id="postTitle" placeholder="e.g. Best settings for running DeepSeek locally..." required class="w-full bg-canvas border border-hairline rounded-sm p-2.5 outline-none text-ink focus:border-ink" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-medium text-body mb-1">Category *</label>
+              <select id="postType" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none text-ink">
+                <option value="Question">Question</option>
+                <option value="Discussion" selected>Discussion</option>
+                <option value="Workflow">Workflow Showcase</option>
+                <option value="Benchmark">Benchmark</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-medium text-body mb-1">Your Name / Handle *</label>
+              <input type="text" id="postAuthor" placeholder="e.g. dev_builder" required class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none text-ink" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-medium text-body mb-1">Detailed Content *</label>
+            <textarea id="postContent" rows="3" placeholder="Share your experience, steps, or code snippet..." required class="w-full bg-canvas border border-hairline rounded-sm p-2.5 outline-none text-ink resize-none focus:border-ink"></textarea>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button" id="cancelPostBtn" class="text-xs text-mute hover:text-ink">Cancel</button>
+            <button type="submit" class="bg-ink text-on-primary font-medium text-xs px-5 py-2 rounded-pill hover:bg-black transition-colors cursor-pointer">
+              Publish Topic
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Discussions Stream -->
+      <div class="space-y-4" id="discussionsStream">
+        {COMMUNITY_POSTS.map(post => (
+          <div class="bg-canvas-elevated border border-hairline rounded-md p-6 hover:border-faint transition-all shadow-xs flex flex-col sm:flex-row sm:items-start justify-between gap-5">
+            <div class="flex items-start gap-4 flex-1">
+              <!-- Upvote Button -->
+              <button class="upvote-btn flex flex-col items-center justify-center w-12 py-2 rounded-md bg-hairline-soft/80 border border-hairline hover:border-ink transition-colors cursor-pointer shrink-0">
+                <svg class="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                </svg>
+                <span class="text-xs font-mono font-bold text-ink mt-0.5 vote-count">{post.upvotes}</span>
+              </button>
+
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                  <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-hairline-soft text-ink border border-hairline uppercase">
+                    {post.type}
+                  </span>
+                  <span class="text-xs text-mute font-mono">by @{post.author}</span>
+                  <span class="text-xs text-faint">• {post.publishedAt}</span>
+                </div>
+
+                <h2 class="text-base font-semibold text-ink tracking-tight mb-2 hover:text-link transition-colors cursor-pointer">
+                  {post.title}
+                </h2>
+
+                <p class="text-xs md:text-sm text-body leading-relaxed mb-4 line-clamp-2">
+                  {post.content}
+                </p>
+
+                <div class="flex items-center gap-2 flex-wrap">
+                  {post.tags.map(tag => (
+                    <span class="text-[11px] text-mute bg-canvas px-2 py-0.5 rounded-xs border border-hairline font-mono">
+                      #{tag}
+                    </span>
+                  ))}
+                  <span class="text-xs text-mute ml-auto font-mono">
+                    💬 {post.commentsCount} replies
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const newBtn = document.getElementById('newDiscussionBtn');
+    const formContainer = document.getElementById('postFormContainer');
+    const cancelBtn = document.getElementById('cancelPostBtn');
+    const form = document.getElementById('createPostForm');
+    const stream = document.getElementById('discussionsStream');
+
+    newBtn?.addEventListener('click', () => {
+      formContainer?.classList.toggle('hidden');
+    });
+
+    cancelBtn?.addEventListener('click', () => {
+      formContainer?.classList.add('hidden');
+    });
+
+    // Handle upvotes
+    document.querySelectorAll('.upvote-btn').forEach(btn => {
+      let voted = false;
+      btn.addEventListener('click', () => {
+        const countSpan = btn.querySelector('.vote-count');
+        if (!countSpan) return;
+        let count = parseInt(countSpan.textContent || '0');
+        if (!voted) {
+          countSpan.textContent = (count + 1).toString();
+          btn.classList.add('border-ink', 'bg-hairline');
+          voted = true;
+        } else {
+          countSpan.textContent = (count - 1).toString();
+          btn.classList.remove('border-ink', 'bg-hairline');
+          voted = false;
+        }
+      });
+    });
+
+    // Handle post submit
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('postTitle')?.value.trim();
+      const author = document.getElementById('postAuthor')?.value.trim() || 'builder';
+      const type = document.getElementById('postType')?.value || 'Discussion';
+      const content = document.getElementById('postContent')?.value.trim();
+
+      if (!title || !content) return;
+
+      const postEl = document.createElement('div');
+      postEl.className = 'bg-canvas-elevated border border-hairline rounded-md p-6 hover:border-faint transition-all shadow-xs flex flex-col sm:flex-row sm:items-start justify-between gap-5';
+      postEl.innerHTML = `
+        <div class="flex items-start gap-4 flex-1">
+          <button class="upvote-btn flex flex-col items-center justify-center w-12 py-2 rounded-md bg-hairline-soft/80 border border-hairline shrink-0">
+            <svg class="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+            </svg>
+            <span class="text-xs font-mono font-bold text-ink mt-0.5 vote-count">1</span>
+          </button>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+              <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-hairline-soft text-ink border border-hairline uppercase">
+                ${type}
+              </span>
+              <span class="text-xs text-mute font-mono">by @${author}</span>
+              <span class="text-xs text-faint">• Just now</span>
+            </div>
+            <h2 class="text-base font-semibold text-ink tracking-tight mb-2">${title}</h2>
+            <p class="text-xs md:text-sm text-body leading-relaxed mb-4">${content}</p>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-mute font-mono">💬 0 replies</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      stream?.prepend(postEl);
+      form.reset();
+      formContainer?.classList.add('hidden');
+      alert('Your community topic has been published!');
+    });
+  });
+</script>

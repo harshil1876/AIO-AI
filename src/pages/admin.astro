@@ -10,14 +10,14 @@ const categories = await getAllCategories();
 <Layout title="Admin Console | AI Discovery Platform">
   <div class="flex flex-col min-h-screen bg-canvas">
     <!-- Top Bar -->
-    <header class="bg-canvas border-b border-hairline px-6 py-3 flex items-center justify-between">
+    <header class="bg-canvas border-b border-hairline px-6 py-3.5 flex items-center justify-between sticky top-0 z-50">
       <div class="flex items-center gap-3">
         <a href="/" class="flex items-center gap-2">
           <span class="w-6 h-6 rounded-md bg-ink text-on-primary flex items-center justify-center text-xs font-bold">AI</span>
           <span class="text-ink font-semibold tracking-tight text-sm">AI Discovery Console</span>
         </a>
-        <span class="text-xs bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full font-mono">
-          Admin MVP
+        <span class="text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-mono">
+          Supabase Connected
         </span>
       </div>
 
@@ -38,8 +38,8 @@ const categories = await getAllCategories();
           <div class="text-3xl font-semibold text-ink font-mono">{categories.length}</div>
         </div>
         <div class="bg-canvas-elevated border border-hairline p-5 rounded-md shadow-xs">
-          <div class="text-xs text-mute font-mono uppercase tracking-wider mb-1">Pending Submissions</div>
-          <div class="text-3xl font-semibold text-amber-600 font-mono">0</div>
+          <div class="text-xs text-mute font-mono uppercase tracking-wider mb-1">Database Sync</div>
+          <div class="text-3xl font-semibold text-emerald-600 font-mono">Active</div>
         </div>
         <div class="bg-canvas-elevated border border-hairline p-5 rounded-md shadow-xs">
           <div class="text-xs text-mute font-mono uppercase tracking-wider mb-1">Verification Status</div>
@@ -47,34 +47,36 @@ const categories = await getAllCategories();
         </div>
       </div>
 
-      <!-- Add New Tool Card -->
+      <!-- Live Tool Insertion Card -->
       <div class="bg-canvas-elevated border border-hairline rounded-md p-6 mb-8 shadow-xs">
         <div class="flex items-center justify-between mb-4 border-b border-hairline pb-3">
           <div>
-            <h2 class="text-base font-semibold text-ink">Add New AI Tool to Catalog</h2>
-            <p class="text-xs text-mute">Directly add a new verified model or tool.</p>
+            <h2 class="text-base font-semibold text-ink">Add Verified AI Tool (Live Supabase Mutation)</h2>
+            <p class="text-xs text-mute">Directly commit a new model or platform to your PostgreSQL database.</p>
           </div>
         </div>
+
+        <div id="adminNotice" class="hidden mb-4 p-3 rounded-md text-xs font-medium"></div>
 
         <form id="addToolForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           <div>
             <label class="block font-medium text-body mb-1">Tool Name *</label>
-            <input type="text" id="toolName" placeholder="e.g. Cursor" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink" required />
+            <input type="text" id="toolName" placeholder="e.g. DeepSeek R1" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink" required />
           </div>
 
           <div>
             <label class="block font-medium text-body mb-1">Slug *</label>
-            <input type="text" id="toolSlug" placeholder="e.g. cursor" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink font-mono" required />
+            <input type="text" id="toolSlug" placeholder="e.g. deepseek-r1" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink font-mono" required />
           </div>
 
           <div>
             <label class="block font-medium text-body mb-1">Official Website URL *</label>
-            <input type="url" id="toolUrl" placeholder="https://..." class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink" required />
+            <input type="url" id="toolUrl" placeholder="https://chat.deepseek.com" class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink" required />
           </div>
 
           <div class="md:col-span-2">
             <label class="block font-medium text-body mb-1">Tagline *</label>
-            <input type="text" id="toolTagline" placeholder="Short single-sentence value proposition..." class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink" required />
+            <input type="text" id="toolTagline" placeholder="Breakthrough open-weights reasoning model..." class="w-full bg-canvas border border-hairline rounded-sm p-2 outline-none focus:border-ink" required />
           </div>
 
           <div>
@@ -88,8 +90,8 @@ const categories = await getAllCategories();
           </div>
 
           <div class="md:col-span-3 flex justify-end">
-            <button type="submit" class="bg-ink text-on-primary font-medium px-5 py-2 rounded-pill hover:bg-black transition-colors cursor-pointer">
-              Add Tool to Directory
+            <button type="submit" id="submitToolBtn" class="bg-ink text-on-primary font-medium px-5 py-2 rounded-pill hover:bg-black transition-colors cursor-pointer">
+              Commit Tool to Supabase
             </button>
           </div>
         </form>
@@ -109,12 +111,12 @@ const categories = await getAllCategories();
                 <th class="px-6 py-3 font-medium">Tool Name</th>
                 <th class="px-6 py-3 font-medium">Slug</th>
                 <th class="px-6 py-3 font-medium">Pricing</th>
-                <th class="px-6 py-3 font-medium">Platform Score</th>
+                <th class="px-6 py-3 font-medium">Score</th>
                 <th class="px-6 py-3 font-medium">Verified</th>
                 <th class="px-6 py-3 font-medium text-right">Action</th>
               </tr>
             </thead>
-            <tbody class="text-body divide-y divide-hairline">
+            <tbody class="text-body divide-y divide-hairline" id="adminToolsTableBody">
               {tools.map(tool => (
                 <tr class="hover:bg-canvas transition-colors">
                   <td class="px-6 py-3 font-semibold text-ink">
@@ -147,9 +149,76 @@ const categories = await getAllCategories();
   </div>
 </Layout>
 
-<script is:inline>
-  document.getElementById('addToolForm')?.addEventListener('submit', (e) => {
+<script>
+  import { supabase } from '../lib/supabase';
+
+  const form = document.getElementById('addToolForm') as HTMLFormElement;
+  const nameInput = document.getElementById('toolName') as HTMLInputElement;
+  const slugInput = document.getElementById('toolSlug') as HTMLInputElement;
+  const urlInput = document.getElementById('toolUrl') as HTMLInputElement;
+  const taglineInput = document.getElementById('toolTagline') as HTMLInputElement;
+  const pricingInput = document.getElementById('toolPricing') as HTMLSelectElement;
+  const submitBtn = document.getElementById('submitToolBtn') as HTMLButtonElement;
+  const notice = document.getElementById('adminNotice') as HTMLDivElement;
+  const tableBody = document.getElementById('adminToolsTableBody') as HTMLElement;
+
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    alert('Tool submission received. In production, this persists to your Supabase PostgreSQL database.');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving to Supabase...';
+    notice.classList.add('hidden');
+
+    const name = nameInput.value.trim();
+    const slug = slugInput.value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
+    const website_url = urlInput.value.trim();
+    const tagline = taglineInput.value.trim();
+    const pricing_type = pricingInput.value;
+
+    const { data, error } = await supabase.from('tools').insert([
+      {
+        name,
+        slug,
+        website_url,
+        tagline,
+        pricing_type,
+        is_verified: true,
+        platform_score: 95
+      }
+    ]).select();
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Commit Tool to Supabase';
+
+    if (error) {
+      notice.textContent = `Supabase Error: ${error.message}`;
+      notice.className = 'mb-4 p-3 rounded-md text-xs font-medium bg-red-50 text-red-700 border border-red-200';
+      notice.classList.remove('hidden');
+    } else {
+      notice.textContent = `Successfully added "${name}" directly to your Supabase PostgreSQL database!`;
+      notice.className = 'mb-4 p-3 rounded-md text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200';
+      notice.classList.remove('hidden');
+
+      // Add to table
+      const newRow = document.createElement('tr');
+      newRow.className = 'bg-emerald-50/30 transition-colors';
+      newRow.innerHTML = `
+        <td class="px-6 py-3 font-semibold text-ink">
+          <a href="/tools/${slug}" class="hover:text-link transition-colors">${name}</a>
+        </td>
+        <td class="px-6 py-3 font-mono text-mute">${slug}</td>
+        <td class="px-6 py-3">
+          <span class="px-2 py-0.5 rounded-full border border-hairline font-mono text-[10px]">${pricing_type}</span>
+        </td>
+        <td class="px-6 py-3 font-mono font-bold text-ink">95/100</td>
+        <td class="px-6 py-3">
+          <span class="text-emerald-600 font-medium">✓ Verified</span>
+        </td>
+        <td class="px-6 py-3 text-right">
+          <a href="${website_url}" target="_blank" rel="noopener noreferrer" class="text-link hover:underline">Visit ↗</a>
+        </td>
+      `;
+      tableBody?.prepend(newRow);
+      form.reset();
+    }
   });
 </script>

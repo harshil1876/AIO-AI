@@ -1,0 +1,218 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ToolLogo from '../components/ToolLogo.astro';
+import { getAllTools } from '../services/dataService';
+
+const allTools = await getAllTools();
+
+// Read query params for tool comparison
+const toolASlug = Astro.url.searchParams.get('a') || 'chatgpt';
+const toolBSlug = Astro.url.searchParams.get('b') || 'claude';
+---
+
+<Layout 
+  title="Side-by-Side AI Tool Comparison | AI Discovery"
+  description="Compare leading AI models and platforms head-to-head on Cost-to-Value score, free tier generosity, features, and benchmarks."
+>
+  <Header currentPath="/compare" />
+
+  <main class="w-full flex flex-col min-h-screen">
+    <!-- Header -->
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16 text-center">
+      <div class="max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-hairline bg-canvas text-xs font-medium text-mute mb-4">
+          <svg class="w-3.5 h-3.5 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+          </svg>
+          <span>Head-to-Head Benchmark Matrix</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-semibold text-ink tracking-tight mb-4" style="letter-spacing: -1.4px;">
+          Compare AI Tools
+        </h1>
+        <p class="text-body text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+          Evaluate pricing, free tier generosity, cost-to-value scores, and practical capabilities side-by-side.
+        </p>
+
+        <!-- Quick Comparison Presets -->
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
+          <span class="text-xs text-mute font-medium">Popular Comparisons:</span>
+          <a href="/compare?a=chatgpt&b=claude" class="text-xs bg-hairline-soft hover:bg-hairline px-3 py-1.5 rounded-full border border-hairline text-body hover:text-ink transition-colors">
+            ChatGPT vs Claude
+          </a>
+          <a href="/compare?a=cursor&b=github-copilot" class="text-xs bg-hairline-soft hover:bg-hairline px-3 py-1.5 rounded-full border border-hairline text-body hover:text-ink transition-colors">
+            Cursor vs GitHub Copilot
+          </a>
+          <a href="/compare?a=make&b=n8n" class="text-xs bg-hairline-soft hover:bg-hairline px-3 py-1.5 rounded-full border border-hairline text-body hover:text-ink transition-colors">
+            Make vs n8n (Open Source)
+          </a>
+          <a href="/compare?a=midjourney&b=flux" class="text-xs bg-hairline-soft hover:bg-hairline px-3 py-1.5 rounded-full border border-hairline text-body hover:text-ink transition-colors">
+            Midjourney vs Flux.1
+          </a>
+          <a href="/compare?a=sarvam-ai&b=krutrim" class="text-xs bg-hairline-soft hover:bg-hairline px-3 py-1.5 rounded-full border border-hairline text-body hover:text-ink transition-colors">
+            Sarvam AI vs Krutrim (India)
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Container -->
+    <div class="w-full max-w-6xl mx-auto px-6 py-12 flex-1">
+      <!-- Selector Row -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-canvas-elevated border border-hairline rounded-md p-4 flex items-center justify-between gap-4">
+          <label class="text-xs font-semibold uppercase tracking-wider text-mute">Tool A:</label>
+          <select id="selectToolA" class="flex-1 bg-canvas border border-hairline rounded-sm px-3 py-2 text-sm text-ink font-medium outline-none cursor-pointer">
+            {allTools.map(t => (
+              <option value={t.slug} selected={t.slug === toolASlug}>{t.name} ({t.pricingType})</option>
+            ))}
+          </select>
+        </div>
+
+        <div class="bg-canvas-elevated border border-hairline rounded-md p-4 flex items-center justify-between gap-4">
+          <label class="text-xs font-semibold uppercase tracking-wider text-mute">Tool B:</label>
+          <select id="selectToolB" class="flex-1 bg-canvas border border-hairline rounded-sm px-3 py-2 text-sm text-ink font-medium outline-none cursor-pointer">
+            {allTools.map(t => (
+              <option value={t.slug} selected={t.slug === toolBSlug}>{t.name} ({t.pricingType})</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <!-- Comparison Matrix Grid -->
+      <div id="comparisonMatrix" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Tool A Card -->
+        <div id="cardToolA" class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs flex flex-col justify-between"></div>
+
+        <!-- Tool B Card -->
+        <div id="cardToolB" class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs flex flex-col justify-between"></div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script is:inline define:vars={{ allTools, initialA: toolASlug, initialB: toolBSlug }}>
+  window.AIO_ALL_TOOLS = allTools;
+  window.INITIAL_A = initialA;
+  window.INITIAL_B = initialB;
+</script>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const selectA = document.getElementById('selectToolA');
+    const selectB = document.getElementById('selectToolB');
+    const cardA = document.getElementById('cardToolA');
+    const cardB = document.getElementById('cardToolB');
+    const tools = window.AIO_ALL_TOOLS || [];
+
+    function renderToolCard(tool, container) {
+      if (!tool || !container) return;
+
+      container.innerHTML = `
+        <div>
+          <!-- Header -->
+          <div class="flex items-start justify-between gap-4 mb-5 pb-5 border-b border-hairline">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <h2 class="text-2xl font-bold text-ink tracking-tight">${tool.name}</h2>
+                <span class="text-xs px-2 py-0.5 rounded-full border border-hairline font-mono font-medium">${tool.pricingType}</span>
+              </div>
+              <p class="text-xs text-body leading-relaxed">${tool.tagline}</p>
+            </div>
+          </div>
+
+          <!-- Key Scores -->
+          <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="p-3.5 rounded-md border border-hairline bg-canvas">
+              <span class="text-[11px] text-mute font-medium block mb-1">Platform Score</span>
+              <span class="text-2xl font-bold font-mono text-ink">${tool.platformScore}<span class="text-xs font-normal text-mute">/100</span></span>
+            </div>
+            <div class="p-3.5 rounded-md border border-emerald-200 bg-emerald-50/50">
+              <span class="text-[11px] text-emerald-800 font-medium block mb-1">Cost-to-Value Score</span>
+              <span class="text-2xl font-bold font-mono text-emerald-700">${tool.valueScore}<span class="text-xs font-normal text-emerald-600">/100</span></span>
+            </div>
+          </div>
+
+          <!-- Pricing & Free Tier -->
+          <div class="space-y-3 mb-6 text-xs">
+            <div class="flex justify-between items-center pb-2 border-b border-hairline">
+              <span class="text-mute">Starting Price:</span>
+              <span class="font-mono font-semibold text-ink">${tool.startingPrice || 'Free'}</span>
+            </div>
+            <div class="flex justify-between items-center pb-2 border-b border-hairline">
+              <span class="text-mute">Free Tier Generosity:</span>
+              <span class="font-mono font-semibold text-ink">${tool.freeTierGenerosity} / 10</span>
+            </div>
+            <div class="flex justify-between items-center pb-2 border-b border-hairline">
+              <span class="text-mute">Pricing Scalability:</span>
+              <span class="font-mono font-semibold text-ink">${tool.pricingScalability} / 10</span>
+            </div>
+          </div>
+
+          <!-- Verdict -->
+          <div class="p-3 rounded-md border border-hairline bg-hairline-soft/60 text-xs text-body mb-6">
+            <strong class="text-ink font-semibold">Value Verdict:</strong> ${tool.valueVerdict}
+          </div>
+
+          <!-- Features -->
+          <div class="mb-6">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-mute mb-2.5">Key Capabilities</h4>
+            <ul class="space-y-1.5 text-xs text-body">
+              ${tool.features.map(f => `<li class="flex items-start gap-1.5"><span class="text-ink font-bold">•</span><span>${f}</span></li>`).join('')}
+            </ul>
+          </div>
+
+          <!-- Pros & Cons -->
+          <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="p-3 rounded-md bg-emerald-50/40 border border-emerald-200 text-xs">
+              <strong class="text-emerald-900 block mb-1.5">Top Strengths</strong>
+              <ul class="space-y-1 text-emerald-950">
+                ${tool.pros.slice(0, 2).map(p => `<li>• ${p}</li>`).join('')}
+              </ul>
+            </div>
+            <div class="p-3 rounded-md bg-amber-50/40 border border-amber-200 text-xs">
+              <strong class="text-amber-900 block mb-1.5">Considerations</strong>
+              <ul class="space-y-1 text-amber-950">
+                ${tool.cons.slice(0, 2).map(c => `<li>• ${c}</li>`).join('')}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="pt-4 border-t border-hairline flex items-center justify-between gap-3">
+          <a href="/tools/${tool.slug}" class="text-xs font-medium text-body hover:text-ink">Full Details →</a>
+          <a href="${tool.websiteUrl}" target="_blank" rel="noopener noreferrer" class="bg-ink text-on-primary text-xs font-medium px-4 py-2 rounded-pill hover:bg-black transition-colors">
+            Visit Website ↗
+          </a>
+        </div>
+      `;
+    }
+
+    function updateComparison() {
+      const slugA = selectA.value;
+      const slugB = selectB.value;
+
+      const toolA = tools.find(t => t.slug === slugA);
+      const toolB = tools.find(t => t.slug === slugB);
+
+      renderToolCard(toolA, cardA);
+      renderToolCard(toolB, cardB);
+
+      // Update URL search parameters without reloading
+      const url = new URL(window.location);
+      url.searchParams.set('a', slugA);
+      url.searchParams.set('b', slugB);
+      window.history.replaceState({}, '', url);
+    }
+
+    selectA?.addEventListener('change', updateComparison);
+    selectB?.addEventListener('change', updateComparison);
+
+    // Initial render
+    updateComparison();
+  });
+</script>
