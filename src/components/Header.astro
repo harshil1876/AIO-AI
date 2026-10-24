@@ -27,7 +27,7 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
         </button>
       )}
 
-      <a href="/" class="flex items-center gap-2.5 group" id="headerBrandLink">
+      <a href="/dashboard" class="flex items-center gap-2.5 group" id="headerBrandLink">
         <div class="w-7 h-7 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-black text-xs tracking-tight shadow-xs group-hover:bg-[#2563EB] transition-colors">
           AI
         </div>
@@ -177,7 +177,7 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
         var namePart = user.name || user.email.split('@')[0];
         profileHandle.textContent = namePart.substring(0, 10);
       }
-      if (brandLink) brandLink.setAttribute('href', '/');
+      if (brandLink) brandLink.setAttribute('href', '/dashboard');
     } else {
       if (loginLink) loginLink.classList.remove('hidden');
       if (signupLink) signupLink.classList.remove('hidden');
