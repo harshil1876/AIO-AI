@@ -5,131 +5,278 @@ import Footer from '../components/Footer.astro';
 ---
 
 <Layout 
-  title="AI Stack Builder & Cost Calculator | AIO AI"
-  description="Assemble the optimal AI stack for your role. Compare cloud subscription costs against 100% free open-source alternatives with real-time ROI calculations."
+  title="Custom AI Stack Builder & Cost Calculator | AIO AI"
+  description="Build and name your custom 5-layer AI stack from scratch. Calculate monthly costs in USD and INR, 1-click swap to 100% free open-source components, and save to your workspace."
 >
   <Header currentPath="/stack-builder" />
 
   <main class="w-full flex flex-col min-h-screen bg-canvas">
-    <!-- Header -->
-    <section class="border-b border-[#E2E8F0] bg-surface px-6 py-12 md:py-16 text-center">
-      <div class="max-w-3xl mx-auto">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-xs font-semibold text-primary mb-4 font-mono">
-          <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
-          </svg>
-          <span>INTERACTIVE COST & ARCHITECTURE COMBINATOR</span>
+    
+    <!-- Hero Header -->
+    <section class="border-b border-hairline bg-canvas-elevated px-4 sm:px-6 py-10 md:py-14">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-mono font-bold text-[#2563EB] mb-3">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>CUSTOM ARCHITECTURE &amp; COST ENGINE</span>
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-black text-ink tracking-tight mb-2">
+            Build &amp; Name Your AI Stack
+          </h1>
+          <p class="text-xs sm:text-sm text-mute max-w-2xl leading-relaxed">
+            Configure your modular 5-layer production architecture across models, orchestration, memory, coding UX, and runtimes. Calculate exact monthly expenditure with 1-click open-source swaps.
+          </p>
         </div>
-        <h1 class="text-3xl md:text-5xl font-black text-ink tracking-tight mb-4">
-          AI Stack Builder
-        </h1>
-        <p class="text-neutral-600 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
-          Select your role and customize your tool combination. Calculate your real monthly expenses vs open-source alternatives.
-        </p>
+
+        <div class="flex items-center gap-3 shrink-0">
+          <button 
+            type="button" 
+            id="oneClickOpenSourceBtn" 
+            class="px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs transition-colors cursor-pointer shadow-xs inline-flex items-center gap-1.5"
+          >
+            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+            <span>1-Click 100% Free Swap ($0/mo)</span>
+          </button>
+        </div>
       </div>
     </section>
 
-    <!-- Interactive Builder Form & Calculator -->
-    <div class="w-full max-w-6xl mx-auto px-6 py-12 flex-1">
-      <!-- Role Selector Tabs -->
-      <div class="flex flex-wrap items-center justify-center gap-2 mb-10">
-        <button class="role-tab px-5 py-2.5 rounded-xl border border-ink bg-ink text-white text-xs font-bold transition-colors cursor-pointer shadow-xs" data-role="creator">
-          Content Creator / YouTuber
-        </button>
-        <button class="role-tab px-5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-neutral-600 hover:text-ink text-xs font-semibold transition-colors cursor-pointer shadow-xs" data-role="engineer">
-          Software Engineer / Dev
-        </button>
-        <button class="role-tab px-5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-neutral-600 hover:text-ink text-xs font-semibold transition-colors cursor-pointer shadow-xs" data-role="marketer">
-          Growth & Marketing Lead
-        </button>
-        <button class="role-tab px-5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-neutral-600 hover:text-ink text-xs font-semibold transition-colors cursor-pointer shadow-xs" data-role="india">
-          India-First Enterprise
-        </button>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Left: Tool Stack Configuration -->
-        <div class="lg:col-span-2 flex flex-col gap-6">
-          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 md:p-8 shadow-xs">
-            <h2 class="text-lg font-black text-ink tracking-tight mb-4 border-b border-[#E2E8F0] pb-3">
-              Configured Tool Stack
-            </h2>
-
-            <div class="space-y-4" id="toolsListContainer">
-              <!-- Dynamically populated by JS -->
+    <!-- Main Builder Grid: Left 5 Slots / Right Live Summary & Share -->
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-10 flex flex-col lg:flex-row gap-8 flex-1">
+      
+      <!-- LEFT COLUMN: Custom Stack Metadata & 5 Layer Slots -->
+      <div class="flex-1 min-w-0 space-y-6">
+        
+        <!-- Stack Name & Metadata -->
+        <div class="bg-surface border border-hairline rounded-2xl p-6 shadow-xs space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-mono uppercase font-bold text-mute mb-1">Custom Stack Name *</label>
+              <input 
+                type="text" 
+                id="customStackName" 
+                value="My Production AI Architecture" 
+                placeholder="e.g. Agentic SaaS Stack 2026" 
+                class="w-full bg-canvas border border-hairline rounded-xl p-3 text-xs sm:text-sm text-ink font-bold outline-none focus:border-primary font-sans"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-mono uppercase font-bold text-mute mb-1">Target Archetype</label>
+              <select id="stackArchetype" class="w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink font-semibold outline-none cursor-pointer">
+                <option value="SaaS & Web Apps">SaaS &amp; Web Apps</option>
+                <option value="Autonomous Agents">Autonomous Agents</option>
+                <option value="Local / Private AI">Local / Private AI</option>
+                <option value="Content & Creative">Content &amp; Creative</option>
+                <option value="Enterprise & Indic">Enterprise &amp; Indic</option>
+              </select>
             </div>
           </div>
 
-          <!-- Architecture & Data Flow -->
-          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 md:p-8 shadow-xs">
-            <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-neutral-400 mb-3">
-              Data Flow Pipeline
-            </h3>
-            <div id="stackConnectionDesc" class="text-xs text-neutral-800 leading-relaxed p-4 rounded-xl bg-surface border border-[#E2E8F0] font-mono">
-              <!-- Dynamically populated -->
+          <div>
+            <label class="block text-xs font-mono uppercase font-bold text-mute mb-1">Purpose / Core Mission</label>
+            <input 
+              type="text" 
+              id="stackPurpose" 
+              value="Scalable multi-agent microservice architecture with low-latency local retrieval and cloud reasoning." 
+              placeholder="What does this stack build or automate?" 
+              class="w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink outline-none focus:border-primary font-sans"
+            />
+          </div>
+        </div>
+
+        <!-- The 5 Production Layer Slots -->
+        <div class="space-y-4">
+          <h2 class="text-xs font-mono uppercase font-bold tracking-wider text-mute flex items-center justify-between">
+            <span>5-Layer Modular Slots</span>
+            <span class="text-primary font-bold">100% Configurable</span>
+          </h2>
+
+          <!-- Layer 1: Foundation Model -->
+          <div class="bg-surface border border-hairline rounded-2xl p-5 shadow-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-primary uppercase">Layer 1: Foundation LLM / Reasoning Engine</span>
+              <span class="layer-cost-badge text-xs font-mono font-bold text-ink" id="costL1">$20/mo</span>
             </div>
+            <select id="selectL1" class="layer-select w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink font-medium outline-none cursor-pointer">
+              <option value="claude-3-5" data-cost="20" data-name="Claude 3.5 Sonnet" data-free="false">Claude 3.5 Sonnet ($20/mo) - Frontier Code & Nuance</option>
+              <option value="gpt-4o" data-cost="20" data-name="OpenAI GPT-4o" data-free="false">OpenAI GPT-4o ($20/mo) - Multimodal Omni Model</option>
+              <option value="deepseek-v3" data-cost="0" data-name="DeepSeek-V3 (Open Weights)" data-free="true">DeepSeek-V3 ($0/mo) - Frontier Open Weights MoE</option>
+              <option value="llama-3-3" data-cost="0" data-name="Meta Llama 3.3 70B" data-free="true">Meta Llama 3.3 70B ($0/mo) - Open Source Standard</option>
+              <option value="gemini-1-5-pro" data-cost="20" data-name="Google Gemini 1.5 Pro" data-free="false">Google Gemini 1.5 Pro ($20/mo) - 2M Token Context</option>
+            </select>
+          </div>
+
+          <!-- Layer 2: Orchestration -->
+          <div class="bg-surface border border-hairline rounded-2xl p-5 shadow-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-primary uppercase">Layer 2: Orchestration &amp; Agent Framework</span>
+              <span class="layer-cost-badge text-xs font-mono font-bold text-ink" id="costL2">$20/mo</span>
+            </div>
+            <select id="selectL2" class="layer-select w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink font-medium outline-none cursor-pointer">
+              <option value="n8n-cloud" data-cost="20" data-name="n8n Cloud Starter" data-free="false">n8n Cloud ($20/mo) - Visual Workflow Engine</option>
+              <option value="n8n-selfhosted" data-cost="0" data-name="n8n Self-Hosted" data-free="true">n8n Self-Hosted ($0/mo) - Docker Deployable</option>
+              <option value="make" data-cost="16" data-name="Make.com Core" data-free="false">Make.com Core ($16/mo) - Cloud Webhook Integration</option>
+              <option value="langchain" data-cost="0" data-name="LangChain / LangGraph" data-free="true">LangChain / LangGraph ($0/mo) - Python/TS Code-First</option>
+              <option value="litellm" data-cost="0" data-name="LiteLLM Gateway" data-free="true">LiteLLM Proxy ($0/mo) - Unified LLM Routing</option>
+            </select>
+          </div>
+
+          <!-- Layer 3: Vector DB & Retrieval -->
+          <div class="bg-surface border border-hairline rounded-2xl p-5 shadow-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-primary uppercase">Layer 3: Vector DB &amp; Retrieval Memory</span>
+              <span class="layer-cost-badge text-xs font-mono font-bold text-ink" id="costL3">$25/mo</span>
+            </div>
+            <select id="selectL3" class="layer-select w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink font-medium outline-none cursor-pointer">
+              <option value="pinecone" data-cost="25" data-name="Pinecone Serverless" data-free="false">Pinecone Serverless ($25/mo) - Managed Cloud Index</option>
+              <option value="supabase-pgvector" data-cost="25" data-name="Supabase pgvector" data-free="false">Supabase pgvector ($25/mo) - Relational DB + Vectors</option>
+              <option value="qdrant-local" data-cost="0" data-name="Qdrant Local" data-free="true">Qdrant Local ($0/mo) - Fast Rust Vector Engine</option>
+              <option value="chroma" data-cost="0" data-name="Chroma DB" data-free="true">Chroma DB ($0/mo) - Embedded Python/JS Store</option>
+            </select>
+          </div>
+
+          <!-- Layer 4: Frontend / IDE -->
+          <div class="bg-surface border border-hairline rounded-2xl p-5 shadow-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-primary uppercase">Layer 4: Developer IDE &amp; Frontend Builder</span>
+              <span class="layer-cost-badge text-xs font-mono font-bold text-ink" id="costL4">$20/mo</span>
+            </div>
+            <select id="selectL4" class="layer-select w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink font-medium outline-none cursor-pointer">
+              <option value="cursor" data-cost="20" data-name="Cursor IDE Pro" data-free="false">Cursor IDE Pro ($20/mo) - AI Native Code Editor</option>
+              <option value="github-copilot" data-cost="10" data-name="GitHub Copilot" data-free="false">GitHub Copilot ($10/mo) - Inline IDE Autocomplete</option>
+              <option value="v0" data-cost="20" data-name="v0.dev Premium" data-free="false">v0.dev Premium ($20/mo) - AI UI Component Generator</option>
+              <option value="aider" data-cost="0" data-name="Aider CLI" data-free="true">Aider CLI ($0/mo) - Open Source Terminal Pair Programmer</option>
+              <option value="continue" data-cost="0" data-name="Continue.dev" data-free="true">Continue.dev ($0/mo) - Open Source VS Code Extension</option>
+            </select>
+          </div>
+
+          <!-- Layer 5: Deployment & Runtime -->
+          <div class="bg-surface border border-hairline rounded-2xl p-5 shadow-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-primary uppercase">Layer 5: Local / Cloud Deployment Runtime</span>
+              <span class="layer-cost-badge text-xs font-mono font-bold text-ink" id="costL5">$0/mo</span>
+            </div>
+            <select id="selectL5" class="layer-select w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink font-medium outline-none cursor-pointer">
+              <option value="ollama" data-cost="0" data-name="Ollama Local Runtime" data-free="true" selected>Ollama Local ($0/mo) - On-Premise GPU & CPU</option>
+              <option value="vllm" data-cost="0" data-name="vLLM Inference Engine" data-free="true">vLLM Engine ($0/mo) - High-Throughput Cluster</option>
+              <option value="modal" data-cost="30" data-name="Modal Cloud Serverless" data-free="false">Modal Cloud GPU ($30/mo) - Serverless Containers</option>
+              <option value="aws-bedrock" data-cost="25" data-name="AWS Bedrock" data-free="false">AWS Bedrock ($25/mo) - Enterprise Cloud Managed</option>
+            </select>
           </div>
         </div>
 
-        <!-- Right: Cost & Savings Dashboard -->
-        <div class="flex flex-col gap-6">
-          <!-- Cost Breakdown Card -->
-          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs">
-            <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-neutral-400 mb-4 border-b border-[#E2E8F0] pb-2">
-              Monthly Cost Assessment
-            </h3>
-
-            <div class="space-y-4 mb-6">
-              <div class="flex justify-between items-center text-sm">
-                <span class="text-neutral-600">Commercial Cloud Stack:</span>
-                <span id="commercialCostText" class="font-mono font-black text-ink text-xl">$44 / mo</span>
-              </div>
-              <div class="flex justify-between items-center text-sm">
-                <span class="text-neutral-600">Open-Source Local Stack:</span>
-                <span class="font-mono font-black text-emerald-600 text-xl">$0 / mo</span>
-              </div>
-              <div class="pt-3 border-t border-[#E2E8F0] flex justify-between items-center text-sm">
-                <span class="text-neutral-700 font-semibold">Annual Savings Potential:</span>
-                <span id="annualSavingsText" class="font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
-                  $528 / yr
-                </span>
-              </div>
-            </div>
-
-            <div class="space-y-2">
-              <button 
-                id="shareStackBtn"
-                class="w-full bg-[#09090B] text-white font-bold text-xs rounded-xl py-3 hover:bg-neutral-800 transition-colors cursor-pointer text-center shadow-xs flex items-center justify-center gap-2"
-              >
-                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
-                </svg>
-                <span id="shareBtnText">Save & Share Public Stack</span>
-              </button>
-
-              <button 
-                id="exportStackBtn"
-                class="w-full bg-white border border-[#E2E8F0] text-ink font-bold text-xs rounded-xl py-2.5 hover:bg-slate-50 transition-colors cursor-pointer text-center shadow-xs flex items-center justify-center gap-2"
-              >
-                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-                </svg>
-                <span>Export Stack Configuration (JSON)</span>
-              </button>
-            </div>
-
-            <div id="shareSuccessNotice" class="hidden mt-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-mono break-all"></div>
-          </div>
-
-          <!-- Privacy & Data Sovereignty Note -->
-          <div class="p-5 rounded-2xl border border-blue-200 bg-blue-50 text-xs text-blue-900 leading-relaxed shadow-xs">
-            <strong class="font-bold block mb-1">Local Deployment Advantage:</strong>
-            Switching to open-source components guarantees 100% data residency, zero token rate limits, and full IP security.
-          </div>
-        </div>
       </div>
+
+      <!-- RIGHT COLUMN: Real-Time Cost Assessment & Action Bar -->
+      <aside class="w-full lg:w-96 shrink-0 space-y-6">
+        
+        <!-- Live Cost Assessment Card -->
+        <div class="bg-surface border border-hairline rounded-2xl p-6 shadow-xs space-y-6">
+          <div class="flex items-center justify-between border-b border-hairline pb-3">
+            <h3 class="text-xs font-mono uppercase font-bold text-ink tracking-wider">
+              Monthly Cost Telemetry
+            </h3>
+            <span class="text-[10px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold">
+              Real Calculation
+            </span>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex justify-between items-baseline">
+              <span class="text-xs text-mute font-medium">Selected Stack Monthly:</span>
+              <div class="text-right">
+                <span id="totalMonthlyUsd" class="font-mono font-black text-2xl text-ink">$85 / mo</span>
+                <span id="totalMonthlyInr" class="block text-[11px] font-mono text-mute">≈ ₹7,097 INR / mo</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-mute">Annual Projected:</span>
+              <span id="totalAnnualUsd" class="font-mono font-bold text-ink">$1,020 / yr</span>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-bold text-emerald-800">100% Free Swap Savings:</span>
+                <span id="swapSavingsText" class="font-mono font-bold text-emerald-700">$85 / mo</span>
+              </div>
+              <p class="text-[11px] text-emerald-700 leading-relaxed font-sans">
+                Swapping commercial SaaS components with verified open-source local equivalents saves up to <strong>100% of recurring licensing costs</strong>.
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-2.5 pt-2 border-t border-hairline">
+            <button 
+              type="button" 
+              id="saveNamedStackBtn" 
+              class="w-full py-3 rounded-xl bg-ink hover:bg-neutral-800 text-white font-bold text-xs transition-colors cursor-pointer shadow-xs inline-flex items-center justify-center gap-2"
+            >
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+              </svg>
+              <span>Save Named Stack to History</span>
+            </button>
+
+            <button 
+              type="button" 
+              id="copyShareLinkBtn" 
+              class="w-full py-2.5 rounded-xl bg-canvas border border-hairline hover:bg-hairline-soft text-ink font-semibold text-xs transition-colors cursor-pointer shadow-xs inline-flex items-center justify-center gap-2"
+            >
+              <svg class="w-4 h-4 text-mute" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+              </svg>
+              <span>Copy Shareable Stack URL</span>
+            </button>
+          </div>
+
+          <div id="stackActionNotice" class="hidden p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-primary font-mono break-all"></div>
+        </div>
+
+      </aside>
+
     </div>
+
+    <!-- STARTER ARCHETYPES DRAWER (Bottom Section) -->
+    <section class="border-t border-hairline bg-surface px-4 sm:px-6 py-12">
+      <div class="max-w-7xl mx-auto space-y-6">
+        <div>
+          <h3 class="text-sm font-mono uppercase font-bold text-ink tracking-wider">
+            Or Explore Pre-Built Role Archetypes
+          </h3>
+          <p class="text-xs text-mute mt-1">One-click presets tailored for specific creator and engineering workflows.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="p-4 rounded-xl bg-canvas border border-hairline hover:border-primary transition-colors cursor-pointer starter-preset-card" data-preset="creator">
+            <div class="font-bold text-xs text-ink mb-1">Content Creator Stack</div>
+            <p class="text-[11px] text-mute mb-3">GPT-4o + ElevenLabs + Midjourney + n8n</p>
+            <span class="text-primary font-mono text-xs font-bold">Load Archetype &rarr;</span>
+          </div>
+
+          <div class="p-4 rounded-xl bg-canvas border border-hairline hover:border-primary transition-colors cursor-pointer starter-preset-card" data-preset="engineer">
+            <div class="font-bold text-xs text-ink mb-1">DevOps &amp; Engineering</div>
+            <p class="text-[11px] text-mute mb-3">Claude 3.5 + Copilot + LangChain + Ollama</p>
+            <span class="text-primary font-mono text-xs font-bold">Load Archetype &rarr;</span>
+          </div>
+
+          <div class="p-4 rounded-xl bg-canvas border border-hairline hover:border-primary transition-colors cursor-pointer starter-preset-card" data-preset="local">
+            <div class="font-bold text-xs text-ink mb-1">100% Free Sovereign Stack</div>
+            <p class="text-[11px] text-mute mb-3">DeepSeek-V3 + n8n + Qdrant + Aider + Ollama</p>
+            <span class="text-emerald-600 font-mono text-xs font-bold">$0/mo Presets &rarr;</span>
+          </div>
+
+          <div class="p-4 rounded-xl bg-canvas border border-hairline hover:border-primary transition-colors cursor-pointer starter-preset-card" data-preset="india">
+            <div class="font-bold text-xs text-ink mb-1">India Sovereign Enterprise</div>
+            <p class="text-[11px] text-mute mb-3">Llama 3.3 + LiteLLM + Chroma + Continue + vLLM</p>
+            <span class="text-primary font-mono text-xs font-bold">Load Archetype &rarr;</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <Footer />
@@ -138,206 +285,188 @@ import Footer from '../components/Footer.astro';
 <script>
   import { supabase } from '../lib/supabase';
 
-  const STACKS: Record<string, { title: string; tools: Array<{ name: string; cost: number; role: string; openAlt: string }>; flow: string }> = {
-    creator: {
-      title: 'Content Creator Production Stack',
-      tools: [
-        { name: 'ChatGPT Plus', cost: 20, role: 'Scripts & Hooks', openAlt: 'Llama 3.1 8B (Free)' },
-        { name: 'ElevenLabs Starter', cost: 5, role: 'Voice Synthesis', openAlt: 'Kokoro TTS (Free)' },
-        { name: 'Midjourney Standard', cost: 10, role: 'Cover Art & Thumbnails', openAlt: 'ComfyUI + Flux (Free)' },
-        { name: 'Make Core', cost: 9, role: 'Auto-Publishing Webhook', openAlt: 'n8n Self-Hosted (Free)' }
-      ],
-      flow: 'ChatGPT drafts script -> ElevenLabs synthesizes voiceover -> Midjourney renders visuals -> Make stitches and queues the video.'
-    },
-    engineer: {
-      title: 'Software Engineer DevOps Stack',
-      tools: [
-        { name: 'Claude 3.5 Sonnet Pro', cost: 20, role: 'Architecture & Refactoring', openAlt: 'DeepSeek R1 / Qwen 2.5 Coder (Free)' },
-        { name: 'GitHub Copilot', cost: 10, role: 'Inline IDE Autocomplete', openAlt: 'Aider or Continue.dev (Free)' },
-        { name: 'n8n Fair-Code', cost: 0, role: 'CI/CD Webhook & PR Review', openAlt: 'n8n Self-Hosted (Free)' }
-      ],
-      flow: 'Copilot suggests code inside IDE -> PR opened on GitHub -> n8n triggers Claude to audit security & edge cases.'
-    },
-    marketer: {
-      title: 'Growth & Performance Marketing Stack',
-      tools: [
-        { name: 'Claude Pro', cost: 20, role: 'Long-Form Copy & SEO', openAlt: 'Llama 3.3 70B (Free)' },
-        { name: 'Make Pro', cost: 16, role: 'Lead Enrichment & CRM sync', openAlt: 'n8n Self-Hosted (Free)' },
-        { name: 'Notion AI', cost: 10, role: 'Campaign Knowledge Base', openAlt: 'AnythingLLM Local (Free)' }
-      ],
-      flow: 'Form submission received -> Make enriches domain via Clearbit -> Claude drafts customized email -> Notion AI logs contact.'
-    },
-    india: {
-      title: 'India-First Enterprise Sovereign Stack',
-      tools: [
-        { name: 'Sarvam AI', cost: 0, role: 'Indic Vernacular Speech & Transcribe', openAlt: 'Sarvam Saaras (Indic Weights)' },
-        { name: 'Krutrim AI', cost: 0, role: '22 Indian Language Reasoning', openAlt: 'Krutrim Sovereign Cloud' },
-        { name: 'n8n Self-Hosted', cost: 0, role: 'Customer WhatsApp & Telephony Webhook', openAlt: 'n8n Docker (Free)' }
-      ],
-      flow: 'Customer audio captured -> Sarvam transcribes Indic vernacular -> Krutrim resolves regional query -> Sarvam synthesizes native audio response.'
-    }
-  };
+  document.addEventListener('DOMContentLoaded', () => {
+    const customStackName = document.getElementById('customStackName') as HTMLInputElement | null;
+    const stackPurpose = document.getElementById('stackPurpose') as HTMLInputElement | null;
+    const stackArchetype = document.getElementById('stackArchetype') as HTMLSelectElement | null;
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    const roleTabs = document.querySelectorAll('.role-tab');
-    const container = document.getElementById('toolsListContainer');
-    const flowDesc = document.getElementById('stackConnectionDesc');
-    const commercialCostText = document.getElementById('commercialCostText');
-    const annualSavingsText = document.getElementById('annualSavingsText');
-    const exportBtn = document.getElementById('exportStackBtn');
-    const shareBtn = document.getElementById('shareStackBtn');
-    const shareText = document.getElementById('shareBtnText');
-    const shareNotice = document.getElementById('shareSuccessNotice');
+    const selectL1 = document.getElementById('selectL1') as HTMLSelectElement | null;
+    const selectL2 = document.getElementById('selectL2') as HTMLSelectElement | null;
+    const selectL3 = document.getElementById('selectL3') as HTMLSelectElement | null;
+    const selectL4 = document.getElementById('selectL4') as HTMLSelectElement | null;
+    const selectL5 = document.getElementById('selectL5') as HTMLSelectElement | null;
 
-    let currentRole = 'creator';
+    const totalMonthlyUsd = document.getElementById('totalMonthlyUsd');
+    const totalMonthlyInr = document.getElementById('totalMonthlyInr');
+    const totalAnnualUsd = document.getElementById('totalAnnualUsd');
+    const swapSavingsText = document.getElementById('swapSavingsText');
 
-    function renderStack(roleKey: string) {
-      const stack = STACKS[roleKey];
-      if (!stack || !container || !flowDesc || !commercialCostText || !annualSavingsText) return;
+    const oneClickOpenSourceBtn = document.getElementById('oneClickOpenSourceBtn');
+    const saveNamedStackBtn = document.getElementById('saveNamedStackBtn');
+    const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
+    const stackActionNotice = document.getElementById('stackActionNotice');
 
-      let totalMonthly = 0;
+    const presets = document.querySelectorAll('.starter-preset-card');
 
-      container.innerHTML = stack.tools.map(tool => {
-        totalMonthly += tool.cost;
-        return `
-          <div class="p-4 rounded-xl border border-[#E2E8F0] bg-surface flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="font-bold text-ink text-sm">${tool.name}</span>
-                <span class="text-xs text-neutral-400 font-mono">(${tool.role})</span>
-              </div>
-              <div class="text-xs text-emerald-700 flex items-center gap-1 font-mono">
-                <span>Free Alt:</span> <strong class="text-emerald-800">${tool.openAlt}</strong>
-              </div>
-            </div>
-            <div class="text-right shrink-0">
-              <span class="font-mono font-black text-ink text-base">$${tool.cost}/mo</span>
-            </div>
-          </div>
-        `;
-      }).join('');
+    function calculateCosts() {
+      const selects = [selectL1, selectL2, selectL3, selectL4, selectL5];
+      let totalUsd = 0;
 
-      flowDesc.textContent = stack.flow;
-      commercialCostText.textContent = `$${totalMonthly} / mo`;
-      annualSavingsText.textContent = `$${totalMonthly * 12} / yr`;
+      selects.forEach((sel, i) => {
+        if (!sel) return;
+        const opt = sel.options[sel.selectedIndex];
+        const cost = Number(opt?.getAttribute('data-cost')) || 0;
+        totalUsd += cost;
+
+        const badge = document.getElementById(`costL${i + 1}`);
+        if (badge) badge.textContent = `$${cost}/mo`;
+      });
+
+      const totalInr = totalUsd * 83.5;
+      const annualUsd = totalUsd * 12;
+
+      if (totalMonthlyUsd) totalMonthlyUsd.textContent = `$${totalUsd} / mo`;
+      if (totalMonthlyInr) totalMonthlyInr.textContent = `≈ ₹${totalInr.toLocaleString('en-IN')} INR / mo`;
+      if (totalAnnualUsd) totalAnnualUsd.textContent = `$${annualUsd.toLocaleString()} / yr`;
+      if (swapSavingsText) swapSavingsText.textContent = `$${totalUsd} / mo`;
     }
 
-    roleTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        roleTabs.forEach(t => {
-          t.classList.remove('border-ink', 'bg-ink', 'text-white', 'font-bold');
-          t.classList.add('border-[#E2E8F0]', 'bg-white', 'text-neutral-600', 'font-semibold');
-        });
-        tab.classList.remove('border-[#E2E8F0]', 'bg-white', 'text-neutral-600', 'font-semibold');
-        tab.classList.add('border-ink', 'bg-ink', 'text-white', 'font-bold');
+    [selectL1, selectL2, selectL3, selectL4, selectL5].forEach(sel => {
+      sel?.addEventListener('change', calculateCosts);
+    });
 
-        currentRole = tab.getAttribute('data-role') || 'creator';
-        renderStack(currentRole);
+    // 1-Click Free / Open Source Swap
+    oneClickOpenSourceBtn?.addEventListener('click', () => {
+      if (selectL1) selectL1.value = 'deepseek-v3';
+      if (selectL2) selectL2.value = 'n8n-selfhosted';
+      if (selectL3) selectL3.value = 'qdrant-local';
+      if (selectL4) selectL4.value = 'aider';
+      if (selectL5) selectL5.value = 'ollama';
+
+      calculateCosts();
+      if (stackActionNotice) {
+        stackActionNotice.classList.remove('hidden');
+        stackActionNotice.textContent = 'Swapped all 5 layers to 100% Free Open-Source components! Monthly subscription cost is now $0 / mo.';
+      }
+    });
+
+    // Preset loaders
+    presets.forEach(p => {
+      p.addEventListener('click', () => {
+        const type = p.getAttribute('data-preset');
+        if (type === 'creator') {
+          if (customStackName) customStackName.value = 'Content Creator Production Stack';
+          if (selectL1) selectL1.value = 'gpt-4o';
+          if (selectL2) selectL2.value = 'n8n-cloud';
+          if (selectL3) selectL3.value = 'pinecone';
+          if (selectL4) selectL4.value = 'v0';
+          if (selectL5) selectL5.value = 'ollama';
+        } else if (type === 'engineer') {
+          if (customStackName) customStackName.value = 'Software Engineer DevOps Stack';
+          if (selectL1) selectL1.value = 'claude-3-5';
+          if (selectL2) selectL2.value = 'langchain';
+          if (selectL3) selectL3.value = 'supabase-pgvector';
+          if (selectL4) selectL4.value = 'cursor';
+          if (selectL5) selectL5.value = 'ollama';
+        } else if (type === 'local') {
+          if (customStackName) customStackName.value = '100% Sovereign Open-Source Stack';
+          if (selectL1) selectL1.value = 'deepseek-v3';
+          if (selectL2) selectL2.value = 'n8n-selfhosted';
+          if (selectL3) selectL3.value = 'qdrant-local';
+          if (selectL4) selectL4.value = 'aider';
+          if (selectL5) selectL5.value = 'ollama';
+        } else if (type === 'india') {
+          if (customStackName) customStackName.value = 'India Enterprise Sovereign Stack';
+          if (selectL1) selectL1.value = 'llama-3-3';
+          if (selectL2) selectL2.value = 'litellm';
+          if (selectL3) selectL3.value = 'chroma';
+          if (selectL4) selectL4.value = 'continue';
+          if (selectL5) selectL5.value = 'vllm';
+        }
+        calculateCosts();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
 
-    // Save & Share Public Stack via Supabase stacks table
-    shareBtn?.addEventListener('click', async () => {
-      let authorName = 'Anonymous Practitioner';
-      let userDbId: number | null = null;
+    // Save Named Stack to History (localStorage + Supabase)
+    saveNamedStackBtn?.addEventListener('click', async () => {
+      const stackName = customStackName?.value.trim() || 'My Custom AI Stack';
+      const purpose = stackPurpose?.value.trim() || '';
+      const category = stackArchetype?.value || 'General';
+
+      const stackData = {
+        id: `stack-${Date.now()}`,
+        name: stackName,
+        purpose,
+        category,
+        layers: {
+          foundation: selectL1?.options[selectL1.selectedIndex]?.text || '',
+          orchestration: selectL2?.options[selectL2.selectedIndex]?.text || '',
+          memory: selectL3?.options[selectL3.selectedIndex]?.text || '',
+          developer: selectL4?.options[selectL4.selectedIndex]?.text || '',
+          runtime: selectL5?.options[selectL5.selectedIndex]?.text || ''
+        },
+        savedAt: new Date().toLocaleDateString()
+      };
 
       try {
+        const existingStr = localStorage.getItem('aio_user_stacks');
+        const existing = existingStr ? JSON.parse(existingStr) : [];
+        existing.unshift(stackData);
+        localStorage.setItem('aio_user_stacks', JSON.stringify(existing));
+
+        // Attempt Supabase insert if logged in
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
-          authorName = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || authorName;
-          const { data: u } = await supabase.from('users').select('id').eq('email', session.user.email).single();
-          if (u?.id) userDbId = u.id;
-        } else {
-          const cachedStr = localStorage.getItem('aio_user');
-          if (cachedStr) {
-            const parsed = JSON.parse(cachedStr);
-            authorName = parsed.name || parsed.email?.split('@')[0] || authorName;
-          }
+          await supabase.from('stacks').insert({
+            name: stackName,
+            description: purpose,
+            category: category,
+            author_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Builder',
+            tools: [selectL1?.value, selectL2?.value, selectL3?.value, selectL4?.value, selectL5?.value].filter(Boolean)
+          });
         }
-      } catch(e) {}
 
-      const activeStack = STACKS[currentRole];
-      const stackSlug = `stack-${currentRole}-${Date.now()}`;
-      const totalCost = commercialCostText?.textContent || '$44 / mo';
-
-      if (shareBtn && shareText) {
-        shareBtn.setAttribute('disabled', 'true');
-        shareText.textContent = 'Saving to Database...';
-      }
-
-      try {
-        const { data, error } = await supabase.from('stacks').insert({
-          slug: stackSlug,
-          title: activeStack.title,
-          description: activeStack.flow,
-          author_name: authorName,
-          user_id: userDbId,
-          tools: activeStack.tools.map(t => t.name),
-          estimated_monthly_cost: totalCost,
-          is_public: true
-        }).select().single();
-
-        const shareUrl = `${window.location.origin}/stack-builder?stackId=${data?.slug || stackSlug}`;
-        navigator.clipboard?.writeText(shareUrl);
-
-        if (shareNotice) {
-          shareNotice.innerHTML = `<strong>Stack Saved!</strong> Share URL copied to clipboard:<br><a href="${shareUrl}" class="underline text-emerald-900 font-bold">${shareUrl}</a>`;
-          shareNotice.classList.remove('hidden');
+        if (stackActionNotice) {
+          stackActionNotice.classList.remove('hidden');
+          stackActionNotice.textContent = `"${stackName}" saved to your personal history! Access it anytime in Profile > My Stacks.`;
         }
-      } catch (err: any) {
-        console.warn('Fallback stack share notice:', err);
-        const fallbackUrl = `${window.location.origin}/stack-builder?role=${currentRole}`;
-        navigator.clipboard?.writeText(fallbackUrl);
-        if (shareNotice) {
-          shareNotice.innerHTML = `<strong>Link copied!</strong> Share URL: <a href="${fallbackUrl}" class="underline">${fallbackUrl}</a>`;
-          shareNotice.classList.remove('hidden');
-        }
-      } finally {
-        if (shareBtn && shareText) {
-          shareBtn.removeAttribute('disabled');
-          shareText.textContent = 'Save & Share Public Stack';
+      } catch (e) {
+        if (stackActionNotice) {
+          stackActionNotice.classList.remove('hidden');
+          stackActionNotice.textContent = `Saved to current session!`;
         }
       }
     });
 
-    // Export Stack JSON
-    exportBtn?.addEventListener('click', () => {
-      const data = STACKS[currentRole];
-      navigator.clipboard?.writeText(JSON.stringify(data, null, 2));
-      alert('Selected stack configuration JSON copied to clipboard!');
+    // Copy Shareable Link
+    copyShareLinkBtn?.addEventListener('click', () => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('name', encodeURIComponent(customStackName?.value || 'My Stack'));
+      url.searchParams.set('l1', selectL1?.value || '');
+      url.searchParams.set('l2', selectL2?.value || '');
+      url.searchParams.set('l3', selectL3?.value || '');
+      url.searchParams.set('l4', selectL4?.value || '');
+      url.searchParams.set('l5', selectL5?.value || '');
+
+      navigator.clipboard.writeText(url.toString());
+      if (stackActionNotice) {
+        stackActionNotice.classList.remove('hidden');
+        stackActionNotice.textContent = `Shareable link copied: ${url.toString()}`;
+      }
     });
 
-    // Check URL for ?stackId=... or ?role=...
-    const urlParams = new URLSearchParams(window.location.search);
-    const sharedStackId = urlParams.get('stackId');
-    const paramRole = urlParams.get('role');
-
-    if (sharedStackId) {
-      try {
-        const { data: dbStack } = await supabase
-          .from('stacks')
-          .select('*')
-          .or(`slug.eq.${sharedStackId}`)
-          .single();
-
-        if (dbStack && shareNotice) {
-          shareNotice.innerHTML = `Viewing Shared Stack: <strong>${dbStack.title}</strong> by <em>${dbStack.author_name}</em> (${dbStack.estimated_monthly_cost || ''})`;
-          shareNotice.classList.remove('hidden');
-        }
-      } catch (e) {}
-    } else if (paramRole && STACKS[paramRole]) {
-      currentRole = paramRole;
-      roleTabs.forEach(t => {
-        if (t.getAttribute('data-role') === paramRole) {
-          t.classList.add('border-ink', 'bg-ink', 'text-white', 'font-bold');
-          t.classList.remove('border-[#E2E8F0]', 'bg-white', 'text-neutral-600', 'font-semibold');
-        } else {
-          t.classList.remove('border-ink', 'bg-ink', 'text-white', 'font-bold');
-          t.classList.add('border-[#E2E8F0]', 'bg-white', 'text-neutral-600', 'font-semibold');
-        }
-      });
+    // Check incoming query params
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('name') && customStackName) {
+      customStackName.value = decodeURIComponent(params.get('name')!);
     }
+    if (params.get('l1') && selectL1) selectL1.value = params.get('l1')!;
+    if (params.get('l2') && selectL2) selectL2.value = params.get('l2')!;
+    if (params.get('l3') && selectL3) selectL3.value = params.get('l3')!;
+    if (params.get('l4') && selectL4) selectL4.value = params.get('l4')!;
+    if (params.get('l5') && selectL5) selectL5.value = params.get('l5')!;
 
-    renderStack(currentRole);
+    calculateCosts();
   });
 </script>

@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import ToolLogo from '../../components/ToolLogo.astro';
-import { getAllTools, getToolBySlug, type ToolData } from '../../services/dataService';
+import { getAllTools, getToolBySlug, calculateAuthenticScore, type ToolData } from '../../services/dataService';
 import { WORKFLOWS_DATA } from '../../data/workflowsData';
 import { CREATORS_DATA } from '../../data/creatorsData';
 import { OPEN_SOURCE_REPOS } from '../../data/openSourceData';
@@ -70,6 +70,7 @@ const isPaidOnly = tool.pricingType === 'Paid';
 const hasFree = tool.freeTier || tool.pricingType === 'Free' || tool.pricingType === 'Open Source';
 const basePriceUSD = tool.startingPrice ? parseInt(tool.startingPrice.replace(/[^0-9]/g, '')) || 20 : 20;
 const proPriceUSD = isPaidOnly ? basePriceUSD : (tool.startingPrice ? basePriceUSD : 20);
+const scorecard = calculateAuthenticScore(tool);
 ---
 
 <Layout 
@@ -547,6 +548,83 @@ const proPriceUSD = isPaidOnly ? basePriceUSD : (tool.startingPrice ? basePriceU
           </div>
 
           <!-- 2. Pricing Overview Card -->
+          <!-- 2. Auditable 5-Factor Authenticity Scorecard -->
+          <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
+            <div class="flex items-center justify-between border-b border-hairline pb-3 mb-4">
+              <div>
+                <h3 class="font-semibold text-ink text-xs uppercase tracking-wider">
+                  5-Factor Authenticity Scorecard
+                </h3>
+                <span class="text-[10px] text-mute">100% Deterministic & Auditable</span>
+              </div>
+              <span class="text-sm font-mono font-bold text-primary bg-blue-50 dark:bg-blue-950/40 px-2.5 py-1 rounded-md border border-blue-200 dark:border-blue-800">
+                {scorecard.total}/100
+              </span>
+            </div>
+
+            <div class="space-y-3 text-xs mb-4">
+              <!-- 1. Docs & API Maturity -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-body font-medium">Docs & API Maturity</span>
+                  <span class="font-mono text-ink font-bold">{scorecard.docsApi}/25</span>
+                </div>
+                <div class="w-full h-1.5 bg-hairline-soft rounded-full overflow-hidden">
+                  <div class="h-full bg-blue-600 rounded-full" style={`width: ${(scorecard.docsApi / 25) * 100}%`}></div>
+                </div>
+              </div>
+
+              <!-- 2. Pricing Transparency -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-body font-medium">Pricing Transparency & Free Tier</span>
+                  <span class="font-mono text-ink font-bold">{scorecard.pricing}/25</span>
+                </div>
+                <div class="w-full h-1.5 bg-hairline-soft rounded-full overflow-hidden">
+                  <div class="h-full bg-emerald-600 rounded-full" style={`width: ${(scorecard.pricing / 25) * 100}%`}></div>
+                </div>
+              </div>
+
+              <!-- 3. Workflow Interoperability -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-body font-medium">Workflow Interoperability</span>
+                  <span class="font-mono text-ink font-bold">{scorecard.interop}/20</span>
+                </div>
+                <div class="w-full h-1.5 bg-hairline-soft rounded-full overflow-hidden">
+                  <div class="h-full bg-purple-600 rounded-full" style={`width: ${(scorecard.interop / 20) * 100}%`}></div>
+                </div>
+              </div>
+
+              <!-- 4. Live Domain Health -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-body font-medium">Live Domain Health & Uptime</span>
+                  <span class="font-mono text-ink font-bold">{scorecard.health}/15</span>
+                </div>
+                <div class="w-full h-1.5 bg-hairline-soft rounded-full overflow-hidden">
+                  <div class="h-full bg-teal-600 rounded-full" style={`width: ${(scorecard.health / 15) * 100}%`}></div>
+                </div>
+              </div>
+
+              <!-- 5. Verified Community Signal -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-body font-medium">Verified Community Signal</span>
+                  <span class="font-mono text-ink font-bold">{scorecard.community}/15</span>
+                </div>
+                <div class="w-full h-1.5 bg-hairline-soft rounded-full overflow-hidden">
+                  <div class="h-full bg-amber-600 rounded-full" style={`width: ${(scorecard.community / 15) * 100}%`}></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded bg-surface border border-hairline text-[11px] text-mute leading-relaxed font-sans">
+              <span class="font-bold text-ink">Verdict:</span> {scorecard.verdict}. Evaluated across open-source readiness, published API specifications, pricing clarity, and active TLS status.
+            </div>
+          </div>
+
+          <!-- 3. Pricing Specification -->
           <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
             <h3 class="font-semibold text-ink text-xs uppercase tracking-wider mb-4 border-b border-hairline pb-2">
               Pricing Specification
@@ -570,8 +648,8 @@ const proPriceUSD = isPaidOnly ? basePriceUSD : (tool.startingPrice ? basePriceU
                 </div>
               )}
               <div class="flex justify-between items-center">
-                <span class="text-mute">Editorial Score</span>
-                <span class="font-semibold text-ink font-mono">{tool.platformScore}/100</span>
+                <span class="text-mute">Authenticity Score</span>
+                <span class="font-semibold text-ink font-mono">{scorecard.total}/100</span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-mute">Cost-to-Value Score</span>

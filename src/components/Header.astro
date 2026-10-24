@@ -70,6 +70,18 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
         <span>AI Finder</span>
       </a>
 
+      <!-- Pricing Link -->
+      <a
+        href="/pricing"
+        class={`hidden md:inline-flex text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors ${
+          currentPath.startsWith('/pricing')
+            ? 'text-[#2563EB] bg-[#EFF6FF]'
+            : 'text-slate-600 hover:text-ink hover:bg-slate-100'
+        }`}
+      >
+        Pricing
+      </a>
+
       <!-- Docs Link -->
       <a
         href="/docs"

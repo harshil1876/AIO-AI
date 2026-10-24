@@ -15,6 +15,8 @@ import { WORKFLOWS_DATA } from '../src/data/workflowsData';
 import { OPEN_SOURCE_REPOS } from '../src/data/openSourceData';
 import { CREATORS_DATA } from '../src/data/creatorsData';
 import { NEWS_STORIES } from '../src/data/newsData';
+import { COMMUNITY_POSTS, COMMUNITY_LEADERBOARD } from '../src/data/communityData';
+import { calculateAuthenticScore } from '../src/services/dataService';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -94,8 +96,15 @@ assert(
 
 // Verify YouTube Creators
 assert(
-  CREATORS_DATA.length >= 18,
-  `Curated AI educators catalog >= 18 (Actual: ${CREATORS_DATA.length})`
+  CREATORS_DATA.length >= 60,
+  `Curated AI educators catalog >= 60 (Actual: ${CREATORS_DATA.length})`
+);
+
+// Verify Workflow Schemas
+const workflowsWithSchemas = WORKFLOWS_DATA.filter(w => !!w.systemPrompt && !!w.userPromptTemplate && !!w.apiPayloadSchema);
+assert(
+  workflowsWithSchemas.length === 16,
+  `All 16 workflows have full systemPrompt, userPromptTemplate, and apiPayloadSchema (Actual: ${workflowsWithSchemas.length}/16)`
 );
 
 // Verify News Stories
@@ -210,7 +219,33 @@ assert(
 );
 
 // ----------------------------------------------------------------------------
-// SUITE 6: Essential Routes & Pages Completeness
+// SUITE 6: Community Authenticity & 5-Factor Scoring Verification
+// ----------------------------------------------------------------------------
+console.log('\n[Suite 6: Community Integrity & 5-Factor Authenticity Scoring]');
+
+assert(
+  COMMUNITY_POSTS.length === 1 && !!COMMUNITY_POSTS[0].pinned,
+  'Community contains zero fake seed users; only 1 official pinned governance guide'
+);
+
+assert(
+  COMMUNITY_LEADERBOARD.length === 0,
+  'Community leaderboard has zero fake bot profiles; starts in authentic cold start'
+);
+
+const sampleTool = SEED_TOOLS[0];
+const sampleScorecard = calculateAuthenticScore(sampleTool);
+assert(
+  sampleScorecard.total >= 50 && sampleScorecard.total <= 100,
+  `Deterministic 5-Factor score for ${sampleTool.name} is ${sampleScorecard.total}/100`
+);
+assert(
+  sampleScorecard.docsApi <= 25 && sampleScorecard.pricing <= 25 && sampleScorecard.interop <= 20 && sampleScorecard.health <= 15 && sampleScorecard.community <= 15,
+  '5-Factor sub-dimension scores respect exact bounds (25/25/20/15/15)'
+);
+
+// ----------------------------------------------------------------------------
+// SUITE 7: Essential Routes & Pages Completeness
 // ----------------------------------------------------------------------------
 console.log('\n[Suite 6: Critical Routes & Artifact Completeness]');
 
@@ -228,6 +263,8 @@ const criticalRoutes = [
   'src/pages/open-source/[slug].astro',
   'src/pages/workflows/index.astro',
   'src/pages/workflows/[id].astro',
+  'src/pages/workflows/builder.astro',
+  'src/pages/pricing.astro',
   'src/pages/creators/index.astro',
   'src/pages/creators/[slug].astro',
   'src/pages/token-calculator/index.astro',

@@ -36,8 +36,8 @@ const learningTracks = [
 ---
 
 <Layout 
-  title="AI & Tech YouTube Creators Hub | Guided Tracks & Outlier Tutorials"
-  description="Discover 18+ verified AI educators and researchers. Explore guided learning tracks, outlier masterclasses, and curriculum pillars."
+  title="AI & Tech YouTube Creators Hub | 60+ Global & Indian Channels"
+  description="Discover 60+ verified AI educators, researchers, and engineers across India, US, UK, and Europe. Explore guided tracks, subscriber metrics, and curriculum pillars."
 >
   <Header currentPath="/creators" />
 
@@ -50,7 +50,7 @@ const learningTracks = [
             Verified Educators & Learning Curriculum
           </div>
           <h1 class="text-3xl sm:text-4xl font-semibold text-ink tracking-tight mb-2">
-            AI & Tech Creator Discovery
+            AI &amp; Tech Creator Discovery
           </h1>
           <p class="text-xs sm:text-sm text-body max-w-2xl leading-relaxed">
             The curated directory of researchers, engineers, and educators who teach generative AI, local models, agentic workflows, and coding.
@@ -58,8 +58,8 @@ const learningTracks = [
         </div>
 
         <div class="flex items-center gap-2 text-xs font-mono text-mute shrink-0">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span>18 Verified Channels &bull; Zero Sponsored Placement</span>
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>{CREATORS_DATA.length} Verified Channels &bull; Global &amp; India Coverage</span>
         </div>
       </div>
     </section>
@@ -101,104 +101,182 @@ const learningTracks = [
       </div>
     </section>
 
-    <!-- Category Filter Bar -->
-    <section class="border-b border-hairline bg-canvas px-6 py-3" id="creatorsCatalog">
-      <div class="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="creatorCatFilter">
-        {categories.map((cat, idx) => (
-          <button 
-            type="button" 
-            class={`creator-cat-btn px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 ${
-              idx === 0 
-                ? 'bg-ink text-on-primary border border-ink' 
-                : 'bg-canvas-elevated text-mute hover:text-ink border border-hairline hover:border-faint'
-            }`}
-            data-cat={cat}
-          >
-            {cat}
-          </button>
-        ))}
+    <!-- Multi-Facet Search & Filter Toolbar -->
+    <section class="border-b border-hairline bg-surface px-6 py-4" id="creatorsCatalog">
+      <div class="max-w-7xl mx-auto space-y-3">
+        <!-- Top Row: Search Input + Select Dropdowns -->
+        <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+          <!-- Quick Search -->
+          <div class="relative w-full md:w-80">
+            <input 
+              type="text" 
+              id="creatorSearchInput" 
+              placeholder="Search by name, handle, or tool..." 
+              class="w-full pl-9 pr-3 py-1.5 rounded-lg bg-canvas-elevated border border-hairline text-ink text-xs focus:outline-none focus:border-primary font-sans"
+            />
+            <svg class="w-3.5 h-3.5 text-mute absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+          </div>
+
+          <!-- Dropdowns: Country, Sub Tier, Language -->
+          <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end">
+            <!-- Country Filter -->
+            <div class="flex items-center gap-1 text-xs">
+              <span class="text-[11px] font-mono text-mute">Region:</span>
+              <select id="countryFilter" class="bg-canvas-elevated border border-hairline rounded-md px-2 py-1 text-xs text-ink outline-none cursor-pointer font-medium">
+                <option value="all">All Regions</option>
+                <option value="india">India (IN)</option>
+                <option value="united states">United States (US)</option>
+                <option value="united kingdom">United Kingdom (UK)</option>
+                <option value="europe">Europe (EU)</option>
+                <option value="canada">Canada (CA)</option>
+                <option value="australia">Australia (AU)</option>
+              </select>
+            </div>
+
+            <!-- Subscriber Count Tier -->
+            <div class="flex items-center gap-1 text-xs">
+              <span class="text-[11px] font-mono text-mute">Tier:</span>
+              <select id="tierFilter" class="bg-canvas-elevated border border-hairline rounded-md px-2 py-1 text-xs text-ink outline-none cursor-pointer font-medium">
+                <option value="all">All Tiers</option>
+                <option value="<100k">&lt; 100K (Emerging)</option>
+                <option value="100k-500k">100K - 500K (Core)</option>
+                <option value="500k-2m">500K - 2M (Authority)</option>
+                <option value="2m+">2M+ (Global Scale)</option>
+              </select>
+            </div>
+
+            <!-- Language Filter -->
+            <div class="flex items-center gap-1 text-xs">
+              <span class="text-[11px] font-mono text-mute">Lang:</span>
+              <select id="langFilter" class="bg-canvas-elevated border border-hairline rounded-md px-2 py-1 text-xs text-ink outline-none cursor-pointer font-medium">
+                <option value="all">All Languages</option>
+                <option value="english">English</option>
+                <option value="hindi">Hindi / Hinglish</option>
+                <option value="spanish">Spanish</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Row: Category Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1" id="creatorCatFilter">
+          {categories.map((cat, idx) => (
+            <button 
+              type="button" 
+              class={`creator-cat-btn px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 ${
+                idx === 0 
+                  ? 'bg-ink text-on-primary border border-ink' 
+                  : 'bg-canvas-elevated text-mute hover:text-ink border border-hairline hover:border-faint'
+              }`}
+              data-cat={cat}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
     </section>
 
     <!-- Creators Grid -->
     <div class="w-full max-w-7xl mx-auto px-6 py-10 flex-1">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="creatorsGrid">
-        {CREATORS_DATA.map((creator) => (
-          <article 
-            class="creator-card bg-canvas-elevated border border-hairline hover:border-faint rounded-lg p-5 shadow-xs transition-all flex flex-col justify-between"
-            data-category={creator.primaryCategory}
-            data-name={creator.channelName.toLowerCase()}
-          >
-            <div>
-              <!-- Top Row: Category & Subs -->
-              <div class="flex items-center justify-between text-xs font-mono mb-3">
-                <span class="bg-hairline-soft text-ink border border-hairline font-medium px-2 py-0.5 rounded text-[10px] uppercase">
-                  {creator.primaryCategory}
-                </span>
-                <span class="text-mute font-medium">{creator.subscribersEstimate}</span>
-              </div>
+        {CREATORS_DATA.map((creator) => {
+          const subsStr = creator.subscribersEstimate || '100K';
+          const subsNum = creator.subscriberCountNumeric || 
+            (subsStr.includes('M') ? parseFloat(subsStr) * 1000000 : parseFloat(subsStr) * 1000);
+          const computedTier = subsNum >= 2000000 ? '2m+' : subsNum >= 500000 ? '500k-2m' : subsNum >= 100000 ? '100k-500k' : '<100k';
+          const computedCountry = creator.country || (creator.isIndiaCreator ? 'India' : 'United States');
 
-              <!-- Channel Info -->
-              <div class="flex items-start gap-3.5 mb-3">
-                <div class="w-10 h-10 rounded-md bg-canvas border border-hairline text-ink flex items-center justify-center font-bold text-sm shrink-0 font-mono">
-                  {creator.channelName.substring(0, 2).toUpperCase()}
-                </div>
-                <div>
-                  <h2 class="text-sm font-semibold text-ink hover:underline leading-snug">
-                    <a href={`/creators/${creator.slug}`}>
-                      {creator.channelName}
-                    </a>
-                  </h2>
-                  <div class="text-[11px] font-mono text-mute">{creator.handle} &bull; {creator.language}</div>
-                </div>
-              </div>
-
-              <p class="text-xs text-body leading-relaxed mb-3 line-clamp-2">
-                {creator.description}
-              </p>
-
-              <!-- Tools Taught Chips -->
-              <div class="mb-3">
-                <span class="text-[10px] font-mono uppercase text-mute font-semibold block mb-1">Tools & Models Taught:</span>
-                <div class="flex flex-wrap gap-1">
-                  {creator.toolsTaught?.slice(0, 4).map(tool => (
-                    <span class="px-2 py-0.5 rounded bg-canvas border border-hairline text-body text-[11px] font-mono">
-                      #{tool}
+          return (
+            <article 
+              class="creator-card bg-canvas-elevated border border-hairline hover:border-faint rounded-lg p-5 shadow-xs transition-all flex flex-col justify-between"
+              data-category={creator.primaryCategory}
+              data-name={creator.channelName.toLowerCase()}
+              data-handle={(creator.handle || '').toLowerCase()}
+              data-country={computedCountry.toLowerCase()}
+              data-tier={creator.subscriberTier || computedTier}
+              data-lang={(creator.language || 'English').toLowerCase()}
+              data-tools={(creator.toolsTaught || []).join(' ').toLowerCase()}
+            >
+              <div>
+                <!-- Top Row: Category & Subs -->
+                <div class="flex items-center justify-between text-xs font-mono mb-3">
+                  <div class="flex items-center gap-1.5">
+                    <span class="bg-hairline-soft text-ink border border-hairline font-medium px-2 py-0.5 rounded text-[10px] uppercase">
+                      {creator.primaryCategory}
                     </span>
-                  ))}
-                </div>
-              </div>
-
-              <!-- Top Must-Watch Tutorial Preview (With Outlier Performance Badge) -->
-              {creator.topVideos?.[0] && (
-                <div class="p-3 rounded bg-canvas border border-hairline mb-3 text-xs space-y-1">
-                  <div class="flex items-center justify-between text-[10px] font-mono">
-                    <span class="text-mute uppercase font-semibold">Top Must-Watch:</span>
-                    <!-- vidIQ style Outlier Badge -->
-                    <span class="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold border border-amber-500/20">
-                      5.8x Outlier
-                    </span>
+                    {creator.isIndiaCreator && (
+                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-orange-50 text-orange-700 border border-orange-200 uppercase">
+                        India
+                      </span>
+                    )}
                   </div>
-                  <div class="font-medium text-ink truncate text-xs">{creator.topVideos[0].title}</div>
-                  <div class="text-[11px] text-mute font-mono">{creator.topVideos[0].duration} &bull; {creator.topVideos[0].viewsEstimate} views</div>
+                  <span class="text-mute font-medium">{creator.subscribersEstimate}</span>
                 </div>
-              )}
-            </div>
 
-            <!-- Card Bottom Bar -->
-            <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs">
-              <span class="text-[11px] font-mono text-mute">
-                Score: <strong class="text-ink font-semibold">{creator.educationalScore}/100</strong>
-              </span>
-              <a 
-                href={`/creators/${creator.slug}`} 
-                class="font-medium text-ink hover:underline inline-flex items-center gap-1"
-              >
-                Full Curriculum &rarr;
-              </a>
-            </div>
-          </article>
-        ))}
+                <!-- Channel Info -->
+                <div class="flex items-start gap-3.5 mb-3">
+                  <div class="w-10 h-10 rounded-md bg-canvas border border-hairline text-ink flex items-center justify-center font-bold text-sm shrink-0 font-mono">
+                    {creator.channelName.substring(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <h2 class="text-sm font-semibold text-ink hover:underline leading-snug">
+                      <a href={`/creators/${creator.slug}`}>
+                        {creator.channelName}
+                      </a>
+                    </h2>
+                    <div class="text-[11px] font-mono text-mute">{creator.handle} &bull; {computedCountry}</div>
+                  </div>
+                </div>
+
+                <p class="text-xs text-body leading-relaxed mb-3 line-clamp-2">
+                  {creator.description}
+                </p>
+
+                <!-- Tools Taught Chips -->
+                <div class="mb-3">
+                  <span class="text-[10px] font-mono uppercase text-mute font-semibold block mb-1">Tools &amp; Models Taught:</span>
+                  <div class="flex flex-wrap gap-1">
+                    {creator.toolsTaught?.slice(0, 4).map(tool => (
+                      <span class="px-2 py-0.5 rounded bg-canvas border border-hairline text-body text-[11px] font-mono">
+                        #{tool}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <!-- Top Must-Watch Tutorial Preview -->
+                {creator.topVideos?.[0] && (
+                  <div class="p-3 rounded bg-canvas border border-hairline mb-3 text-xs space-y-1">
+                    <div class="flex items-center justify-between text-[10px] font-mono">
+                      <span class="text-mute uppercase font-semibold">Top Must-Watch:</span>
+                      <span class="px-1.5 py-0.5 rounded bg-blue-50 text-primary font-semibold border border-blue-200">
+                        {creator.topVideos[0].viewsEstimate || 'Verified'} views
+                      </span>
+                    </div>
+                    <div class="font-medium text-ink truncate text-xs">{creator.topVideos[0].title}</div>
+                    <div class="text-[11px] text-mute font-mono">{creator.topVideos[0].duration} &bull; {creator.language}</div>
+                  </div>
+                )}
+              </div>
+
+              <!-- Card Bottom Bar -->
+              <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs">
+                <span class="text-[11px] font-mono text-mute">
+                  Score: <strong class="text-ink font-semibold">{creator.educationalScore}/100</strong>
+                </span>
+                <a 
+                  href={`/creators/${creator.slug}`} 
+                  class="font-medium text-ink hover:underline inline-flex items-center gap-1"
+                >
+                  Full Curriculum &rarr;
+                </a>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </div>
   </main>
@@ -210,6 +288,41 @@ const learningTracks = [
   document.addEventListener('DOMContentLoaded', () => {
     const buttons = document.querySelectorAll<HTMLButtonElement>('.creator-cat-btn');
     const cards = document.querySelectorAll<HTMLElement>('.creator-card');
+    const searchInput = document.getElementById('creatorSearchInput') as HTMLInputElement | null;
+    const countryFilter = document.getElementById('countryFilter') as HTMLSelectElement | null;
+    const tierFilter = document.getElementById('tierFilter') as HTMLSelectElement | null;
+    const langFilter = document.getElementById('langFilter') as HTMLSelectElement | null;
+
+    let activeCat = 'All';
+
+    function applyFilters() {
+      const q = (searchInput?.value || '').toLowerCase().trim();
+      const selectedCountry = (countryFilter?.value || 'all').toLowerCase();
+      const selectedTier = (tierFilter?.value || 'all').toLowerCase();
+      const selectedLang = (langFilter?.value || 'all').toLowerCase();
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category') || '';
+        const name = card.getAttribute('data-name') || '';
+        const handle = card.getAttribute('data-handle') || '';
+        const country = card.getAttribute('data-country') || '';
+        const tier = card.getAttribute('data-tier') || '';
+        const lang = card.getAttribute('data-lang') || '';
+        const tools = card.getAttribute('data-tools') || '';
+
+        const matchesCat = activeCat === 'All' || cat.toLowerCase().includes(activeCat.toLowerCase());
+        const matchesQuery = !q || name.includes(q) || handle.includes(q) || tools.includes(q);
+        const matchesCountry = selectedCountry === 'all' || country.includes(selectedCountry);
+        const matchesTier = selectedTier === 'all' || tier === selectedTier;
+        const matchesLang = selectedLang === 'all' || lang.includes(selectedLang);
+
+        if (matchesCat && matchesQuery && matchesCountry && matchesTier && matchesLang) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
 
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -218,16 +331,14 @@ const learningTracks = [
         });
         btn.className = 'creator-cat-btn px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 bg-ink text-on-primary border border-ink';
 
-        const cat = btn.getAttribute('data-cat') || 'All';
-        cards.forEach(card => {
-          const cardCat = card.getAttribute('data-category') || '';
-          if (cat === 'All' || cardCat.toLowerCase().includes(cat.toLowerCase())) {
-            card.style.display = '';
-          } else {
-            card.style.display = 'none';
-          }
-        });
+        activeCat = btn.getAttribute('data-cat') || 'All';
+        applyFilters();
       });
     });
+
+    searchInput?.addEventListener('input', applyFilters);
+    countryFilter?.addEventListener('change', applyFilters);
+    tierFilter?.addEventListener('change', applyFilters);
+    langFilter?.addEventListener('change', applyFilters);
   });
 </script>

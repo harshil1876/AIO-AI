@@ -32,6 +32,9 @@ export interface WorkflowItem {
   output: string;
   credentialsNeeded: string[];
   systemPromptSnippet: string;
+  systemPrompt?: string;
+  userPromptTemplate?: string;
+  apiPayloadSchema?: Record<string, any>;
   troubleshootingTips: string[];
   budgetVariants: {
     free: BudgetVariant;
@@ -1488,3 +1491,231 @@ export const WORKFLOWS_DATA: WorkflowItem[] = [
     relatedCreatorSlugs: ['cole-medin', 'ai-jason']
   }
 ];
+
+// Production-Grade Prompts and API Schemas for all 16 Flagship Workflows
+export const WORKFLOW_PROMPT_SCHEMAS: Record<string, { systemPrompt: string; userPromptTemplate: string; apiPayloadSchema: Record<string, any> }> = {
+  'shorts-creator-pipeline': {
+    systemPrompt: `You are an automated YouTube Shorts retention engineer and viral short-form scriptwriter. Maintain a pacing of 145-160 words per minute. Output strict RFC 8259 JSON format with zero conversational filler. Structure scripts with: 1) A 3-second pattern-interrupt hook, 2) Context & stakes, 3) 3 fast narrative beats, and 4) Organic loop CTA.`,
+    userPromptTemplate: `Draft a 50-second YouTube Shorts script for topic: "{{topic}}".\nInclude 5 visual b-roll prompts (1080x1920) formatted for Midjourney/Flux, and dynamic caption emphasis cues.\n\nInput Topic Payload: {{input_json}}`,
+    apiPayloadSchema: {
+      model: "gpt-4o",
+      temperature: 0.7,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: "You are an automated YouTube Shorts retention engineer..." },
+        { role: "user", content: "Draft a 50-second YouTube Shorts script for topic: {{topic}}..." }
+      ],
+      max_tokens: 1500
+    }
+  },
+  'pr-code-review-bot': {
+    systemPrompt: `You are a Principal Security & Staff Software Engineer conducting an automated code review on GitHub pull requests. Inspect git diffs for: 1) OWASP Top 10 vulnerabilities (SQLi, SSRF, XSS, ReDoS), 2) Memory/resource leaks, 3) Big-O time and space complexity regressions, and 4) Missing unit tests. Provide actionable markdown diff suggestions with exact file paths and line numbers.`,
+    userPromptTemplate: `Review PR #{{pr_number}} for repository {{repo_name}}.\n\nGit Diff:\n{{git_diff}}\n\nCommit Message: {{commit_message}}`,
+    apiPayloadSchema: {
+      model: "claude-3-7-sonnet",
+      temperature: 0.2,
+      messages: [
+        { role: "system", content: "You are a Principal Security & Staff Software Engineer..." },
+        { role: "user", content: "Review PR #{{pr_number}} for repository {{repo_name}}..." }
+      ],
+      max_tokens: 3000
+    }
+  },
+  'indic-customer-support-agent': {
+    systemPrompt: `You are a multilingual AI support representative specializing in Indian languages (Hindi, Hinglish, Tamil, Telugu, Kannada, Bengali, and English). Maintain polite, helpful, and empathetic tone. Never hallucinate refund amounts or shipping guarantees outside the provided merchant policy document. If sentiment is hostile or issue is legal/fraud, route to human specialist.`,
+    userPromptTemplate: `User message: "{{customer_query}}"\nDetected language: {{language_code}}\nCustomer Tier: {{customer_tier}}\nKnowledge Base Context:\n{{kb_chunks}}`,
+    apiPayloadSchema: {
+      model: "sarvam-2b-indic",
+      temperature: 0.3,
+      messages: [
+        { role: "system", content: "You are a multilingual AI support representative specializing in Indian languages..." },
+        { role: "user", content: "User message: {{customer_query}}..." }
+      ],
+      max_tokens: 800
+    }
+  },
+  'seo-content-factory': {
+    systemPrompt: `You are an elite programmatic SEO content architect and technical writer. You produce comprehensive, highly authoritative pillar pages that rank for high-intent search queries. Adhere strictly to Google Helpful Content guidelines: include real code examples, comparison tables, FAQ schema in JSON-LD, and zero repetitive fluff.`,
+    userPromptTemplate: `Target Keyword: "{{keyword}}"\nSearch Intent: {{intent}}\nCompetitor Word Counts: {{avg_words}}\nSERP Headings to Outrank: {{serp_outlines}}`,
+    apiPayloadSchema: {
+      model: "gpt-4o",
+      temperature: 0.5,
+      messages: [
+        { role: "system", content: "You are an elite programmatic SEO content architect..." },
+        { role: "user", content: "Target Keyword: {{keyword}}..." }
+      ],
+      max_tokens: 4000
+    }
+  },
+  'b2b-lead-enrichment-pipeline': {
+    systemPrompt: `You are a B2B Revenue Operations & Data Enrichment Specialist. Given raw lead inputs (work email, company domain), analyze company headcount, tech stack, funding round, and ICP tier (Tier A/B/C). Output strict JSON suitable for instant Salesforce / HubSpot webhook ingest.`,
+    userPromptTemplate: `Enrich lead:\nName: {{lead_name}}\nEmail: {{lead_email}}\nCompany Domain: {{company_domain}}\nRaw Scrape: {{website_text}}`,
+    apiPayloadSchema: {
+      model: "claude-3-5-haiku",
+      temperature: 0.1,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: "You are a B2B Revenue Operations & Data Enrichment Specialist..." },
+        { role: "user", content: "Enrich lead: {{lead_name}}..." }
+      ],
+      max_tokens: 1000
+    }
+  },
+  'local-private-rag-knowledgebase': {
+    systemPrompt: `You are an on-premise RAG Assistant running locally via Ollama. You have zero access to the public internet. You must answer user inquiries using ONLY the provided chunk excerpts from private internal documentation. If the information is not contained in the context, explicitly reply: "Information not found in provided internal documents." Never speculate or extrapolate beyond the text.`,
+    userPromptTemplate: `Query: {{user_question}}\n\nRetrieved Context Chunks (Top 5):\n{{retrieved_context}}`,
+    apiPayloadSchema: {
+      model: "deepseek-r1-14b",
+      temperature: 0.1,
+      messages: [
+        { role: "system", content: "You are an on-premise RAG Assistant running locally via Ollama..." },
+        { role: "user", content: "Query: {{user_question}}..." }
+      ],
+      max_tokens: 1500
+    }
+  },
+  'automated-invoice-financial-extractor': {
+    systemPrompt: `You are a financial OCR auditor. Extract all structured accounting data from unstructured invoice text or PDF vision OCR. Output strict JSON with: invoice_id, vendor_name, vendor_tax_id, issue_date, due_date, line_items (description, quantity, unit_price, total), subtotal, tax_amount, total_amount, currency. Verify that sum(line_items) equals subtotal.`,
+    userPromptTemplate: `Invoice OCR Text:\n{{ocr_raw_text}}\n\nExpected Currency: {{currency_code}}`,
+    apiPayloadSchema: {
+      model: "gpt-4o",
+      temperature: 0.0,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: "You are a financial OCR auditor..." },
+        { role: "user", content: "Invoice OCR Text: {{ocr_raw_text}}..." }
+      ],
+      max_tokens: 2000
+    }
+  },
+  'podcast-to-social-clips-factory': {
+    systemPrompt: `You are a podcast media producer. Given full audio transcript with timestamps, identify the top 3 highest-energy, most insightful standalone clips (each 30-90 seconds). Provide exact start and end timestamps, viral hook caption, and Twitter thread / LinkedIn carousel summary for each clip.`,
+    userPromptTemplate: `Podcast Title: {{podcast_title}}\nTranscript with Timestamps:\n{{transcript_chunk}}`,
+    apiPayloadSchema: {
+      model: "claude-3-5-sonnet",
+      temperature: 0.6,
+      messages: [
+        { role: "system", content: "You are a podcast media producer..." },
+        { role: "user", content: "Podcast Title: {{podcast_title}}..." }
+      ],
+      max_tokens: 2500
+    }
+  },
+  'academic-literature-synthesis': {
+    systemPrompt: `You are an academic research fellow and systematic literature review engine. Given research paper abstracts and methodology sections, synthesize key findings, sample sizes, benchmark datasets used, statistical significance (p-values), and open research limitations. Output structured comparative matrix in Markdown.`,
+    userPromptTemplate: `Research Topic: {{research_topic}}\nPapers Input (BibTeX + Abstracts):\n{{papers_data}}`,
+    apiPayloadSchema: {
+      model: "claude-3-7-sonnet",
+      temperature: 0.2,
+      messages: [
+        { role: "system", content: "You are an academic research fellow..." },
+        { role: "user", content: "Research Topic: {{research_topic}}..." }
+      ],
+      max_tokens: 3500
+    }
+  },
+  'figma-to-production-code-pipeline': {
+    systemPrompt: `You are a Senior Frontend Engineer. Convert Figma design tokens and component hierarchy into clean, accessible Tailwind CSS v4 and semantic Astro/React components. Follow strict mobile-first design, WCAG AAA contrast, semantic HTML tags, and clean TypeScript props interfaces.`,
+    userPromptTemplate: `Figma Component Schema:\n{{figma_json_tree}}\nTarget Framework: {{framework}} (Tailwind CSS v4)`,
+    apiPayloadSchema: {
+      model: "claude-3-5-sonnet",
+      temperature: 0.2,
+      messages: [
+        { role: "system", content: "You are a Senior Frontend Engineer..." },
+        { role: "user", content: "Figma Component Schema: {{figma_json_tree}}..." }
+      ],
+      max_tokens: 3000
+    }
+  },
+  'voice-meeting-to-crm-action-items': {
+    systemPrompt: `You are an Executive Chief of Staff and CRM Administrator. Parse meeting transcripts to extract: 1) Decisions made, 2) Action items with assigned owners and deadlines, 3) Unresolved objections, and 4) Structured CRM deal update notes formatted for HubSpot/Salesforce activity log.`,
+    userPromptTemplate: `Meeting Subject: {{meeting_subject}}\nParticipants: {{attendees}}\nTranscript:\n{{meeting_transcript}}`,
+    apiPayloadSchema: {
+      model: "gpt-4o-mini",
+      temperature: 0.2,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: "You are an Executive Chief of Staff..." },
+        { role: "user", content: "Meeting Subject: {{meeting_subject}}..." }
+      ],
+      max_tokens: 1500
+    }
+  },
+  'competitor-pricing-news-digest-bot': {
+    systemPrompt: `You are a Competitive Intelligence Analyst. Monitor competitor website changelogs, pricing page snapshots, and press releases. Flag price increases, tier restructurings, feature deprecations, and new feature announcements. Classify threat level: High / Medium / Low.`,
+    userPromptTemplate: `Competitor: {{competitor_name}}\nPrevious Pricing HTML Snapshot vs Current HTML Snapshot:\n{{diff_payload}}`,
+    apiPayloadSchema: {
+      model: "deepseek-v3",
+      temperature: 0.2,
+      messages: [
+        { role: "system", content: "You are a Competitive Intelligence Analyst..." },
+        { role: "user", content: "Competitor: {{competitor_name}}..." }
+      ],
+      max_tokens: 2000
+    }
+  },
+  'multi-agent-market-research-pitch-deck': {
+    systemPrompt: `You are a Venture Partner and Market Sizing Strategist. Conduct top-down and bottom-up TAM/SAM/SOM calculations for startup pitch decks. Cite industry benchmarks (Gartner, IDC, PitchBook) where available, outline 3 distinct revenue models, and generate 10 slide outline ready for investment review.`,
+    userPromptTemplate: `Startup Idea: {{startup_pitch}}\nTarget Geography: {{geography}}\nBusiness Model: {{business_model}}`,
+    apiPayloadSchema: {
+      model: "o3-mini",
+      temperature: 0.4,
+      messages: [
+        { role: "system", content: "You are a Venture Partner and Market Sizing Strategist..." },
+        { role: "user", content: "Startup Idea: {{startup_pitch}}..." }
+      ],
+      max_tokens: 3000
+    }
+  },
+  'youtube-thumbnail-ab-concept-generator': {
+    systemPrompt: `You are an elite YouTube Creative Director & CTR Specialist. Given video title and target audience, produce 3 radically contrasting thumbnail visual concepts (Concept A: High Emotion/Face close-up, Concept B: Storyboard/Before-After, Concept C: Intriguing Minimalist Curiosity Gap). Provide Midjourney v6.1 generation prompt and 3-word bold overlay text for each.`,
+    userPromptTemplate: `Video Title: "{{video_title}}"\nNiche: {{channel_niche}}\nTarget Audience: {{audience_demographic}}`,
+    apiPayloadSchema: {
+      model: "gpt-4o",
+      temperature: 0.8,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: "You are an elite YouTube Creative Director & CTR Specialist..." },
+        { role: "user", content: "Video Title: {{video_title}}..." }
+      ],
+      max_tokens: 1500
+    }
+  },
+  'ecommerce-product-photo-studio': {
+    systemPrompt: `You are an e-commerce commercial photographer and prompt engineer for ComfyUI and Flux.1. Given a plain white-background product catalog photo and category, generate 4 commercial lifestyle scene prompts (e.g. Scandinavian marble kitchen, luxury studio gradient, outdoor natural daylight, cyberpunk neon display) with precise lighting, camera lens parameters, and negative prompts.`,
+    userPromptTemplate: `Product: {{product_name}}\nCategory: {{category}}\nPrimary Color: {{color_palette}}`,
+    apiPayloadSchema: {
+      model: "claude-3-5-haiku",
+      temperature: 0.6,
+      messages: [
+        { role: "system", content: "You are an e-commerce commercial photographer..." },
+        { role: "user", content: "Product: {{product_name}}..." }
+      ],
+      max_tokens: 1200
+    }
+  },
+  'autonomous-customer-support-triage': {
+    systemPrompt: `You are an autonomous tier-1 helpdesk triage agent. Classify inbound tickets by intent (Billing, Bug, Feature Request, How-To, Account Access), detect customer churn risk (Low / Medium / High / Critical), and extract user platform/browser info. If confidence >= 90%, draft immediate resolution reply citing official docs; otherwise route to human agent with triage notes.`,
+    userPromptTemplate: `Customer Ticket #{{ticket_id}}:\nSubject: {{ticket_subject}}\nBody: {{ticket_body}}\nCustomer Tier: {{account_tier}}`,
+    apiPayloadSchema: {
+      model: "claude-3-5-sonnet",
+      temperature: 0.1,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: "You are an autonomous tier-1 helpdesk triage agent..." },
+        { role: "user", content: "Customer Ticket #{{ticket_id}}..." }
+      ],
+      max_tokens: 1500
+    }
+  }
+};
+
+// Augment all 16 workflows with authentic production prompt schemas
+WORKFLOWS_DATA.forEach(wf => {
+  const schema = WORKFLOW_PROMPT_SCHEMAS[wf.id];
+  if (schema) {
+    wf.systemPrompt = schema.systemPrompt;
+    wf.userPromptTemplate = schema.userPromptTemplate;
+    wf.apiPayloadSchema = schema.apiPayloadSchema;
+  }
+});

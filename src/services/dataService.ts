@@ -28,6 +28,77 @@ export type {
   CreatorData,
 };
 
+export interface AuthenticScorecard {
+  total: number; // 0 - 100
+  docsApi: number; // max 25: Docs & API Maturity
+  pricing: number; // max 25: Pricing Transparency & Free Tier
+  interop: number; // max 20: Workflow Interoperability & Integration
+  health: number; // max 15: Live Domain Health & Uptime
+  community: number; // max 15: Verified Community Signal & Open Source
+  verdict: string;
+}
+
+export function calculateAuthenticScore(tool: ToolData): AuthenticScorecard {
+  // 1. Docs & API Maturity (max 25)
+  let docsApi = 12; // Base for verified production tool
+  const hasGitHub = !!tool.githubUrl;
+  const hasApiFeature = tool.features?.some(f => /api|sdk|rest|webhook|mcp|extension|cli/i.test(f)) ||
+    tool.deploymentTypes?.some(d => /api|cloud|self-hosted/i.test(d));
+  if (hasGitHub) docsApi += 7;
+  if (hasApiFeature) docsApi += 6;
+  docsApi = Math.min(25, docsApi);
+
+  // 2. Pricing Transparency & Free Tier (max 25)
+  let pricing = 10;
+  if (tool.freeTier || tool.pricingType === 'Free' || tool.pricingType === 'Open Source') {
+    pricing += 9;
+  } else if (tool.hasFreeTrial) {
+    pricing += 5;
+  }
+  if (tool.startingPrice && !tool.startingPrice.toLowerCase().includes('contact')) {
+    pricing += 6; // Transparent upfront pricing, not hidden behind sales call
+  }
+  pricing = Math.min(25, pricing);
+
+  // 3. Workflow Interoperability (max 20)
+  let interop = 10;
+  if (tool.openSourceAlternative) interop += 4;
+  if (tool.categorySlugs?.length > 1) interop += 3;
+  if (tool.features?.some(f => /export|json|csv|pipeline|workflow|integration|plugin|python|docker/i.test(f))) {
+    interop += 3;
+  }
+  interop = Math.min(20, interop);
+
+  // 4. Live Domain Health (max 15)
+  let health = 12;
+  if (tool.websiteUrl && tool.websiteUrl.startsWith('https://')) health += 3;
+  health = Math.min(15, health);
+
+  // 5. Verified Community Signal (max 15)
+  let community = 8;
+  if (tool.isVerified) community += 4;
+  if (tool.isIndianAI) community += 3;
+  else if (hasGitHub) community += 3;
+  community = Math.min(15, community);
+
+  const total = docsApi + pricing + interop + health + community;
+
+  let verdict = 'Standard Tier';
+  if (total >= 90) verdict = 'Enterprise & Production Ready';
+  else if (total >= 80) verdict = 'High Authenticity & Stable';
+  else if (total >= 70) verdict = 'Functional & Verified';
+
+  return {
+    total,
+    docsApi,
+    pricing,
+    interop,
+    health,
+    community,
+    verdict
+  };
+}
+
 // Helper lookup functions
 export function getToolBySlug(slug: string): ToolData | undefined {
   return TOOLS_DATA.find(t => t.slug === slug);

@@ -1,6 +1,7 @@
 ---
 import type { ToolData } from '../data/seedData';
 import ToolLogo from './ToolLogo.astro';
+import { calculateAuthenticScore } from '../services/dataService';
 
 interface Props {
   tool: ToolData;
@@ -13,21 +14,20 @@ const catSlugs = Array.isArray(tool.categorySlugs)
   ? tool.categorySlugs 
   : (tool.categorySlug ? [tool.categorySlug] : []);
 
-// Momentum calculation (Toolify.ai reverse-engineered mechanic)
-const score = tool.platformScore || 85;
-const momentumBadge = score >= 94 
-  ? { label: 'Trending +42%', class: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
-  : score >= 90 
-  ? { label: 'Most Saved', class: 'bg-blue-50 text-[#2563EB] border-blue-200' }
-  : score >= 86 
-  ? { label: 'High Adoption', class: 'bg-purple-50 text-purple-700 border-purple-200' }
+// Auditable 5-Factor Authenticity Score
+const scorecard = calculateAuthenticScore(tool);
+const score = scorecard.total;
+
+// Momentum calculation
+const momentumBadge = score >= 90 
+  ? { label: 'Verified Leader', class: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
+  : score >= 82 
+  ? { label: 'High Adoption', class: 'bg-blue-50 text-[#2563EB] border-blue-200' }
   : null;
 
-const trafficEstimate = score >= 93 
-  ? '10M+ visits/mo'
-  : score >= 88 
-  ? '2.5M visits/mo'
-  : '450k visits/mo';
+const trafficEstimate = score >= 88 
+  ? 'Production Ready'
+  : 'Verified Tool';
 ---
 
 <div class="group relative bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-5 flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all shadow-xs">
@@ -76,7 +76,26 @@ const trafficEstimate = score >= 93
               <span class="text-[10px] text-slate-400">0 reviews</span>
             )}
             <span>&bull;</span>
-            <span class="text-[#09090B] font-semibold">Score: {tool.platformScore || 85}</span>
+            <div class="relative group/score inline-block">
+              <span class="text-[#09090B] font-semibold cursor-help border-b border-dotted border-slate-400">Score: {scorecard.total}/100</span>
+              <!-- Hover Popover Tooltip -->
+              <div class="absolute bottom-full left-0 mb-2 w-56 p-3 bg-neutral-900 text-white text-[11px] rounded-xl shadow-xl opacity-0 invisible group-hover/score:opacity-100 group-hover/score:visible transition-all z-30 pointer-events-none font-sans">
+                <div class="font-bold border-b border-neutral-700 pb-1 mb-2 text-white flex justify-between">
+                  <span>5-Factor Audit</span>
+                  <span class="text-blue-400 font-mono">{scorecard.total}/100</span>
+                </div>
+                <div class="space-y-1 font-mono text-[10px]">
+                  <div class="flex justify-between"><span>Docs & API:</span> <span class="text-emerald-400">{scorecard.docsApi}/25</span></div>
+                  <div class="flex justify-between"><span>Pricing & Tier:</span> <span class="text-emerald-400">{scorecard.pricing}/25</span></div>
+                  <div class="flex justify-between"><span>Workflow Interop:</span> <span class="text-emerald-400">{scorecard.interop}/20</span></div>
+                  <div class="flex justify-between"><span>Domain Health:</span> <span class="text-emerald-400">{scorecard.health}/15</span></div>
+                  <div class="flex justify-between"><span>Community Signal:</span> <span class="text-emerald-400">{scorecard.community}/15</span></div>
+                </div>
+                <div class="mt-2 text-[10px] text-neutral-400 border-t border-neutral-800 pt-1 italic">
+                  {scorecard.verdict}
+                </div>
+              </div>
+            </div>
             <span>&bull;</span>
             <span class="text-slate-400 font-mono text-[10px]">{trafficEstimate}</span>
           </div>

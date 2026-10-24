@@ -126,6 +126,167 @@ export async function fetchLiveRepoStats(owner: string, repo: string): Promise<G
   }
 }
 
+export interface GitHubSearchResultRepo {
+  id: number;
+  name: string;
+  fullName: string;
+  description: string;
+  stars: number;
+  formattedStars: string;
+  forks: number;
+  language: string;
+  url: string;
+  topics: string[];
+  updatedAt: string;
+  minStarsVerified: boolean;
+}
+
+export async function searchGitHubAIRepos(query: string, minStars: number = 1000): Promise<GitHubSearchResultRepo[]> {
+  const cleanQ = query.trim();
+  if (!cleanQ) return [];
+
+  const cacheKey = `aio_gh_search_${cleanQ}_${minStars}`;
+  if (typeof window !== 'undefined') {
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) return JSON.parse(cached);
+    } catch(e) {}
+  }
+
+  try {
+    const qParam = encodeURIComponent(`${cleanQ} stars:>=${minStars}`);
+    const res = await fetch(`https://api.github.com/search/repositories?q=${qParam}&sort=stars&order=desc&per_page=20`, {
+      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    });
+
+    if (!res.ok) {
+      console.warn('GitHub search API response:', res.status);
+      return [];
+    }
+
+    const data = await res.json();
+    const items = (data.items || []).map((item: any) => ({
+      id: item.id,
+      name: item.name,
+      fullName: item.full_name,
+      description: item.description || 'No description provided.',
+      stars: item.stargazers_count,
+      formattedStars: formatNumber(item.stargazers_count),
+      forks: item.forks_count,
+      language: item.language || 'Code',
+      url: item.html_url,
+      topics: item.topics || [],
+      updatedAt: formatPushedAgo(item.pushed_at),
+      minStarsVerified: item.stargazers_count >= minStars
+    }));
+
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem(cacheKey, JSON.stringify(items));
+      } catch(e) {}
+    }
+
+    return items;
+  } catch (err) {
+    console.warn('GitHub search failed:', err);
+    return [];
+  }
+}
+
+export interface TrendingDeveloperOrg {
+  name: string;
+  login: string;
+  avatarUrl: string;
+  htmlUrl: string;
+  popularRepo: string;
+  popularRepoDesc: string;
+  totalStarsEstimate: string;
+  category: string;
+}
+
+export const TOP_AI_DEVELOPERS_ORGS: TrendingDeveloperOrg[] = [
+  {
+    name: 'Ollama Team',
+    login: 'ollama',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/148788426?v=4',
+    htmlUrl: 'https://github.com/ollama',
+    popularRepo: 'ollama/ollama',
+    popularRepoDesc: 'Get up and running with Llama 3.3, Mistral, DeepSeek-R1, and other large language models locally.',
+    totalStarsEstimate: '115k+',
+    category: 'Local Runtime'
+  },
+  {
+    name: 'vLLM Project',
+    login: 'vllm-project',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/137798636?v=4',
+    htmlUrl: 'https://github.com/vllm-project',
+    popularRepo: 'vllm-project/vllm',
+    popularRepoDesc: 'A high-throughput and memory-efficient inference and serving engine for LLMs.',
+    totalStarsEstimate: '42k+',
+    category: 'High-Throughput Inference'
+  },
+  {
+    name: 'Comfy Anonymous',
+    login: 'comfyanonymous',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/118804860?v=4',
+    htmlUrl: 'https://github.com/comfyanonymous',
+    popularRepo: 'comfyanonymous/ComfyUI',
+    popularRepoDesc: 'The most powerful and modular diffusion GUI and backend for SD1.5, SDXL, and Flux.',
+    totalStarsEstimate: '60k+',
+    category: 'Diffusion & Creative'
+  },
+  {
+    name: 'Georgi Gerganov',
+    login: 'ggerganov',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/1991296?v=4',
+    htmlUrl: 'https://github.com/ggerganov',
+    popularRepo: 'ggerganov/llama.cpp',
+    popularRepoDesc: 'LLM inference in C/C++ with AVX, AVX2, Metal, and CUDA acceleration across all silicon.',
+    totalStarsEstimate: '75k+',
+    category: 'C++ Inference Engine'
+  },
+  {
+    name: 'DeepSeek AI',
+    login: 'deepseek-ai',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/148330874?v=4',
+    htmlUrl: 'https://github.com/deepseek-ai',
+    popularRepo: 'deepseek-ai/DeepSeek-V3',
+    popularRepoDesc: 'Innovative Mixture-of-Experts architecture with 671B parameters and multi-head latent attention.',
+    totalStarsEstimate: '90k+',
+    category: 'Frontier Open Weights'
+  },
+  {
+    name: 'Berri AI',
+    login: 'BerriAI',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/104908051?v=4',
+    htmlUrl: 'https://github.com/BerriAI',
+    popularRepo: 'BerriAI/litellm',
+    popularRepoDesc: 'Call 100+ LLM APIs using the OpenAI input/output format with load balancing and fallbacks.',
+    totalStarsEstimate: '25k+',
+    category: 'Unified API Gateway'
+  },
+  {
+    name: 'LangChain AI',
+    login: 'langchain-ai',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/126733545?v=4',
+    htmlUrl: 'https://github.com/langchain-ai',
+    popularRepo: 'langchain-ai/langchain',
+    popularRepoDesc: 'Build context-aware reasoning applications and flexible multi-agent architectures.',
+    totalStarsEstimate: '102k+',
+    category: 'Orchestration & Agents'
+  },
+  {
+    name: 'Hugging Face',
+    login: 'huggingface',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/25720743?v=4',
+    htmlUrl: 'https://github.com/huggingface',
+    popularRepo: 'huggingface/transformers',
+    popularRepoDesc: 'State-of-the-art Machine Learning for Pytorch, TensorFlow, and JAX.',
+    totalStarsEstimate: '138k+',
+    category: 'Model Hub & Framework'
+  }
+];
+
 export async function fetchRepoReadme(owner: string, repo: string): Promise<string | null> {
   try {
     const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/readme`, {

@@ -23,6 +23,9 @@ export interface CreatorData {
   primaryCategory: 'AI Coding' | 'AI Tutorials' | 'AI News' | 'AI Agents' | 'AI Research' | 'Indian AI' | 'No-Code & Workflows';
   difficulty: 'beginner' | 'intermediate' | 'advanced' | 'all-levels';
   isIndiaCreator: boolean;
+  country?: string;
+  subscriberCountNumeric?: number;
+  subscriberTier?: '<100k' | '100k-500k' | '500k-2m' | '2m+';
   subscribersEstimate: string;
   avgViewsEstimate: string;
   uploadCadence: string;
@@ -671,5 +674,2406 @@ export const CREATORS_DATA: CreatorData[] = [
     ],
     toolsTaught: ['sarvam-ai', 'krutrim', 'claude', 'cursor'],
     inspiredWorkflowIds: ['indic-customer-support-agent', 'multi-agent-market-research-pitch-deck']
+  }
+,
+  {
+    "id": "harkirat-singh-100xdevs",
+    "slug": "harkirat-singh",
+    "channelName": "Harkirat Singh (100xDevs)",
+    "handle": "@kirat_ins",
+    "youtubeUrl": "https://www.youtube.com/@kirat_ins",
+    "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+    "description": "Founder of 100xDevs and ex-Google/Goldman Sachs engineer. Teaches fullstack web engineering, building local AI agents, LLM memory architectures, and scalable cloud systems in Hinglish.",
+    "primaryCategory": "Indian AI",
+    "difficulty": "intermediate",
+    "isIndiaCreator": true,
+    "country": "India",
+    "subscriberCountNumeric": 620000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "620K+",
+    "avgViewsEstimate": "180K",
+    "uploadCadence": "Weekly Live Cohorts",
+    "typicalVideoDepth": "1 - 2 hours per stream",
+    "educationalScore": 94,
+    "language": "Hinglish / English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "AI Web Architecture",
+        "description": "Deploying LangChain and Ollama microservices with Next.js and Docker.",
+        "skillsAcquired": [
+          "Ollama orchestration",
+          "Vector DB indexing",
+          "Docker deployment"
+        ]
+      },
+      {
+        "pillarTitle": "Production Agent Systems",
+        "description": "Building autonomous workflow bots with function calling.",
+        "skillsAcquired": [
+          "Function calling",
+          "Rate limiting",
+          "Redis caching"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Fullstack AI",
+      "Docker for LLMs",
+      "LangChain with Node.js",
+      "System Design"
+    ],
+    "topVideos": [
+      {
+        "title": "Build Full Stack AI SaaS from scratch in Next.js",
+        "url": "https://www.youtube.com/watch?v=example1",
+        "viewsEstimate": "420K",
+        "duration": "2h 10m",
+        "topicTag": "Fullstack AI"
+      }
+    ],
+    "toolsTaught": [
+      "ollama",
+      "supabase",
+      "cursor",
+      "claude"
+    ],
+    "inspiredWorkflowIds": [
+      "shorts-creator-pipeline",
+      "pr-code-review-bot"
+    ]
+  },
+  {
+    "id": "edureka-ai",
+    "slug": "edureka-ai",
+    "channelName": "Edureka AI & Data",
+    "handle": "@edurekaIN",
+    "youtubeUrl": "https://www.youtube.com/@edurekaIN",
+    "avatarUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80",
+    "description": "Premier enterprise upskilling institute in India. Offers exhaustive multi-hour masterclasses on PyTorch, generative AI, Prompt Engineering, and RAG architectures.",
+    "primaryCategory": "Indian AI",
+    "difficulty": "beginner",
+    "isIndiaCreator": true,
+    "country": "India",
+    "subscriberCountNumeric": 3900000,
+    "subscriberTier": "2m+",
+    "subscribersEstimate": "3.9M+",
+    "avgViewsEstimate": "120K",
+    "uploadCadence": "Daily Tutorials",
+    "typicalVideoDepth": "2 - 10 hours mega courses",
+    "educationalScore": 91,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Generative AI Foundation",
+        "description": "End-to-end transformers, fine-tuning Llama models with PEFT/LoRA.",
+        "skillsAcquired": [
+          "LoRA fine-tuning",
+          "PyTorch",
+          "Prompt engineering"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Generative AI Full Course",
+      "Prompt Engineering",
+      "LangChain Tutorial",
+      "Machine Learning"
+    ],
+    "topVideos": [
+      {
+        "title": "Generative AI Full Course 2026 - Masterclass",
+        "url": "https://www.youtube.com/watch?v=example2",
+        "viewsEstimate": "1.2M",
+        "duration": "8h 30m",
+        "topicTag": "Generative AI"
+      }
+    ],
+    "toolsTaught": [
+      "hugging-face",
+      "chatgpt",
+      "langchain"
+    ],
+    "inspiredWorkflowIds": [
+      "seo-content-factory"
+    ]
+  },
+  {
+    "id": "piyush-garg",
+    "slug": "piyush-garg",
+    "channelName": "Piyush Garg",
+    "handle": "@piyushgargdev",
+    "youtubeUrl": "https://www.youtube.com/@piyushgargdev",
+    "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    "description": "Fullstack instructor and developer advocate from India. Specializes in building modern AI web apps using Cursor, v0.dev, Docker, and Supabase vector embeddings.",
+    "primaryCategory": "AI Coding",
+    "difficulty": "all-levels",
+    "isIndiaCreator": true,
+    "country": "India",
+    "subscriberCountNumeric": 280000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "280K+",
+    "avgViewsEstimate": "65K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "25 - 50 mins",
+    "educationalScore": 93,
+    "language": "Hinglish / English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "AI-Powered Development",
+        "description": "10x engineer workflows with Cursor IDE and AI assisted testing.",
+        "skillsAcquired": [
+          "Cursor workflows",
+          "Prompt to UI",
+          "API integration"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Cursor AI Editor",
+      "v0.dev UI Generation",
+      "Dockerize AI Apps",
+      "Vector Databases"
+    ],
+    "topVideos": [
+      {
+        "title": "Cursor IDE Complete Guide - 10x Developer with AI",
+        "url": "https://www.youtube.com/watch?v=example3",
+        "viewsEstimate": "210K",
+        "duration": "42m",
+        "topicTag": "Cursor IDE"
+      }
+    ],
+    "toolsTaught": [
+      "cursor",
+      "v0",
+      "supabase",
+      "bolt-new"
+    ],
+    "inspiredWorkflowIds": [
+      "figma-to-production-code-pipeline"
+    ]
+  },
+  {
+    "id": "shradha-khapra-apna-college",
+    "slug": "shradha-khapra",
+    "channelName": "Shradha Khapra (Apna College)",
+    "handle": "@ApnaCollegeOfficial",
+    "youtubeUrl": "https://www.youtube.com/@ApnaCollegeOfficial",
+    "avatarUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
+    "description": "Ex-Microsoft engineer and co-founder of Apna College. Inspires millions of Indian college students with foundational Python for AI, data structures, and practical AI tooling.",
+    "primaryCategory": "Indian AI",
+    "difficulty": "beginner",
+    "isIndiaCreator": true,
+    "country": "India",
+    "subscriberCountNumeric": 5400000,
+    "subscriberTier": "2m+",
+    "subscribersEstimate": "5.4M+",
+    "avgViewsEstimate": "650K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "45 mins - 3 hours",
+    "educationalScore": 92,
+    "language": "Hindi",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Python for AI & ML",
+        "description": "Mastering NumPy, Pandas, and foundational machine learning syntax.",
+        "skillsAcquired": [
+          "Python syntax",
+          "Data manipulation",
+          "NumPy vectorization"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Python for AI",
+      "Machine Learning Foundations",
+      "Data Structures",
+      "Tech Careers"
+    ],
+    "topVideos": [
+      {
+        "title": "Python Full Course for Beginners to AI Specialists",
+        "url": "https://www.youtube.com/watch?v=example4",
+        "viewsEstimate": "3.8M",
+        "duration": "4h 15m",
+        "topicTag": "Python"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "google-gemini"
+    ],
+    "inspiredWorkflowIds": [
+      "academic-literature-synthesis"
+    ]
+  },
+  {
+    "id": "striver-take-u-forward",
+    "slug": "striver-take-u-forward",
+    "channelName": "take U forward (Striver)",
+    "handle": "@takeUforward",
+    "youtubeUrl": "https://www.youtube.com/@takeUforward",
+    "avatarUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
+    "description": "Raj Vikramaditya (Striver), ex-Google and Media.net engineer. Provides deep algorithmic intuition, graph traversals for AI search trees, and DSA mastery.",
+    "primaryCategory": "AI Coding",
+    "difficulty": "intermediate",
+    "isIndiaCreator": true,
+    "country": "India",
+    "subscriberCountNumeric": 950000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "950K+",
+    "avgViewsEstimate": "190K",
+    "uploadCadence": "Bi-weekly",
+    "typicalVideoDepth": "30 - 60 mins",
+    "educationalScore": 95,
+    "language": "English / Hinglish",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Graph Search & AI Planning",
+        "description": "A*, BFS, DFS, and beam search mechanics powering reasoning agents.",
+        "skillsAcquired": [
+          "Search algorithms",
+          "Dynamic programming",
+          "Tree traversal"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Algorithms",
+      "System Design",
+      "AI Search Trees",
+      "Interview Prep"
+    ],
+    "topVideos": [
+      {
+        "title": "Graph Algorithms & Shortest Path for AI Routing",
+        "url": "https://www.youtube.com/watch?v=example5",
+        "viewsEstimate": "510K",
+        "duration": "55m",
+        "topicTag": "Algorithms"
+      }
+    ],
+    "toolsTaught": [
+      "github-copilot",
+      "chatgpt"
+    ],
+    "inspiredWorkflowIds": [
+      "pr-code-review-bot"
+    ]
+  },
+  {
+    "id": "love-babbar",
+    "slug": "love-babbar",
+    "channelName": "Love Babbar",
+    "handle": "@LoveBabbar",
+    "youtubeUrl": "https://www.youtube.com/@LoveBabbar",
+    "avatarUrl": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
+    "description": "Ex-Amazon engineer who built one of India’s most followed developer education ecosystems. Demystifies AI engineering, fullstack pipelines, and developer career transitions.",
+    "primaryCategory": "Indian AI",
+    "difficulty": "beginner",
+    "isIndiaCreator": true,
+    "country": "India",
+    "subscriberCountNumeric": 1400000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "1.4M+",
+    "avgViewsEstimate": "320K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "30 - 90 mins",
+    "educationalScore": 90,
+    "language": "Hindi",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Practical Software Architecture",
+        "description": "Integrating AI APIs with backend microservices and databases.",
+        "skillsAcquired": [
+          "Backend APIs",
+          "System scalability",
+          "Developer workflows"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Web Development",
+      "AI Developer Tools",
+      "Career Roadmaps",
+      "System Design"
+    ],
+    "topVideos": [
+      {
+        "title": "Complete Web Dev & AI Integration Roadmap",
+        "url": "https://www.youtube.com/watch?v=example6",
+        "viewsEstimate": "1.1M",
+        "duration": "1h 20m",
+        "topicTag": "Web Development"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "cursor"
+    ],
+    "inspiredWorkflowIds": [
+      "figma-to-production-code-pipeline"
+    ]
+  },
+  {
+    "id": "ws-cube-tech",
+    "slug": "ws-cube-tech",
+    "channelName": "WsCube Tech",
+    "handle": "@wscubetech",
+    "youtubeUrl": "https://www.youtube.com/@wscubetech",
+    "avatarUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
+    "description": "Massive practical tech training channel in India. Produces complete hands-on tutorials on Machine Learning, Data Science, Prompt Engineering, and AI automation.",
+    "primaryCategory": "Indian AI",
+    "difficulty": "beginner",
+    "isIndiaCreator": true,
+    "country": "India",
+    "subscriberCountNumeric": 3600000,
+    "subscriberTier": "2m+",
+    "subscribersEstimate": "3.6M+",
+    "avgViewsEstimate": "140K",
+    "uploadCadence": "Daily",
+    "typicalVideoDepth": "45 mins - 4 hours",
+    "educationalScore": 89,
+    "language": "Hindi",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Machine Learning A to Z",
+        "description": "Scikit-learn, regression models, classification, and neural network introduction.",
+        "skillsAcquired": [
+          "Data cleaning",
+          "Model evaluation",
+          "Python libraries"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Machine Learning",
+      "Data Science",
+      "Python",
+      "Digital Marketing with AI"
+    ],
+    "topVideos": [
+      {
+        "title": "Machine Learning Complete Course in Hindi",
+        "url": "https://www.youtube.com/watch?v=example7",
+        "viewsEstimate": "890K",
+        "duration": "6h 45m",
+        "topicTag": "Machine Learning"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "claude"
+    ],
+    "inspiredWorkflowIds": [
+      "seo-content-factory"
+    ]
+  },
+  {
+    "id": "gate-smashers",
+    "slug": "gate-smashers",
+    "channelName": "Gate Smashers (Varun Singla)",
+    "handle": "@GateSmashers",
+    "youtubeUrl": "https://www.youtube.com/@GateSmashers",
+    "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    "description": "India’s definitive computer science concepts channel. Crystal clear breakdowns of artificial intelligence search heuristics, expert systems, Bayes theorem, and neural nets.",
+    "primaryCategory": "Indian AI",
+    "difficulty": "all-levels",
+    "isIndiaCreator": true,
+    "country": "India",
+    "subscriberCountNumeric": 1800000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "1.8M+",
+    "avgViewsEstimate": "220K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "10 - 25 mins per concept",
+    "educationalScore": 96,
+    "language": "Hinglish",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "AI Foundations & Heuristic Search",
+        "description": "Minimax algorithm, alpha-beta pruning, and knowledge representation.",
+        "skillsAcquired": [
+          "Heuristic search",
+          "Game theory AI",
+          "Probability theory"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Artificial Intelligence Playlist",
+      "Neural Network Theory",
+      "Bayesian Networks",
+      "Search Heuristics"
+    ],
+    "topVideos": [
+      {
+        "title": "Introduction to Artificial Intelligence & Search Techniques",
+        "url": "https://www.youtube.com/watch?v=example8",
+        "viewsEstimate": "1.4M",
+        "duration": "18m",
+        "topicTag": "AI Theory"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt"
+    ],
+    "inspiredWorkflowIds": [
+      "academic-literature-synthesis"
+    ]
+  },
+  {
+    "id": "liam-ottley",
+    "slug": "liam-ottley",
+    "channelName": "Liam Ottley",
+    "handle": "@LiamOttley",
+    "youtubeUrl": "https://www.youtube.com/@LiamOttley",
+    "avatarUrl": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
+    "description": "AI development agency founder (Morningside AI). Focuses on building autonomous client-facing AI agents, AI automation agency (AAA) frameworks, and Voice AI integrations.",
+    "primaryCategory": "AI Agents",
+    "difficulty": "intermediate",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 640000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "640K+",
+    "avgViewsEstimate": "150K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "15 - 35 mins",
+    "educationalScore": 92,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Voice AI & Autonomous Calling",
+        "description": "Integrating Vapi, Bland AI, and ElevenLabs into CRM pipelines.",
+        "skillsAcquired": [
+          "Voice agent setup",
+          "Twilio integration",
+          "Prompt engineering"
+        ]
+      }
+    ],
+    "topTopics": [
+      "AI Automation Agency",
+      "Voice Agents",
+      "Make.com & n8n",
+      "Client Acquisition"
+    ],
+    "topVideos": [
+      {
+        "title": "How to Build and Sell AI Agents in 2026",
+        "url": "https://www.youtube.com/watch?v=example9",
+        "viewsEstimate": "680K",
+        "duration": "28m",
+        "topicTag": "AI Agents"
+      }
+    ],
+    "toolsTaught": [
+      "elevenlabs",
+      "n8n",
+      "chatgpt"
+    ],
+    "inspiredWorkflowIds": [
+      "indic-customer-support-agent",
+      "voice-meeting-to-crm-action-items"
+    ]
+  },
+  {
+    "id": "david-ondrej",
+    "slug": "david-ondrej",
+    "channelName": "David Ondrej",
+    "handle": "@davidondrej",
+    "youtubeUrl": "https://www.youtube.com/@davidondrej",
+    "avatarUrl": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80",
+    "description": "Hands-on engineer covering cutting-edge open-source AI projects, autonomous coding setups, local LLM fine-tuning, and multi-agent coordination.",
+    "primaryCategory": "AI Coding",
+    "difficulty": "intermediate",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 195000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "195K+",
+    "avgViewsEstimate": "75K",
+    "uploadCadence": "2-3 videos/week",
+    "typicalVideoDepth": "15 - 25 mins",
+    "educationalScore": 93,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Autonomous Coding Agents",
+        "description": "Supercharging VS Code and Cursor with Claude 3.7 and local Ollama models.",
+        "skillsAcquired": [
+          "Aider configuration",
+          "Agentic debugging",
+          "Context windows"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Cursor IDE",
+      "Claude 3.7 Coding",
+      "Ollama Local Models",
+      "Multi-Agent Frameworks"
+    ],
+    "topVideos": [
+      {
+        "title": "Best Local AI Coding Setup in 2026 (Free & Open Source)",
+        "url": "https://www.youtube.com/watch?v=example10",
+        "viewsEstimate": "290K",
+        "duration": "22m",
+        "topicTag": "AI Coding"
+      }
+    ],
+    "toolsTaught": [
+      "cursor",
+      "ollama",
+      "claude",
+      "vllm"
+    ],
+    "inspiredWorkflowIds": [
+      "pr-code-review-bot"
+    ]
+  },
+  {
+    "id": "worldofai",
+    "slug": "worldofai",
+    "channelName": "WorldofAI",
+    "handle": "@worldofai",
+    "youtubeUrl": "https://www.youtube.com/@worldofai",
+    "avatarUrl": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80",
+    "description": "Fast-paced daily breakdowns of newly released open-source AI GitHub repositories, installation steps, and benchmark evaluations.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "all-levels",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 310000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "310K+",
+    "avgViewsEstimate": "45K",
+    "uploadCadence": "Daily",
+    "typicalVideoDepth": "10 - 20 mins",
+    "educationalScore": 90,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "GitHub Repo Quickstart",
+        "description": "Git cloning, Conda environment setup, and running inference locally.",
+        "skillsAcquired": [
+          "CLI commands",
+          "Conda environments",
+          "CUDA troubleshooting"
+        ]
+      }
+    ],
+    "topTopics": [
+      "GitHub Trending AI",
+      "Local Diffusion",
+      "Autonomous Agents",
+      "Open Source Tools"
+    ],
+    "topVideos": [
+      {
+        "title": "Top 5 Open Source AI Repos You Must Try This Week",
+        "url": "https://www.youtube.com/watch?v=example11",
+        "viewsEstimate": "180K",
+        "duration": "14m",
+        "topicTag": "Open Source"
+      }
+    ],
+    "toolsTaught": [
+      "ollama",
+      "comfyui",
+      "hugging-face"
+    ],
+    "inspiredWorkflowIds": [
+      "local-private-rag-knowledgebase"
+    ]
+  },
+  {
+    "id": "all-about-ai",
+    "slug": "all-about-ai",
+    "channelName": "All About AI (Kris)",
+    "handle": "@AllAboutAI",
+    "youtubeUrl": "https://www.youtube.com/@AllAboutAI",
+    "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    "description": "Creator focused on prompt engineering architectures, custom GPTs, workflow automations, and practical everyday AI productivity.",
+    "primaryCategory": "No-Code & Workflows",
+    "difficulty": "beginner",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 240000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "240K+",
+    "avgViewsEstimate": "55K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "15 - 30 mins",
+    "educationalScore": 89,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Advanced Prompt Architectures",
+        "description": "Chain-of-thought, Few-shot prompting, and JSON structure enforcement.",
+        "skillsAcquired": [
+          "Chain-of-thought",
+          "System prompt engineering",
+          "Meta-prompts"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Prompt Engineering",
+      "ChatGPT Workflow Hacks",
+      "Automation Recipes",
+      "Claude Artifacts"
+    ],
+    "topVideos": [
+      {
+        "title": "Master Prompt Engineering: 10 Frameworks That Work",
+        "url": "https://www.youtube.com/watch?v=example12",
+        "viewsEstimate": "450K",
+        "duration": "25m",
+        "topicTag": "Prompt Engineering"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "claude",
+      "midjourney"
+    ],
+    "inspiredWorkflowIds": [
+      "seo-content-factory"
+    ]
+  },
+  {
+    "id": "indydevdan",
+    "slug": "indydevdan",
+    "channelName": "IndyDevDan",
+    "handle": "@indydevdan",
+    "youtubeUrl": "https://www.youtube.com/@indydevdan",
+    "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    "description": "Technical deep-dives into LLM agents, local embeddings, LangChain Python architectures, and production-grade retrieval augmented generation.",
+    "primaryCategory": "AI Agents",
+    "difficulty": "advanced",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 85000,
+    "subscriberTier": "<100k",
+    "subscribersEstimate": "85K+",
+    "avgViewsEstimate": "35K",
+    "uploadCadence": "Bi-weekly",
+    "typicalVideoDepth": "20 - 45 mins",
+    "educationalScore": 95,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Deterministic Agent Guardrails",
+        "description": "Building resilient agent loops with validation layers and structured outputs.",
+        "skillsAcquired": [
+          "Guardrails AI",
+          "Pydantic schemas",
+          "Deterministic workflows"
+        ]
+      }
+    ],
+    "topTopics": [
+      "LLM Agents from Scratch",
+      "Production RAG",
+      "LangChain Advanced",
+      "Embeddings Telemetry"
+    ],
+    "topVideos": [
+      {
+        "title": "Building Deterministic AI Agents with Pydantic and Python",
+        "url": "https://www.youtube.com/watch?v=example13",
+        "viewsEstimate": "110K",
+        "duration": "34m",
+        "topicTag": "Agent Architecture"
+      }
+    ],
+    "toolsTaught": [
+      "ollama",
+      "langchain",
+      "claude"
+    ],
+    "inspiredWorkflowIds": [
+      "autonomous-customer-support-triage"
+    ]
+  },
+  {
+    "id": "the-ai-advantage",
+    "slug": "the-ai-advantage",
+    "channelName": "The AI Advantage (Igor)",
+    "handle": "@aiadvantage",
+    "youtubeUrl": "https://www.youtube.com/@aiadvantage",
+    "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    "description": "Practical, highly visual tutorials for knowledge workers, solopreneurs, and creators looking to automate repetitive tasks with generative AI tools.",
+    "primaryCategory": "No-Code & Workflows",
+    "difficulty": "beginner",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 480000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "480K+",
+    "avgViewsEstimate": "90K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "10 - 20 mins",
+    "educationalScore": 88,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Solopreneur Automation Stack",
+        "description": "Connecting ChatGPT, Make.com, and Notion into a frictionless content system.",
+        "skillsAcquired": [
+          "Zapier/Make integration",
+          "Notion databases",
+          "Automated drafting"
+        ]
+      }
+    ],
+    "topTopics": [
+      "ChatGPT Workflows",
+      "Midjourney Prompts",
+      "Notion AI",
+      "Productivity Systems"
+    ],
+    "topVideos": [
+      {
+        "title": "10 AI Automations That Save 20+ Hours a Week",
+        "url": "https://www.youtube.com/watch?v=example14",
+        "viewsEstimate": "720K",
+        "duration": "18m",
+        "topicTag": "Workflows"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "midjourney",
+      "n8n"
+    ],
+    "inspiredWorkflowIds": [
+      "shorts-creator-pipeline"
+    ]
+  },
+  {
+    "id": "prompt-engineering-channel",
+    "slug": "prompt-engineering",
+    "channelName": "Prompt Engineering",
+    "handle": "@PromptEngineering",
+    "youtubeUrl": "https://www.youtube.com/@PromptEngineering",
+    "avatarUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80",
+    "description": "Clear, reproducible walkthroughs of open-source model fine-tuning (Unsloth, QLoRA), local quantization with llama.cpp, and vector database benchmarks.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "intermediate",
+    "isIndiaCreator": false,
+    "country": "Canada",
+    "subscriberCountNumeric": 210000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "210K+",
+    "avgViewsEstimate": "50K",
+    "uploadCadence": "2 videos/week",
+    "typicalVideoDepth": "15 - 30 mins",
+    "educationalScore": 94,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Fine-Tuning on Consumer GPUs",
+        "description": "Running Unsloth 5x faster with 70% less VRAM on RTX 3060/4090.",
+        "skillsAcquired": [
+          "Unsloth optimization",
+          "GGUF quantization",
+          "LoRA weights merge"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Fine-Tuning Open Models",
+      "Ollama Setup",
+      "Unsloth Guide",
+      "RAG Evaluations"
+    ],
+    "topVideos": [
+      {
+        "title": "Fine-Tune Any LLM in 20 Mins on Free Google Colab",
+        "url": "https://www.youtube.com/watch?v=example15",
+        "viewsEstimate": "340K",
+        "duration": "24m",
+        "topicTag": "Fine-Tuning"
+      }
+    ],
+    "toolsTaught": [
+      "ollama",
+      "hugging-face",
+      "vllm"
+    ],
+    "inspiredWorkflowIds": [
+      "local-private-rag-knowledgebase"
+    ]
+  },
+  {
+    "id": "mckay-wrigley",
+    "slug": "mckay-wrigley",
+    "channelName": "Mckay Wrigley",
+    "handle": "@mckaywrigley",
+    "youtubeUrl": "https://www.youtube.com/@mckaywrigley",
+    "avatarUrl": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80",
+    "description": "Creator of Chatbot UI and prolific AI open-source builder. Teaches rapid prototyping of AI apps, voice agents, and real-time vision pipelines.",
+    "primaryCategory": "AI Coding",
+    "difficulty": "intermediate",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 78000,
+    "subscriberTier": "<100k",
+    "subscribersEstimate": "78K+",
+    "avgViewsEstimate": "40K",
+    "uploadCadence": "Bi-weekly",
+    "typicalVideoDepth": "15 - 30 mins",
+    "educationalScore": 92,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Fullstack AI Prototyping",
+        "description": "Next.js 15, Vercel AI SDK, and streaming responses with Supabase vector search.",
+        "skillsAcquired": [
+          "Vercel AI SDK",
+          "Streaming SSE",
+          "Chatbot UI setup"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Vercel AI SDK",
+      "Next.js AI Apps",
+      "Real-Time Voice",
+      "Chatbot UI"
+    ],
+    "topVideos": [
+      {
+        "title": "Build a Fullstack Voice AI Agent in 15 Minutes",
+        "url": "https://www.youtube.com/watch?v=example16",
+        "viewsEstimate": "140K",
+        "duration": "19m",
+        "topicTag": "Voice AI"
+      }
+    ],
+    "toolsTaught": [
+      "supabase",
+      "cursor",
+      "claude"
+    ],
+    "inspiredWorkflowIds": [
+      "figma-to-production-code-pipeline"
+    ]
+  },
+  {
+    "id": "ai-explained",
+    "slug": "ai-explained",
+    "channelName": "AI Explained",
+    "handle": "@AIExplainedOfficial",
+    "youtubeUrl": "https://www.youtube.com/@AIExplainedOfficial",
+    "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    "description": "Unbiased, analytical journalism dissecting benchmark saturation, frontier lab claims (OpenAI, Anthropic, DeepSeek, Google), and AGI timelines.",
+    "primaryCategory": "AI News",
+    "difficulty": "all-levels",
+    "isIndiaCreator": false,
+    "country": "United Kingdom",
+    "subscriberCountNumeric": 340000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "340K+",
+    "avgViewsEstimate": "160K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "15 - 35 mins",
+    "educationalScore": 97,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Frontier Benchmark Auditing",
+        "description": "Deconstructing SWE-bench, MMLU-Pro, and ARC-AGI scores with rigorous methodology.",
+        "skillsAcquired": [
+          "Benchmark verification",
+          "Test-time compute analysis",
+          "Model safety checks"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Frontier Model Benchmarks",
+      "Reasoning Tokens (o1/o3/R1)",
+      "AGI Analysis",
+      "AI Safety"
+    ],
+    "topVideos": [
+      {
+        "title": "Has Reasoning Solved Coding? Deep Benchmark Audit",
+        "url": "https://www.youtube.com/watch?v=example17",
+        "viewsEstimate": "420K",
+        "duration": "28m",
+        "topicTag": "Benchmarks"
+      }
+    ],
+    "toolsTaught": [
+      "claude",
+      "chatgpt",
+      "deepseek-v3"
+    ],
+    "inspiredWorkflowIds": [
+      "academic-literature-synthesis"
+    ]
+  },
+  {
+    "id": "lex-fridman-ai",
+    "slug": "lex-fridman",
+    "channelName": "Lex Fridman (AI Masterclasses)",
+    "handle": "@lexfridman",
+    "youtubeUrl": "https://www.youtube.com/@lexfridman",
+    "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    "description": "MIT AI researcher conducting multi-hour intimate conversations with founding scientists, CEOs, and researchers shaping artificial general intelligence.",
+    "primaryCategory": "AI Research",
+    "difficulty": "all-levels",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 4400000,
+    "subscriberTier": "2m+",
+    "subscribersEstimate": "4.4M+",
+    "avgViewsEstimate": "950K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "2 - 5 hours per interview",
+    "educationalScore": 98,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Philosophical & Technical Foundations of AGI",
+        "description": "Long-form technical discussions on alignment, compute limits, and cognition.",
+        "skillsAcquired": [
+          "AI Alignment",
+          "Deep learning history",
+          "Autonomous systems"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Deep Learning History",
+      "Frontier Lab Strategy",
+      "Robotics & Vision",
+      "AI Consciousness"
+    ],
+    "topVideos": [
+      {
+        "title": "Sam Altman & Andrej Karpathy: The Future of Compute",
+        "url": "https://www.youtube.com/watch?v=example18",
+        "viewsEstimate": "3.1M",
+        "duration": "3h 40m",
+        "topicTag": "AGI"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "claude"
+    ],
+    "inspiredWorkflowIds": [
+      "academic-literature-synthesis"
+    ]
+  },
+  {
+    "id": "sentdex",
+    "slug": "sentdex",
+    "channelName": "sentdex (Harrison Kinsley)",
+    "handle": "@sentdex",
+    "youtubeUrl": "https://www.youtube.com/@sentdex",
+    "avatarUrl": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
+    "description": "Legendary Python and neural networks educator. Teaches neural networks from raw math, robotics, reinforcement learning, and distributed LLM training.",
+    "primaryCategory": "AI Research",
+    "difficulty": "advanced",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 1300000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "1.3M+",
+    "avgViewsEstimate": "140K",
+    "uploadCadence": "Monthly",
+    "typicalVideoDepth": "30 - 90 mins",
+    "educationalScore": 97,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Neural Networks from Scratch (NNFS)",
+        "description": "Writing activation functions, forward and backward propagation without libraries.",
+        "skillsAcquired": [
+          "Matrix calculus",
+          "Loss gradient derivation",
+          "Custom backprop"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Neural Networks from Scratch",
+      "Reinforcement Learning",
+      "Autonomous Driving Simulation",
+      "Distributed Training"
+    ],
+    "topVideos": [
+      {
+        "title": "Neural Networks from Scratch in Python - Full Masterclass",
+        "url": "https://www.youtube.com/watch?v=example19",
+        "viewsEstimate": "2.8M",
+        "duration": "3h 15m",
+        "topicTag": "Neural Networks"
+      }
+    ],
+    "toolsTaught": [
+      "hugging-face",
+      "ollama"
+    ],
+    "inspiredWorkflowIds": [
+      "local-private-rag-knowledgebase"
+    ]
+  },
+  {
+    "id": "statquest-josh-starmer",
+    "slug": "statquest",
+    "channelName": "StatQuest with Josh Starmer",
+    "handle": "@statquest",
+    "youtubeUrl": "https://www.youtube.com/@statquest",
+    "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    "description": "Renowned for making complex statistics, machine learning, and transformer attention mathematics delightfully visual and easy to understand step by step.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "beginner",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 1200000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "1.2M+",
+    "avgViewsEstimate": "280K",
+    "uploadCadence": "Bi-weekly",
+    "typicalVideoDepth": "10 - 25 mins",
+    "educationalScore": 99,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Transformer Mathematics Visualized",
+        "description": "Step-by-step dot-product attention, positional encoding, and softmax temperature.",
+        "skillsAcquired": [
+          "Self-attention math",
+          "Softmax mechanics",
+          "Gradient descent"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Transformer Math",
+      "Neural Network Calculus",
+      "Principal Component Analysis",
+      "Decision Trees"
+    ],
+    "topVideos": [
+      {
+        "title": "Transformer Neural Networks, Clearly Explained!!!",
+        "url": "https://www.youtube.com/watch?v=example20",
+        "viewsEstimate": "3.6M",
+        "duration": "22m",
+        "topicTag": "Transformers"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt"
+    ],
+    "inspiredWorkflowIds": [
+      "academic-literature-synthesis"
+    ]
+  },
+  {
+    "id": "jeremy-howard-fastai",
+    "slug": "jeremy-howard",
+    "channelName": "Jeremy Howard (fast.ai)",
+    "handle": "@fastai",
+    "youtubeUrl": "https://www.youtube.com/@fastai",
+    "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    "description": "Founding researcher of fast.ai and former Kaggle President. Champion of top-down practical deep learning, fine-tuning computer vision, and NLP models.",
+    "primaryCategory": "AI Research",
+    "difficulty": "intermediate",
+    "isIndiaCreator": false,
+    "country": "Australia",
+    "subscriberCountNumeric": 175000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "175K+",
+    "avgViewsEstimate": "80K",
+    "uploadCadence": "Seasonal Cohorts",
+    "typicalVideoDepth": "90 mins per lecture",
+    "educationalScore": 98,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Practical Deep Learning for Coders",
+        "description": "Train state-of-the-art vision and text models using PyTorch and fastai.",
+        "skillsAcquired": [
+          "Learning rate finding",
+          "Data augmentation",
+          "Transfer learning"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Practical Deep Learning",
+      "PyTorch Foundations",
+      "Diffusion Model Training",
+      "Data Augmentation"
+    ],
+    "topVideos": [
+      {
+        "title": "Practical Deep Learning for Coders - Lesson 1",
+        "url": "https://www.youtube.com/watch?v=example21",
+        "viewsEstimate": "1.4M",
+        "duration": "1h 32m",
+        "topicTag": "Deep Learning"
+      }
+    ],
+    "toolsTaught": [
+      "hugging-face",
+      "comfyui"
+    ],
+    "inspiredWorkflowIds": [
+      "ecommerce-product-photo-studio"
+    ]
+  },
+  {
+    "id": "nicholas-renotte",
+    "slug": "nicholas-renotte",
+    "channelName": "Nicholas Renotte",
+    "handle": "@NicholasRenotte",
+    "youtubeUrl": "https://www.youtube.com/@NicholasRenotte",
+    "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    "description": "IBM AI specialist and educator. Builds end-to-end computer vision apps with MediaPipe, sign language recognizers, and LangChain agents from scratch.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "all-levels",
+    "isIndiaCreator": false,
+    "country": "Australia",
+    "subscriberCountNumeric": 460000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "460K+",
+    "avgViewsEstimate": "85K",
+    "uploadCadence": "Bi-weekly",
+    "typicalVideoDepth": "20 - 90 mins",
+    "educationalScore": 92,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Real-Time Computer Vision",
+        "description": "Pose detection, object tracking, and YOLO deployments in Python.",
+        "skillsAcquired": [
+          "YOLOv8",
+          "OpenCV streaming",
+          "TensorFlow Lite"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Computer Vision",
+      "LangChain with Local Models",
+      "YOLO Object Detection",
+      "MediaPipe"
+    ],
+    "topVideos": [
+      {
+        "title": "Real Time Object Detection with YOLOv8 and Python in 30 Mins",
+        "url": "https://www.youtube.com/watch?v=example22",
+        "viewsEstimate": "780K",
+        "duration": "35m",
+        "topicTag": "Computer Vision"
+      }
+    ],
+    "toolsTaught": [
+      "ollama",
+      "hugging-face",
+      "chatgpt"
+    ],
+    "inspiredWorkflowIds": [
+      "ecommerce-product-photo-studio"
+    ]
+  },
+  {
+    "id": "ai-coffee-break-letitia",
+    "slug": "ai-coffee-break",
+    "channelName": "AI Coffee Break with Letitia",
+    "handle": "@AICoffeeBreak",
+    "youtubeUrl": "https://www.youtube.com/@AICoffeeBreak",
+    "avatarUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
+    "description": "Dr. Letitia Parcalabescu conducts delightfully illustrated visual explanations of multimodal AI, vision-language models (CLIP, LLaVA), and research papers.",
+    "primaryCategory": "AI Research",
+    "difficulty": "intermediate",
+    "isIndiaCreator": false,
+    "country": "Europe (Germany)",
+    "subscriberCountNumeric": 145000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "145K+",
+    "avgViewsEstimate": "45K",
+    "uploadCadence": "Monthly",
+    "typicalVideoDepth": "10 - 20 mins",
+    "educationalScore": 96,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Vision-Language Architectures",
+        "description": "Contrastive learning, multimodal projection layers, and cross-attention.",
+        "skillsAcquired": [
+          "CLIP embeddings",
+          "Multimodal LLMs",
+          "Visual reasoning"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Vision Language Models",
+      "Multimodal AI",
+      "CLIP Architecture",
+      "Paper Breakdowns"
+    ],
+    "topVideos": [
+      {
+        "title": "How CLIP Works: Multimodal AI Explained Step by Step",
+        "url": "https://www.youtube.com/watch?v=example23",
+        "viewsEstimate": "260K",
+        "duration": "16m",
+        "topicTag": "Multimodal AI"
+      }
+    ],
+    "toolsTaught": [
+      "hugging-face"
+    ],
+    "inspiredWorkflowIds": [
+      "academic-literature-synthesis"
+    ]
+  },
+  {
+    "id": "tech-with-tim",
+    "slug": "tech-with-tim",
+    "channelName": "Tech With Tim",
+    "handle": "@TechWithTim",
+    "youtubeUrl": "https://www.youtube.com/@TechWithTim",
+    "avatarUrl": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80",
+    "description": "Software engineer teaching practical Python applications, AI game development, LangChain bots, and modern web developer tooling.",
+    "primaryCategory": "AI Coding",
+    "difficulty": "beginner",
+    "isIndiaCreator": false,
+    "country": "Canada",
+    "subscriberCountNumeric": 1600000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "1.6M+",
+    "avgViewsEstimate": "110K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "20 - 45 mins",
+    "educationalScore": 91,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Python AI Bot Development",
+        "description": "Integrating Discord/Telegram webhooks with OpenAI and Ollama models.",
+        "skillsAcquired": [
+          "Bot orchestration",
+          "Python async",
+          "API integration"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Python for AI",
+      "Discord AI Bots",
+      "FastAPI Microservices",
+      "LangChain"
+    ],
+    "topVideos": [
+      {
+        "title": "Build an AI Discord Bot with Python and OpenAI in 2026",
+        "url": "https://www.youtube.com/watch?v=example24",
+        "viewsEstimate": "610K",
+        "duration": "32m",
+        "topicTag": "Python AI"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "cursor",
+      "ollama"
+    ],
+    "inspiredWorkflowIds": [
+      "autonomous-customer-support-triage"
+    ]
+  },
+  {
+    "id": "neuralnine",
+    "slug": "neuralnine",
+    "channelName": "NeuralNine (Florian)",
+    "handle": "@NeuralNine",
+    "youtubeUrl": "https://www.youtube.com/@NeuralNine",
+    "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    "description": "Specializes in concise, high-density Python machine learning scripts, custom recurrent neural networks, and algorithmic trading with AI.",
+    "primaryCategory": "AI Coding",
+    "difficulty": "intermediate",
+    "isIndiaCreator": false,
+    "country": "Europe (Germany)",
+    "subscriberCountNumeric": 290000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "290K+",
+    "avgViewsEstimate": "60K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "15 - 30 mins",
+    "educationalScore": 93,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Recurrent Neural Networks & Time Series",
+        "description": "LSTM and GRU implementations for sequential financial and sensor data.",
+        "skillsAcquired": [
+          "LSTM mechanics",
+          "Time series forecasting",
+          "PyTorch sequential"
+        ]
+      }
+    ],
+    "topTopics": [
+      "PyTorch Neural Networks",
+      "AI Financial Modeling",
+      "Python ML Projects",
+      "Genetic Algorithms"
+    ],
+    "topVideos": [
+      {
+        "title": "Neural Networks from Scratch with PyTorch: Fast Guide",
+        "url": "https://www.youtube.com/watch?v=example25",
+        "viewsEstimate": "410K",
+        "duration": "26m",
+        "topicTag": "PyTorch"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "hugging-face"
+    ],
+    "inspiredWorkflowIds": [
+      "automated-invoice-financial-extractor"
+    ]
+  },
+  {
+    "id": "james-briggs",
+    "slug": "james-briggs",
+    "channelName": "James Briggs",
+    "handle": "@jamesbriggs",
+    "youtubeUrl": "https://www.youtube.com/@jamesbriggs",
+    "avatarUrl": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80",
+    "description": "Staff Developer Advocate at Pinecone. Industry reference for vector database indexing (HNSW), semantic chunking, and production RAG evaluation with RAGAS.",
+    "primaryCategory": "AI Research",
+    "difficulty": "advanced",
+    "isIndiaCreator": false,
+    "country": "United Kingdom",
+    "subscriberCountNumeric": 120000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "120K+",
+    "avgViewsEstimate": "38K",
+    "uploadCadence": "Bi-weekly",
+    "typicalVideoDepth": "15 - 35 mins",
+    "educationalScore": 96,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Vector Indexing & Approximate Nearest Neighbors",
+        "description": "HNSW, IVF, and semantic chunking parameters that minimize RAG retrieval noise.",
+        "skillsAcquired": [
+          "HNSW graph indexing",
+          "Semantic chunking",
+          "Cosine vs Dot product"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Vector Databases",
+      "Advanced RAG",
+      "Pinecone",
+      "LangChain Retrieval"
+    ],
+    "topVideos": [
+      {
+        "title": "Advanced RAG: Semantic Chunking and Hybrid Search Masterclass",
+        "url": "https://www.youtube.com/watch?v=example26",
+        "viewsEstimate": "190K",
+        "duration": "31m",
+        "topicTag": "Vector Search"
+      }
+    ],
+    "toolsTaught": [
+      "langchain",
+      "ollama"
+    ],
+    "inspiredWorkflowIds": [
+      "local-private-rag-knowledgebase"
+    ]
+  },
+  {
+    "id": "shaw-talebi",
+    "slug": "shaw-talebi",
+    "channelName": "Shaw Talebi",
+    "handle": "@shawhintalebi",
+    "youtubeUrl": "https://www.youtube.com/@shawhintalebi",
+    "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    "description": "Data scientist breaking down LLM math, RAG evaluation frameworks, and hands-on Python scripts with crisp, beautifully animated visuals.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "all-levels",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 95000,
+    "subscriberTier": "<100k",
+    "subscribersEstimate": "95K+",
+    "avgViewsEstimate": "30K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "10 - 25 mins",
+    "educationalScore": 94,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "RAG Triad Evaluation",
+        "description": "Context relevance, groundedness, and answer relevance automated scoring.",
+        "skillsAcquired": [
+          "RAG telemetry",
+          "TruLens evaluation",
+          "Embedding drift"
+        ]
+      }
+    ],
+    "topTopics": [
+      "RAG Explained Simply",
+      "LLM Evaluations",
+      "Data Science with Python",
+      "Embeddings Math"
+    ],
+    "topVideos": [
+      {
+        "title": "RAG from Scratch in Python (No LangChain Needed)",
+        "url": "https://www.youtube.com/watch?v=example27",
+        "viewsEstimate": "160K",
+        "duration": "21m",
+        "topicTag": "RAG"
+      }
+    ],
+    "toolsTaught": [
+      "ollama",
+      "chatgpt"
+    ],
+    "inspiredWorkflowIds": [
+      "local-private-rag-knowledgebase"
+    ]
+  },
+  {
+    "id": "assembly-ai",
+    "slug": "assemblyai",
+    "channelName": "AssemblyAI",
+    "handle": "@AssemblyAI",
+    "youtubeUrl": "https://www.youtube.com/@AssemblyAI",
+    "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    "description": "Speech AI research lab channel with outstanding coding tutorials covering Whisper, audio transcription, speaker diarization, and LLM reasoning.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "intermediate",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 280000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "280K+",
+    "avgViewsEstimate": "42K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "10 - 20 mins",
+    "educationalScore": 93,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Speech-to-Text & Diarization",
+        "description": "Transcribing streaming audio with Whisper and speaker separation.",
+        "skillsAcquired": [
+          "Whisper architecture",
+          "Audio processing",
+          "Real-time WebSockets"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Whisper Speech Recognition",
+      "Audio Diarization",
+      "Python AI Tutorials",
+      "LLM Reasoning"
+    ],
+    "topVideos": [
+      {
+        "title": "Transcribe Speech to Text in Real Time with Python and Whisper",
+        "url": "https://www.youtube.com/watch?v=example28",
+        "viewsEstimate": "310K",
+        "duration": "18m",
+        "topicTag": "Speech AI"
+      }
+    ],
+    "toolsTaught": [
+      "elevenlabs",
+      "hugging-face"
+    ],
+    "inspiredWorkflowIds": [
+      "podcast-to-social-clips-factory"
+    ]
+  },
+  {
+    "id": "dotcsv",
+    "slug": "dotcsv",
+    "channelName": "Dot CSV (Carlos Santana)",
+    "handle": "@DotCSV",
+    "youtubeUrl": "https://www.youtube.com/@DotCSV",
+    "avatarUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
+    "description": "Leading Spanish-language AI channel in Europe. Brilliant visual documentaries explaining neural networks, LLM revolution, and robotics.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "all-levels",
+    "isIndiaCreator": false,
+    "country": "Europe (Spain)",
+    "subscriberCountNumeric": 820000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "820K+",
+    "avgViewsEstimate": "190K",
+    "uploadCadence": "Bi-weekly",
+    "typicalVideoDepth": "20 - 45 mins",
+    "educationalScore": 95,
+    "language": "Spanish",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "History & Ethics of Neural Computing",
+        "description": "From Perceptrons to Transformers, conceptual clarity without gatekeeping.",
+        "skillsAcquired": [
+          "AI conceptual history",
+          "Model ethics",
+          "Visual explanations"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Transformers in Spanish",
+      "AI Philosophy",
+      "Robotics",
+      "Generative Media"
+    ],
+    "topVideos": [
+      {
+        "title": "¿Qué es una Red Neuronal? Explicado desde cero",
+        "url": "https://www.youtube.com/watch?v=example29",
+        "viewsEstimate": "2.1M",
+        "duration": "24m",
+        "topicTag": "Neural Networks"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "midjourney"
+    ],
+    "inspiredWorkflowIds": [
+      "shorts-creator-pipeline"
+    ]
+  },
+  {
+    "id": "alex-the-analyst",
+    "slug": "alex-the-analyst",
+    "channelName": "Alex The Analyst",
+    "handle": "@AlexTheAnalyst",
+    "youtubeUrl": "https://www.youtube.com/@AlexTheAnalyst",
+    "avatarUrl": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
+    "description": "Definitive data analytics and SQL instructor. Teaches how to harness AI tools (ChatGPT, Cursor) for automated data cleaning, dashboard creation, and Python ETL.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "beginner",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 890000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "890K+",
+    "avgViewsEstimate": "150K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "15 - 45 mins",
+    "educationalScore": 92,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "AI-Assisted Data Analysis",
+        "description": "Using LLM Code Interpreters for automated data profiling and visualization.",
+        "skillsAcquired": [
+          "SQL with AI",
+          "Data cleaning with Python",
+          "Tableau dashboards"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Data Analyst Roadmap",
+      "SQL with AI",
+      "Python for Analysts",
+      "Power BI Automation"
+    ],
+    "topVideos": [
+      {
+        "title": "How to Use AI for Data Analytics (Complete Beginner Guide)",
+        "url": "https://www.youtube.com/watch?v=example30",
+        "viewsEstimate": "540K",
+        "duration": "28m",
+        "topicTag": "Data Analytics"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "cursor"
+    ],
+    "inspiredWorkflowIds": [
+      "automated-invoice-financial-extractor"
+    ]
+  },
+  {
+    "id": "sebastian-raschka",
+    "slug": "sebastian-raschka",
+    "channelName": "Sebastian Raschka (Ahead of AI)",
+    "handle": "@rasbt",
+    "youtubeUrl": "https://www.youtube.com/@rasbt",
+    "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    "description": "Staff Research Engineer at Lightning AI and author of \"Build a Large Language Model from Scratch\". Peerless educator on pre-training and fine-tuning transformers.",
+    "primaryCategory": "AI Research",
+    "difficulty": "advanced",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 65000,
+    "subscriberTier": "<100k",
+    "subscribersEstimate": "65K+",
+    "avgViewsEstimate": "35K",
+    "uploadCadence": "Monthly",
+    "typicalVideoDepth": "30 - 60 mins",
+    "educationalScore": 99,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "LLM from Scratch",
+        "description": "Implementing tokenizer, multi-head attention, and pre-training loop in pure PyTorch.",
+        "skillsAcquired": [
+          "PyTorch transformer",
+          "Weight initialization",
+          "Cross-entropy loss"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Build an LLM from Scratch",
+      "LoRA vs QLoRA",
+      "Pre-training Math",
+      "Lightning AI"
+    ],
+    "topVideos": [
+      {
+        "title": "Coding a Transformer from Scratch in PyTorch",
+        "url": "https://www.youtube.com/watch?v=example31",
+        "viewsEstimate": "220K",
+        "duration": "48m",
+        "topicTag": "Transformers"
+      }
+    ],
+    "toolsTaught": [
+      "hugging-face",
+      "ollama"
+    ],
+    "inspiredWorkflowIds": [
+      "academic-literature-synthesis"
+    ]
+  },
+  {
+    "id": "kevin-stratvert",
+    "slug": "kevin-stratvert",
+    "channelName": "Kevin Stratvert",
+    "handle": "@KevinStratvert",
+    "youtubeUrl": "https://www.youtube.com/@KevinStratvert",
+    "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    "description": "Ex-Microsoft product manager producing the most accessible, high-clarity software guides on Copilot, Microsoft 365 AI, and consumer AI tools.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "beginner",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 3200000,
+    "subscriberTier": "2m+",
+    "subscribersEstimate": "3.2M+",
+    "avgViewsEstimate": "450K",
+    "uploadCadence": "2 videos/week",
+    "typicalVideoDepth": "10 - 20 mins",
+    "educationalScore": 90,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Office & Enterprise AI",
+        "description": "Copilot in Excel, PowerPoint, and Outlook for 5x workflow acceleration.",
+        "skillsAcquired": [
+          "Microsoft Copilot",
+          "AI spreadsheet formulas",
+          "Automated presentation drafting"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Microsoft Copilot",
+      "ChatGPT for Beginners",
+      "Excel AI Formulas",
+      "Productivity"
+    ],
+    "topVideos": [
+      {
+        "title": "How to Use Microsoft Copilot: Complete Beginner Tutorial",
+        "url": "https://www.youtube.com/watch?v=example32",
+        "viewsEstimate": "1.8M",
+        "duration": "19m",
+        "topicTag": "Copilot"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "github-copilot"
+    ],
+    "inspiredWorkflowIds": [
+      "voice-meeting-to-crm-action-items"
+    ]
+  },
+  {
+    "id": "jeff-su",
+    "slug": "jeff-su",
+    "channelName": "Jeff Su",
+    "handle": "@JeffSu",
+    "youtubeUrl": "https://www.youtube.com/@JeffSu",
+    "avatarUrl": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80",
+    "description": "Productivity architect and ex-Google employee. Teaches practical workplace prompt engineering, Claude for knowledge management, and AI email triage.",
+    "primaryCategory": "No-Code & Workflows",
+    "difficulty": "beginner",
+    "isIndiaCreator": false,
+    "country": "Canada",
+    "subscriberCountNumeric": 780000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "780K+",
+    "avgViewsEstimate": "220K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "8 - 18 mins",
+    "educationalScore": 91,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Executive Workplace AI",
+        "description": "Automating meeting synthesis, corporate email drafting, and slide deck outlines.",
+        "skillsAcquired": [
+          "Workplace prompts",
+          "Meeting distillation",
+          "Claude Projects"
+        ]
+      }
+    ],
+    "topTopics": [
+      "ChatGPT Productivity",
+      "Claude Projects",
+      "AI for Executives",
+      "Notion AI"
+    ],
+    "topVideos": [
+      {
+        "title": "Top 7 Prompts to Save 15 Hours at Work Every Week",
+        "url": "https://www.youtube.com/watch?v=example33",
+        "viewsEstimate": "1.2M",
+        "duration": "14m",
+        "topicTag": "Productivity"
+      }
+    ],
+    "toolsTaught": [
+      "claude",
+      "chatgpt"
+    ],
+    "inspiredWorkflowIds": [
+      "voice-meeting-to-crm-action-items"
+    ]
+  },
+  {
+    "id": "1littlecoder",
+    "slug": "1littlecoder",
+    "channelName": "1LittleCoder (AbdulMajedRaja)",
+    "handle": "@1littlecoder",
+    "youtubeUrl": "https://www.youtube.com/@1littlecoder",
+    "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+    "description": "Rapid open-source AI news and tutorials. Covers Hugging Face model cards, Ollama on Apple Silicon, Gradio UI demos, and Indic NLP.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "intermediate",
+    "isIndiaCreator": true,
+    "country": "India",
+    "subscriberCountNumeric": 110000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "110K+",
+    "avgViewsEstimate": "25K",
+    "uploadCadence": "3-4 videos/week",
+    "typicalVideoDepth": "10 - 25 mins",
+    "educationalScore": 92,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Open Weights Evaluation",
+        "description": "Benchmarking newly dropped Hugging Face weights and running quantization.",
+        "skillsAcquired": [
+          "Gradio UI",
+          "Hugging Face Hub",
+          "Quantized inference"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Hugging Face Hub",
+      "Ollama Mac Setup",
+      "Gradio Demos",
+      "Open Source Models"
+    ],
+    "topVideos": [
+      {
+        "title": "Run Any Open Source LLM Locally in 5 Minutes with Gradio",
+        "url": "https://www.youtube.com/watch?v=example34",
+        "viewsEstimate": "170K",
+        "duration": "15m",
+        "topicTag": "Open Source"
+      }
+    ],
+    "toolsTaught": [
+      "hugging-face",
+      "ollama"
+    ],
+    "inspiredWorkflowIds": [
+      "local-private-rag-knowledgebase"
+    ]
+  },
+  {
+    "id": "murtazas-workshop",
+    "slug": "murtazas-workshop",
+    "channelName": "Murtaza's Workshop - Robotics and AI",
+    "handle": "@murtazasworkshop",
+    "youtubeUrl": "https://www.youtube.com/@murtazasworkshop",
+    "avatarUrl": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
+    "description": "Hardware, computer vision, and robotics maker. Teaches OpenCV, Raspberry Pi AI edge inference, and gesture tracking with clean visual overlays.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "intermediate",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 620000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "620K+",
+    "avgViewsEstimate": "110K",
+    "uploadCadence": "Monthly",
+    "typicalVideoDepth": "30 - 120 mins",
+    "educationalScore": 94,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Edge Vision on Raspberry Pi",
+        "description": "Deploying optimized neural networks on microcontrollers and embedded devices.",
+        "skillsAcquired": [
+          "Edge AI",
+          "OpenCV Python",
+          "Robotics control"
+        ]
+      }
+    ],
+    "topTopics": [
+      "OpenCV Robotics",
+      "Edge AI",
+      "Computer Vision Course",
+      "MediaPipe Projects"
+    ],
+    "topVideos": [
+      {
+        "title": "Computer Vision 101 with Python and OpenCV - Full 3-Hour Course",
+        "url": "https://www.youtube.com/watch?v=example35",
+        "viewsEstimate": "1.9M",
+        "duration": "3h 12m",
+        "topicTag": "Edge AI"
+      }
+    ],
+    "toolsTaught": [
+      "hugging-face"
+    ],
+    "inspiredWorkflowIds": [
+      "ecommerce-product-photo-studio"
+    ]
+  },
+  {
+    "id": "luke-barousse",
+    "slug": "luke-barousse",
+    "channelName": "Luke Barousse",
+    "handle": "@LukeBarousse",
+    "youtubeUrl": "https://www.youtube.com/@LukeBarousse",
+    "avatarUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
+    "description": "Data engineer and former submarine officer. Breaks down AI data pipelines, Python for data science, and harnessing generative AI for automated analytics.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "beginner",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 460000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "460K+",
+    "avgViewsEstimate": "95K",
+    "uploadCadence": "Bi-weekly",
+    "typicalVideoDepth": "15 - 35 mins",
+    "educationalScore": 91,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Data Engineering with Generative AI",
+        "description": "ETL pipelines, database schemas, and prompt assisted data transformations.",
+        "skillsAcquired": [
+          "Python ETL",
+          "SQL schemas",
+          "Data pipelines"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Data Engineering",
+      "ChatGPT for Data Science",
+      "Python Course",
+      "SQL Roadmap"
+    ],
+    "topVideos": [
+      {
+        "title": "How I Use AI as a Data Engineer in 2026",
+        "url": "https://www.youtube.com/watch?v=example36",
+        "viewsEstimate": "380K",
+        "duration": "21m",
+        "topicTag": "Data Engineering"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "cursor"
+    ],
+    "inspiredWorkflowIds": [
+      "automated-invoice-financial-extractor"
+    ]
+  },
+  {
+    "id": "dan-becker-decision-forest",
+    "slug": "dan-becker",
+    "channelName": "Dan Becker (Decision AI)",
+    "handle": "@danbeckerai",
+    "youtubeUrl": "https://www.youtube.com/@danbeckerai",
+    "avatarUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
+    "description": "Former Kaggle Head of Learning and Google AI contributor. Teaches pragmatic deep learning, model monitoring, and automated feature engineering.",
+    "primaryCategory": "AI Research",
+    "difficulty": "intermediate",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 52000,
+    "subscriberTier": "<100k",
+    "subscribersEstimate": "52K+",
+    "avgViewsEstimate": "18K",
+    "uploadCadence": "Monthly",
+    "typicalVideoDepth": "15 - 30 mins",
+    "educationalScore": 95,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Model Interpretability & SHAP Values",
+        "description": "Feature attribution, bias detection, and explainable AI in regulated enterprise.",
+        "skillsAcquired": [
+          "SHAP values",
+          "Model explainability",
+          "Feature importance"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Model Interpretability",
+      "Deep Learning Pragmatics",
+      "Kaggle Winning Techniques",
+      "AI Feature Engineering"
+    ],
+    "topVideos": [
+      {
+        "title": "SHAP Values: How to Explain Any Machine Learning Model",
+        "url": "https://www.youtube.com/watch?v=example37",
+        "viewsEstimate": "95K",
+        "duration": "24m",
+        "topicTag": "Explainable AI"
+      }
+    ],
+    "toolsTaught": [
+      "hugging-face"
+    ],
+    "inspiredWorkflowIds": [
+      "academic-literature-synthesis"
+    ]
+  },
+  {
+    "id": "bycloud",
+    "slug": "bycloud",
+    "channelName": "bycloud",
+    "handle": "@bycloud",
+    "youtubeUrl": "https://www.youtube.com/@bycloud",
+    "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    "description": "Super-dense, beautifully edited animated breakdowns of AI research papers: LoRA, QLoRA, Mixture-of-Experts, and FlashAttention.",
+    "primaryCategory": "AI Research",
+    "difficulty": "intermediate",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 140000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "140K+",
+    "avgViewsEstimate": "60K",
+    "uploadCadence": "Monthly",
+    "typicalVideoDepth": "8 - 16 mins",
+    "educationalScore": 97,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Efficient Attention Algorithms",
+        "description": "FlashAttention-2, KV caching, and tiling GPU memory hierarchies.",
+        "skillsAcquired": [
+          "KV cache optimization",
+          "Memory bandwidth analysis",
+          "FlashAttention math"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Mixture of Experts",
+      "FlashAttention Explained",
+      "LoRA Math",
+      "DeepSeek Architecture"
+    ],
+    "topVideos": [
+      {
+        "title": "Mixture of Experts (MoE) Explained in 10 Minutes",
+        "url": "https://www.youtube.com/watch?v=example38",
+        "viewsEstimate": "380K",
+        "duration": "11m",
+        "topicTag": "Architecture"
+      }
+    ],
+    "toolsTaught": [
+      "hugging-face",
+      "vllm"
+    ],
+    "inspiredWorkflowIds": [
+      "academic-literature-synthesis"
+    ]
+  },
+  {
+    "id": "weights-biases-official",
+    "slug": "weights-and-biases",
+    "channelName": "Weights & Biases",
+    "handle": "@wandb",
+    "youtubeUrl": "https://www.youtube.com/@wandb",
+    "avatarUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80",
+    "description": "Official channel of the ML developer platform. World-class masterclasses on LLM fine-tuning, RLHF, loss curves monitoring, and model evaluation.",
+    "primaryCategory": "AI Research",
+    "difficulty": "advanced",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 68000,
+    "subscriberTier": "<100k",
+    "subscribersEstimate": "68K+",
+    "avgViewsEstimate": "22K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "20 - 60 mins",
+    "educationalScore": 96,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "MLOps & Experiment Tracking",
+        "description": "Monitoring loss spikes, gradient norms, and hyperparameter sweeps in production.",
+        "skillsAcquired": [
+          "W&B Sweeps",
+          "Loss curve diagnostics",
+          "Distributed logging"
+        ]
+      }
+    ],
+    "topTopics": [
+      "LLM Fine-Tuning Monitoring",
+      "RLHF Masterclass",
+      "MLOps Best Practices",
+      "Evaluation Benchmarks"
+    ],
+    "topVideos": [
+      {
+        "title": "How to Fine-Tune Llama 3 with Weights & Biases",
+        "url": "https://www.youtube.com/watch?v=example39",
+        "viewsEstimate": "110K",
+        "duration": "45m",
+        "topicTag": "MLOps"
+      }
+    ],
+    "toolsTaught": [
+      "hugging-face",
+      "ollama"
+    ],
+    "inspiredWorkflowIds": [
+      "academic-literature-synthesis"
+    ]
+  },
+  {
+    "id": "siraj-raval",
+    "slug": "siraj-raval",
+    "channelName": "Siraj Raval",
+    "handle": "@SirajRaval",
+    "youtubeUrl": "https://www.youtube.com/@SirajRaval",
+    "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    "description": "High-energy AI educator demystifying quantum computing, autonomous agents, generative diffusion, and decentralized AI networks.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "all-levels",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 740000,
+    "subscriberTier": "500k-2m",
+    "subscribersEstimate": "740K+",
+    "avgViewsEstimate": "85K",
+    "uploadCadence": "Bi-weekly",
+    "typicalVideoDepth": "15 - 35 mins",
+    "educationalScore": 88,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Autonomous Agent Networks",
+        "description": "Building peer-to-peer agent swarms and decentralized compute nodes.",
+        "skillsAcquired": [
+          "Agent swarms",
+          "Decentralized compute",
+          "Web3 AI"
+        ]
+      }
+    ],
+    "topTopics": [
+      "AI Agents Swarm",
+      "Quantum Machine Learning",
+      "Generative Media",
+      "Decentralized AI"
+    ],
+    "topVideos": [
+      {
+        "title": "Build an Autonomous AI Agent Swarm in Python",
+        "url": "https://www.youtube.com/watch?v=example40",
+        "viewsEstimate": "420K",
+        "duration": "28m",
+        "topicTag": "AI Swarms"
+      }
+    ],
+    "toolsTaught": [
+      "chatgpt",
+      "claude"
+    ],
+    "inspiredWorkflowIds": [
+      "autonomous-customer-support-triage"
+    ]
+  },
+  {
+    "id": "tech-dose-india",
+    "slug": "tech-dose",
+    "channelName": "TECH DOSE (Surya)",
+    "handle": "@TECHDOSE",
+    "youtubeUrl": "https://www.youtube.com/@TECHDOSE",
+    "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    "description": "Premier Indian DSA & algorithm channel. Crystal clear breakdowns of algorithmic problem solving, search space optimization, and AI graph algorithms.",
+    "primaryCategory": "Indian AI",
+    "difficulty": "intermediate",
+    "isIndiaCreator": true,
+    "country": "India",
+    "subscriberCountNumeric": 320000,
+    "subscriberTier": "100k-500k",
+    "subscribersEstimate": "320K+",
+    "avgViewsEstimate": "55K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "15 - 30 mins",
+    "educationalScore": 94,
+    "language": "English / Hinglish",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Dynamic Programming & Graph Traversal",
+        "description": "State space formulation and memoization for reasoning systems.",
+        "skillsAcquired": [
+          "DP optimizations",
+          "Graph algorithms",
+          "Heuristic search"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Graph Algorithms",
+      "Dynamic Programming",
+      "AI Search Heuristics",
+      "Interview Prep"
+    ],
+    "topVideos": [
+      {
+        "title": "Dijkstra & A* Shortest Path Algorithm Simplified",
+        "url": "https://www.youtube.com/watch?v=example41",
+        "viewsEstimate": "490K",
+        "duration": "22m",
+        "topicTag": "Algorithms"
+      }
+    ],
+    "toolsTaught": [
+      "github-copilot",
+      "chatgpt"
+    ],
+    "inspiredWorkflowIds": [
+      "pr-code-review-bot"
+    ]
+  },
+  {
+    "id": "shrirang-ai",
+    "slug": "shrirang-ai",
+    "channelName": "Shrirang AI (Data Science)",
+    "handle": "@shrirang_ai",
+    "youtubeUrl": "https://www.youtube.com/@shrirang_ai",
+    "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+    "description": "Indian machine learning practitioner producing in-depth Hindi & English guides on deploying LLMs, LangGraph, and RAG pipelines.",
+    "primaryCategory": "Indian AI",
+    "difficulty": "all-levels",
+    "isIndiaCreator": true,
+    "country": "India",
+    "subscriberCountNumeric": 48000,
+    "subscriberTier": "<100k",
+    "subscribersEstimate": "48K+",
+    "avgViewsEstimate": "15K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "20 - 45 mins",
+    "educationalScore": 91,
+    "language": "Hinglish",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "LangGraph Production Agents",
+        "description": "State machines, human-in-the-loop approvals, and cyclical graph agents.",
+        "skillsAcquired": [
+          "LangGraph states",
+          "Human-in-the-loop",
+          "Tool calling"
+        ]
+      }
+    ],
+    "topTopics": [
+      "LangGraph in Hindi",
+      "RAG with LlamaIndex",
+      "Ollama Hindi Guide",
+      "FastAPI with LLMs"
+    ],
+    "topVideos": [
+      {
+        "title": "LangGraph Complete Tutorial in Hindi with Projects",
+        "url": "https://www.youtube.com/watch?v=example42",
+        "viewsEstimate": "85K",
+        "duration": "42m",
+        "topicTag": "LangGraph"
+      }
+    ],
+    "toolsTaught": [
+      "ollama",
+      "langchain"
+    ],
+    "inspiredWorkflowIds": [
+      "autonomous-customer-support-triage"
+    ]
+  },
+  {
+    "id": "freecodecamp-ai",
+    "slug": "freecodecamp",
+    "channelName": "freeCodeCamp.org (AI Tracks)",
+    "handle": "@freecodecamp",
+    "youtubeUrl": "https://www.youtube.com/@freecodecamp",
+    "avatarUrl": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
+    "description": "The world's most popular free coding education non-profit. Hosts exhaustive 10-hour to 20-hour zero-cost college-level deep learning courses.",
+    "primaryCategory": "AI Tutorials",
+    "difficulty": "all-levels",
+    "isIndiaCreator": false,
+    "country": "Global",
+    "subscriberCountNumeric": 9800000,
+    "subscriberTier": "2m+",
+    "subscribersEstimate": "9.8M+",
+    "avgViewsEstimate": "1.2M",
+    "uploadCadence": "Daily",
+    "typicalVideoDepth": "3 - 15 hours mega courses",
+    "educationalScore": 99,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Comprehensive University AI Curriculum",
+        "description": "From linear algebra to transformer attention, completely free for the world.",
+        "skillsAcquired": [
+          "Fullstack AI",
+          "PyTorch certification",
+          "Data structures"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Deep Learning Mega Course",
+      "PyTorch for Beginners",
+      "AI Math",
+      "Machine Learning Full Course"
+    ],
+    "topVideos": [
+      {
+        "title": "Harvard CS50's Introduction to Artificial Intelligence with Python",
+        "url": "https://www.youtube.com/watch?v=example43",
+        "viewsEstimate": "5.2M",
+        "duration": "11h 50m",
+        "topicTag": "CS50 AI"
+      }
+    ],
+    "toolsTaught": [
+      "hugging-face",
+      "chatgpt"
+    ],
+    "inspiredWorkflowIds": [
+      "academic-literature-synthesis"
+    ]
+  },
+  {
+    "id": "ai-code-king",
+    "slug": "ai-code-king",
+    "channelName": "AI Code King",
+    "handle": "@AICodeKing",
+    "youtubeUrl": "https://www.youtube.com/@AICodeKing",
+    "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    "description": "Pioneer in Cursor rules, AI pair programming setups, Claude Sonnet prompting hacks, and building micro-SaaS with modern AI coding editors.",
+    "primaryCategory": "AI Coding",
+    "difficulty": "intermediate",
+    "isIndiaCreator": false,
+    "country": "United States",
+    "subscriberCountNumeric": 56000,
+    "subscriberTier": "<100k",
+    "subscribersEstimate": "56K+",
+    "avgViewsEstimate": "28K",
+    "uploadCadence": "Weekly",
+    "typicalVideoDepth": "12 - 25 mins",
+    "educationalScore": 92,
+    "language": "English",
+    "curriculumPillars": [
+      {
+        "pillarTitle": "Cursor Rules & Custom Prompts",
+        "description": "Writing custom .cursorrules and system specs to prevent code hallucinations.",
+        "skillsAcquired": [
+          ".cursorrules syntax",
+          "Context pinning",
+          "Multi-file edits"
+        ]
+      }
+    ],
+    "topTopics": [
+      "Cursor Rules Tutorial",
+      "Claude 3.7 Coding",
+      "AI SaaS Fast",
+      "v0 to Code"
+    ],
+    "topVideos": [
+      {
+        "title": "The Ultimate .cursorrules File to Make Cursor 10x Smarter",
+        "url": "https://www.youtube.com/watch?v=example44",
+        "viewsEstimate": "130K",
+        "duration": "16m",
+        "topicTag": "Cursor"
+      }
+    ],
+    "toolsTaught": [
+      "cursor",
+      "claude",
+      "v0"
+    ],
+    "inspiredWorkflowIds": [
+      "figma-to-production-code-pipeline"
+    ]
   }
 ];

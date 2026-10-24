@@ -74,38 +74,54 @@ const featuredCreators = CREATORS_DATA.slice(0, 3);
       </div>
     </div>
 
-    <!-- 2. 4 Real-Time Workspace KPI Cards -->
+    <!-- 2. Real-Time Workspace KPI Cards (100% Real User State — Zero Dummy Billing) -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- Card 1: Saved Bookmarks -->
       <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#BFDBFE] transition-colors">
         <div class="flex items-center justify-between text-slate-400 mb-2">
-          <span class="text-[11px] font-mono uppercase font-bold tracking-wider">Saved Tools</span>
+          <span class="text-[11px] font-mono uppercase font-bold tracking-wider">Saved Bookmarks</span>
           <svg class="w-4 h-4 text-[#2563EB]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
           </svg>
         </div>
         <div class="text-3xl font-black text-[#09090B] font-mono" id="dashBookmarkCount">0</div>
         <div class="text-[11px] text-slate-500 mt-1 flex items-center justify-between">
-          <span>Pinned in stack</span>
+          <span>Pinned items</span>
           <a href="/profile" class="text-[#2563EB] hover:underline font-bold">Manage &rarr;</a>
         </div>
       </div>
 
-      <!-- Card 2: Stack Spend Estimation -->
+      <!-- Card 2: Custom Workflows Created -->
       <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#BFDBFE] transition-colors">
         <div class="flex items-center justify-between text-slate-400 mb-2">
-          <span class="text-[11px] font-mono uppercase font-bold tracking-wider">Est. Monthly Spend</span>
-          <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          <span class="text-[11px] font-mono uppercase font-bold tracking-wider">My Workflows</span>
+          <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
           </svg>
         </div>
-        <div class="text-3xl font-black text-[#09090B] font-mono">$44 <span class="text-xs font-normal text-slate-400 font-sans">/ mo</span></div>
-        <div class="text-[11px] text-emerald-700 mt-1 font-mono font-semibold">
-          ₹3,806 / mo • <a href="/analytics" class="hover:underline">View Breakdown</a>
+        <div class="text-3xl font-black text-[#09090B] font-mono" id="dashWorkflowCount">0</div>
+        <div class="text-[11px] text-slate-500 mt-1 flex items-center justify-between">
+          <span>Tested blueprints</span>
+          <a href="/workflows/builder" class="text-purple-600 hover:underline font-bold">+ Studio &rarr;</a>
         </div>
       </div>
 
-      <!-- Card 3: Reputation & Rank -->
+      <!-- Card 3: Custom Named Stacks -->
+      <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#BFDBFE] transition-colors">
+        <div class="flex items-center justify-between text-slate-400 mb-2">
+          <span class="text-[11px] font-mono uppercase font-bold tracking-wider">My Named Stacks</span>
+          <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
+          </svg>
+        </div>
+        <div class="text-3xl font-black text-[#09090B] font-mono" id="dashStackCount">0</div>
+        <div class="text-[11px] text-slate-500 mt-1 flex items-center justify-between">
+          <span>Saved tool sets</span>
+          <a href="/stack-builder" class="text-emerald-600 hover:underline font-bold">+ Build &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Card 4: Real User Reputation & Submissions -->
       <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#BFDBFE] transition-colors">
         <div class="flex items-center justify-between text-slate-400 mb-2">
           <span class="text-[11px] font-mono uppercase font-bold tracking-wider">Reputation Points</span>
@@ -113,22 +129,10 @@ const featuredCreators = CREATORS_DATA.slice(0, 3);
             <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
           </svg>
         </div>
-        <div class="text-3xl font-black text-[#09090B] font-mono" id="dashReputationPoints">75</div>
+        <div class="text-3xl font-black text-[#09090B] font-mono" id="dashReputationPoints">0</div>
         <div class="text-[11px] text-slate-500 mt-1 flex items-center justify-between">
-          <span class="text-amber-700 font-bold">Pioneer Rank</span>
+          <span class="text-amber-700 font-bold" id="dashRankTitle">Member Rank</span>
           <a href="/community" class="text-[#2563EB] hover:underline font-bold">Rules &rarr;</a>
-        </div>
-      </div>
-
-      <!-- Card 4: Platform Telemetry Pulse -->
-      <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#BFDBFE] transition-colors">
-        <div class="flex items-center justify-between text-slate-400 mb-2">
-          <span class="text-[11px] font-mono uppercase font-bold tracking-wider">Catalog Pulse</span>
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-        </div>
-        <div class="text-3xl font-black text-[#09090B] font-mono">113+</div>
-        <div class="text-[11px] text-slate-500 mt-1 truncate font-mono">
-          16 Workflows • 20 Repos • 18 Educators
         </div>
       </div>
     </div>
@@ -394,11 +398,22 @@ const featuredCreators = CREATORS_DATA.slice(0, 3);
         } catch (e) {}
       }
 
-      // Fallback bookmark count from localStorage
+      // Hydrate local KPI cards
       const bookmarks = JSON.parse(localStorage.getItem('aio_bookmarks') || '[]');
-      if (countEl && bookmarks.length > 0) {
-        countEl.textContent = bookmarks.length.toString();
-      }
+      if (countEl) countEl.textContent = bookmarks.length.toString();
+
+      const workflows = JSON.parse(localStorage.getItem('aio_custom_workflows') || '[]');
+      const workflowCountEl = document.getElementById('dashWorkflowCount');
+      if (workflowCountEl) workflowCountEl.textContent = workflows.length.toString();
+
+      const stacks = JSON.parse(localStorage.getItem('aio_custom_stacks') || '[]');
+      const stackCountEl = document.getElementById('dashStackCount');
+      if (stackCountEl) stackCountEl.textContent = stacks.length.toString();
+
+      const repEl = document.getElementById('dashReputationPoints');
+      const rankEl = document.getElementById('dashRankTitle');
+      if (repEl) repEl.textContent = '0';
+      if (rankEl) rankEl.textContent = 'Member Rank';
 
       // Sync bookmarks and DB profile in background (non-blocking)
       syncUserDb(currentUser, user);
@@ -415,23 +430,35 @@ const featuredCreators = CREATORS_DATA.slice(0, 3);
             role: 'user',
             plan: 'free',
           }, { onConflict: 'email' })
-          .select('id')
+          .select('id, reputation_points')
           .single();
 
         if (userRow?.id) {
+          const repEl = document.getElementById('dashReputationPoints');
+          const rankEl = document.getElementById('dashRankTitle');
+          const points = userRow.reputation_points || 0;
+          if (repEl) repEl.textContent = points.toString();
+          if (rankEl) {
+            rankEl.textContent = points >= 500 ? 'Pioneer' : points >= 100 ? 'Contributor' : 'Member';
+          }
+
           await supabase.from('profiles').upsert({
             user_id: userRow.id,
             full_name: currentUser.name,
             avatar_url: rawUser.user_metadata?.avatar_url || null,
           }, { onConflict: 'user_id' });
 
-          const { data: dbBookmarks } = await supabase
-            .from('bookmarks')
-            .select('id')
-            .eq('user_id', userRow.id);
+          const [bRes, sRes] = await Promise.all([
+            supabase.from('bookmarks').select('id').eq('user_id', userRow.id),
+            supabase.from('stacks').select('id').eq('user_id', userRow.id)
+          ]);
 
-          if (dbBookmarks && countEl) {
-            countEl.textContent = dbBookmarks.length.toString();
+          if (bRes.data && countEl) {
+            countEl.textContent = bRes.data.length.toString();
+          }
+          const stackCountEl = document.getElementById('dashStackCount');
+          if (sRes.data && stackCountEl) {
+            stackCountEl.textContent = sRes.data.length.toString();
           }
         }
       } catch (err) {

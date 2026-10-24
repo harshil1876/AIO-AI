@@ -58,6 +58,32 @@ function parseVramGb(vramStr?: string): number {
       </div>
     </section>
 
+    <!-- Search & Trust Gate Section -->
+    <section class="border-b border-hairline bg-surface px-6 py-4">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <!-- Live Search Input -->
+        <div class="relative w-full md:w-96">
+          <input 
+            type="text" 
+            id="ghLiveSearchInput" 
+            placeholder="Live search GitHub AI repos (e.g. vllm, whisper, qwen)..." 
+            class="w-full pl-9 pr-4 py-2 rounded-lg bg-canvas-elevated border border-hairline text-ink text-xs focus:outline-none focus:border-primary font-sans"
+          />
+          <svg class="w-4 h-4 text-mute absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+        </div>
+
+        <!-- Safety Guard Banner -->
+        <div class="flex items-center gap-2 text-xs font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-lg w-full md:w-auto">
+          <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+          </svg>
+          <span>Safety Guard Active: Repositories locked to <strong>stars: &ge; 1,000</strong> for verified code integrity</span>
+        </div>
+      </div>
+    </section>
+
     <!-- Category Filter Bar -->
     <section class="border-b border-hairline bg-canvas px-6 py-3">
       <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 overflow-x-auto pb-1 sm:pb-0">
@@ -158,15 +184,90 @@ function parseVramGb(vramStr?: string): number {
 </Layout>
 
 <script>
-  import { HARDWARE_PRESETS, checkHardwareCompatibility, fetchLiveRepoStats } from '../../services/githubLiveService';
+  import { HARDWARE_PRESETS, checkHardwareCompatibility, fetchLiveRepoStats, searchGitHubAIRepos } from '../../services/githubLiveService';
 
   document.addEventListener('DOMContentLoaded', () => {
     const selector = document.getElementById('hardwareSelector') as HTMLSelectElement | null;
     const summaryBadge = document.getElementById('hardwareSummaryBadge');
+    const reposGrid = document.getElementById('reposGrid');
     const repoCards = document.querySelectorAll<HTMLElement>('.repo-card');
     const catPills = document.querySelectorAll<HTMLButtonElement>('.cat-pill');
+    const searchInput = document.getElementById('ghLiveSearchInput') as HTMLInputElement | null;
 
     let activeCat = 'All';
+    let searchDebounceTimer: any = null;
+
+    // Live Search Handling with >= 1000 Stars Safety Guard
+    searchInput?.addEventListener('input', (e: any) => {
+      clearTimeout(searchDebounceTimer);
+      const q = e.target.value.trim();
+
+      if (!q) {
+        // Restore default curated grid
+        repoCards.forEach(c => c.style.display = '');
+        const dynamicCards = document.querySelectorAll('.dynamic-search-repo');
+        dynamicCards.forEach(d => d.remove());
+        return;
+      }
+
+      searchDebounceTimer = setTimeout(async () => {
+        // First hide default cards
+        repoCards.forEach(c => c.style.display = 'none');
+        const oldDynamic = document.querySelectorAll('.dynamic-search-repo');
+        oldDynamic.forEach(d => d.remove());
+
+        const loadingNotice = document.createElement('div');
+        loadingNotice.className = 'dynamic-search-repo col-span-full p-8 text-center text-xs font-mono text-mute';
+        loadingNotice.textContent = 'Querying live GitHub API with stars:>=1000 safety gate...';
+        reposGrid?.appendChild(loadingNotice);
+
+        const results = await searchGitHubAIRepos(q, 1000);
+        loadingNotice.remove();
+
+        if (!results || results.length === 0) {
+          const noResults = document.createElement('div');
+          noResults.className = 'dynamic-search-repo col-span-full p-8 text-center text-xs bg-canvas border border-dashed border-hairline rounded-xl';
+          noResults.innerHTML = `
+            <p class="font-bold text-ink">No Repositories Found</p>
+            <p class="text-mute text-[11px] mt-1">No repositories matching "${q}" with &ge; 1,000 GitHub stars. Try another AI query.</p>
+          `;
+          reposGrid?.appendChild(noResults);
+          return;
+        }
+
+        results.forEach(item => {
+          const card = document.createElement('article');
+          card.className = 'dynamic-search-repo bg-canvas-elevated border border-primary/40 hover:border-primary rounded-lg p-5 shadow-xs transition-all flex flex-col justify-between';
+          card.innerHTML = `
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-primary border border-blue-200">
+                  ${item.language}
+                </span>
+                <span class="text-xs font-mono font-bold text-ink">★ ${item.formattedStars}</span>
+              </div>
+              <h2 class="text-sm font-semibold text-ink hover:underline mb-1">
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.fullName}</a>
+              </h2>
+              <p class="text-xs text-body line-clamp-3 mb-4 leading-relaxed">${item.description}</p>
+            </div>
+            <div>
+              <div class="mb-3 p-2 rounded text-[10px] font-mono font-medium flex items-center justify-between border bg-emerald-50 text-emerald-700 border-emerald-200">
+                <span>Audit Status</span>
+                <span class="font-bold">Passed (&ge;1,000★)</span>
+              </div>
+              <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs">
+                <span class="font-mono text-[11px] text-mute">${item.updatedAt}</span>
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="font-medium text-primary hover:underline">
+                  GitHub Repo &rarr;
+                </a>
+              </div>
+            </div>
+          `;
+          reposGrid?.appendChild(card);
+        });
+      }, 400);
+    });
 
     // Hardware Compatibility Evaluator
     function updateHardwareVerdicts(presetId: string) {

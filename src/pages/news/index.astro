@@ -202,6 +202,22 @@ const categories = [
         </div>
       </div>
 
+      <!-- Live-First Real-Time AI Wire Dispatches Stream -->
+      <div class="mb-8" id="liveWireSection">
+        <div class="flex items-center justify-between mb-3 border-b-2 border-[#09090B] pb-2">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping"></span>
+            <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-ink">
+              Breaking Live Wire Stream &bull; Newest First
+            </h3>
+          </div>
+          <span class="text-[11px] font-mono text-[#2563EB] font-bold">Live API Feeds</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="liveDispatchesStream">
+          <!-- Live cards injected dynamically by loadLiveWire() -->
+        </div>
+      </div>
+
       <!-- Complete 24+ News Stories Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="newsFeedGrid">
         {regularStories.map((story) => (
@@ -339,11 +355,42 @@ const categories = [
     // Hydrate Multi-Source Live AI Wire
     async function loadLiveWire() {
       if (refreshLabel) refreshLabel.textContent = 'Refreshing...';
+      const liveStreamContainer = document.getElementById('liveDispatchesStream');
       try {
         const liveItems = await fetchLiveAINewsWire();
-        if (liveItems && liveItems.length > 0 && tickerText) {
-          const topWire = liveItems.slice(0, 5).map(item => `[${item.source}] ${item.title}`).join('  •  ');
-          tickerText.textContent = topWire;
+        if (liveItems && liveItems.length > 0) {
+          if (tickerText) {
+            const topWire = liveItems.slice(0, 5).map(item => `${item.sourceBadge || `[${item.source}]`} ${item.title}`).join('  •  ');
+            tickerText.textContent = topWire;
+          }
+
+          if (liveStreamContainer) {
+            liveStreamContainer.innerHTML = liveItems.slice(0, 6).map(item => `
+              <article class="bg-[#F8FAFF] border-2 border-[#09090B] rounded-xl p-4 shadow-[3px_3px_0px_0px_#09090B] hover:shadow-[4px_4px_0px_0px_#2563EB] transition-all flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between text-xs font-mono mb-2">
+                    <span class="bg-[#2563EB] text-white font-bold px-2 py-0.5 rounded-xs text-[10px]">
+                      ${item.sourceBadge || item.source}
+                    </span>
+                    <span class="text-slate-500 font-bold text-[11px]">${item.timeAgo}</span>
+                  </div>
+                  <h4 class="text-xs sm:text-sm font-bold text-ink hover:text-[#2563EB] transition-colors leading-snug mb-2">
+                    <a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a>
+                  </h4>
+                  <div class="flex items-center gap-2 text-[10px] font-mono text-slate-500 mb-3">
+                    <span>Topic: ${item.category}</span>
+                    ${item.upvotes ? `<span>&bull;</span> <span>${item.upvotes} points</span>` : ''}
+                  </div>
+                </div>
+                <div class="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-xs font-mono">
+                  <span class="text-[11px] text-emerald-600 font-bold">Verified Real-Time</span>
+                  <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="font-bold text-[#2563EB] hover:underline inline-flex items-center gap-0.5">
+                    Source Link &rarr;
+                  </a>
+                </div>
+              </article>
+            `).join('');
+          }
         }
       } catch (e) {
         if (tickerText) tickerText.textContent = 'Live Wire synced: 24 active model updates monitored.';

@@ -3,9 +3,22 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CategoryIcon from '../components/CategoryIcon.astro';
-import { getAllCategories } from '../services/dataService';
+import { getAllCategories, getAllTools, calculateAuthenticScore } from '../services/dataService';
 
 const categories = await getAllCategories();
+const allTools = await getAllTools();
+
+// Compute authentic category average score
+const categoryScores: Record<string, number> = {};
+categories.forEach(cat => {
+  const catTools = allTools.filter(t => (t.categorySlugs || []).includes(cat.slug) || (t as any).categorySlug === cat.slug);
+  if (catTools.length > 0) {
+    const sum = catTools.reduce((acc, t) => acc + calculateAuthenticScore(t).total, 0);
+    categoryScores[cat.slug] = Math.round(sum / catTools.length);
+  } else {
+    categoryScores[cat.slug] = 85;
+  }
+});
 
 const DOMAINS = [
   {
@@ -87,7 +100,12 @@ const DOMAINS = [
                       <div class="p-2 rounded bg-canvas border border-hairline text-ink">
                         <CategoryIcon slug={cat.slug} class="w-5 h-5 text-ink" />
                       </div>
-                      <span class="text-[11px] font-mono text-mute">{cat.count || 0} tools</span>
+                      <div class="flex items-center gap-1.5">
+                        <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-blue-50 text-primary border border-blue-200">
+                          Avg {categoryScores[cat.slug] || 85}
+                        </span>
+                        <span class="text-[11px] font-mono text-mute">{cat.count || 0} tools</span>
+                      </div>
                     </div>
 
                     <h3 class="font-semibold text-ink text-sm group-hover:underline mb-1">
@@ -115,6 +133,77 @@ const DOMAINS = [
           </section>
         );
       })}
+      <!-- 5-Factor Authenticity Scoring Methodology Section -->
+      <section class="border-t border-hairline pt-10 mt-6">
+        <div class="bg-canvas-elevated border border-hairline rounded-xl p-8 shadow-xs">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-hairline pb-4 mb-6">
+            <div>
+              <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-mono font-bold mb-2">
+                TRANSPARENCY STANDARD
+              </div>
+              <h2 class="text-xl font-bold text-ink">The 5-Factor Authenticity Scoring Framework</h2>
+              <p class="text-xs text-mute mt-1">
+                Zero pay-to-win placements. Every score on AIO AI is calculated deterministically across 5 auditable criteria (0–100 pts).
+              </p>
+            </div>
+            <a href="/tools" class="px-4 py-2 rounded-lg bg-ink text-white text-xs font-semibold hover:bg-neutral-800 transition-colors shrink-0">
+              Explore Verified Tools &rarr;
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4 text-xs">
+            <div class="p-4 rounded-lg bg-surface border border-hairline">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-ink">1. Docs & API</span>
+                <span class="font-mono text-primary font-bold">25 pts</span>
+              </div>
+              <p class="text-mute text-[11px] leading-relaxed">
+                Public API specifications, GitHub source repository presence, and SDK developer ergonomics.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-surface border border-hairline">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-ink">2. Pricing Transparency</span>
+                <span class="font-mono text-emerald-600 font-bold">25 pts</span>
+              </div>
+              <p class="text-mute text-[11px] leading-relaxed">
+                Clear self-serve pricing tiers, permanent free tier allowances, and upfront pricing without hidden sales calls.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-surface border border-hairline">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-ink">3. Workflow Interop</span>
+                <span class="font-mono text-purple-600 font-bold">20 pts</span>
+              </div>
+              <p class="text-mute text-[11px] leading-relaxed">
+                Standard format exports (JSON/CSV), webhook/MCP/REST pipeline readiness, and self-hosted alternative options.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-surface border border-hairline">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-ink">4. Domain Health</span>
+                <span class="font-mono text-teal-600 font-bold">15 pts</span>
+              </div>
+              <p class="text-mute text-[11px] leading-relaxed">
+                Valid HTTPS endpoints, verified active HTTP 200 uptime, and current SSL certificate integrity.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-surface border border-hairline">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-ink">5. Community Signal</span>
+                <span class="font-mono text-amber-600 font-bold">15 pts</span>
+              </div>
+              <p class="text-mute text-[11px] leading-relaxed">
+                Verified developer reviews, GitHub star velocity, and real practitioner adoption without astroturfing.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
 

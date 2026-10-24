@@ -1,0 +1,456 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const faqs = [
+  {
+    q: 'Can I use the entire AIO AI directory and open-source hub for free?',
+    a: 'Yes, 100%. The Explorer tier is completely free forever. You can search all 100+ verified tools, compare open-source repositories with hardware VRAM specifications, and view the real-time AI news wire without ever entering a credit card.'
+  },
+  {
+    q: 'What is the difference between INR (₹) and USD ($) pricing?',
+    a: 'We offer native purchasing power parity (PPP) pricing for developers and creators based in India, billed directly in Indian Rupees (INR), as well as standard global billing in USD.'
+  },
+  {
+    q: 'Can I cancel or switch my plan at any time?',
+    a: 'Yes. All paid subscriptions operate on a month-to-month or annual basis with zero lock-in. You can cancel, downgrade, or upgrade anytime with prorated billing directly in your workspace.'
+  },
+  {
+    q: 'Do you charge per-token fees for testing workflows in Workflow Studio?',
+    a: 'No. The Workflow Studio provides free execution simulation and client-side testing with your own API keys. You never pay markups on LLM tokens through AIO AI.'
+  },
+  {
+    q: 'How does enterprise team deployment work?',
+    a: 'The Team & Enterprise plan includes dedicated seat management, sovereign on-premise Docker deployment guides, and priority indexing for your internal AI tools and prompt templates.'
+  }
+];
+
+const featureMatrix = [
+  { feature: 'Verified AI Tools Catalog (100+ Tools)', explorer: 'Unlimited', pro: 'Unlimited', creator: 'Unlimited', team: 'Unlimited' },
+  { feature: 'Open-Source Hub (20+ Flagship Repos & VRAM Specs)', explorer: 'Included', pro: 'Included', creator: 'Included', team: 'Included' },
+  { feature: 'Real-Time Multi-Source AI News Wire', explorer: 'Included', pro: 'Included', creator: 'Included', team: 'Included' },
+  { feature: 'Live GitHub Search (stars:>=1000 Guard)', explorer: 'Included', pro: 'Included', creator: 'Included', team: 'Included' },
+  { feature: 'Custom Workflow Studio Simulations', explorer: '5 / day', pro: 'Unlimited', creator: 'Unlimited', team: 'Unlimited' },
+  { feature: 'Custom Named Stack Builder & Shareable URLs', explorer: 'Up to 3', pro: 'Unlimited', creator: 'Unlimited', team: 'Unlimited' },
+  { feature: '1-Click Valid n8n Workflow JSON Export', explorer: 'Standard', pro: 'Full Export', creator: 'Full Export', team: 'Full Export' },
+  { feature: 'REST API Payload Schema Generator', explorer: 'Basic', pro: 'Advanced', creator: 'Advanced', team: 'Custom Proxy' },
+  { feature: '60+ YouTube Creator Curriculum Tracking', explorer: 'Preview', pro: 'Full Access', creator: 'Full Access', team: 'Full Access' },
+  { feature: 'Verified Builder Badge & Reputation Privileges', explorer: 'No', pro: 'Yes', creator: 'Yes', team: 'Yes' },
+  { feature: 'Team Seats & Multi-User Governance', explorer: '1 user', pro: '1 user', creator: 'Up to 3 users', team: '10+ seats' },
+  { feature: 'Dedicated Sovereign Stack Deployment Support', explorer: 'Community', pro: 'Email', creator: 'Priority Email', team: 'Dedicated Slack' }
+];
+---
+
+<Layout 
+  title="Transparent Pricing & Plans | AIO AI"
+  description="Flexible, transparent pricing for individual developers, creators, and engineering teams. Choose between INR and USD with monthly or annual discounts."
+>
+  <Header currentPath="/pricing" />
+
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
+    
+    <!-- Hero Header -->
+    <section class="border-b border-hairline bg-canvas-elevated px-4 sm:px-6 py-12 md:py-16 text-center">
+      <div class="max-w-4xl mx-auto space-y-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-mono font-bold text-[#2563EB]">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>TRANSPARENT VALUE &bull; ZERO HIDDEN LOCK-IN</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl md:text-6xl font-black text-ink tracking-tight">
+          Simple, Predictable Plans for AI Builders
+        </h1>
+        <p class="text-xs sm:text-base text-mute max-w-2xl mx-auto leading-relaxed">
+          Start for free forever, or upgrade for unlimited workflow exports, custom REST API generation, and multi-user workspace collaboration.
+        </p>
+
+        <!-- Billing Controls: Billing Cycle (Monthly vs Annual) & Currency (INR vs USD) -->
+        <div class="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <!-- Monthly / Annual Toggle -->
+          <div class="flex items-center gap-2 bg-surface p-1.5 rounded-2xl border border-hairline shadow-xs">
+            <button 
+              type="button" 
+              id="billingMonthlyBtn" 
+              class="billing-cycle-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-ink text-white transition-all cursor-pointer"
+            >
+              Monthly Billing
+            </button>
+            <button 
+              type="button" 
+              id="billingAnnualBtn" 
+              class="billing-cycle-btn px-4 py-1.5 rounded-xl text-xs font-medium text-mute hover:text-ink transition-all cursor-pointer flex items-center gap-1.5"
+            >
+              <span>Annual Billing</span>
+              <span class="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">Save 20%</span>
+            </button>
+          </div>
+
+          <!-- Currency Switcher -->
+          <div class="flex items-center gap-2 bg-surface p-1.5 rounded-2xl border border-hairline shadow-xs">
+            <span class="text-xs font-mono font-bold text-mute pl-2">Currency:</span>
+            <button 
+              type="button" 
+              id="currencyINRBtn" 
+              class="pricing-currency-btn px-3 py-1 rounded-lg text-xs font-mono font-bold bg-ink text-white transition-all cursor-pointer"
+            >
+              INR (₹)
+            </button>
+            <button 
+              type="button" 
+              id="currencyUSDBtn" 
+              class="pricing-currency-btn px-3 py-1 rounded-lg text-xs font-mono font-bold text-mute hover:text-ink transition-all cursor-pointer"
+            >
+              USD ($)
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4 Pricing Cards Grid -->
+    <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- PLAN 1: EXPLORER (Free Forever) -->
+        <div class="bg-surface border border-hairline rounded-2xl p-6 flex flex-col justify-between shadow-xs hover:border-faint transition-all">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono font-bold uppercase tracking-wider text-mute">Explorer</span>
+              <span class="px-2 py-0.5 rounded-full bg-hairline-soft text-ink text-[10px] font-bold">Free Forever</span>
+            </div>
+            <h3 class="text-xl font-bold text-ink mb-1">Developer Free</h3>
+            <p class="text-xs text-mute mb-6 leading-relaxed">
+              Everything you need to discover, search, and benchmark AI tools and models.
+            </p>
+
+            <div class="mb-6 pb-6 border-b border-hairline">
+              <div class="text-3xl font-black text-ink font-mono plan-price-explorer">₹0</div>
+              <span class="text-xs text-mute font-mono">No credit card required</span>
+            </div>
+
+            <ul class="space-y-3 text-xs text-body mb-8">
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-600 font-bold">&check;</span>
+                <span>Full access to 100+ verified tools catalog</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-600 font-bold">&check;</span>
+                <span>Open-Source Hub (20+ repos &amp; VRAM specs)</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-600 font-bold">&check;</span>
+                <span>Live multi-source AI news wire</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-600 font-bold">&check;</span>
+                <span>Up to 5 daily workflow studio simulations</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-600 font-bold">&check;</span>
+                <span>Save up to 3 custom named stacks</span>
+              </li>
+            </ul>
+          </div>
+
+          <a 
+            href="/signup" 
+            class="w-full py-2.5 rounded-xl bg-canvas border border-hairline hover:bg-hairline-soft text-ink font-semibold text-xs text-center transition-colors shadow-xs"
+          >
+            Start Free
+          </a>
+        </div>
+
+        <!-- PLAN 2: PRO (Recommended) -->
+        <div class="bg-surface border-2 border-primary rounded-2xl p-6 flex flex-col justify-between shadow-md relative">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-white text-[10px] font-mono font-bold tracking-wider uppercase">
+            Most Popular
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono font-bold uppercase tracking-wider text-primary">Pro Builder</span>
+              <span class="px-2 py-0.5 rounded-full bg-blue-50 text-primary text-[10px] font-bold border border-blue-200">Production</span>
+            </div>
+            <h3 class="text-xl font-bold text-ink mb-1">Builder Pro</h3>
+            <p class="text-xs text-mute mb-6 leading-relaxed">
+              For engineers building production pipelines and custom agent workflows.
+            </p>
+
+            <div class="mb-6 pb-6 border-b border-hairline">
+              <div class="text-3xl font-black text-ink font-mono plan-price-pro" id="proPriceText">₹799</div>
+              <span class="text-xs text-mute font-mono" id="proPeriodText">per month</span>
+            </div>
+
+            <ul class="space-y-3 text-xs text-body mb-8">
+              <li class="flex items-start gap-2">
+                <span class="text-primary font-bold">&check;</span>
+                <span><strong>Unlimited</strong> Workflow Studio simulations</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-primary font-bold">&check;</span>
+                <span><strong>Unlimited</strong> custom named stacks &amp; share links</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-primary font-bold">&check;</span>
+                <span>1-Click valid n8n JSON &amp; API payload exports</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-primary font-bold">&check;</span>
+                <span>Live token &amp; model pricing comparison engine</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-primary font-bold">&check;</span>
+                <span>Verified Builder badge &amp; priority moderation</span>
+              </li>
+            </ul>
+          </div>
+
+          <a 
+            href="/dashboard" 
+            class="w-full py-2.5 rounded-xl bg-primary hover:bg-blue-700 text-white font-bold text-xs text-center transition-colors shadow-xs"
+          >
+            Upgrade to Pro
+          </a>
+        </div>
+
+        <!-- PLAN 3: CREATOR PRO -->
+        <div class="bg-surface border border-hairline rounded-2xl p-6 flex flex-col justify-between shadow-xs hover:border-faint transition-all">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono font-bold uppercase tracking-wider text-mute">Creator Pro</span>
+              <span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold">Media &amp; Auto</span>
+            </div>
+            <h3 class="text-xl font-bold text-ink mb-1">Creator Suite</h3>
+            <p class="text-xs text-mute mb-6 leading-relaxed">
+              Designed for YouTube creators, agency owners, and growth automation teams.
+            </p>
+
+            <div class="mb-6 pb-6 border-b border-hairline">
+              <div class="text-3xl font-black text-ink font-mono plan-price-creator" id="creatorPriceText">₹1,999</div>
+              <span class="text-xs text-mute font-mono" id="creatorPeriodText">per month</span>
+            </div>
+
+            <ul class="space-y-3 text-xs text-body mb-8">
+              <li class="flex items-start gap-2">
+                <span class="text-purple-600 font-bold">&check;</span>
+                <span>Everything included in <strong>Builder Pro</strong></span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-purple-600 font-bold">&check;</span>
+                <span>Full access to 60+ Creator Curriculum Tracks</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-purple-600 font-bold">&check;</span>
+                <span>Multi-creator guided learning pathways</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-purple-600 font-bold">&check;</span>
+                <span>Automated video hook &amp; script blueprint sync</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-purple-600 font-bold">&check;</span>
+                <span>Up to 3 team member workspace seats</span>
+              </li>
+            </ul>
+          </div>
+
+          <a 
+            href="/dashboard" 
+            class="w-full py-2.5 rounded-xl bg-ink hover:bg-neutral-800 text-white font-semibold text-xs text-center transition-colors shadow-xs"
+          >
+            Choose Creator Pro
+          </a>
+        </div>
+
+        <!-- PLAN 4: TEAM / ENTERPRISE -->
+        <div class="bg-surface border border-hairline rounded-2xl p-6 flex flex-col justify-between shadow-xs hover:border-faint transition-all">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono font-bold uppercase tracking-wider text-mute">Team</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold">Scale</span>
+            </div>
+            <h3 class="text-xl font-bold text-ink mb-1">Team Sovereign</h3>
+            <p class="text-xs text-mute mb-6 leading-relaxed">
+              For engineering teams, startups, and enterprises scaling private AI infrastructure.
+            </p>
+
+            <div class="mb-6 pb-6 border-b border-hairline">
+              <div class="text-3xl font-black text-ink font-mono plan-price-team" id="teamPriceText">₹4,999</div>
+              <span class="text-xs text-mute font-mono" id="teamPeriodText">per month</span>
+            </div>
+
+            <ul class="space-y-3 text-xs text-body mb-8">
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-600 font-bold">&check;</span>
+                <span>Everything in Creator Pro</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-600 font-bold">&check;</span>
+                <span>10+ team seats with permission governance</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-600 font-bold">&check;</span>
+                <span>Private on-premise Docker deployment blueprints</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-600 font-bold">&check;</span>
+                <span>Custom API proxy &amp; token spend controls</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-600 font-bold">&check;</span>
+                <span>Dedicated Slack channel &amp; priority SLAs</span>
+              </li>
+            </ul>
+          </div>
+
+          <a 
+            href="/dashboard" 
+            class="w-full py-2.5 rounded-xl bg-canvas border border-hairline hover:bg-hairline-soft text-ink font-semibold text-xs text-center transition-colors shadow-xs"
+          >
+            Contact Team Sales
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Detailed Feature Comparison Matrix -->
+    <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t border-hairline">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl sm:text-3xl font-black text-ink tracking-tight mb-2">
+          Full Feature Comparison
+        </h2>
+        <p class="text-xs sm:text-sm text-mute">Compare exact limits and capabilities across all plans.</p>
+      </div>
+
+      <div class="overflow-x-auto bg-surface border border-hairline rounded-2xl shadow-xs">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-hairline bg-canvas">
+              <th class="p-4 font-bold text-ink">Capability / Feature</th>
+              <th class="p-4 font-bold text-mute font-mono">Explorer (₹0)</th>
+              <th class="p-4 font-bold text-primary font-mono">Pro</th>
+              <th class="p-4 font-bold text-purple-700 font-mono">Creator Pro</th>
+              <th class="p-4 font-bold text-ink font-mono">Team</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-hairline">
+            {featureMatrix.map((row) => (
+              <tr class="hover:bg-canvas transition-colors">
+                <td class="p-4 font-medium text-ink">{row.feature}</td>
+                <td class="p-4 font-mono text-mute">{row.explorer}</td>
+                <td class="p-4 font-mono text-primary font-bold">{row.pro}</td>
+                <td class="p-4 font-mono text-purple-700 font-bold">{row.creator}</td>
+                <td class="p-4 font-mono text-ink font-bold">{row.team}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Frequently Asked Questions Accordion -->
+    <section class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-16 border-t border-hairline">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl sm:text-3xl font-black text-ink tracking-tight mb-2">
+          Frequently Asked Questions
+        </h2>
+        <p class="text-xs sm:text-sm text-mute">Everything you need to know about billing, open-source swaps, and workspace tiers.</p>
+      </div>
+
+      <div class="space-y-4">
+        {faqs.map(faq => (
+          <details class="group bg-surface border border-hairline rounded-2xl p-5 [&_summary::-webkit-details-marker]:hidden shadow-xs cursor-pointer">
+            <summary class="flex items-center justify-between font-bold text-xs sm:text-sm text-ink group-open:text-primary transition-colors">
+              <span>{faq.q}</span>
+              <span class="text-mute group-open:rotate-180 transition-transform text-xs font-mono">&darr;</span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-mute leading-relaxed border-t border-hairline pt-3 font-sans">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let isAnnual = false;
+    let isUSD = false;
+
+    const billingMonthlyBtn = document.getElementById('billingMonthlyBtn');
+    const billingAnnualBtn = document.getElementById('billingAnnualBtn');
+    const currencyINRBtn = document.getElementById('currencyINRBtn');
+    const currencyUSDBtn = document.getElementById('currencyUSDBtn');
+
+    const proPriceText = document.getElementById('proPriceText');
+    const proPeriodText = document.getElementById('proPeriodText');
+    const creatorPriceText = document.getElementById('creatorPriceText');
+    const creatorPeriodText = document.getElementById('creatorPeriodText');
+    const teamPriceText = document.getElementById('teamPriceText');
+    const teamPeriodText = document.getElementById('teamPeriodText');
+
+    const PRICING_MATRIX = {
+      inr: {
+        monthly: { pro: '₹799', creator: '₹1,999', team: '₹4,999' },
+        annual: { pro: '₹639', creator: '₹1,599', team: '₹3,999' }
+      },
+      usd: {
+        monthly: { pro: '$9.99', creator: '$24.99', team: '$59.99' },
+        annual: { pro: '$7.99', creator: '$19.99', team: '$47.99' }
+      }
+    };
+
+    function updatePricingDisplay() {
+      const currency = isUSD ? 'usd' : 'inr';
+      const cycle = isAnnual ? 'annual' : 'monthly';
+      const rates = PRICING_MATRIX[currency][cycle];
+      const periodLabel = isAnnual ? 'per month, billed annually' : 'per month';
+
+      if (proPriceText) proPriceText.textContent = rates.pro;
+      if (proPeriodText) proPeriodText.textContent = periodLabel;
+
+      if (creatorPriceText) creatorPriceText.textContent = rates.creator;
+      if (creatorPeriodText) creatorPeriodText.textContent = periodLabel;
+
+      if (teamPriceText) teamPriceText.textContent = rates.team;
+      if (teamPeriodText) teamPeriodText.textContent = periodLabel;
+    }
+
+    billingMonthlyBtn?.addEventListener('click', () => {
+      isAnnual = false;
+      billingMonthlyBtn.className = 'billing-cycle-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-ink text-white transition-all cursor-pointer';
+      billingAnnualBtn!.className = 'billing-cycle-btn px-4 py-1.5 rounded-xl text-xs font-medium text-mute hover:text-ink transition-all cursor-pointer flex items-center gap-1.5';
+      updatePricingDisplay();
+    });
+
+    billingAnnualBtn?.addEventListener('click', () => {
+      isAnnual = true;
+      billingAnnualBtn.className = 'billing-cycle-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-ink text-white transition-all cursor-pointer flex items-center gap-1.5';
+      billingMonthlyBtn!.className = 'billing-cycle-btn px-4 py-1.5 rounded-xl text-xs font-medium text-mute hover:text-ink transition-all cursor-pointer';
+      updatePricingDisplay();
+    });
+
+    currencyINRBtn?.addEventListener('click', () => {
+      isUSD = false;
+      currencyINRBtn.className = 'pricing-currency-btn px-3 py-1 rounded-lg text-xs font-mono font-bold bg-ink text-white transition-all cursor-pointer';
+      currencyUSDBtn!.className = 'pricing-currency-btn px-3 py-1 rounded-lg text-xs font-mono font-bold text-mute hover:text-ink transition-all cursor-pointer';
+      updatePricingDisplay();
+    });
+
+    currencyUSDBtn?.addEventListener('click', () => {
+      isUSD = true;
+      currencyUSDBtn.className = 'pricing-currency-btn px-3 py-1 rounded-lg text-xs font-mono font-bold bg-ink text-white transition-all cursor-pointer';
+      currencyINRBtn!.className = 'pricing-currency-btn px-3 py-1 rounded-lg text-xs font-mono font-bold text-mute hover:text-ink transition-all cursor-pointer';
+      updatePricingDisplay();
+    });
+
+    updatePricingDisplay();
+  });
+</script>

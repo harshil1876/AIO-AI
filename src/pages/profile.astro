@@ -4,121 +4,193 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="User Profile & Saved Tools | AIO AI" description="Manage your saved AI tools, custom stacks, and account settings.">
+<Layout title="Workspace Profile & History | AIO AI" description="Manage your saved AI tools, custom workflows, named stacks, and moderation submissions.">
   <Header currentPath="/profile" />
 
-  <main class="w-full flex-1 max-w-5xl mx-auto px-6 py-10 bg-canvas min-h-screen">
+  <main class="w-full flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-10 bg-canvas min-h-screen">
+    
     <!-- Unauthenticated State -->
-    <div id="unauthView" class="hidden text-center py-16 bg-canvas-elevated border border-hairline rounded-lg p-8 shadow-xs">
-      <div class="w-12 h-12 rounded-full bg-hairline-soft border border-hairline flex items-center justify-center mx-auto mb-3 text-ink">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+    <div id="unauthView" class="hidden text-center py-16 bg-surface border border-hairline rounded-2xl p-8 shadow-xs">
+      <div class="w-14 h-14 rounded-full bg-blue-50 text-primary border border-blue-200 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
         </svg>
       </div>
-      <h1 class="text-2xl font-semibold text-ink tracking-tight mb-2">Sign In to Your Workspace</h1>
-      <p class="text-xs text-mute max-w-md mx-auto mb-6">
-        Sync your bookmarked AI tools, save custom multi-step stacks, and track community moderation submissions.
+      <h1 class="text-2xl sm:text-3xl font-black text-ink tracking-tight mb-2">Sign In to Your Workspace Profile</h1>
+      <p class="text-xs sm:text-sm text-mute max-w-md mx-auto mb-6 leading-relaxed">
+        Sync your bookmarked AI tools, save custom named stacks, track workflow execution history, and earn reputation points.
       </p>
       
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 max-w-md mx-auto">
-        <button 
-          id="googleLoginProfileBtn"
-          type="button"
-          class="w-full sm:w-auto bg-canvas border border-hairline hover:border-faint text-ink text-xs font-medium px-4 py-2 rounded-md transition-colors shadow-xs cursor-pointer flex items-center justify-center gap-2"
-        >
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-          </svg>
-          <span>Continue with Google</span>
-        </button>
-        <a href="/login" class="w-full sm:w-auto bg-ink hover:bg-neutral-800 text-on-primary text-xs font-medium px-4 py-2 rounded-md transition-colors shadow-xs">
-          Sign In
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+        <a href="/login" class="w-full sm:w-auto bg-ink hover:bg-neutral-800 text-white text-xs font-semibold px-6 py-2.5 rounded-xl transition-colors shadow-xs">
+          Sign In to Workspace
         </a>
-        <a href="/signup" class="w-full sm:w-auto bg-canvas border border-hairline hover:border-faint text-body text-xs font-medium px-4 py-2 rounded-md transition-colors">
-          Sign Up
+        <a href="/signup" class="w-full sm:w-auto bg-canvas border border-hairline hover:border-faint text-body text-xs font-semibold px-6 py-2.5 rounded-xl transition-colors">
+          Create Account
         </a>
       </div>
     </div>
 
-    <!-- Authenticated State -->
-    <div id="authView" class="hidden flex-col gap-6">
-      <!-- Profile Summary Card -->
-      <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xs">
+    <!-- Authenticated State: 5-Tab Workspace Hub -->
+    <div id="authView" class="hidden flex-col gap-8">
+      
+      <!-- Top Profile Banner -->
+      <div class="bg-surface border border-hairline rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xs">
         <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-md bg-ink text-on-primary font-bold text-lg flex items-center justify-center font-mono">
+          <div class="w-14 h-14 rounded-2xl bg-ink text-white font-bold text-xl flex items-center justify-center font-mono shrink-0 shadow-xs">
             <span id="userAvatarText">U</span>
           </div>
           <div>
-            <div class="flex items-center gap-2">
-              <h1 id="userEmail" class="text-lg font-semibold text-ink tracking-tight">user@example.com</h1>
-              <span class="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-mono font-medium">
-                Verified Member
+            <div class="flex items-center gap-2 flex-wrap">
+              <h1 id="userEmail" class="text-lg sm:text-xl font-bold text-ink tracking-tight">user@example.com</h1>
+              <span id="userPlanBadge" class="text-xs bg-blue-50 text-primary border border-blue-200 px-2.5 py-0.5 rounded-full font-mono font-bold">
+                Explorer Tier
               </span>
             </div>
-            <p id="userId" class="text-xs text-mute font-mono mt-0.5">ID: ...</p>
+            <div class="flex items-center gap-3 text-xs text-mute font-mono mt-1">
+              <span id="userId">ID: ...</span>
+              <span>&bull;</span>
+              <span id="userRole">Role: Practitioner</span>
+              <span>&bull;</span>
+              <span id="reputationPointsText" class="text-emerald-600 font-bold">0 pts</span>
+            </div>
           </div>
         </div>
 
-        <div class="flex items-center gap-2.5 self-start sm:self-auto">
+        <div class="flex items-center gap-2.5 self-start sm:self-auto shrink-0">
           <a 
-            href="/submit"
-            class="bg-ink hover:bg-neutral-800 text-on-primary text-xs font-medium px-3.5 py-2 rounded-md transition-colors shadow-xs"
+            href="/pricing"
+            class="bg-blue-50 hover:bg-blue-100 text-primary border border-blue-200 text-xs font-bold px-3.5 py-2 rounded-xl transition-colors shadow-xs"
           >
-            Submit Tool / Correction &rarr;
+            Upgrade Plan &rarr;
           </a>
           <button 
             id="logoutBtn"
-            class="bg-canvas border border-hairline hover:border-red-400 hover:text-red-600 text-body text-xs font-medium px-3.5 py-2 rounded-md transition-colors cursor-pointer"
+            class="bg-canvas border border-hairline hover:border-red-400 hover:text-red-600 text-body text-xs font-semibold px-3.5 py-2 rounded-xl transition-colors cursor-pointer"
           >
             Sign Out
           </button>
         </div>
       </div>
 
-      <!-- Saved Bookmarks Section -->
-      <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
-        <div class="flex items-center justify-between border-b border-hairline pb-3 mb-4">
-          <div>
-            <h2 class="text-sm font-semibold text-ink tracking-tight">Saved Tools & Bookmarks</h2>
-            <p class="text-xs text-mute mt-0.5">Quick access to tools you've pinned for your engineering stack.</p>
-          </div>
-          <span id="bookmarkCount" class="text-xs font-mono font-medium text-ink bg-hairline-soft px-2.5 py-1 rounded">
-            0 tools
-          </span>
-        </div>
+      <!-- 5-Tab Navigation Bar -->
+      <div class="flex items-center gap-2 overflow-x-auto border-b border-hairline pb-2" id="profileTabsBar">
+        <button type="button" class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-ink text-white transition-all cursor-pointer whitespace-nowrap" data-tab="account">
+          Account &amp; Identity
+        </button>
+        <button type="button" class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-medium text-mute hover:text-ink transition-all cursor-pointer whitespace-nowrap" data-tab="workflows">
+          My Workflows (<span id="wfCountBadge">0</span>)
+        </button>
+        <button type="button" class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-medium text-mute hover:text-ink transition-all cursor-pointer whitespace-nowrap" data-tab="stacks">
+          My Named Stacks (<span id="stackCountBadge">0</span>)
+        </button>
+        <button type="button" class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-medium text-mute hover:text-ink transition-all cursor-pointer whitespace-nowrap" data-tab="bookmarks">
+          Saved Bookmarks (<span id="bookmarkCountBadge">0</span>)
+        </button>
+        <button type="button" class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-medium text-mute hover:text-ink transition-all cursor-pointer whitespace-nowrap" data-tab="contributions">
+          My Contributions &amp; Tickets (<span id="ticketCountBadge">0</span>)
+        </button>
+      </div>
 
+      <!-- TAB 1: Account & Identity Panel -->
+      <div class="tab-panel space-y-6" id="panel-account">
+        <div class="bg-surface border border-hairline rounded-2xl p-6 shadow-xs space-y-4">
+          <h2 class="text-sm font-mono uppercase font-bold text-ink tracking-wider border-b border-hairline pb-3">
+            Account Specifications
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div class="p-4 rounded-xl bg-canvas border border-hairline">
+              <span class="text-mute block text-[11px] mb-1">Registered Email</span>
+              <span class="font-bold text-ink" id="detailEmail">...</span>
+            </div>
+            <div class="p-4 rounded-xl bg-canvas border border-hairline">
+              <span class="text-mute block text-[11px] mb-1">Active Plan Tier</span>
+              <span class="font-bold text-primary" id="detailPlan">Explorer (Free Forever)</span>
+            </div>
+            <div class="p-4 rounded-xl bg-canvas border border-hairline">
+              <span class="text-mute block text-[11px] mb-1">Authentic Reputation Score</span>
+              <span class="font-bold text-emerald-600" id="detailReputation">0 points (Starts at 0)</span>
+            </div>
+            <div class="p-4 rounded-xl bg-canvas border border-hairline">
+              <span class="text-mute block text-[11px] mb-1">Database Sync Status</span>
+              <span class="font-bold text-emerald-600">PostgreSQL Synchronized</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: My Created Workflows Panel -->
+      <div class="tab-panel hidden space-y-4" id="panel-workflows">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-mono uppercase font-bold text-ink tracking-wider">
+            Custom Workflows &amp; Simulator History
+          </h2>
+          <a href="/workflows/builder" class="text-xs font-bold text-primary hover:underline">
+            + Open Workflow Studio
+          </a>
+        </div>
+        <div id="workflowsList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Populated by script -->
+        </div>
+        <div id="emptyWorkflows" class="p-8 text-center bg-surface border border-dashed border-hairline rounded-2xl text-xs text-mute">
+          You haven't built any custom workflows yet. <a href="/workflows/builder" class="text-primary font-bold hover:underline">Build your first agent pipeline in Workflow Studio</a>.
+        </div>
+      </div>
+
+      <!-- TAB 3: My Named Stacks Panel -->
+      <div class="tab-panel hidden space-y-4" id="panel-stacks">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-mono uppercase font-bold text-ink tracking-wider">
+            Saved Custom Stacks &amp; Architectures
+          </h2>
+          <a href="/stack-builder" class="text-xs font-bold text-primary hover:underline">
+            + Build New Stack
+          </a>
+        </div>
+        <div id="stacksList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Populated by script -->
+        </div>
+        <div id="emptyStacks" class="p-8 text-center bg-surface border border-dashed border-hairline rounded-2xl text-xs text-mute">
+          No custom named stacks saved yet. <a href="/stack-builder" class="text-primary font-bold hover:underline">Assemble and name your 5-layer stack</a>.
+        </div>
+      </div>
+
+      <!-- TAB 4: Saved Bookmarks Panel -->
+      <div class="tab-panel hidden space-y-4" id="panel-bookmarks">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-mono uppercase font-bold text-ink tracking-wider">
+            Pinned Tool Bookmarks
+          </h2>
+          <a href="/tools" class="text-xs font-bold text-primary hover:underline">
+            Browse All Tools
+          </a>
+        </div>
         <div id="bookmarksList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <!-- Populated by script -->
         </div>
-
-        <div id="emptyBookmarks" class="hidden text-center py-8 text-mute text-xs">
-          You haven't bookmarked any AI tools yet. <a href="/tools" class="text-ink font-medium hover:underline">Browse the catalog</a> to save tools.
+        <div id="emptyBookmarks" class="p-8 text-center bg-surface border border-dashed border-hairline rounded-2xl text-xs text-mute">
+          No bookmarked tools yet. Visit the directory and click the save button on any tool card.
         </div>
-      </section>
+      </div>
 
-      <!-- User Submissions & Moderation Tickets Section -->
-      <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
-        <div class="flex items-center justify-between border-b border-hairline pb-3 mb-4">
-          <div>
-            <h2 class="text-sm font-semibold text-ink tracking-tight">Your Submissions & Tickets</h2>
-            <p class="text-xs text-mute mt-0.5">Tools, corrections, and educator suggestions you have submitted.</p>
-          </div>
-          <span id="submissionCount" class="text-xs font-mono font-medium text-ink bg-hairline-soft px-2.5 py-1 rounded">
-            0 tickets
-          </span>
+      <!-- TAB 5: My Contributions & Tickets Panel -->
+      <div class="tab-panel hidden space-y-4" id="panel-contributions">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-mono uppercase font-bold text-ink tracking-wider">
+            Submitted Tools &amp; Data Audits
+          </h2>
+          <a href="/submit" class="text-xs font-bold text-primary hover:underline">
+            + Submit New Tool or Correction
+          </a>
         </div>
-
-        <div id="submissionsList" class="space-y-2">
+        <div id="submissionsList" class="space-y-3">
           <!-- Populated by script -->
         </div>
-
-        <div id="emptySubmissions" class="hidden text-center py-8 text-mute text-xs">
-          No moderation submissions yet. <a href="/submit" class="text-ink font-medium hover:underline">Submit a new AI tool or report outdated pricing</a>.
+        <div id="emptySubmissions" class="p-8 text-center bg-surface border border-dashed border-hairline rounded-2xl text-xs text-mute">
+          No moderation submissions yet. <a href="/submit" class="text-primary font-bold hover:underline">Submit an AI tool or report outdated pricing</a> to earn reputation.
         </div>
-      </section>
+      </div>
+
     </div>
   </main>
 
@@ -133,28 +205,53 @@ import Footer from '../components/Footer.astro';
     const authView = document.getElementById('authView');
     const userEmail = document.getElementById('userEmail');
     const userId = document.getElementById('userId');
+    const userRole = document.getElementById('userRole');
     const userAvatarText = document.getElementById('userAvatarText');
+    const reputationPointsText = document.getElementById('reputationPointsText');
+    const detailEmail = document.getElementById('detailEmail');
+    const detailReputation = document.getElementById('detailReputation');
     const logoutBtn = document.getElementById('logoutBtn');
+
+    // Badges & Counts
+    const wfCountBadge = document.getElementById('wfCountBadge');
+    const stackCountBadge = document.getElementById('stackCountBadge');
+    const bookmarkCountBadge = document.getElementById('bookmarkCountBadge');
+    const ticketCountBadge = document.getElementById('ticketCountBadge');
+
+    // Lists & Empties
+    const workflowsList = document.getElementById('workflowsList');
+    const emptyWorkflows = document.getElementById('emptyWorkflows');
+    const stacksList = document.getElementById('stacksList');
+    const emptyStacks = document.getElementById('emptyStacks');
     const bookmarksList = document.getElementById('bookmarksList');
     const emptyBookmarks = document.getElementById('emptyBookmarks');
-    const bookmarkCount = document.getElementById('bookmarkCount');
     const submissionsList = document.getElementById('submissionsList');
     const emptySubmissions = document.getElementById('emptySubmissions');
-    const submissionCount = document.getElementById('submissionCount');
-    const googleLoginProfileBtn = document.getElementById('googleLoginProfileBtn');
 
-    googleLoginProfileBtn?.addEventListener('click', async () => {
-      await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin + '/profile'
-        }
+    // Tabs
+    const tabBtns = document.querySelectorAll('.profile-tab-btn');
+    const panels = document.querySelectorAll('.tab-panel');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => {
+          b.className = 'profile-tab-btn px-4 py-2 rounded-xl text-xs font-medium text-mute hover:text-ink transition-all cursor-pointer whitespace-nowrap';
+        });
+        btn.className = 'profile-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-ink text-white transition-all cursor-pointer whitespace-nowrap';
+
+        const targetTab = btn.getAttribute('data-tab');
+        panels.forEach(p => {
+          if (p.id === `panel-${targetTab}`) {
+            p.classList.remove('hidden');
+          } else {
+            p.classList.add('hidden');
+          }
+        });
       });
     });
 
     let activeUser: any = null;
 
-    // Check Supabase first
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (session && session.user) {
@@ -162,7 +259,6 @@ import Footer from '../components/Footer.astro';
       }
     } catch(e) {}
 
-    // Fall back to stored session if available
     if (!activeUser) {
       const localStr = localStorage.getItem('aio_user');
       if (localStr) {
@@ -178,65 +274,112 @@ import Footer from '../components/Footer.astro';
       return;
     }
 
-    // Authenticated
     unauthView?.classList.add('hidden');
     authView?.classList.remove('hidden');
     authView?.classList.add('flex');
 
-    if (userEmail) userEmail.textContent = activeUser.email || 'Verified Member';
-    if (userId) userId.textContent = `ID: ${(activeUser.id || 'usr-active').substring(0, 14)}...`;
-    if (userAvatarText && activeUser.email) {
-      userAvatarText.textContent = activeUser.email.charAt(0).toUpperCase();
-    }
+    const email = activeUser.email || 'Verified Practitioner';
+    if (userEmail) userEmail.textContent = email;
+    if (detailEmail) detailEmail.textContent = email;
+    if (userId) userId.textContent = `ID: ${(activeUser.id || 'usr-active').substring(0, 12)}...`;
+    if (userAvatarText) userAvatarText.textContent = email.charAt(0).toUpperCase();
 
-    // Render bookmarks
-    const savedSlugs: string[] = JSON.parse(localStorage.getItem('aio_bookmarks') || '[]');
-    if (bookmarkCount) bookmarkCount.textContent = `${savedSlugs.length} saved`;
+    // Query real reputation points from Supabase public.users
+    let userPoints = 0;
+    try {
+      const { data: uRow } = await supabase.from('users').select('reputation_points, role').eq('email', email).single();
+      if (uRow) {
+        userPoints = uRow.reputation_points || 0;
+        if (userRole && uRow.role) userRole.textContent = `Role: ${uRow.role.toUpperCase()}`;
+      }
+    } catch (e) {}
 
-    if (savedSlugs.length === 0) {
-      emptyBookmarks?.classList.remove('hidden');
-    } else {
+    if (reputationPointsText) reputationPointsText.textContent = `${userPoints} pts`;
+    if (detailReputation) detailReputation.textContent = `${userPoints} points`;
+
+    // 1. Render Saved Bookmarks
+    const savedBookmarks: string[] = JSON.parse(localStorage.getItem('aio_bookmarks') || '[]');
+    if (bookmarkCountBadge) bookmarkCountBadge.textContent = savedBookmarks.length.toString();
+
+    if (savedBookmarks.length > 0 && bookmarksList) {
       emptyBookmarks?.classList.add('hidden');
-      if (bookmarksList) {
-        bookmarksList.innerHTML = savedSlugs.map(slug => {
-          const formattedName = slug.split('-').map((s: string) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
-          return `
-            <a href="/tools/${slug}" class="p-3.5 rounded border border-hairline bg-canvas hover:border-faint transition-colors flex items-center justify-between group shadow-xs">
-              <div class="min-w-0 pr-2">
-                <span class="font-medium text-ink text-xs group-hover:underline block truncate">${formattedName}</span>
-                <span class="text-[11px] text-mute block mt-0.5 font-mono truncate">/tools/${slug}</span>
-              </div>
-              <span class="text-xs text-mute font-mono shrink-0">&rarr;</span>
-            </a>
-          `;
-        }).join('');
-      }
+      bookmarksList.innerHTML = savedBookmarks.map(slug => {
+        const formatted = slug.split('-').map((s: string) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+        return `
+          <a href="/tools/${slug}" class="p-4 rounded-xl border border-hairline bg-surface hover:border-primary transition-all flex items-center justify-between group shadow-xs">
+            <div class="min-w-0 pr-2">
+              <span class="font-bold text-ink text-xs group-hover:underline block truncate">${formatted}</span>
+              <span class="text-[11px] text-mute block mt-0.5 font-mono truncate">/tools/${slug}</span>
+            </div>
+            <span class="text-xs text-primary font-bold shrink-0">&rarr;</span>
+          </a>
+        `;
+      }).join('');
     }
 
-    // Render submissions
-    const userSubmissions: Array<{ type: string; name: string; slug: string; date: string }> = JSON.parse(localStorage.getItem('aio_user_submissions') || '[]');
-    if (submissionCount) submissionCount.textContent = `${userSubmissions.length} ticket${userSubmissions.length === 1 ? '' : 's'}`;
+    // 2. Render Custom Named Stacks
+    const savedStacks: any[] = JSON.parse(localStorage.getItem('aio_user_stacks') || '[]');
+    if (stackCountBadge) stackCountBadge.textContent = savedStacks.length.toString();
 
-    if (userSubmissions.length === 0) {
-      emptySubmissions?.classList.remove('hidden');
-    } else {
-      emptySubmissions?.classList.add('hidden');
-      if (submissionsList) {
-        submissionsList.innerHTML = userSubmissions.map(sub => `
-          <div class="p-3 rounded border border-hairline bg-canvas flex items-center justify-between text-xs">
-            <div class="flex items-center gap-2">
-              <span class="px-2 py-0.5 rounded bg-hairline-soft font-mono uppercase text-[10px] text-ink font-medium">${sub.type}</span>
-              <span class="font-medium text-ink">${sub.name}</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="text-[10px] text-emerald-600 font-mono bg-emerald-500/10 px-2 py-0.5 rounded">Queued (In Moderation)</span>
-              <span class="text-[10px] text-mute font-mono">${new Date(sub.date).toLocaleDateString()}</span>
-            </div>
+    if (savedStacks.length > 0 && stacksList) {
+      emptyStacks?.classList.add('hidden');
+      stacksList.innerHTML = savedStacks.map(st => `
+        <div class="p-4 rounded-xl border border-hairline bg-surface space-y-2 shadow-xs">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs text-ink truncate">${st.name}</h4>
+            <span class="text-[10px] font-mono text-mute">${st.savedAt}</span>
           </div>
-        `).join('');
-      }
+          <p class="text-xs text-mute line-clamp-2">${st.purpose || 'Custom 5-layer modular AI architecture'}</p>
+          <div class="pt-2 border-t border-hairline flex items-center justify-between text-xs">
+            <span class="text-[10px] font-mono text-primary font-bold">${st.category || 'Architecture'}</span>
+            <a href="/stack-builder?name=${encodeURIComponent(st.name)}" class="text-primary font-bold hover:underline">Load Stack &rarr;</a>
+          </div>
+        </div>
+      `).join('');
     }
 
+    // 3. Render Custom Workflows
+    const savedWfs: any[] = JSON.parse(localStorage.getItem('aio_user_workflows') || '[]');
+    if (wfCountBadge) wfCountBadge.textContent = savedWfs.length.toString();
+
+    if (savedWfs.length > 0 && workflowsList) {
+      emptyWorkflows?.classList.add('hidden');
+      workflowsList.innerHTML = savedWfs.map(wf => `
+        <div class="p-4 rounded-xl border border-hairline bg-surface space-y-2 shadow-xs">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs text-ink truncate">${wf.title}</h4>
+            <span class="text-[10px] font-mono text-mute">${wf.savedAt}</span>
+          </div>
+          <div class="text-[11px] font-mono text-mute">${wf.stepsCount} Nodes &bull; ${wf.category}</div>
+          <div class="pt-2 border-t border-hairline flex items-center justify-between text-xs">
+            <span class="text-emerald-600 font-mono text-[10px] font-bold">Tested &amp; Saved</span>
+            <a href="/workflows/builder" class="text-primary font-bold hover:underline">Open in Studio &rarr;</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 4. Render Moderation Submissions
+    const submissions: any[] = JSON.parse(localStorage.getItem('aio_user_submissions') || '[]');
+    if (ticketCountBadge) ticketCountBadge.textContent = submissions.length.toString();
+
+    if (submissions.length > 0 && submissionsList) {
+      emptySubmissions?.classList.add('hidden');
+      submissionsList.innerHTML = submissions.map(sub => `
+        <div class="p-3.5 rounded-xl border border-hairline bg-surface flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-blue-50 text-primary font-mono uppercase text-[10px] font-bold">${sub.type}</span>
+            <span class="font-bold text-ink">${sub.name}</span>
+          </div>
+          <div class="flex items-center gap-3 font-mono text-[10px]">
+            <span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">In Moderation</span>
+            <span class="text-mute">${new Date(sub.date).toLocaleDateString()}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Logout Action
     logoutBtn?.addEventListener('click', async () => {
       try {
         await supabase.auth.signOut();

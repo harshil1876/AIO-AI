@@ -117,6 +117,16 @@ const n8nWorkflowExport = {
         </div>
 
         <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+          <a
+            href={`/workflows/builder?template=${workflow.id}`}
+            class="bg-[#2563EB] hover:bg-blue-700 text-white font-semibold text-xs px-4 py-2.5 rounded-md shadow-xs transition-colors inline-flex items-center gap-1.5"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+            </svg>
+            <span>Open in Studio &amp; Test</span>
+          </a>
+
           <!-- 1-Click Valid n8n JSON Copy (Competitor Blueprint Feature) -->
           <button 
             type="button"
@@ -280,6 +290,85 @@ const n8nWorkflowExport = {
           </div>
         </div>
       </div>
+
+      <!-- Full Production Prompt & JSON API Payload Specification -->
+      <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 sm:p-8 shadow-xs space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-hairline pb-4">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-[#2563EB] border border-blue-200 text-[10px] font-mono font-bold mb-1">
+              PRODUCTION RUNTIME SPECIFICATION
+            </div>
+            <h2 class="text-lg font-bold text-ink">Production System Prompt &amp; REST API Payload Schema</h2>
+            <p class="text-xs text-mute mt-0.5">Ready for direct integration into LiteLLM, LangChain, n8n, or raw fetch API calls.</p>
+          </div>
+          <a 
+            href={`/workflows/builder?template=${workflow.id}`}
+            class="px-4 py-2 rounded-lg bg-ink text-white font-medium text-xs hover:bg-neutral-800 transition-colors shrink-0 inline-flex items-center gap-1.5 shadow-xs"
+          >
+            <span>Test in Workflow Studio</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- System Prompt Box -->
+          <div class="bg-surface border border-hairline rounded-lg p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-mono font-bold text-ink uppercase tracking-wider">Production System Prompt</span>
+                <button 
+                  type="button" 
+                  class="text-[11px] font-mono text-[#2563EB] hover:underline font-bold cursor-pointer"
+                  onclick={`navigator.clipboard.writeText(${JSON.stringify(workflow.systemPrompt || workflow.systemPromptSnippet)})`}
+                >
+                  Copy System Prompt
+                </button>
+              </div>
+              <pre class="p-3 bg-canvas border border-hairline rounded text-xs text-ink font-mono whitespace-pre-wrap leading-relaxed max-h-56 overflow-y-auto">{workflow.systemPrompt || workflow.systemPromptSnippet}</pre>
+            </div>
+          </div>
+
+          <!-- User Prompt Template Box -->
+          <div class="bg-surface border border-hairline rounded-lg p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-mono font-bold text-ink uppercase tracking-wider">User Prompt Template (Jinja/Mustache)</span>
+                <button 
+                  type="button" 
+                  class="text-[11px] font-mono text-[#2563EB] hover:underline font-bold cursor-pointer"
+                  onclick={`navigator.clipboard.writeText(${JSON.stringify(workflow.userPromptTemplate || workflow.steps[1]?.promptTemplate || workflow.goal)})`}
+                >
+                  Copy Template
+                </button>
+              </div>
+              <pre class="p-3 bg-canvas border border-hairline rounded text-xs text-ink font-mono whitespace-pre-wrap leading-relaxed max-h-56 overflow-y-auto">{workflow.userPromptTemplate || workflow.steps[1]?.promptTemplate || workflow.goal}</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- API Payload Schema JSON Box -->
+        <div class="bg-surface border border-hairline rounded-lg p-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono font-bold text-ink uppercase tracking-wider">Complete API Payload Schema (JSON)</span>
+            <button 
+              type="button" 
+              class="text-[11px] font-mono text-[#2563EB] hover:underline font-bold cursor-pointer"
+              onclick={`navigator.clipboard.writeText(${JSON.stringify(JSON.stringify(workflow.apiPayloadSchema || {}, null, 2))})`}
+            >
+              Copy JSON Payload
+            </button>
+          </div>
+          <pre class="p-4 bg-canvas border border-hairline rounded text-xs text-ink font-mono overflow-x-auto whitespace-pre leading-relaxed">{JSON.stringify(workflow.apiPayloadSchema || {
+            model: "claude-3-5-sonnet",
+            temperature: 0.2,
+            messages: [
+              { role: "system", content: workflow.systemPrompt || workflow.systemPromptSnippet },
+              { role: "user", content: workflow.userPromptTemplate || workflow.goal }
+            ],
+            max_tokens: 2000
+          }, null, 2)}</pre>
+        </div>
+      </section>
 
       <!-- Section 2: 3-Tier Budget Variants Comparison Table -->
       {workflow.budgetVariants && (
