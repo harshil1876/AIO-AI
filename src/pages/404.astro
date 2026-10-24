@@ -1,0 +1,88 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout 
+  title="404 — Route Not Found | AIO AI" 
+  description="The requested page could not be found. Search our catalog of 113+ verified AI tools, workflows, and open-source models."
+  hideSidebar={true}
+>
+  <header class="border-b border-[#E2E8F0] bg-white px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+    <a href="/" class="flex items-center gap-2.5">
+      <div class="w-7 h-7 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-black text-xs tracking-tight">
+        AI
+      </div>
+      <span class="text-[#09090B] font-black tracking-tight text-base">AIO AI</span>
+    </a>
+    <a href="/" class="text-xs text-slate-500 hover:text-[#09090B] font-medium transition-colors">← Back to Home</a>
+  </header>
+
+  <main class="w-full flex-1 flex flex-col items-center justify-center px-6 py-20 text-center max-w-3xl mx-auto">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-red-200 bg-red-50 text-[11px] font-mono font-bold text-red-700 mb-6">
+      <span>HTTP 404 • ROUTE UNRESOLVED</span>
+    </div>
+
+    <h1 class="text-5xl md:text-7xl font-black text-[#09090B] tracking-tight mb-4">
+      Lost in Latency?
+    </h1>
+    <p class="text-slate-600 text-sm md:text-base max-w-lg mx-auto mb-8 leading-relaxed">
+      The specific endpoint or model slug you requested does not exist in our catalog. Use the AI Finder search engine below to find the exact tool or workflow you need.
+    </p>
+
+    <!-- Embedded AI Finder Instant Search Box -->
+    <div class="w-full max-w-xl bg-white border-2 border-[#09090B] rounded-2xl p-2 shadow-sm mb-10">
+      <form id="finder404Form" class="flex items-center gap-2">
+        <div class="pl-3 text-slate-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+        </div>
+        <input 
+          type="text" 
+          id="finder404Input"
+          placeholder="Describe your intent, e.g., 'transcribe Hindi video' or 'local LLM for 8GB VRAM'..."
+          class="flex-1 text-xs sm:text-sm py-2 px-2 outline-none text-[#09090B] bg-transparent font-sans"
+          required
+        />
+        <button 
+          type="submit"
+          class="px-5 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold transition-colors cursor-pointer shrink-0"
+        >
+          Find AI Solution &rarr;
+        </button>
+      </form>
+    </div>
+
+    <!-- Quick Navigation Hub -->
+    <div class="flex flex-wrap items-center justify-center gap-3 text-xs">
+      <a href="/tools" class="px-4 py-2 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#09090B] font-semibold text-slate-700 hover:text-[#09090B] transition-colors">
+        113+ Verified AI Tools
+      </a>
+      <a href="/workflows" class="px-4 py-2 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#09090B] font-semibold text-slate-700 hover:text-[#09090B] transition-colors">
+        16+ Production Workflows
+      </a>
+      <a href="/open-source" class="px-4 py-2 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#09090B] font-semibold text-slate-700 hover:text-[#09090B] transition-colors">
+        Self-Hosted Open Source
+      </a>
+      <a href="/news" class="px-4 py-2 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#09090B] font-semibold text-slate-700 hover:text-[#09090B] transition-colors">
+        AI News Wire
+      </a>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+  document.getElementById('finder404Form')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var input = document.getElementById('finder404Input');
+    var query = input ? input.value.trim() : '';
+    if (query) {
+      window.location.href = '/finder?q=' + encodeURIComponent(query);
+    } else {
+      window.location.href = '/finder';
+    }
+  });
+</script>

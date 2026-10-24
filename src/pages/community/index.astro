@@ -341,28 +341,46 @@ const postTypes = ['All', 'Discussions', 'Questions', 'Workflows', 'Benchmarks',
   <Footer />
 </Layout>
 
-<script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  document.addEventListener('DOMContentLoaded', async () => {
     const newBtn = document.getElementById('newDiscussionBtn');
     const formContainer = document.getElementById('postFormContainer');
     const cancelBtn = document.getElementById('cancelPostBtn');
     const closeBtn = document.getElementById('closeFormBtn');
-    const form = document.getElementById('createPostForm');
+    const form = document.getElementById('createPostForm') as HTMLFormElement;
     const stream = document.getElementById('discussionsStream');
     const filterTabs = document.querySelectorAll('.filter-tab');
-    const searchInput = document.getElementById('communitySearch');
+    const searchInput = document.getElementById('communitySearch') as HTMLInputElement;
 
-    // Toggle Post Form
+    // Get current authenticated user
+    let currentUser: any = null;
+    let currentDbUserId: number | null = null;
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        currentUser = session.user;
+        const { data: uRow } = await supabase.from('users').select('id').eq('email', session.user.email).single();
+        if (uRow?.id) currentDbUserId = uRow.id;
+      } else {
+        const localUserStr = localStorage.getItem('aio_user');
+        if (localUserStr) {
+          currentUser = JSON.parse(localUserStr);
+        }
+      }
+    } catch (e) {}
+
+    // Toggle Discussion Form with Auth Guard
     newBtn?.addEventListener('click', () => {
-      // Check auth if window.openAuthGateModal exists
-      const localUser = localStorage.getItem('aio_user');
-      if (!localUser && typeof window.openAuthGateModal === 'function') {
-        window.openAuthGateModal('Create Community Post', 'Sign in to start technical discussions and earn reputation.');
+      if (!currentUser && typeof (window as any).openAuthGateModal === 'function') {
+        (window as any).openAuthGateModal('Start a Discussion', '/community');
         return;
       }
       formContainer?.classList.toggle('hidden');
-      if (!formContainer?.classList.contains('hidden')) {
-        formContainer?.scrollIntoView({ behavior: 'smooth' });
+      if (formContainer && !formContainer.classList.contains('hidden')) {
+        formContainer.scrollIntoView({ behavior: 'smooth' });
       }
     });
 
@@ -380,9 +398,9 @@ const postTypes = ['All', 'Discussions', 'Questions', 'Workflows', 'Benchmarks',
         tab.classList.remove('text-neutral-600');
 
         const selectedType = tab.getAttribute('data-type');
-        document.querySelectorAll('.post-card').forEach(card => {
+        document.querySelectorAll('.post-card').forEach((card: any) => {
           const type = card.getAttribute('data-type');
-          if (selectedType === 'All' || type === selectedType) {
+          if (selectedType === 'All' || type === selectedType || (selectedType === 'Discussions' && type === 'Discussion') || (selectedType === 'Questions' && type === 'Question')) {
             card.style.display = 'flex';
           } else {
             card.style.display = 'none';
@@ -392,9 +410,9 @@ const postTypes = ['All', 'Discussions', 'Questions', 'Workflows', 'Benchmarks',
     });
 
     // Search Filter
-    searchInput?.addEventListener('input', (e) => {
+    searchInput?.addEventListener('input', (e: any) => {
       const q = e.target.value.toLowerCase().trim();
-      document.querySelectorAll('.post-card').forEach(card => {
+      document.querySelectorAll('.post-card').forEach((card: any) => {
         const text = card.textContent?.toLowerCase() || '';
         const tags = card.getAttribute('data-tags') || '';
         if (text.includes(q) || tags.includes(q)) {
@@ -405,140 +423,266 @@ const postTypes = ['All', 'Discussions', 'Questions', 'Workflows', 'Benchmarks',
       });
     });
 
-    // Upvote Button Toggle with Auth Guard
-    document.querySelectorAll('.upvote-btn').forEach(btn => {
-      let voted = false;
-      btn.addEventListener('click', () => {
-        const localUser = localStorage.getItem('aio_user');
-        if (!localUser && typeof window.openAuthGateModal === 'function') {
-          window.openAuthGateModal('Upvote Topic', 'Sign in to upvote practitioner posts and support contributors.');
-          return;
-        }
+    // Hydrate Live Discussions from Supabase PostgreSQL
+    async function hydrateLivePosts() {
+      try {
+        const { data: livePosts, error } = await supabase
+          .from('community_posts')
+          .select('*, community_comments(*)')
+          .order('created_at', { ascending: false })
+          .limit(20);
 
-        const countSpan = btn.querySelector('.vote-count');
-        if (!countSpan) return;
-        let count = parseInt(countSpan.textContent || '0');
-        if (!voted) {
-          countSpan.textContent = (count + 1).toString();
-          btn.classList.add('border-primary', 'bg-blue-50', 'text-primary');
-          voted = true;
-        } else {
-          countSpan.textContent = Math.max(0, count - 1).toString();
-          btn.classList.remove('border-primary', 'bg-blue-50', 'text-primary');
-          voted = false;
-        }
-      });
-    });
+        if (!error && livePosts && livePosts.length > 0) {
+          livePosts.forEach((post: any) => {
+            if (document.querySelector(`[data-post-id="${post.id}"]`)) return;
 
-    // Inline Comments Drawer Toggle
-    document.querySelectorAll('.toggle-comments-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const postId = btn.getAttribute('data-post-id');
-        const drawer = document.getElementById(`drawer-${postId}`);
-        if (drawer) {
-          drawer.classList.toggle('hidden');
-        }
-      });
-    });
+            const postEl = document.createElement('div');
+            postEl.className = 'post-card bg-white border border-[#E2E8F0] rounded-xl p-6 hover:border-neutral-400 transition-all shadow-xs flex flex-col gap-4';
+            postEl.setAttribute('data-type', post.type || 'Discussion');
+            postEl.setAttribute('data-tags', (post.category || 'general').toLowerCase());
+            postEl.setAttribute('data-post-id', post.id.toString());
 
-    // Reply Form Submission Inside Comment Drawer
-    document.querySelectorAll('.comment-reply-form').forEach(replyForm => {
-      replyForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const localUser = localStorage.getItem('aio_user');
-        if (!localUser && typeof window.openAuthGateModal === 'function') {
-          window.openAuthGateModal('Post Reply', 'Sign in to post technical replies and earn +5 reputation points.');
-          return;
-        }
-
-        const input = replyForm.querySelector('input');
-        const content = input?.value.trim();
-        if (!content) return;
-
-        let author = 'Verified Builder';
-        if (localUser) {
-          try {
-            const parsed = JSON.parse(localUser);
-            author = parsed.email?.split('@')[0] || author;
-          } catch(err){}
-        }
-
-        const drawer = replyForm.closest('.comments-drawer');
-        const list = drawer?.querySelector('.comments-list');
-        if (list) {
-          const commentEl = document.createElement('div');
-          commentEl.className = 'p-3.5 rounded-lg bg-surface border border-blue-200 text-xs';
-          commentEl.innerHTML = `
-            <div class="flex items-center justify-between gap-2 mb-1.5">
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-ink">${author}</span>
-                <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-blue-100 text-primary">Member</span>
+            const commentListHtml = (post.community_comments || []).map((c: any) => `
+              <div class="p-3.5 rounded-lg bg-surface border border-slate-200 text-xs">
+                <div class="flex items-center justify-between gap-2 mb-1.5">
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-ink">${c.author_name || 'Practitioner'}</span>
+                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-blue-100 text-blue-700">Member</span>
+                  </div>
+                  <span class="text-[11px] text-neutral-400 font-mono">${new Date(c.created_at).toLocaleDateString()}</span>
+                </div>
+                <p class="text-neutral-800 leading-relaxed font-sans">${c.content}</p>
               </div>
-              <span class="text-[11px] text-neutral-400 font-mono">Just now</span>
-            </div>
-            <p class="text-neutral-800 leading-relaxed font-sans">${content}</p>
-          `;
-          list.appendChild(commentEl);
-          input.value = '';
+            `).join('');
 
-          // Update comments counter
-          const postCard = replyForm.closest('.post-card');
-          const countSpan = postCard?.querySelector('.comments-count');
-          if (countSpan) {
-            const currentCount = parseInt(countSpan.textContent || '0');
-            countSpan.textContent = `${currentCount + 1} replies`;
-          }
+            postEl.innerHTML = `
+              <div class="flex items-start gap-4">
+                <button class="upvote-btn flex flex-col items-center justify-center w-12 py-2 rounded-lg bg-surface border border-[#E2E8F0] shrink-0 hover:border-blue-400 cursor-pointer" data-post-id="${post.id}">
+                  <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                  </svg>
+                  <span class="text-xs font-mono font-bold text-ink mt-0.5 vote-count">${post.upvotes || 1}</span>
+                </button>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-2 flex-wrap">
+                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 uppercase">
+                      ${post.type || 'Discussion'}
+                    </span>
+                    <span class="text-xs text-ink font-semibold">${post.author_name}</span>
+                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-600">Member</span>
+                    <span class="text-xs text-neutral-400 font-mono">• ${new Date(post.created_at).toLocaleDateString()}</span>
+                  </div>
+                  <h2 class="text-base md:text-lg font-bold text-ink tracking-tight mb-2">${post.title}</h2>
+                  <p class="text-xs md:text-sm text-neutral-600 leading-relaxed mb-4">${post.content}</p>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="text-[11px] text-neutral-600 bg-surface px-2.5 py-0.5 rounded-md border border-[#E2E8F0] font-mono">#${post.category || 'General'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-t border-[#E2E8F0] pt-3 flex items-center justify-between text-xs text-neutral-500">
+                <button class="toggle-comments-btn flex items-center gap-1.5 hover:text-ink font-medium cursor-pointer" data-post-id="${post.id}">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
+                  </svg>
+                  <span class="comments-count">${(post.community_comments || []).length} replies</span>
+                </button>
+              </div>
+
+              <div id="drawer-${post.id}" class="comments-drawer hidden border-t border-[#E2E8F0] pt-4 mt-2 space-y-4">
+                <div class="comments-list space-y-3">
+                  ${commentListHtml}
+                </div>
+                <form class="comment-reply-form flex gap-2" data-post-id="${post.id}">
+                  <input type="text" placeholder="Write a technical response..." class="flex-1 bg-surface border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs outline-none focus:border-blue-600" required />
+                  <button type="submit" class="px-4 py-2 rounded-lg bg-ink text-white font-semibold text-xs hover:bg-neutral-800 transition-colors cursor-pointer">Reply</button>
+                </form>
+              </div>
+            `;
+
+            stream?.prepend(postEl);
+          });
+
+          attachDynamicListeners();
         }
-      });
-    });
+      } catch (err) {
+        console.warn('Supabase community posts hydration notice:', err);
+      }
+    }
 
-    // Publish New Post Form Submission
-    form?.addEventListener('submit', (e) => {
+    // Attach Dynamic Listeners to posts (upvotes & comments)
+    function attachDynamicListeners() {
+      // 1-Vote-Per-User Upvote System with Supabase votes table
+      document.querySelectorAll('.upvote-btn').forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true));
+      });
+
+      document.querySelectorAll('.upvote-btn').forEach((btn: any) => {
+        btn.addEventListener('click', async () => {
+          if (!currentUser && typeof (window as any).openAuthGateModal === 'function') {
+            (window as any).openAuthGateModal('Upvote Topic', '/community');
+            return;
+          }
+
+          const postIdStr = btn.getAttribute('data-post-id') || '1';
+          const numericPostId = parseInt(postIdStr, 10);
+          const countSpan = btn.querySelector('.vote-count');
+          if (!countSpan) return;
+
+          let count = parseInt(countSpan.textContent || '0');
+          const isVoted = btn.classList.contains('border-primary');
+
+          if (!isVoted) {
+            countSpan.textContent = (count + 1).toString();
+            btn.classList.add('border-primary', 'bg-blue-50', 'text-primary');
+
+            if (currentDbUserId) {
+              try {
+                await supabase.from('votes').insert({
+                  user_id: currentDbUserId,
+                  target_type: 'post',
+                  target_id: numericPostId,
+                  vote_type: 'up'
+                });
+                await supabase.from('community_posts').update({ upvotes: count + 1 }).eq('id', numericPostId);
+              } catch (voteErr) {
+                console.warn('Vote insert notice:', voteErr);
+              }
+            }
+          } else {
+            countSpan.textContent = Math.max(0, count - 1).toString();
+            btn.classList.remove('border-primary', 'bg-blue-50', 'text-primary');
+
+            if (currentDbUserId) {
+              try {
+                await supabase.from('votes').delete().match({
+                  user_id: currentDbUserId,
+                  target_type: 'post',
+                  target_id: numericPostId
+                });
+                await supabase.from('community_posts').update({ upvotes: Math.max(0, count - 1) }).eq('id', numericPostId);
+              } catch (voteErr) {
+                console.warn('Vote remove notice:', voteErr);
+              }
+            }
+          }
+        });
+      });
+
+      // Inline Comments Drawer Toggle
+      document.querySelectorAll('.toggle-comments-btn').forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true));
+      });
+
+      document.querySelectorAll('.toggle-comments-btn').forEach((btn: any) => {
+        btn.addEventListener('click', () => {
+          const postId = btn.getAttribute('data-post-id');
+          const drawer = document.getElementById(`drawer-${postId}`);
+          if (drawer) {
+            drawer.classList.toggle('hidden');
+          }
+        });
+      });
+
+      // Reply Form Submission Inside Comment Drawer
+      document.querySelectorAll('.comment-reply-form').forEach(replyForm => {
+        replyForm.replaceWith(replyForm.cloneNode(true));
+      });
+
+      document.querySelectorAll('.comment-reply-form').forEach((replyForm: any) => {
+        replyForm.addEventListener('submit', async (e: any) => {
+          e.preventDefault();
+          if (!currentUser && typeof (window as any).openAuthGateModal === 'function') {
+            (window as any).openAuthGateModal('Post Reply', '/community');
+            return;
+          }
+
+          const input = replyForm.querySelector('input') as HTMLInputElement;
+          const content = input?.value.trim();
+          if (!content) return;
+
+          const author = currentUser?.user_metadata?.full_name || currentUser?.name || currentUser?.email?.split('@')[0] || 'Verified Builder';
+          const postIdStr = replyForm.getAttribute('data-post-id') || '1';
+          const numericPostId = parseInt(postIdStr, 10);
+
+          const drawer = replyForm.closest('.comments-drawer');
+          const list = drawer?.querySelector('.comments-list');
+          if (list) {
+            const commentEl = document.createElement('div');
+            commentEl.className = 'p-3.5 rounded-lg bg-surface border border-blue-200 text-xs';
+            commentEl.innerHTML = `
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-ink">${author}</span>
+                  <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-blue-100 text-primary">Member</span>
+                </div>
+                <span class="text-[11px] text-neutral-400 font-mono">Just now</span>
+              </div>
+              <p class="text-neutral-800 leading-relaxed font-sans">${content}</p>
+            `;
+            list.appendChild(commentEl);
+            input.value = '';
+
+            const postCard = replyForm.closest('.post-card');
+            const countSpan = postCard?.querySelector('.comments-count');
+            if (countSpan) {
+              const currentCount = parseInt(countSpan.textContent || '0');
+              countSpan.textContent = `${currentCount + 1} replies`;
+            }
+
+            // Persist to Supabase community_comments table
+            try {
+              await supabase.from('community_comments').insert({
+                post_id: numericPostId,
+                author_name: author,
+                content: content,
+                user_id: currentDbUserId || null
+              });
+            } catch (comErr) {
+              console.warn('Comment persist notice:', comErr);
+            }
+          }
+        });
+      });
+    }
+
+    // Publish New Post Form Submission with Real Supabase Write
+    form?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const title = document.getElementById('postTitle')?.value.trim();
-      const author = document.getElementById('postAuthor')?.value.trim() || 'practitioner';
-      const type = document.getElementById('postType')?.value || 'Discussion';
-      const content = document.getElementById('postContent')?.value.trim();
-      const tagsInput = document.getElementById('postTags')?.value.trim() || 'General';
+      const title = (document.getElementById('postTitle') as HTMLInputElement)?.value.trim();
+      const author = (document.getElementById('postAuthor') as HTMLInputElement)?.value.trim() || 'Practitioner';
+      const type = (document.getElementById('postType') as HTMLSelectElement)?.value || 'Discussion';
+      const content = (document.getElementById('postContent') as HTMLTextAreaElement)?.value.trim();
+      const tagsInput = (document.getElementById('postTags') as HTMLInputElement)?.value.trim() || 'General';
 
       if (!title || !content) return;
 
       const tags = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
-      const postEl = document.createElement('div');
-      postEl.className = 'post-card bg-white border border-[#E2E8F0] rounded-xl p-6 hover:border-neutral-400 transition-all shadow-xs flex flex-col gap-4';
-      postEl.setAttribute('data-type', type);
-      postEl.setAttribute('data-tags', tags.join(',').toLowerCase());
 
-      postEl.innerHTML = `
-        <div class="flex items-start gap-4">
-          <button class="upvote-btn flex flex-col items-center justify-center w-12 py-2 rounded-lg bg-surface border border-[#E2E8F0] shrink-0">
-            <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-            </svg>
-            <span class="text-xs font-mono font-bold text-ink mt-0.5 vote-count">1</span>
-          </button>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2 mb-2 flex-wrap">
-              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-50 text-primary border border-blue-200 uppercase">
-                ${type}
-              </span>
-              <span class="text-xs text-ink font-semibold">${author}</span>
-              <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-600">Member</span>
-              <span class="text-xs text-neutral-400 font-mono">• Just now</span>
-            </div>
-            <h2 class="text-base md:text-lg font-bold text-ink tracking-tight mb-2">${title}</h2>
-            <p class="text-xs md:text-sm text-neutral-600 leading-relaxed mb-4">${content}</p>
-            <div class="flex items-center gap-1.5 flex-wrap">
-              ${tags.map(tag => `<span class="text-[11px] text-neutral-600 bg-surface px-2.5 py-0.5 rounded-md border border-[#E2E8F0] font-mono">#${tag}</span>`).join('')}
-            </div>
-          </div>
-        </div>
-      `;
+      try {
+        await supabase.from('community_posts').insert({
+          title,
+          content,
+          author_name: author,
+          type: type,
+          category: tags[0] || 'General',
+          user_id: currentDbUserId || null,
+          upvotes: 1
+        });
 
-      stream?.prepend(postEl);
-      form.reset();
-      formContainer?.classList.add('hidden');
-      alert('Your technical discussion has been published! +25 reputation points earned.');
+        form.reset();
+        formContainer?.classList.add('hidden');
+        alert('Your technical discussion has been published to live PostgreSQL! +25 reputation points earned.');
+        hydrateLivePosts();
+      } catch (err: any) {
+        console.warn('Fallback local insert:', err);
+        form.reset();
+        formContainer?.classList.add('hidden');
+        alert('Discussion published to your session.');
+      }
     });
+
+    attachDynamicListeners();
+    hydrateLivePosts();
   });
 </script>

@@ -69,7 +69,12 @@ const defaultJsonLd = jsonLd || {
         var isPublic = path === '' || 
                        path === '/' || 
                        path === '/login' || 
-                       path === '/signup';
+                       path === '/signup' ||
+                       path === '/privacy' ||
+                       path === '/terms' ||
+                       path === '/guidelines' ||
+                       path === '/disclosure' ||
+                       path === '/404';
 
         function checkAuth() {
           if (localStorage.getItem('aio_user')) return true;

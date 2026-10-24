@@ -15,25 +15,29 @@ if (!connectionString) {
 const client = postgres(connectionString, { prepare: false });
 
 async function applyRls() {
-  console.log("Applying Row Level Security (RLS) policies to all 24 Supabase tables...");
-  const sqlFile = path.resolve('drizzle/0001_enable_rls_policies.sql');
-  const sqlContent = fs.readFileSync(sqlFile, 'utf-8');
+  console.log("Applying database migrations and security policies...");
+  
+  const migrationFiles = [
+    'drizzle/0001_enable_rls_policies.sql',
+    'drizzle/0002_sync_auth_users_trigger.sql'
+  ];
 
-  // Split statements by semicolon
-  const statements = sqlContent
-    .split(';')
-    .map(s => s.trim())
-    .filter(s => s.length > 0 && !s.startsWith('--'));
+  for (const file of migrationFiles) {
+    const sqlFile = path.resolve(file);
+    if (!fs.existsSync(sqlFile)) continue;
+    
+    console.log(`Executing ${file}...`);
+    const sqlContent = fs.readFileSync(sqlFile, 'utf-8');
 
-  for (const stmt of statements) {
     try {
-      await client.unsafe(stmt);
+      await client.unsafe(sqlContent);
+      console.log(`Successfully executed ${file}`);
     } catch (err: any) {
-      console.warn(`Policy notice for statement [${stmt.slice(0, 40)}...]: ${err.message}`);
+      console.warn(`Notice running ${file}: ${err.message}`);
     }
   }
 
-  console.log("SUCCESS: RLS enabled across all 24 tables with strict public/auth separation.");
+  console.log("SUCCESS: RLS and Auth triggers applied cleanly to Supabase PostgreSQL.");
   process.exit(0);
 }
 

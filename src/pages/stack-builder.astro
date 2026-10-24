@@ -97,15 +97,29 @@ import Footer from '../components/Footer.astro';
               </div>
             </div>
 
-            <button 
-              id="exportStackBtn"
-              class="w-full bg-primary text-white font-bold text-xs rounded-xl py-3 hover:bg-blue-700 transition-colors cursor-pointer text-center shadow-xs flex items-center justify-center gap-2"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-              </svg>
-              <span>Export Stack Configuration (JSON)</span>
-            </button>
+            <div class="space-y-2">
+              <button 
+                id="shareStackBtn"
+                class="w-full bg-[#09090B] text-white font-bold text-xs rounded-xl py-3 hover:bg-neutral-800 transition-colors cursor-pointer text-center shadow-xs flex items-center justify-center gap-2"
+              >
+                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                </svg>
+                <span id="shareBtnText">Save & Share Public Stack</span>
+              </button>
+
+              <button 
+                id="exportStackBtn"
+                class="w-full bg-white border border-[#E2E8F0] text-ink font-bold text-xs rounded-xl py-2.5 hover:bg-slate-50 transition-colors cursor-pointer text-center shadow-xs flex items-center justify-center gap-2"
+              >
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                </svg>
+                <span>Export Stack Configuration (JSON)</span>
+              </button>
+            </div>
+
+            <div id="shareSuccessNotice" class="hidden mt-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-mono break-all"></div>
           </div>
 
           <!-- Privacy & Data Sovereignty Note -->
@@ -121,9 +135,12 @@ import Footer from '../components/Footer.astro';
   <Footer />
 </Layout>
 
-<script is:inline>
-  const STACKS = {
+<script>
+  import { supabase } from '../lib/supabase';
+
+  const STACKS: Record<string, { title: string; tools: Array<{ name: string; cost: number; role: string; openAlt: string }>; flow: string }> = {
     creator: {
+      title: 'Content Creator Production Stack',
       tools: [
         { name: 'ChatGPT Plus', cost: 20, role: 'Scripts & Hooks', openAlt: 'Llama 3.1 8B (Free)' },
         { name: 'ElevenLabs Starter', cost: 5, role: 'Voice Synthesis', openAlt: 'Kokoro TTS (Free)' },
@@ -133,6 +150,7 @@ import Footer from '../components/Footer.astro';
       flow: 'ChatGPT drafts script -> ElevenLabs synthesizes voiceover -> Midjourney renders visuals -> Make stitches and queues the video.'
     },
     engineer: {
+      title: 'Software Engineer DevOps Stack',
       tools: [
         { name: 'Claude 3.5 Sonnet Pro', cost: 20, role: 'Architecture & Refactoring', openAlt: 'DeepSeek R1 / Qwen 2.5 Coder (Free)' },
         { name: 'GitHub Copilot', cost: 10, role: 'Inline IDE Autocomplete', openAlt: 'Aider or Continue.dev (Free)' },
@@ -141,6 +159,7 @@ import Footer from '../components/Footer.astro';
       flow: 'Copilot suggests code inside IDE -> PR opened on GitHub -> n8n triggers Claude to audit security & edge cases.'
     },
     marketer: {
+      title: 'Growth & Performance Marketing Stack',
       tools: [
         { name: 'Claude Pro', cost: 20, role: 'Long-Form Copy & SEO', openAlt: 'Llama 3.3 70B (Free)' },
         { name: 'Make Pro', cost: 16, role: 'Lead Enrichment & CRM sync', openAlt: 'n8n Self-Hosted (Free)' },
@@ -149,6 +168,7 @@ import Footer from '../components/Footer.astro';
       flow: 'Form submission received -> Make enriches domain via Clearbit -> Claude drafts customized email -> Notion AI logs contact.'
     },
     india: {
+      title: 'India-First Enterprise Sovereign Stack',
       tools: [
         { name: 'Sarvam AI', cost: 0, role: 'Indic Vernacular Speech & Transcribe', openAlt: 'Sarvam Saaras (Indic Weights)' },
         { name: 'Krutrim AI', cost: 0, role: '22 Indian Language Reasoning', openAlt: 'Krutrim Sovereign Cloud' },
@@ -158,19 +178,22 @@ import Footer from '../components/Footer.astro';
     }
   };
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     const roleTabs = document.querySelectorAll('.role-tab');
     const container = document.getElementById('toolsListContainer');
     const flowDesc = document.getElementById('stackConnectionDesc');
     const commercialCostText = document.getElementById('commercialCostText');
     const annualSavingsText = document.getElementById('annualSavingsText');
     const exportBtn = document.getElementById('exportStackBtn');
+    const shareBtn = document.getElementById('shareStackBtn');
+    const shareText = document.getElementById('shareBtnText');
+    const shareNotice = document.getElementById('shareSuccessNotice');
 
     let currentRole = 'creator';
 
-    function renderStack(roleKey) {
+    function renderStack(roleKey: string) {
       const stack = STACKS[roleKey];
-      if (!stack) return;
+      if (!stack || !container || !flowDesc || !commercialCostText || !annualSavingsText) return;
 
       let totalMonthly = 0;
 
@@ -208,22 +231,113 @@ import Footer from '../components/Footer.astro';
         tab.classList.remove('border-[#E2E8F0]', 'bg-white', 'text-neutral-600', 'font-semibold');
         tab.classList.add('border-ink', 'bg-ink', 'text-white', 'font-bold');
 
-        currentRole = tab.getAttribute('data-role');
+        currentRole = tab.getAttribute('data-role') || 'creator';
         renderStack(currentRole);
       });
     });
 
-    exportBtn?.addEventListener('click', () => {
-      const localUser = localStorage.getItem('aio_user');
-      if (!localUser && typeof window.openAuthGateModal === 'function') {
-        window.openAuthGateModal('Export Stack JSON', 'Sign in to export production stack configurations and system prompts.');
-        return;
+    // Save & Share Public Stack via Supabase stacks table
+    shareBtn?.addEventListener('click', async () => {
+      let authorName = 'Anonymous Practitioner';
+      let userDbId: number | null = null;
+
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          authorName = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || authorName;
+          const { data: u } = await supabase.from('users').select('id').eq('email', session.user.email).single();
+          if (u?.id) userDbId = u.id;
+        } else {
+          const cachedStr = localStorage.getItem('aio_user');
+          if (cachedStr) {
+            const parsed = JSON.parse(cachedStr);
+            authorName = parsed.name || parsed.email?.split('@')[0] || authorName;
+          }
+        }
+      } catch(e) {}
+
+      const activeStack = STACKS[currentRole];
+      const stackSlug = `stack-${currentRole}-${Date.now()}`;
+      const totalCost = commercialCostText?.textContent || '$44 / mo';
+
+      if (shareBtn && shareText) {
+        shareBtn.setAttribute('disabled', 'true');
+        shareText.textContent = 'Saving to Database...';
       }
+
+      try {
+        const { data, error } = await supabase.from('stacks').insert({
+          slug: stackSlug,
+          title: activeStack.title,
+          description: activeStack.flow,
+          author_name: authorName,
+          user_id: userDbId,
+          tools: activeStack.tools.map(t => t.name),
+          estimated_monthly_cost: totalCost,
+          is_public: true
+        }).select().single();
+
+        const shareUrl = `${window.location.origin}/stack-builder?stackId=${data?.slug || stackSlug}`;
+        navigator.clipboard?.writeText(shareUrl);
+
+        if (shareNotice) {
+          shareNotice.innerHTML = `<strong>Stack Saved!</strong> Share URL copied to clipboard:<br><a href="${shareUrl}" class="underline text-emerald-900 font-bold">${shareUrl}</a>`;
+          shareNotice.classList.remove('hidden');
+        }
+      } catch (err: any) {
+        console.warn('Fallback stack share notice:', err);
+        const fallbackUrl = `${window.location.origin}/stack-builder?role=${currentRole}`;
+        navigator.clipboard?.writeText(fallbackUrl);
+        if (shareNotice) {
+          shareNotice.innerHTML = `<strong>Link copied!</strong> Share URL: <a href="${fallbackUrl}" class="underline">${fallbackUrl}</a>`;
+          shareNotice.classList.remove('hidden');
+        }
+      } finally {
+        if (shareBtn && shareText) {
+          shareBtn.removeAttribute('disabled');
+          shareText.textContent = 'Save & Share Public Stack';
+        }
+      }
+    });
+
+    // Export Stack JSON
+    exportBtn?.addEventListener('click', () => {
       const data = STACKS[currentRole];
       navigator.clipboard?.writeText(JSON.stringify(data, null, 2));
       alert('Selected stack configuration JSON copied to clipboard!');
     });
 
-    renderStack('creator');
+    // Check URL for ?stackId=... or ?role=...
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedStackId = urlParams.get('stackId');
+    const paramRole = urlParams.get('role');
+
+    if (sharedStackId) {
+      try {
+        const { data: dbStack } = await supabase
+          .from('stacks')
+          .select('*')
+          .or(`slug.eq.${sharedStackId}`)
+          .single();
+
+        if (dbStack && shareNotice) {
+          shareNotice.innerHTML = `Viewing Shared Stack: <strong>${dbStack.title}</strong> by <em>${dbStack.author_name}</em> (${dbStack.estimated_monthly_cost || ''})`;
+          shareNotice.classList.remove('hidden');
+        }
+      } catch (e) {}
+    } else if (paramRole && STACKS[paramRole]) {
+      currentRole = paramRole;
+      roleTabs.forEach(t => {
+        if (t.getAttribute('data-role') === paramRole) {
+          t.classList.add('border-ink', 'bg-ink', 'text-white', 'font-bold');
+          t.classList.remove('border-[#E2E8F0]', 'bg-white', 'text-neutral-600', 'font-semibold');
+        } else {
+          t.classList.remove('border-ink', 'bg-ink', 'text-white', 'font-bold');
+          t.classList.add('border-[#E2E8F0]', 'bg-white', 'text-neutral-600', 'font-semibold');
+        }
+      });
+    }
+
+    renderStack(currentRole);
   });
 </script>

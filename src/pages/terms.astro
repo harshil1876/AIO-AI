@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout 
+  title="Terms of Service | AIO AI" 
+  description="Terms of service and acceptable use agreement for the AIO AI engineering and discovery platform."
+  hideSidebar={true}
+>
+  <header class="border-b border-[#E2E8F0] bg-white px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+    <a href="/" class="flex items-center gap-2.5">
+      <div class="w-7 h-7 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-black text-xs tracking-tight">
+        AI
+      </div>
+      <span class="text-[#09090B] font-black tracking-tight text-base">AIO AI</span>
+    </a>
+    <a href="/" class="text-xs text-slate-500 hover:text-[#09090B] font-medium transition-colors">← Back to Overview</a>
+  </header>
+
+  <main class="w-full flex-1 max-w-4xl mx-auto px-6 py-12 md:py-16">
+    <div class="border-b border-[#E2E8F0] pb-8 mb-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-mono font-semibold text-[#2563EB] mb-4">
+        <span>PRD SECTION 51 COMPLIANCE</span>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-black text-[#09090B] tracking-tight mb-3">
+        Terms of Service
+      </h1>
+      <p class="text-slate-500 text-sm font-mono">
+        Last updated: October 2026 • Effective Date: October 24, 2026
+      </p>
+    </div>
+
+    <div class="space-y-8 text-sm text-slate-700 leading-relaxed font-sans">
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-[#09090B]">1. Acceptance of Terms</h2>
+        <p>
+          By accessing or using AIO AI (the "Platform"), you agree to be bound by these Terms of Service. If you disagree with any portion of these terms, you may not access or use the platform.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-[#09090B]">2. Permitted Use & Community Conduct</h2>
+        <p>
+          AIO AI is provided for software engineers, product creators, researchers, and technology practitioners seeking verified artificial intelligence intelligence. You agree not to:
+        </p>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>Automate abusive mass scraping or denial-of-service requests against the platform or our upstream API services (Algolia, GitHub, OpenRouter).</li>
+          <li>Submit fraudulent, astroturfed, or commercially manipulated tool reviews or vote manipulation rings.</li>
+          <li>Post malicious code, unauthorized API access tokens, or infringing copyrighted assets in technical discussions.</li>
+        </ul>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-[#09090B]">3. Tool Verification & Pricing Disclaimers</h2>
+        <p>
+          While AIO AI audits directory listings and validates pricing metadata across official provider documentation, third-party AI vendors modify API pricing tiers, token allowances, and licensing terms dynamically. AIO AI provides all cost calculators and model comparisons on an "as-is" advisory basis. Always verify final billing parameters on the vendor's canonical domain.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-[#09090B]">4. Open-Source Workflows & Code Licenses</h2>
+        <p>
+          All n8n workflow blueprints, code snippets, and repository telemetry reference open-source licenses (MIT, Apache 2.0, GPL, BSD). You are responsible for complying with the underlying license obligations of each specific model or repository.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-[#09090B]">5. Limitation of Liability</h2>
+        <p>
+          In no event shall AIO AI, its maintainers, or contributors be held liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of tools, models, or workflows indexed on the platform.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

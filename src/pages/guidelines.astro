@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout 
+  title="Community Guidelines & Moderation Policy | AIO AI" 
+  description="Standards for technical discussions, unbiased benchmarks, and respectful practitioner engagement across AIO AI."
+  hideSidebar={true}
+>
+  <header class="border-b border-[#E2E8F0] bg-white px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+    <a href="/" class="flex items-center gap-2.5">
+      <div class="w-7 h-7 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-black text-xs tracking-tight">
+        AI
+      </div>
+      <span class="text-[#09090B] font-black tracking-tight text-base">AIO AI</span>
+    </a>
+    <a href="/" class="text-xs text-slate-500 hover:text-[#09090B] font-medium transition-colors">← Back to Overview</a>
+  </header>
+
+  <main class="w-full flex-1 max-w-4xl mx-auto px-6 py-12 md:py-16">
+    <div class="border-b border-[#E2E8F0] pb-8 mb-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-mono font-semibold text-[#2563EB] mb-4">
+        <span>PRD SECTION 42 (ITEM 41) COMPLIANCE</span>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-black text-[#09090B] tracking-tight mb-3">
+        Community Guidelines
+      </h1>
+      <p class="text-slate-500 text-sm font-mono">
+        The practitioner code of conduct for discussions, benchmarks, and reviews.
+      </p>
+    </div>
+
+    <div class="space-y-8 text-sm text-slate-700 leading-relaxed font-sans">
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-[#09090B]">1. Objective & Unvarnished Technical Feedback</h2>
+        <p>
+          We encourage frank reviews, benchmark reports, and cost analyses. Whether praising or criticizing an AI tool, your reviews should be grounded in authentic production experience. Include reproducible hardware specs, prompt parameters, or latency metrics whenever disputing advertised vendor claims.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-[#09090B]">2. Zero Astroturfing & Conflict Disclosure</h2>
+        <p>
+          Founders, employees, and paid affiliates of AI software companies must explicitly disclose their affiliation when commenting on their own products or competing offerings. Astroturfed 5-star review rings or unprompted competitor bashing will result in immediate tool suspension and permanent account banning.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-[#09090B]">3. Reputation System & Governance</h2>
+        <p>
+          Community members earn reputation points (+10 for verified reviews, +25 for technical benchmarks, +50 for confirmed pricing corrections). Attempting to game the reputation system through duplicate sockpuppet accounts or bot networks triggers automated fraud detection and forfeiture of points.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-[#09090B]">4. Respectful Engineering Discourse</h2>
+        <p>
+          Ad hominem attacks, harassment, discriminatory language, or unconstructive flame wars will not be tolerated. Focus critiques on code quality, model accuracy, licensing terms, and real-world economics.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-[#09090B]">5. Reporting Violations</h2>
+        <p>
+          If you observe guidelines violations, click the "Report" button on any discussion or review card, or submit a moderation ticket via <a href="/submit?tab=correction" class="text-[#2563EB] hover:underline font-bold">/submit</a>.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

@@ -232,38 +232,24 @@ const categories = await getAllCategories();
 
       <!-- Tab 3: Moderation & Corrections Queue -->
       <div id="moderationQueueView" class="admin-panel hidden bg-white border border-[#E2E8F0] rounded-xl p-6 mb-8 shadow-xs">
-        <div class="border-b border-[#E2E8F0] pb-4 mb-5">
-          <h2 class="text-base font-bold text-ink tracking-tight">Corrections & User Submissions Queue</h2>
-          <p class="text-xs text-neutral-500">Review community-submitted pricing corrections, broken link tickets, and new tool requests.</p>
+        <div class="border-b border-[#E2E8F0] pb-4 mb-5 flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-bold text-ink tracking-tight">Corrections & User Submissions Queue</h2>
+            <p class="text-xs text-neutral-500">Review community-submitted pricing corrections, broken link tickets, and new draft tool submissions.</p>
+          </div>
+          <button id="refreshModerationBtn" class="px-3 py-1.5 rounded-lg border border-[#E2E8F0] bg-surface hover:bg-slate-100 text-xs font-medium text-slate-700 flex items-center gap-1.5 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+            <span>Refresh Queue</span>
+          </button>
         </div>
 
-        <div class="space-y-3" id="moderationItems">
-          <div class="p-4 rounded-xl bg-surface border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-amber-50 text-amber-700 border border-amber-200 font-bold">Pricing Check</span>
-                <span class="font-bold text-ink">Perplexity Pro</span>
-              </div>
-              <p class="text-neutral-500 text-[11px]">User reported: Annual pricing discount changed from 15% to 20% on Pro annual subscription.</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <button class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors">Approve</button>
-              <button class="px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-neutral-600 hover:text-ink text-xs font-medium transition-colors">Dismiss</button>
-            </div>
-          </div>
+        <div id="moderationStatusAlert" class="hidden mb-4 p-3 rounded-lg text-xs font-medium"></div>
 
-          <div class="p-4 rounded-xl bg-surface border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-blue-50 text-primary border border-blue-200 font-bold">New Tool Request</span>
-                <span class="font-bold text-ink">Soket AI Labs (Pratham Indic Model)</span>
-              </div>
-              <p class="text-neutral-500 text-[11px]">Founder submission: Open-weights Indic foundation models released under Apache 2.0.</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <button class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors">Approve & Publish</button>
-              <button class="px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-neutral-600 hover:text-ink text-xs font-medium transition-colors">Dismiss</button>
-            </div>
+        <div class="space-y-3" id="moderationItems">
+          <div class="p-8 text-center text-slate-400 text-xs" id="moderationLoading">
+            Loading live moderation queue from Supabase PostgreSQL...
           </div>
         </div>
       </div>
@@ -336,7 +322,9 @@ const categories = await getAllCategories();
   </div>
 </Layout>
 
-<script is:inline>
+<script>
+  import { supabase } from '../lib/supabase';
+
   document.addEventListener('DOMContentLoaded', () => {
     const gateScreen = document.getElementById('adminGateScreen');
     const mainContent = document.getElementById('adminMainContent');
@@ -363,6 +351,7 @@ const categories = await getAllCategories();
         mainContent?.classList.remove('hidden');
         lockAdminBtn?.classList.remove('hidden');
         if (roleBadge) roleBadge.textContent = 'Role: System Administrator (Verified)';
+        loadModerationQueue();
       } else {
         gateScreen?.classList.remove('hidden');
         mainContent?.classList.add('hidden');
@@ -402,17 +391,177 @@ const categories = await getAllCategories();
         if (view === 'tools-list') document.getElementById('toolsListView')?.classList.remove('hidden');
         if (view === 'bulk-importer') document.getElementById('bulkImporterView')?.classList.remove('hidden');
         if (view === 'add-tool') document.getElementById('addToolView')?.classList.remove('hidden');
-        if (view === 'moderation-queue') document.getElementById('moderationQueueView')?.classList.remove('hidden');
+        if (view === 'moderation-queue') {
+          document.getElementById('moderationQueueView')?.classList.remove('hidden');
+          loadModerationQueue();
+        }
       });
     });
 
+    // --- Live Supabase Moderation Queue ---
+    const moderationItems = document.getElementById('moderationItems');
+    const statusAlert = document.getElementById('moderationStatusAlert');
+    const refreshBtn = document.getElementById('refreshModerationBtn');
+
+    refreshBtn?.addEventListener('click', loadModerationQueue);
+
+    function showStatus(msg: string, isError = false) {
+      if (!statusAlert) return;
+      statusAlert.textContent = msg;
+      statusAlert.className = `mb-4 p-3 rounded-lg text-xs font-medium ${isError ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`;
+      statusAlert.classList.remove('hidden');
+      setTimeout(() => statusAlert.classList.add('hidden'), 5000);
+    }
+
+    async function loadModerationQueue() {
+      if (!moderationItems) return;
+      moderationItems.innerHTML = '<div class="p-8 text-center text-slate-400 text-xs">Querying Supabase PostgreSQL moderation queue...</div>';
+
+      try {
+        // Query pending draft tools and pending corrections
+        const [toolsRes, correctionsRes] = await Promise.all([
+          supabase.from('tools').select('*').eq('verification_status', 'draft').order('created_at', { ascending: false }).limit(20),
+          supabase.from('corrections').select('*').eq('status', 'pending').order('created_at', { ascending: false }).limit(20)
+        ]);
+
+        const draftTools = toolsRes.data || [];
+        const pendingCorrections = correctionsRes.data || [];
+
+        if (draftTools.length === 0 && pendingCorrections.length === 0) {
+          moderationItems.innerHTML = `
+            <div class="p-8 text-center bg-surface border border-[#E2E8F0] rounded-xl text-xs text-slate-500">
+              <span class="font-bold text-slate-700">All queues clear!</span> No pending draft submissions or user corrections in PostgreSQL right now.
+            </div>
+          `;
+          return;
+        }
+
+        let html = '';
+
+        // Render Draft Tools
+        draftTools.forEach((t: any) => {
+          html += `
+            <div class="p-4 rounded-xl bg-surface border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs" data-item-type="tool" data-item-id="${t.id}">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-blue-50 text-blue-700 border border-blue-200 font-bold">New Tool Draft</span>
+                  <span class="font-bold text-ink">${t.name}</span>
+                  <span class="text-slate-400 font-mono text-[11px]">(${t.slug})</span>
+                </div>
+                <p class="text-neutral-600 text-[11px] mb-1">${t.tagline || t.description || 'No description provided'}</p>
+                <div class="flex items-center gap-3 text-[10px] text-slate-400 font-mono">
+                  <span>URL: <a href="${t.website_url}" target="_blank" class="text-blue-600 hover:underline">${t.website_url}</a></span>
+                  <span>Pricing: ${t.pricing_state || 'unknown'}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <button onclick="window.approveDraftTool(${t.id})" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors cursor-pointer">
+                  Approve & Publish
+                </button>
+                <button onclick="window.rejectDraftTool(${t.id})" class="px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-neutral-600 hover:text-ink text-xs font-medium transition-colors cursor-pointer">
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+        // Render Corrections
+        pendingCorrections.forEach((c: any) => {
+          html += `
+            <div class="p-4 rounded-xl bg-surface border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs" data-item-type="correction" data-item-id="${c.id}">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-amber-50 text-amber-700 border border-amber-200 font-bold">${c.field_name || 'Correction'}</span>
+                  <span class="font-bold text-ink">Tool: ${c.tool_slug}</span>
+                  <span class="text-slate-400 font-mono text-[11px]">${c.author_email || 'Anonymous'}</span>
+                </div>
+                <p class="text-neutral-600 text-[11px] mb-1">Suggested: ${c.suggested_value}</p>
+                ${c.proof_url ? `<span class="text-[10px] text-slate-400 font-mono">Proof: <a href="${c.proof_url}" target="_blank" class="text-blue-600 hover:underline">${c.proof_url}</a></span>` : ''}
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <button onclick="window.approveCorrection(${c.id}, ${c.user_id || 'null'})" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors cursor-pointer">
+                  Approve (+50 Rep)
+                </button>
+                <button onclick="window.rejectCorrection(${c.id})" class="px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-neutral-600 hover:text-ink text-xs font-medium transition-colors cursor-pointer">
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+        moderationItems.innerHTML = html;
+      } catch (err: any) {
+        console.error('Moderation load error:', err);
+        moderationItems.innerHTML = `<div class="p-4 bg-red-50 text-red-700 rounded-xl text-xs">Failed to load live moderation queue: ${err.message}</div>`;
+      }
+    }
+
+    // Window handlers for approvals and dismissals
+    (window as any).approveDraftTool = async function(toolId: number) {
+      try {
+        const { error } = await supabase.from('tools').update({ verification_status: 'verified' }).eq('id', toolId);
+        if (error) throw error;
+        showStatus(`Tool #${toolId} verified and published to live catalog!`);
+        loadModerationQueue();
+      } catch (err: any) {
+        showStatus(`Approval failed: ${err.message}`, true);
+      }
+    };
+
+    (window as any).rejectDraftTool = async function(toolId: number) {
+      try {
+        const { error } = await supabase.from('tools').update({ verification_status: 'rejected' }).eq('id', toolId);
+        if (error) throw error;
+        showStatus(`Tool #${toolId} rejected.`);
+        loadModerationQueue();
+      } catch (err: any) {
+        showStatus(`Rejection failed: ${err.message}`, true);
+      }
+    };
+
+    (window as any).approveCorrection = async function(correctionId: number, userId: number | null) {
+      try {
+        const { error } = await supabase.from('corrections').update({ status: 'approved' }).eq('id', correctionId);
+        if (error) throw error;
+
+        // Reward 50 reputation points if registered user
+        if (userId) {
+          try {
+            const { data: u } = await supabase.from('users').select('reputation_points').eq('id', userId).single();
+            const currentPoints = Number(u?.reputation_points || 0);
+            await supabase.from('users').update({ reputation_points: currentPoints + 50 }).eq('id', userId);
+          } catch (repErr) {
+            console.warn('Reputation update notice:', repErr);
+          }
+        }
+
+        showStatus(`Correction #${correctionId} approved (+50 rep credited)!`);
+        loadModerationQueue();
+      } catch (err: any) {
+        showStatus(`Approval failed: ${err.message}`, true);
+      }
+    };
+
+    (window as any).rejectCorrection = async function(correctionId: number) {
+      try {
+        const { error } = await supabase.from('corrections').update({ status: 'rejected' }).eq('id', correctionId);
+        if (error) throw error;
+        showStatus(`Correction #${correctionId} dismissed.`);
+        loadModerationQueue();
+      } catch (err: any) {
+        showStatus(`Dismissal failed: ${err.message}`, true);
+      }
+    };
+
     // Live Tools Search Filter
-    const searchInput = document.getElementById('adminSearchInput');
+    const searchInput = document.getElementById('adminSearchInput') as HTMLInputElement;
     const rows = document.querySelectorAll('.admin-tool-row');
 
-    searchInput?.addEventListener('input', (e) => {
+    searchInput?.addEventListener('input', (e: any) => {
       const q = e.target.value.toLowerCase().trim();
-      rows.forEach(row => {
+      rows.forEach((row: any) => {
         const name = row.querySelector('.tool-name')?.textContent?.toLowerCase() || '';
         const slug = row.querySelector('.tool-slug')?.textContent?.toLowerCase() || '';
         if (name.includes(q) || slug.includes(q)) {
@@ -423,19 +572,52 @@ const categories = await getAllCategories();
       });
     });
 
-    // Bulk CSV/JSON Importer Logic
+    // Single Tool Creator Submission
+    const singleToolForm = document.getElementById('singleToolForm') as HTMLFormElement;
+    singleToolForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = (document.getElementById('singleName') as HTMLInputElement)?.value.trim();
+      const slug = (document.getElementById('singleSlug') as HTMLInputElement)?.value.trim();
+      const websiteUrl = (document.getElementById('singleUrl') as HTMLInputElement)?.value.trim();
+      const tagline = (document.getElementById('singleTagline') as HTMLInputElement)?.value.trim();
+      const category = (document.getElementById('singleCategory') as HTMLSelectElement)?.value;
+
+      try {
+        const { error } = await supabase.from('tools').upsert({
+          name,
+          slug,
+          website_url: websiteUrl,
+          tagline,
+          pricing_state: 'freemium',
+          verification_status: 'verified',
+          platform_score: 88,
+          value_score: 85
+        }, { onConflict: 'slug' });
+
+        if (error) throw error;
+        alert(`Success: "${name}" committed to PostgreSQL database.`);
+        singleToolForm.reset();
+      } catch (err: any) {
+        alert(`Failed to save tool: ${err.message}`);
+      }
+    });
+
+    // Bulk CSV/JSON Importer Logic with Real Supabase Upsert
     const validateBulkBtn = document.getElementById('validateBulkBtn');
     const clearBulkBtn = document.getElementById('clearBulkBtn');
-    const bulkInput = document.getElementById('bulkDataInput');
+    const bulkInput = document.getElementById('bulkDataInput') as HTMLTextAreaElement;
     const bulkReportBox = document.getElementById('bulkReportBox');
     const bulkPreviewTbody = document.getElementById('bulkPreviewTbody');
     const bulkSummaryText = document.getElementById('bulkSummaryText');
     const bulkStatusBadge = document.getElementById('bulkStatusBadge');
-    const commitBulkBtn = document.getElementById('commitBulkBtn');
+    const commitBulkBtn = document.getElementById('commitBulkBtn') as HTMLButtonElement;
+
+    let validRowsToCommit: any[] = [];
 
     clearBulkBtn?.addEventListener('click', () => {
       if (bulkInput) bulkInput.value = '';
       bulkReportBox?.classList.add('hidden');
+      validRowsToCommit = [];
     });
 
     validateBulkBtn?.addEventListener('click', () => {
@@ -445,7 +627,7 @@ const categories = await getAllCategories();
         return;
       }
 
-      let parsedRows = [];
+      let parsedRows: any[] = [];
       try {
         if (text.startsWith('[')) {
           parsedRows = JSON.parse(text);
@@ -454,7 +636,7 @@ const categories = await getAllCategories();
           const headers = lines[0].split(',').map(h => h.trim());
           for (let i = 1; i < lines.length; i++) {
             const vals = lines[i].split(',').map(v => v.trim());
-            const obj = {};
+            const obj: any = {};
             headers.forEach((h, idx) => { obj[h] = vals[idx] || ''; });
             parsedRows.push(obj);
           }
@@ -469,6 +651,7 @@ const categories = await getAllCategories();
         return;
       }
 
+      validRowsToCommit = [];
       let validCount = 0;
       let errorCount = 0;
 
@@ -476,17 +659,30 @@ const categories = await getAllCategories();
         bulkPreviewTbody.innerHTML = parsedRows.map((row) => {
           const hasName = Boolean(row.name);
           const hasSlug = Boolean(row.slug);
-          const hasUrl = Boolean(row.websiteUrl && row.websiteUrl.startsWith('http'));
+          const hasUrl = Boolean((row.websiteUrl || row.website_url) && (row.websiteUrl || row.website_url).startsWith('http'));
           const isValid = hasName && hasSlug && hasUrl;
 
-          if (isValid) validCount++;
-          else errorCount++;
+          if (isValid) {
+            validCount++;
+            validRowsToCommit.push({
+              name: row.name,
+              slug: row.slug,
+              website_url: row.websiteUrl || row.website_url,
+              tagline: row.tagline || '',
+              pricing_state: row.pricingState || row.pricing_state || 'freemium',
+              verification_status: 'verified',
+              platform_score: Number(row.score || 85),
+              value_score: Number(row.valueScore || 85)
+            });
+          } else {
+            errorCount++;
+          }
 
           return `
             <tr class="${isValid ? 'bg-emerald-500/5' : 'bg-red-500/5'}">
               <td class="p-2.5 font-bold">${row.name || 'Missing Name'}</td>
               <td class="p-2.5 text-neutral-500">${row.slug || 'Missing Slug'}</td>
-              <td class="p-2.5 truncate max-w-[150px]">${row.websiteUrl || 'Bad URL'}</td>
+              <td class="p-2.5 truncate max-w-[150px]">${row.websiteUrl || row.website_url || 'Bad URL'}</td>
               <td class="p-2.5">${row.category || 'general-chatbots'}</td>
               <td class="p-2.5">
                 <span class="${isValid ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold'}">
@@ -512,10 +708,29 @@ const categories = await getAllCategories();
       bulkReportBox?.classList.remove('hidden');
     });
 
-    commitBulkBtn?.addEventListener('click', () => {
-      alert('Import confirmed! Valid items have been batched into the catalog.');
-      bulkReportBox?.classList.add('hidden');
-      if (bulkInput) bulkInput.value = '';
+    commitBulkBtn?.addEventListener('click', async () => {
+      if (validRowsToCommit.length === 0) {
+        alert('No valid rows to commit.');
+        return;
+      }
+
+      commitBulkBtn.disabled = true;
+      commitBulkBtn.textContent = `Committing ${validRowsToCommit.length} tools to PostgreSQL...`;
+
+      try {
+        const { error } = await supabase.from('tools').upsert(validRowsToCommit, { onConflict: 'slug' });
+        if (error) throw error;
+
+        alert(`Successfully imported and updated ${validRowsToCommit.length} tools in Supabase!`);
+        bulkReportBox?.classList.add('hidden');
+        if (bulkInput) bulkInput.value = '';
+        validRowsToCommit = [];
+      } catch (err: any) {
+        alert(`Bulk import error: ${err.message}`);
+      } finally {
+        commitBulkBtn.disabled = false;
+        commitBulkBtn.textContent = 'Commit Valid Rows to PostgreSQL Catalog';
+      }
     });
   });
 </script>

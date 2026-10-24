@@ -356,45 +356,99 @@ const featuredCreators = CREATORS_DATA.slice(0, 3);
   <Footer />
 </Layout>
 
-<script is:inline>
-  // Enforce auth protection & sync user details
-  (function() {
-    function checkUserAuth() {
-      if (localStorage.getItem('aio_user')) return true;
-      if (localStorage.getItem('supabase.auth.token')) return true;
-      for (var i = 0; i < localStorage.length; i++) {
-        var k = localStorage.key(i);
-        if (k && k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1) {
-          return true;
+<script>
+  import { supabase } from '../lib/supabase';
+
+  async function initDashboardAuth() {
+    const nameDisplay = document.getElementById('userNameDisplay');
+    const emailDisplay = document.getElementById('userEmailDisplay');
+    const badgeText = document.getElementById('userBadgeText');
+    const countEl = document.getElementById('dashBookmarkCount');
+
+    // 1. Check active Supabase Auth session or OAuth callback
+    const { data: { session } } = await supabase.auth.getSession();
+
+    let currentUser = null;
+    const cachedUserStr = localStorage.getItem('aio_user');
+
+    if (session?.user) {
+      currentUser = {
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Builder',
+        authProvider: session.user.app_metadata?.provider || 'google'
+      };
+      localStorage.setItem('aio_user', JSON.stringify(currentUser));
+
+      // Item 1: Client-side safety upsert into public.users and public.profiles
+      try {
+        const { data: userRow } = await supabase
+          .from('users')
+          .upsert({
+            auth_id: session.user.id,
+            email: session.user.email,
+            role: 'user',
+            plan: 'free',
+          }, { onConflict: 'email' })
+          .select('id')
+          .single();
+
+        if (userRow?.id) {
+          await supabase.from('profiles').upsert({
+            user_id: userRow.id,
+            full_name: currentUser.name,
+            avatar_url: session.user.user_metadata?.avatar_url || null,
+          }, { onConflict: 'user_id' });
+
+          // Sync saved bookmarks count from Supabase
+          const { data: dbBookmarks } = await supabase
+            .from('bookmarks')
+            .select('id')
+            .eq('user_id', userRow.id);
+
+          if (dbBookmarks && countEl) {
+            countEl.textContent = dbBookmarks.length.toString();
+          }
         }
+      } catch (err) {
+        console.warn('Auth user safety sync notice:', err);
       }
-      return false;
+    } else if (cachedUserStr) {
+      try {
+        currentUser = JSON.parse(cachedUserStr);
+      } catch (e) {
+        currentUser = null;
+      }
     }
 
-    if (!checkUserAuth()) {
+    // If still unauthenticated, redirect to login
+    if (!currentUser) {
       window.location.replace('/login?redirect=/dashboard');
       return;
     }
 
-    if (userStr) {
-      try {
-        var user = JSON.parse(userStr);
-        var nameDisplay = document.getElementById('userNameDisplay');
-        var emailDisplay = document.getElementById('userEmailDisplay');
-        var badgeText = document.getElementById('userBadgeText');
-
-        var displayName = user.name || (user.email ? user.email.split('@')[0] : 'Builder');
-        if (nameDisplay) nameDisplay.textContent = displayName;
-        if (emailDisplay) emailDisplay.textContent = user.email || '';
-        if (badgeText) {
-          badgeText.textContent = user.authProvider === 'google' ? 'Google Account' : 'Verified Member';
-        }
-      } catch (e) {}
+    // Hydrate UI displays
+    if (nameDisplay) nameDisplay.textContent = currentUser.name || 'Builder';
+    if (emailDisplay) emailDisplay.textContent = currentUser.email || '';
+    if (badgeText) {
+      badgeText.textContent = currentUser.authProvider === 'google' ? 'Google Account' : 'Verified Member';
     }
 
-    // Sync saved bookmarks count
-    var bookmarks = JSON.parse(localStorage.getItem('aio_bookmarks') || '[]');
-    var countEl = document.getElementById('dashBookmarkCount');
-    if (countEl) countEl.textContent = bookmarks.length.toString();
-  })();
+    // Fallback bookmark count from localStorage if not updated from Supabase
+    if (countEl && countEl.textContent === '0') {
+      const bookmarks = JSON.parse(localStorage.getItem('aio_bookmarks') || '[]');
+      if (bookmarks.length > 0) {
+        countEl.textContent = bookmarks.length.toString();
+      }
+    }
+  }
+
+  // Handle auth state changes (e.g. initial OAuth token exchange)
+  supabase.auth.onAuthStateChange((_event, session) => {
+    if (session) {
+      initDashboardAuth();
+    }
+  });
+
+  initDashboardAuth();
 </script>

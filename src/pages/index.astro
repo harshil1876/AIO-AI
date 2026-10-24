@@ -325,6 +325,13 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
 
     var isAuth = isUserAuthenticated();
 
+    // Auto-redirect authenticated sessions from / to /dashboard (unless ?stay=true)
+    var urlParams = new URLSearchParams(window.location.search);
+    if (isAuth && urlParams.get('stay') !== 'true') {
+      window.location.replace('/dashboard');
+      return;
+    }
+
     // Adapt public nav CTAs if user is authenticated
     if (isAuth) {
       var loginBtn = document.getElementById('publicNavLogin');
