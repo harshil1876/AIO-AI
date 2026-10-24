@@ -33,11 +33,11 @@ const categories = ['All', 'Content Creation', 'Engineering & DevOps', 'Customer
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 flex-1">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {WORKFLOWS_DATA.map((workflow) => (
-          <article class="bg-white border-2 border-[#09090B] rounded-xl p-6 shadow-[5px_5px_0px_0px_#09090B] hover:shadow-[7px_7px_0px_0px_#2563EB] hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+          <article class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
             <div>
               <!-- Top Row Badges -->
               <div class="flex items-center justify-between text-xs font-mono mb-3">
-                <span class="bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] font-bold px-2 py-0.5 rounded-xs text-[10px] uppercase">
+                <span class="bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] font-semibold px-2.5 py-0.5 rounded-full text-[10px] uppercase">
                   {workflow.category}
                 </span>
                 <span class="text-slate-500 font-semibold">{workflow.difficulty} &bull; {workflow.time}</span>
@@ -55,7 +55,7 @@ const categories = ['All', 'Content Creation', 'Engineering & DevOps', 'Customer
               </p>
 
               <!-- Node Pipeline Preview -->
-              <div class="p-3 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0] mb-4 space-y-1.5 text-[11px]">
+              <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] mb-4 space-y-1.5 text-[11px]">
                 <div class="text-[10px] font-mono uppercase text-slate-500 font-bold">Execution Chain:</div>
                 <div class="truncate text-slate-700">1. {workflow.steps[0]?.title}</div>
                 <div class="truncate text-slate-700">2. {workflow.steps[1]?.title}</div>
@@ -69,7 +69,7 @@ const categories = ['All', 'Content Creation', 'Engineering & DevOps', 'Customer
                   {workflow.toolsUsed.map(t => (
                     <a 
                       href={`/tools/${t.slug}`} 
-                      class="px-2 py-0.5 rounded bg-white hover:bg-[#EFF6FF] border border-[#E2E8F0] hover:border-[#BFDBFE] text-slate-800 text-[11px] font-medium transition-colors"
+                      class="px-2.5 py-0.5 rounded-lg bg-[#F8FAFF] hover:bg-[#EFF6FF] border border-[#E2E8F0] hover:border-[#BFDBFE] text-slate-800 text-[11px] font-medium transition-colors"
                     >
                       {t.name}
                     </a>
@@ -85,7 +85,7 @@ const categories = ['All', 'Content Creation', 'Engineering & DevOps', 'Customer
               </span>
               <a 
                 href={`/workflows/${workflow.id}`} 
-                class="font-bold text-[#2563EB] hover:underline inline-flex items-center gap-1"
+                class="font-semibold text-[#2563EB] hover:text-[#1D4ED8] hover:underline inline-flex items-center gap-1"
               >
                 Inspect Blueprint &rarr;
               </a>

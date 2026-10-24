@@ -24,7 +24,6 @@ export const GET: APIRoute = () => {
     '/token-calculator/compare',
     '/utilities',
     '/news',
-    '/news/daily',
     '/community',
     '/submit',
     '/stack-builder',

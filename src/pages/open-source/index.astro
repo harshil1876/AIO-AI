@@ -33,16 +33,16 @@ const categories = ['All', 'LLM Runtimes', 'Agent Frameworks', 'Image & Video Ge
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 flex-1">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {OPEN_SOURCE_REPOS.map((repo) => (
-          <article class="bg-white border-2 border-[#09090B] rounded-xl p-6 shadow-[5px_5px_0px_0px_#09090B] hover:shadow-[7px_7px_0px_0px_#7C3AED] hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+          <article class="bg-white border border-[#E2E8F0] hover:border-purple-300 rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
             <div>
-              <div class="flex items-center justify-between text-xs font-mono mb-2">
-                <span class="text-purple-700 font-bold uppercase text-[10px] bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+              <div class="flex items-center justify-between text-xs font-mono mb-2.5">
+                <span class="text-purple-700 font-semibold uppercase text-[10px] bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100">
                   {repo.category}
                 </span>
-                <span class="font-bold text-slate-800">★ {repo.stars}</span>
+                <span class="font-semibold text-slate-700">★ {repo.stars}</span>
               </div>
 
-              <h2 class="text-base font-bold text-ink mb-1 hover:text-purple-700 transition-colors">
+              <h2 class="text-base font-bold text-ink mb-1.5 hover:text-purple-700 transition-colors">
                 <a href={`/open-source/${repo.slug}`}>
                   {repo.name}
                 </a>
@@ -53,12 +53,12 @@ const categories = ['All', 'LLM Runtimes', 'Agent Frameworks', 'Image & Video Ge
               </p>
 
               <!-- One minute replacement notice -->
-              <div class="p-2.5 rounded bg-emerald-50/60 border border-emerald-200 text-[11px] text-emerald-800 font-medium mb-3">
+              <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-[11px] text-emerald-800 font-medium mb-3">
                 {repo.replacesCommercialTool}
               </div>
 
               <!-- Quick Command Snippet -->
-              <div class="p-2 rounded bg-[#F8FAFF] border border-[#E2E8F0] font-mono text-[10px] text-slate-700 truncate mb-3">
+              <div class="p-2.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] font-mono text-[10px] text-slate-700 truncate mb-3">
                 {repo.quickstartCommands?.cli || repo.quickstartCommands?.docker || 'git clone ' + repo.url}
               </div>
             </div>
@@ -69,7 +69,7 @@ const categories = ['All', 'LLM Runtimes', 'Agent Frameworks', 'Image & Video Ge
               </span>
               <a 
                 href={`/open-source/${repo.slug}`} 
-                class="font-bold text-purple-700 hover:underline inline-flex items-center gap-0.5"
+                class="font-semibold text-purple-700 hover:text-purple-800 hover:underline inline-flex items-center gap-0.5"
               >
                 Setup Guide &rarr;
               </a>

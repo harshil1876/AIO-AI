@@ -44,18 +44,6 @@ import Footer from '../components/Footer.astro';
         <span>Continue with Google</span>
       </button>
 
-      <!-- Instant Demo Login Button -->
-      <button 
-        id="demoLoginBtn"
-        type="button"
-        class="w-full py-2.5 px-4 mb-4 rounded-xl bg-[#EFF6FF] border border-[#BFDBFE] text-[#2563EB] text-xs font-bold hover:bg-blue-100 transition-colors cursor-pointer flex items-center justify-center gap-2"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
-        </svg>
-        <span>Instant Local Demo Session</span>
-      </button>
-
       <div class="flex items-center gap-2 my-4 text-slate-400 text-xs">
         <div class="h-px bg-slate-200 flex-1"></div>
         <span class="text-[10px] font-mono uppercase">or with email credentials</span>
@@ -101,53 +89,6 @@ import Footer from '../components/Footer.astro';
     </div>
   </main>
 
-  <!-- Interactive Google Account Selector Modal (Fallback) -->
-  <div id="loginGoogleModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
-    <div class="fixed inset-0 bg-black/60 backdrop-blur-xs" onclick="document.getElementById('loginGoogleModal').classList.add('hidden')"></div>
-    <div class="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6 z-10 border border-[#E2E8F0]">
-      <div class="text-center mb-5">
-        <h3 class="text-sm font-bold text-[#09090B]">Choose a Google Account</h3>
-        <p class="text-xs text-slate-500">to continue to AIO AI Workspace</p>
-      </div>
-
-      <div class="space-y-2 mb-4">
-        <button 
-          type="button"
-          class="google-login-choice w-full flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#2563EB] hover:bg-[#F8FAFF] transition-all text-left cursor-pointer"
-          data-email="alex.builder.ai@gmail.com"
-          data-name="Alex Chen"
-        >
-          <div class="w-8 h-8 rounded-full bg-[#2563EB] text-white flex items-center justify-center font-bold text-xs">A</div>
-          <div class="min-w-0 flex-1">
-            <div class="text-xs font-bold text-[#09090B]">Alex Chen</div>
-            <div class="text-[11px] text-slate-500 truncate font-mono">alex.builder.ai@gmail.com</div>
-          </div>
-        </button>
-
-        <button 
-          type="button"
-          class="google-login-choice w-full flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#2563EB] hover:bg-[#F8FAFF] transition-all text-left cursor-pointer"
-          data-email="priya.ai.engineer@gmail.com"
-          data-name="Priya Sharma"
-        >
-          <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">P</div>
-          <div class="min-w-0 flex-1">
-            <div class="text-xs font-bold text-[#09090B]">Priya Sharma</div>
-            <div class="text-[11px] text-slate-500 truncate font-mono">priya.ai.engineer@gmail.com</div>
-          </div>
-        </button>
-      </div>
-
-      <button
-        type="button"
-        onclick="document.getElementById('loginGoogleModal').classList.add('hidden')"
-        class="w-full py-2 text-xs text-slate-500 hover:text-ink font-medium"
-      >
-        Cancel
-      </button>
-    </div>
-  </div>
-
   <Footer />
 </Layout>
 
@@ -159,68 +100,36 @@ import Footer from '../components/Footer.astro';
   const passwordInput = document.getElementById('password') as HTMLInputElement;
   const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
   const errorAlert = document.getElementById('errorAlert') as HTMLDivElement;
-  const demoLoginBtn = document.getElementById('demoLoginBtn');
   const googleLoginBtn = document.getElementById('googleLoginBtn');
-  const googleModal = document.getElementById('loginGoogleModal');
 
   const urlParams = new URLSearchParams(window.location.search);
   const redirectTarget = urlParams.get('redirect') || '/';
 
-  // 1. Google Sign-In Handler
+  // 1. Real Google OAuth
   googleLoginBtn?.addEventListener('click', async () => {
-    if (isSupabaseConfigured) {
-      try {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: window.location.origin + redirectTarget
-          }
-        });
-        if (!error) return;
-      } catch (e) {
-        // Fall through to localhost picker
+    errorAlert?.classList.add('hidden');
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + redirectTarget
+        }
+      });
+      if (error) {
+        if (errorAlert) {
+          errorAlert.textContent = error.message;
+          errorAlert.classList.remove('hidden');
+        }
+      }
+    } catch (err: any) {
+      if (errorAlert) {
+        errorAlert.textContent = err.message || 'Failed to initiate Google sign-in';
+        errorAlert.classList.remove('hidden');
       }
     }
-    // Show local Google account picker dialog
-    googleModal?.classList.remove('hidden');
   });
 
-  // Google Account Choices
-  document.querySelectorAll('.google-login-choice').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const email = btn.getAttribute('data-email') || 'alex.builder.ai@gmail.com';
-      const name = btn.getAttribute('data-name') || 'Google Member';
-      const googleUser = {
-        id: 'goog-usr-' + Date.now().toString(36),
-        email,
-        name,
-        role: 'member',
-        authProvider: 'google',
-        created_at: new Date().toISOString()
-      };
-      localStorage.setItem('aio_user', JSON.stringify(googleUser));
-      window.location.href = redirectTarget;
-    });
-  });
-
-  // 2. Demo Instant Login
-  demoLoginBtn?.addEventListener('click', () => {
-    const demoUser = {
-      id: 'demo-usr-994',
-      email: 'builder@aio-ai.dev',
-      name: 'Verified Builder',
-      role: 'member',
-      authProvider: 'demo',
-      created_at: new Date().toISOString()
-    };
-    localStorage.setItem('aio_user', JSON.stringify(demoUser));
-    if (redirectTarget.includes('admin')) {
-      localStorage.setItem('aio_admin_unlocked', 'true');
-    }
-    window.location.href = redirectTarget;
-  });
-
-  // 3. Email / Password Login
+  // 2. Real Email / Password Login
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorAlert?.classList.add('hidden');
@@ -230,45 +139,35 @@ import Footer from '../components/Footer.astro';
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-    if (isSupabaseConfigured) {
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-        if (error) {
-          errorAlert.textContent = error.message;
-          errorAlert.classList.remove('hidden');
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Sign In to Workspace';
-          return;
-        } else if (data.session) {
-          localStorage.setItem('aio_user', JSON.stringify({
-            id: data.session.user.id,
-            email: data.session.user.email,
-            name: data.session.user.email?.split('@')[0],
-            role: 'member',
-            created_at: new Date().toISOString()
-          }));
-          window.location.href = redirectTarget;
-          return;
-        }
-      } catch (err) {
-        // Fallback below
+      if (error) {
+        errorAlert.textContent = error.message;
+        errorAlert.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In to Workspace';
+        return;
       }
-    }
 
-    // Local fallback when Supabase is not configured or in offline mode
-    const fallbackUser = {
-      id: 'user-' + Date.now().toString(36),
-      email,
-      name: email.split('@')[0],
-      role: email.includes('admin') ? 'admin' : 'member',
-      authProvider: 'email',
-      created_at: new Date().toISOString()
-    };
-    localStorage.setItem('aio_user', JSON.stringify(fallbackUser));
-    window.location.href = redirectTarget;
+      if (data.session) {
+        localStorage.setItem('aio_user', JSON.stringify({
+          id: data.session.user.id,
+          email: data.session.user.email,
+          name: data.session.user.email?.split('@')[0],
+          role: 'member',
+          created_at: new Date().toISOString()
+        }));
+        window.location.href = redirectTarget;
+      }
+    } catch (err: any) {
+      errorAlert.textContent = err.message || 'An unexpected error occurred';
+      errorAlert.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Sign In to Workspace';
+    }
   });
 </script>

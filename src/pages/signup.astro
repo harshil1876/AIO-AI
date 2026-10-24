@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 
 <Layout 
   title="Create Workspace Account | AIO AI" 
-  description="Create your free AIO AI account to bookmark tools, save production stacks, and participate in technical benchmarks."
+  description="Join AIO AI to bookmark verified tools, chain multi-model workflows, and benchmark LLM token expenses."
   hideSidebar={true}
 >
   <!-- Public Minimal Header -->
@@ -25,8 +25,8 @@ import Footer from '../components/Footer.astro';
     <div class="w-full max-w-md bg-white border border-[#E2E8F0] rounded-2xl p-8 shadow-sm hover:shadow-md transition-all">
       
       <div class="text-center mb-6">
-        <h1 class="text-2xl font-black text-[#09090B] tracking-tight mb-1.5">Join AIO AI Workspace</h1>
-        <p class="text-xs text-slate-500">Free forever for practitioners, creators, and engineers</p>
+        <h1 class="text-2xl font-black text-[#09090B] tracking-tight mb-1.5">Create Free Account</h1>
+        <p class="text-xs text-slate-500">Sync tools, calculate API budgets, and build custom stacks</p>
       </div>
 
       <!-- 1. Prominent "Continue with Google" Button (Top) -->
@@ -44,26 +44,14 @@ import Footer from '../components/Footer.astro';
         <span>Continue with Google</span>
       </button>
 
-      <!-- Instant Demo Session Button -->
-      <button 
-        id="demoSignupBtn"
-        type="button"
-        class="w-full py-2.5 px-4 mb-4 rounded-xl bg-[#EFF6FF] border border-[#BFDBFE] text-[#2563EB] text-xs font-bold hover:bg-blue-100 transition-colors cursor-pointer flex items-center justify-center gap-2"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
-        </svg>
-        <span>Instant Local Demo Account</span>
-      </button>
-
       <div class="flex items-center gap-2 my-4 text-slate-400 text-xs">
         <div class="h-px bg-slate-200 flex-1"></div>
-        <span class="text-[10px] font-mono uppercase">or register email</span>
+        <span class="text-[10px] font-mono uppercase">or register with email</span>
         <div class="h-px bg-slate-200 flex-1"></div>
       </div>
 
       <div id="errorAlert" class="hidden mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 font-medium"></div>
-      <div id="successAlert" class="hidden mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-medium"></div>
+      <div id="successAlert" class="hidden mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-700 font-medium"></div>
 
       <form id="signupForm" class="flex flex-col gap-4 text-xs">
         <div>
@@ -83,8 +71,8 @@ import Footer from '../components/Footer.astro';
             type="password" 
             id="password" 
             placeholder="At least 6 characters" 
-            required
             minlength="6"
+            required
             class="w-full bg-[#F8FAFF] border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl px-3.5 py-2.5 text-[#09090B] outline-none transition-colors font-sans"
           />
         </div>
@@ -100,58 +88,11 @@ import Footer from '../components/Footer.astro';
     </div>
   </main>
 
-  <!-- Interactive Google Account Selector Modal (Fallback) -->
-  <div id="signupGoogleModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
-    <div class="fixed inset-0 bg-black/60 backdrop-blur-xs" onclick="document.getElementById('signupGoogleModal').classList.add('hidden')"></div>
-    <div class="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6 z-10 border border-[#E2E8F0]">
-      <div class="text-center mb-5">
-        <h3 class="text-sm font-bold text-[#09090B]">Choose a Google Account</h3>
-        <p class="text-xs text-slate-500">to continue to AIO AI Workspace</p>
-      </div>
-
-      <div class="space-y-2 mb-4">
-        <button 
-          type="button"
-          class="google-signup-choice w-full flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#2563EB] hover:bg-[#F8FAFF] transition-all text-left cursor-pointer"
-          data-email="alex.builder.ai@gmail.com"
-          data-name="Alex Chen"
-        >
-          <div class="w-8 h-8 rounded-full bg-[#2563EB] text-white flex items-center justify-center font-bold text-xs">A</div>
-          <div class="min-w-0 flex-1">
-            <div class="text-xs font-bold text-[#09090B]">Alex Chen</div>
-            <div class="text-[11px] text-slate-500 truncate font-mono">alex.builder.ai@gmail.com</div>
-          </div>
-        </button>
-
-        <button 
-          type="button"
-          class="google-signup-choice w-full flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#2563EB] hover:bg-[#F8FAFF] transition-all text-left cursor-pointer"
-          data-email="priya.ai.engineer@gmail.com"
-          data-name="Priya Sharma"
-        >
-          <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">P</div>
-          <div class="min-w-0 flex-1">
-            <div class="text-xs font-bold text-[#09090B]">Priya Sharma</div>
-            <div class="text-[11px] text-slate-500 truncate font-mono">priya.ai.engineer@gmail.com</div>
-          </div>
-        </button>
-      </div>
-
-      <button
-        type="button"
-        onclick="document.getElementById('signupGoogleModal').classList.add('hidden')"
-        class="w-full py-2 text-xs text-slate-500 hover:text-ink font-medium"
-      >
-        Cancel
-      </button>
-    </div>
-  </div>
-
   <Footer />
 </Layout>
 
 <script>
-  import { supabase, isSupabaseConfigured } from '../lib/supabase';
+  import { supabase } from '../lib/supabase';
 
   const form = document.getElementById('signupForm') as HTMLFormElement;
   const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -159,64 +100,36 @@ import Footer from '../components/Footer.astro';
   const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
   const errorAlert = document.getElementById('errorAlert') as HTMLDivElement;
   const successAlert = document.getElementById('successAlert') as HTMLDivElement;
-  const demoSignupBtn = document.getElementById('demoSignupBtn');
   const googleSignupBtn = document.getElementById('googleSignupBtn');
-  const googleModal = document.getElementById('signupGoogleModal');
 
   const urlParams = new URLSearchParams(window.location.search);
   const redirectTarget = urlParams.get('redirect') || '/';
 
-  // 1. Google Sign-Up Handler
+  // 1. Real Google OAuth Sign-Up
   googleSignupBtn?.addEventListener('click', async () => {
-    if (isSupabaseConfigured) {
-      try {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: window.location.origin + redirectTarget
-          }
-        });
-        if (!error) return;
-      } catch (e) {
-        // Fallback
+    errorAlert?.classList.add('hidden');
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + redirectTarget
+        }
+      });
+      if (error) {
+        if (errorAlert) {
+          errorAlert.textContent = error.message;
+          errorAlert.classList.remove('hidden');
+        }
+      }
+    } catch (err: any) {
+      if (errorAlert) {
+        errorAlert.textContent = err.message || 'Failed to initiate Google sign-in';
+        errorAlert.classList.remove('hidden');
       }
     }
-    googleModal?.classList.remove('hidden');
   });
 
-  // Google Account Choices
-  document.querySelectorAll('.google-signup-choice').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const email = btn.getAttribute('data-email') || 'alex.builder.ai@gmail.com';
-      const name = btn.getAttribute('data-name') || 'Google Member';
-      const googleUser = {
-        id: 'goog-usr-' + Date.now().toString(36),
-        email,
-        name,
-        role: 'member',
-        authProvider: 'google',
-        created_at: new Date().toISOString()
-      };
-      localStorage.setItem('aio_user', JSON.stringify(googleUser));
-      window.location.href = redirectTarget;
-    });
-  });
-
-  // 2. Demo Signup
-  demoSignupBtn?.addEventListener('click', () => {
-    const demoUser = {
-      id: 'demo-usr-994',
-      email: 'builder@aio-ai.dev',
-      name: 'Verified Builder',
-      role: 'member',
-      authProvider: 'demo',
-      created_at: new Date().toISOString()
-    };
-    localStorage.setItem('aio_user', JSON.stringify(demoUser));
-    window.location.href = redirectTarget;
-  });
-
-  // 3. Email Signup
+  // 2. Real Email Sign-Up
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorAlert?.classList.add('hidden');
@@ -227,43 +140,41 @@ import Footer from '../components/Footer.astro';
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-    if (isSupabaseConfigured) {
-      try {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
-        if (error) {
-          errorAlert.textContent = error.message;
-          errorAlert.classList.remove('hidden');
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Create Free Account';
-          return;
-        } else {
-          localStorage.setItem('aio_user', JSON.stringify({
-            id: data.session?.user.id || ('usr-' + Date.now().toString(36)),
-            email,
-            name: email.split('@')[0],
-            role: 'member',
-            created_at: new Date().toISOString()
-          }));
-          window.location.href = redirectTarget;
-          return;
-        }
-      } catch (e) {}
+      if (error) {
+        errorAlert.textContent = error.message;
+        errorAlert.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Free Account';
+        return;
+      }
+
+      if (data.session) {
+        localStorage.setItem('aio_user', JSON.stringify({
+          id: data.session.user.id,
+          email: data.session.user.email,
+          name: data.session.user.email?.split('@')[0],
+          role: 'member',
+          created_at: new Date().toISOString()
+        }));
+        window.location.href = redirectTarget;
+      } else {
+        // Confirmation email required
+        successAlert.textContent = 'Account created successfully! Please check your email to confirm your account, then sign in.';
+        successAlert.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Free Account';
+      }
+    } catch (err: any) {
+      errorAlert.textContent = err.message || 'An unexpected error occurred';
+      errorAlert.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Create Free Account';
     }
-
-    // Local fallback
-    const localUser = {
-      id: 'usr-' + Date.now().toString(36),
-      email,
-      name: email.split('@')[0],
-      role: 'member',
-      authProvider: 'email',
-      created_at: new Date().toISOString()
-    };
-    localStorage.setItem('aio_user', JSON.stringify(localUser));
-    window.location.href = redirectTarget;
   });
 </script>

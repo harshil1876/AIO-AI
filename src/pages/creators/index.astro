@@ -33,19 +33,19 @@ const categories = ['All', 'AI Coding', 'AI Tutorials', 'AI News', 'AI Agents', 
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 flex-1">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {CREATORS_DATA.map((creator) => (
-          <article class="bg-white border-2 border-[#09090B] rounded-xl p-6 shadow-[5px_5px_0px_0px_#09090B] hover:shadow-[7px_7px_0px_0px_#DC2626] hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+          <article class="bg-white border border-[#E2E8F0] hover:border-red-300 rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
             <div>
               <!-- Top Row: Category & Subs -->
               <div class="flex items-center justify-between text-xs font-mono mb-3">
-                <span class="bg-red-50 text-red-700 border border-red-200 font-bold px-2 py-0.5 rounded-xs text-[10px] uppercase">
+                <span class="bg-red-50 text-red-700 border border-red-100 font-semibold px-2.5 py-0.5 rounded-full text-[10px] uppercase">
                   {creator.primaryCategory}
                 </span>
-                <span class="text-slate-600 font-bold">{creator.subscribersEstimate}</span>
+                <span class="text-slate-600 font-semibold">{creator.subscribersEstimate}</span>
               </div>
 
               <!-- Channel Info -->
-              <div class="flex items-start gap-3 mb-3">
-                <div class="w-12 h-12 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-bold text-base shrink-0 font-mono">
+              <div class="flex items-start gap-3.5 mb-3.5">
+                <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-800 border border-slate-200 flex items-center justify-center font-bold text-base shrink-0 font-mono">
                   {creator.channelName.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
@@ -67,7 +67,7 @@ const categories = ['All', 'AI Coding', 'AI Tutorials', 'AI News', 'AI Agents', 
                 <span class="text-[10px] font-mono uppercase text-slate-500 font-bold block mb-1.5">Tools & Models Taught:</span>
                 <div class="flex flex-wrap gap-1.5">
                   {creator.toolsTaught?.slice(0, 4).map(tool => (
-                    <span class="px-2 py-0.5 rounded bg-[#F8FAFF] border border-[#E2E8F0] text-slate-700 text-[11px] font-medium">
+                    <span class="px-2.5 py-0.5 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0] text-slate-700 text-[11px] font-medium">
                       #{tool}
                     </span>
                   ))}
@@ -76,7 +76,7 @@ const categories = ['All', 'AI Coding', 'AI Tutorials', 'AI News', 'AI Agents', 
 
               <!-- Top Must-Watch Tutorial Preview -->
               {creator.topVideos?.[0] && (
-                <div class="p-3 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0] mb-4 text-xs">
+                <div class="p-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] mb-4 text-xs">
                   <div class="text-[10px] font-mono uppercase text-slate-500 font-bold mb-1">Must-Watch Entry Point:</div>
                   <div class="font-medium text-ink truncate">{creator.topVideos[0].title}</div>
                   <div class="text-[11px] text-slate-500 mt-0.5 font-mono">{creator.topVideos[0].duration} &bull; {creator.topVideos[0].viewsEstimate} views</div>
@@ -91,7 +91,7 @@ const categories = ['All', 'AI Coding', 'AI Tutorials', 'AI News', 'AI Agents', 
               </span>
               <a 
                 href={`/creators/${creator.slug}`} 
-                class="font-bold text-red-600 hover:underline inline-flex items-center gap-1"
+                class="font-semibold text-red-600 hover:text-red-700 hover:underline inline-flex items-center gap-1"
               >
                 Full Curriculum &rarr;
               </a>

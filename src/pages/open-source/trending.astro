@@ -34,10 +34,10 @@ const trendingRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
           </p>
         </div>
 
-        <div class="flex items-center gap-2 shrink-0 font-mono text-xs">
+        <div class="flex items-center gap-2.5 shrink-0 text-xs">
           <a 
             href="/open-source" 
-            class="bg-white hover:bg-slate-50 border-2 border-[#09090B] text-ink font-bold px-4 py-2 rounded-lg shadow-[2px_2px_0px_0px_#09090B]"
+            class="bg-white hover:bg-slate-50 border border-[#E2E8F0] hover:border-slate-400 text-ink font-semibold px-4 py-2.5 rounded-xl shadow-xs transition-colors"
           >
             All 20+ Repos
           </a>
@@ -45,7 +45,7 @@ const trendingRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
             href="https://github.com/trending" 
             target="_blank" 
             rel="noopener noreferrer" 
-            class="bg-[#09090B] hover:bg-neutral-800 text-white font-bold px-4 py-2 rounded-lg shadow-[2px_2px_0px_0px_#7C3AED] inline-flex items-center gap-1.5"
+            class="bg-[#09090B] hover:bg-[#2563EB] text-white font-semibold px-4 py-2.5 rounded-xl shadow-xs transition-all inline-flex items-center gap-1.5"
           >
             <span>Live GitHub Trending</span>
             <span>↗</span>
@@ -58,9 +58,9 @@ const trendingRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 flex-1">
       <div class="space-y-4">
         {trendingRepos.map((repo, idx) => (
-          <article class="bg-white border-2 border-[#09090B] rounded-xl p-5 sm:p-6 shadow-[4px_4px_0px_0px_#09090B] hover:shadow-[6px_6px_0px_0px_#7C3AED] hover:-translate-y-0.5 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <article class="bg-white border border-[#E2E8F0] hover:border-purple-300 rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="flex items-start gap-4">
-              <span class="w-8 h-8 rounded-lg bg-[#09090B] text-white font-mono font-bold text-sm flex items-center justify-center shrink-0 mt-0.5">
+              <span class="w-8 h-8 rounded-xl bg-slate-100 text-slate-800 font-mono font-bold text-sm flex items-center justify-center shrink-0 mt-0.5 border border-slate-200">
                 #{idx + 1}
               </span>
               <div>
@@ -70,13 +70,13 @@ const trendingRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
                       {repo.name}
                     </a>
                   </h2>
-                  <span class="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200">
+                  <span class="text-[10px] font-mono uppercase font-semibold px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-100">
                     {repo.category}
                   </span>
                   <span class="text-xs font-mono text-slate-500">{repo.repo}</span>
                 </div>
 
-                <p class="text-xs text-slate-600 line-clamp-2 mb-2 max-w-3xl">
+                <p class="text-xs text-slate-600 line-clamp-2 mb-2 max-w-3xl leading-relaxed">
                   {repo.oneMinuteSummary || repo.description}
                 </p>
 
@@ -98,7 +98,7 @@ const trendingRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
 
               <a 
                 href={`/open-source/${repo.slug}`} 
-                class="bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold font-mono px-4 py-2 rounded-lg shadow-xs inline-flex items-center gap-1"
+                class="bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-xs transition-colors inline-flex items-center gap-1"
               >
                 Setup Guide &rarr;
               </a>
