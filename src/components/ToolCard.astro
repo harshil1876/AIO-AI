@@ -22,7 +22,12 @@ const catSlugs = Array.isArray(tool.categorySlugs)
         <ToolLogo websiteUrl={tool.websiteUrl} name={tool.name} size="md" />
         <div class="min-w-0">
           <div class="flex items-center gap-1.5 flex-wrap">
-            <a href={`/tools/${tool.slug}`} class="font-bold text-ink hover:text-primary transition-colors text-base tracking-tight truncate">
+            <a 
+              href={`/tools/${tool.slug}`} 
+              data-auth-required="true" 
+              data-auth-action={`Inspect ${tool.name} Details`}
+              class="font-bold text-ink hover:text-primary transition-colors text-base tracking-tight truncate"
+            >
               {tool.name}
             </a>
             {tool.isVerified && (
@@ -80,7 +85,12 @@ const catSlugs = Array.isArray(tool.categorySlugs)
   <div class="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2 text-xs">
     <div class="flex items-center gap-1.5 flex-wrap">
       {catSlugs.slice(0, 2).map(cat => (
-        <a href={`/tools?category=${cat}`} class="text-neutral-500 hover:text-primary transition-colors capitalize font-mono text-[11px]">
+        <a 
+          href={`/tools?category=${cat}`} 
+          data-auth-required="true"
+          data-auth-action={`Category: ${cat.replace('-', ' ')}`}
+          class="text-neutral-500 hover:text-primary transition-colors capitalize font-mono text-[11px]"
+        >
           #{cat.replace('-', ' ')}
         </a>
       ))}
@@ -89,6 +99,8 @@ const catSlugs = Array.isArray(tool.categorySlugs)
     <div class="flex items-center gap-2 shrink-0">
       <a 
         href={`/tools/${tool.slug}`} 
+        data-auth-required="true"
+        data-auth-action={`View ${tool.name} Specifications & Benchmarks`}
         class="text-neutral-600 hover:text-ink font-semibold px-2 py-1 rounded-md hover:bg-surface transition-colors"
       >
         Details

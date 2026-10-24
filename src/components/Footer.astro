@@ -20,37 +20,37 @@ const currentYear = new Date().getFullYear();
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 text-xs">
       <div class="flex flex-col gap-2.5">
         <span class="font-bold text-[#09090B] uppercase tracking-wider font-mono text-[10px] text-slate-400">Workspace</span>
-        <a href="/dashboard" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Overview Dashboard</a>
-        <a href="/analytics" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Analytics & Insights</a>
-        <a href="/stack-builder" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Stack Builder</a>
-        <a href="/profile" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Saved & Profile</a>
+        <a href="/dashboard" data-auth-required="true" data-auth-action="Workspace Dashboard" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Overview Dashboard</a>
+        <a href="/analytics" data-auth-required="true" data-auth-action="Workspace Analytics" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Analytics & Insights</a>
+        <a href="/stack-builder" data-auth-required="true" data-auth-action="Stack Builder" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Stack Builder</a>
+        <a href="/profile" data-auth-required="true" data-auth-action="Profile & Saved Tools" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Saved & Profile</a>
       </div>
 
       <div class="flex flex-col gap-2.5">
         <span class="font-bold text-[#09090B] uppercase tracking-wider font-mono text-[10px] text-slate-400">Discover</span>
-        <a href="/tools" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">AI Tools Directory</a>
-        <a href="/finder" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">AI Intent Finder</a>
-        <a href="/compare" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Compare Matrix</a>
-        <a href="/tools?category=india-first" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">India-First AI</a>
-        <a href="/categories" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Taxonomy</a>
+        <a href="/tools" data-auth-required="true" data-auth-action="AI Tools Directory" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">AI Tools Directory</a>
+        <a href="/finder" data-auth-required="true" data-auth-action="AI Intent Finder" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">AI Intent Finder</a>
+        <a href="/compare" data-auth-required="true" data-auth-action="Tool Compare Matrix" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Compare Matrix</a>
+        <a href="/tools?category=india-first" data-auth-required="true" data-auth-action="India-First AI Directory" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">India-First AI</a>
+        <a href="/categories" data-auth-required="true" data-auth-action="AI Categories Taxonomy" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Taxonomy</a>
       </div>
 
       <div class="flex flex-col gap-2.5">
         <span class="font-bold text-[#09090B] uppercase tracking-wider font-mono text-[10px] text-slate-400">Intelligence</span>
-        <a href="/news" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Daily AI News</a>
-        <a href="/news/daily" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Newspaper Edition</a>
-        <a href="/open-source" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Open-Source Hub</a>
-        <a href="/workflows" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">AI Workflows</a>
-        <a href="/creators" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Curated Creators</a>
+        <a href="/news" data-auth-required="true" data-auth-action="Daily AI News" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Daily AI News</a>
+        <a href="/news/daily" data-auth-required="true" data-auth-action="Daily Newspaper Edition" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Newspaper Edition</a>
+        <a href="/open-source" data-auth-required="true" data-auth-action="Open-Source AI Models" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Open-Source Hub</a>
+        <a href="/workflows" data-auth-required="true" data-auth-action="Production AI Workflows" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">AI Workflows</a>
+        <a href="/creators" data-auth-required="true" data-auth-action="Curated AI Creators" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Curated Creators</a>
       </div>
 
       <div class="flex flex-col gap-2.5">
         <span class="font-bold text-[#09090B] uppercase tracking-wider font-mono text-[10px] text-slate-400">Platform</span>
-        <a href="/docs" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Documentation</a>
-        <a href="/utilities" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Utilities Suite</a>
-        <a href="/token-calculator" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Token Calculator</a>
-        <a href="/community" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Community Forum</a>
-        <a href="/submit" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Submit Resource</a>
+        <a href="/docs" data-auth-required="true" data-auth-action="Platform Documentation" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Documentation</a>
+        <a href="/utilities" data-auth-required="true" data-auth-action="Utilities Suite" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Utilities Suite</a>
+        <a href="/token-calculator" data-auth-required="true" data-auth-action="Token Calculator" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Token Calculator</a>
+        <a href="/community" data-auth-required="true" data-auth-action="Community Forum" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Community Forum</a>
+        <a href="/submit" data-auth-required="true" data-auth-action="Submit Resource" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Submit Resource</a>
       </div>
     </div>
   </div>

@@ -435,8 +435,30 @@ function isItemActive(href: string, current: string): boolean {
       // Sync active user in sidebar
       try {
         var localUserStr = localStorage.getItem('aio_user');
+        var user = null;
         if (localUserStr) {
-          var user = JSON.parse(localUserStr);
+          user = JSON.parse(localUserStr);
+        } else {
+          for (var i = 0; i < localStorage.length; i++) {
+            var k = localStorage.key(i);
+            if (k && (k === 'supabase.auth.token' || (k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1))) {
+              try {
+                var parsed = JSON.parse(localStorage.getItem(k));
+                var tokenUser = parsed.user || (parsed.currentSession && parsed.currentSession.user);
+                if (tokenUser) {
+                  user = {
+                    name: tokenUser.user_metadata?.full_name || tokenUser.email?.split('@')[0],
+                    email: tokenUser.email,
+                    authProvider: 'google'
+                  };
+                }
+              } catch(e) {}
+              break;
+            }
+          }
+        }
+
+        if (user) {
           var emailEl = document.getElementById('sidebarUserEmail');
           var tierEl = document.getElementById('sidebarUserTier');
           var avatarEl = document.getElementById('sidebarAvatar');

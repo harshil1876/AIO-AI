@@ -359,8 +359,19 @@ const featuredCreators = CREATORS_DATA.slice(0, 3);
 <script is:inline>
   // Enforce auth protection & sync user details
   (function() {
-    var userStr = localStorage.getItem('aio_user');
-    if (!userStr && !localStorage.getItem('supabase.auth.token')) {
+    function checkUserAuth() {
+      if (localStorage.getItem('aio_user')) return true;
+      if (localStorage.getItem('supabase.auth.token')) return true;
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    if (!checkUserAuth()) {
       window.location.replace('/login?redirect=/dashboard');
       return;
     }

@@ -42,18 +42,18 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
 
       <!-- Public Marketing Nav Links -->
       <nav class="hidden md:flex items-center gap-6 text-xs font-bold text-slate-600">
-        <a href="/tools" class="hover:text-[#2563EB] transition-colors">Explore Tools</a>
-        <a href="/finder" class="hover:text-[#2563EB] transition-colors text-[#2563EB] flex items-center gap-1">
+        <a href="/tools" data-auth-required="true" data-auth-action="Explore 113+ Verified AI Tools" class="hover:text-[#2563EB] transition-colors">Explore Tools</a>
+        <a href="/finder" data-auth-required="true" data-auth-action="AI Intent Finder Blueprint" class="hover:text-[#2563EB] transition-colors text-[#2563EB] flex items-center gap-1">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
           </svg>
           <span>AI Finder</span>
         </a>
-        <a href="/workflows" class="hover:text-[#2563EB] transition-colors">Workflows</a>
-        <a href="/news/daily" class="hover:text-[#2563EB] transition-colors">Daily AI News</a>
-        <a href="/open-source" class="hover:text-[#2563EB] transition-colors">Open Source</a>
-        <a href="/creators" class="hover:text-[#2563EB] transition-colors">Creators</a>
-        <a href="/docs" class="hover:text-[#2563EB] transition-colors">Docs</a>
+        <a href="/workflows" data-auth-required="true" data-auth-action="16+ Production AI Workflows" class="hover:text-[#2563EB] transition-colors">Workflows</a>
+        <a href="/news/daily" data-auth-required="true" data-auth-action="Daily Neo-Brutalist AI News" class="hover:text-[#2563EB] transition-colors">Daily AI News</a>
+        <a href="/open-source" data-auth-required="true" data-auth-action="Self-Hosted Open Source Hub" class="hover:text-[#2563EB] transition-colors">Open Source</a>
+        <a href="/creators" data-auth-required="true" data-auth-action="18+ Curated AI Creators" class="hover:text-[#2563EB] transition-colors">Creators</a>
+        <a href="/docs" data-auth-required="true" data-auth-action="AIO AI Platform Documentation" class="hover:text-[#2563EB] transition-colors">Docs</a>
       </nav>
 
       <!-- Public Auth CTAs -->
@@ -95,13 +95,14 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
       </p>
       
       <!-- Wide Search / Intent Input Box -->
-      <form action="/finder" method="GET" class="w-full max-w-2xl bg-white border-2 border-[#09090B] rounded-2xl shadow-[6px_6px_0px_0px_#09090B] p-2 flex items-center mb-6 transition-all focus-within:shadow-[8px_8px_0px_0px_#2563EB]">
+      <form id="heroIntentForm" action="/finder" method="GET" class="w-full max-w-2xl bg-white border-2 border-[#09090B] rounded-2xl shadow-[6px_6px_0px_0px_#09090B] p-2 flex items-center mb-6 transition-all focus-within:shadow-[8px_8px_0px_0px_#2563EB]">
         <span class="pl-3 text-slate-400">
           <svg class="w-5 h-5 text-[#2563EB]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
         </span>
         <input 
+          id="heroIntentInput"
           type="text" 
           name="q"
           placeholder="What do you want to build or automate? (e.g. video editing, code pair, RAG)" 
@@ -118,38 +119,38 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
       <!-- Quick Intent Chips -->
       <div class="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-600 max-w-3xl mb-8">
         <span class="font-bold text-[#09090B] font-mono text-[11px] uppercase">Popular:</span>
-        <a href="/finder" class="hover:text-white hover:bg-[#2563EB] transition-all px-3 py-1 rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] text-[#2563EB] font-bold flex items-center gap-1 shadow-2xs">
+        <a href="/finder" data-auth-required="true" data-auth-action="AI Intent Finder Blueprint" class="hover:text-white hover:bg-[#2563EB] transition-all px-3 py-1 rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] text-[#2563EB] font-bold flex items-center gap-1 shadow-2xs">
           <span>AI Intent Finder</span>
           <span>&rarr;</span>
         </a>
-        <a href="/tools?q=video" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-lg border border-[#E2E8F0] bg-[#F8FAFF]">YouTube Shorts & Video</a>
-        <a href="/tools?category=code-assistants" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-lg border border-[#E2E8F0] bg-[#F8FAFF]">AI Coding Pair</a>
-        <a href="/tools?category=india-first" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-lg border border-orange-200 bg-orange-50 text-orange-800 font-bold">India-First AI (16)</a>
-        <a href="/open-source" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-lg border border-purple-200 bg-purple-50 text-purple-800 font-bold">Open Source (20+)</a>
+        <a href="/tools?q=video" data-auth-required="true" data-auth-action="YouTube Shorts & Video Catalog" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-lg border border-[#E2E8F0] bg-[#F8FAFF]">YouTube Shorts & Video</a>
+        <a href="/tools?category=code-assistants" data-auth-required="true" data-auth-action="AI Coding Pair Directory" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-lg border border-[#E2E8F0] bg-[#F8FAFF]">AI Coding Pair</a>
+        <a href="/tools?category=india-first" data-auth-required="true" data-auth-action="India-First AI Directory" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-lg border border-orange-200 bg-orange-50 text-orange-800 font-bold">India-First AI (16)</a>
+        <a href="/open-source" data-auth-required="true" data-auth-action="Open Source Hub (20+ Repos)" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-lg border border-purple-200 bg-purple-50 text-purple-800 font-bold">Open Source (20+)</a>
       </div>
 
       <!-- Live Platform Counters Bento Strip -->
       <div class="w-full grid grid-cols-2 sm:grid-cols-5 gap-3 max-w-4xl pt-4 border-t border-[#E2E8F0] text-center font-mono">
-        <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-          <div class="text-xl font-black text-[#09090B]">113+</div>
+        <a href="/tools" data-auth-required="true" data-auth-action="113+ Verified AI Tools" class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] hover:border-[#2563EB] hover:bg-white transition-all block group">
+          <div class="text-xl font-black text-[#09090B] group-hover:text-[#2563EB]">113+</div>
           <div class="text-[10px] uppercase text-slate-500 font-bold">Verified Tools</div>
-        </div>
-        <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
+        </a>
+        <a href="/workflows" data-auth-required="true" data-auth-action="16+ Production AI Workflows" class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] hover:border-[#2563EB] hover:bg-white transition-all block group">
           <div class="text-xl font-black text-[#2563EB]">16+</div>
           <div class="text-[10px] uppercase text-slate-500 font-bold">Workflows</div>
-        </div>
-        <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
+        </a>
+        <a href="/open-source" data-auth-required="true" data-auth-action="20+ Open-Source Repos" class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] hover:border-purple-600 hover:bg-white transition-all block group">
           <div class="text-xl font-black text-purple-700">20+</div>
           <div class="text-[10px] uppercase text-slate-500 font-bold">Open Source</div>
-        </div>
-        <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
+        </a>
+        <a href="/creators" data-auth-required="true" data-auth-action="18+ Curated AI Creators" class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] hover:border-emerald-600 hover:bg-white transition-all block group">
           <div class="text-xl font-black text-emerald-700">18+</div>
           <div class="text-[10px] uppercase text-slate-500 font-bold">Educators</div>
-        </div>
-        <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] col-span-2 sm:col-span-1">
+        </a>
+        <a href="/news/daily" data-auth-required="true" data-auth-action="24+ Daily News Briefings" class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] hover:border-[#09090B] hover:bg-white transition-all col-span-2 sm:col-span-1 block group">
           <div class="text-xl font-black text-[#09090B]">24+</div>
           <div class="text-[10px] uppercase text-slate-500 font-bold">News Briefings</div>
-        </div>
+        </a>
       </div>
     </section>
 
@@ -173,7 +174,7 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
               Real pricing, India payment support, API availability, and zero pay-for-placement bias.
             </p>
-            <a href="/tools" class="text-xs font-bold text-[#2563EB] hover:underline">Explore Catalog &rarr;</a>
+            <a href="/tools" data-auth-required="true" data-auth-action="Explore 113+ Audited AI Tools" class="text-xs font-bold text-[#2563EB] hover:underline">Explore Catalog &rarr;</a>
           </div>
 
           <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
@@ -182,7 +183,7 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
               Get matched with the primary tool, 100% free option, production workflow, and tutorial in seconds.
             </p>
-            <a href="/finder" class="text-xs font-bold text-[#2563EB] hover:underline">Launch AI Finder &rarr;</a>
+            <a href="/finder" data-auth-required="true" data-auth-action="Launch 5-Layer Connected Blueprint" class="text-xs font-bold text-[#2563EB] hover:underline">Launch AI Finder &rarr;</a>
           </div>
 
           <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
@@ -191,7 +192,7 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
               Step-by-step automation pipelines with Free vs Freemium vs Paid monthly cost comparisons.
             </p>
-            <a href="/workflows" class="text-xs font-bold text-[#2563EB] hover:underline">View Workflows &rarr;</a>
+            <a href="/workflows" data-auth-required="true" data-auth-action="16 Production AI Workflows" class="text-xs font-bold text-[#2563EB] hover:underline">View Workflows &rarr;</a>
           </div>
 
           <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
@@ -200,7 +201,7 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
               Docker commands, VRAM calculations, and zero-cost commercial replacements (Ollama, vLLM, ComfyUI).
             </p>
-            <a href="/open-source" class="text-xs font-bold text-[#2563EB] hover:underline">Self-Host Hub &rarr;</a>
+            <a href="/open-source" data-auth-required="true" data-auth-action="20 Flagship Open-Source Repos" class="text-xs font-bold text-[#2563EB] hover:underline">Self-Host Hub &rarr;</a>
           </div>
 
           <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
@@ -209,7 +210,7 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
               Factual, technical daily newspaper categorizing major model drops, APIs, and policy shifts.
             </p>
-            <a href="/news/daily" class="text-xs font-bold text-[#2563EB] hover:underline">Read Daily News &rarr;</a>
+            <a href="/news/daily" data-auth-required="true" data-auth-action="Neo-Brutalist Daily Briefing" class="text-xs font-bold text-[#2563EB] hover:underline">Read Daily News &rarr;</a>
           </div>
 
           <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
@@ -218,7 +219,7 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
               Token Calculator, Prompt Optimizer, Hook Generator, Image Resizer, and JSON-to-TypeScript.
             </p>
-            <a href="/utilities" class="text-xs font-bold text-[#2563EB] hover:underline">Open Utilities &rarr;</a>
+            <a href="/utilities" data-auth-required="true" data-auth-action="8-in-1 Developer Utilities" class="text-xs font-bold text-[#2563EB] hover:underline">Open Utilities &rarr;</a>
           </div>
         </div>
       </div>
@@ -231,7 +232,7 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
           <div class="text-xs font-mono font-bold text-[#2563EB] uppercase tracking-wider mb-1">Curated Catalog</div>
           <h2 class="text-2xl sm:text-3xl font-black text-[#09090B] tracking-tight">Verified Production AI Tools</h2>
         </div>
-        <a href="/tools" class="text-xs font-bold text-[#2563EB] hover:underline">View All 113+ Tools &rarr;</a>
+        <a href="/tools" data-auth-required="true" data-auth-action="View All 113+ Verified AI Tools" class="text-xs font-bold text-[#2563EB] hover:underline">View All 113+ Tools &rarr;</a>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -249,7 +250,7 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
             <div class="text-xs font-mono font-bold text-[#2563EB] uppercase tracking-wider mb-1">Automations</div>
             <h2 class="text-2xl sm:text-3xl font-black text-[#09090B] tracking-tight">Production AI Workflows</h2>
           </div>
-          <a href="/workflows" class="text-xs font-bold text-[#2563EB] hover:underline">All 16 Workflows &rarr;</a>
+          <a href="/workflows" data-auth-required="true" data-auth-action="All 16 Production Workflows" class="text-xs font-bold text-[#2563EB] hover:underline">All 16 Workflows &rarr;</a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -265,7 +266,7 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
               </div>
               <div class="pt-4 border-t border-[#E2E8F0] flex items-center justify-between">
                 <span class="text-xs font-mono font-bold text-emerald-700">Free Tier: $0/mo</span>
-                <a href={`/workflows/${wf.id}`} class="text-xs font-bold text-[#2563EB] hover:underline">
+                <a href={`/workflows/${wf.id}`} data-auth-required="true" data-auth-action={`Inspect Workflow: ${wf.title}`} class="text-xs font-bold text-[#2563EB] hover:underline">
                   Inspect &rarr;
                 </a>
               </div>
@@ -308,21 +309,32 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
 </Layout>
 
 <script is:inline>
-  // Auto-Redirect Signed-In Users to Workspace Dashboard
+  // Authentication & Intent Interceptors on Landing Page
   (function() {
-    var userStr = localStorage.getItem('aio_user');
-    var tokenStr = localStorage.getItem('supabase.auth.token');
+    function isUserAuthenticated() {
+      if (localStorage.getItem('aio_user')) return true;
+      if (localStorage.getItem('supabase.auth.token')) return true;
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    var isAuth = isUserAuthenticated();
     var urlParams = new URLSearchParams(window.location.search);
     var stay = urlParams.get('stay') === 'true';
 
-    // If authenticated and user didn't explicitly request ?stay=true, redirect to /dashboard
-    if ((userStr || tokenStr) && !stay) {
+    // Auto-redirect authenticated users to Workspace Dashboard unless ?stay=true
+    if (isAuth && !stay) {
       window.location.replace('/dashboard');
       return;
     }
 
-    // If user is authenticated but stayed, adapt public nav buttons
-    if (userStr || tokenStr) {
+    // Adapt public nav CTAs if user is authenticated but stayed
+    if (isAuth) {
       var loginBtn = document.getElementById('publicNavLogin');
       var signupBtn = document.getElementById('publicNavSignup');
       var dashBtn = document.getElementById('publicNavDashboard');
@@ -333,5 +345,22 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
         dashBtn.classList.add('inline-flex');
       }
     }
+
+    // Intercept Hero Intent Form if unauthenticated
+    var heroForm = document.getElementById('heroIntentForm');
+    var heroInput = document.getElementById('heroIntentInput');
+    heroForm?.addEventListener('submit', function(e) {
+      if (!isUserAuthenticated()) {
+        e.preventDefault();
+        e.stopPropagation();
+        var q = heroInput ? heroInput.value.trim() : '';
+        var targetUrl = q ? ('/finder?q=' + encodeURIComponent(q)) : '/finder';
+        if (typeof window.openAuthGateModal === 'function') {
+          window.openAuthGateModal('AI Intent Finder Blueprint', targetUrl);
+        } else {
+          window.location.href = '/login?redirect=' + encodeURIComponent(targetUrl);
+        }
+      }
+    });
   })();
 </script>

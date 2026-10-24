@@ -149,25 +149,50 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
     var brandLink = document.getElementById('headerBrandLink');
 
     var localUserStr = localStorage.getItem('aio_user');
+    var isAuth = false;
+    var user = null;
     if (localUserStr) {
       try {
-        var user = JSON.parse(localUserStr);
-        if (loginLink) loginLink.classList.add('hidden');
-        if (signupLink) signupLink.classList.add('hidden');
-        if (dashboardLink) {
-          dashboardLink.classList.remove('hidden');
-          dashboardLink.classList.add('inline-flex');
-        }
-        if (profileLink) {
-          profileLink.classList.remove('hidden');
-          profileLink.classList.add('inline-flex');
-        }
-        if (profileHandle && (user.name || user.email)) {
-          var namePart = user.name || user.email.split('@')[0];
-          profileHandle.textContent = namePart.substring(0, 10);
-        }
-        if (brandLink) brandLink.setAttribute('href', '/dashboard');
+        user = JSON.parse(localUserStr);
+        isAuth = true;
       } catch (e) {}
+    }
+    if (!isAuth) {
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && (k === 'supabase.auth.token' || (k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1))) {
+          isAuth = true;
+          try {
+            var parsedToken = JSON.parse(localStorage.getItem(k));
+            var tokenUser = parsedToken.user || (parsedToken.currentSession && parsedToken.currentSession.user);
+            if (tokenUser) {
+              user = {
+                name: tokenUser.user_metadata?.full_name || tokenUser.email?.split('@')[0],
+                email: tokenUser.email
+              };
+            }
+          } catch(e) {}
+          break;
+        }
+      }
+    }
+
+    if (isAuth) {
+      if (loginLink) loginLink.classList.add('hidden');
+      if (signupLink) signupLink.classList.add('hidden');
+      if (dashboardLink) {
+        dashboardLink.classList.remove('hidden');
+        dashboardLink.classList.add('inline-flex');
+      }
+      if (profileLink) {
+        profileLink.classList.remove('hidden');
+        profileLink.classList.add('inline-flex');
+      }
+      if (profileHandle && user && (user.name || user.email)) {
+        var namePart = user.name || user.email.split('@')[0];
+        profileHandle.textContent = namePart.substring(0, 10);
+      }
+      if (brandLink) brandLink.setAttribute('href', '/dashboard');
     } else {
       if (loginLink) loginLink.classList.remove('hidden');
       if (signupLink) signupLink.classList.remove('hidden');

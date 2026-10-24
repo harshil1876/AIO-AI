@@ -60,6 +60,36 @@ const defaultJsonLd = jsonLd || {
 
     <!-- Structured JSON-LD Data -->
     <script type="application/ld+json" set:html={JSON.stringify(defaultJsonLd)} />
+
+    <!-- Universal Route Guard for Internal Workspace Routes -->
+    <script is:inline>
+      (function() {
+        var path = window.location.pathname.replace(/\/+$/, '') || '/';
+        // Routes open to unauthenticated public visitors
+        var isPublic = path === '' || 
+                       path === '/' || 
+                       path === '/login' || 
+                       path === '/signup';
+
+        function checkAuth() {
+          if (localStorage.getItem('aio_user')) return true;
+          if (localStorage.getItem('supabase.auth.token')) return true;
+          for (var i = 0; i < localStorage.length; i++) {
+            var k = localStorage.key(i);
+            if (k && k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1) {
+              return true;
+            }
+          }
+          return false;
+        }
+
+        // Redirect unauthenticated visitors attempting to access internal features
+        if (!isPublic && !checkAuth()) {
+          var target = window.location.pathname + window.location.search;
+          window.location.replace('/login?redirect=' + encodeURIComponent(target));
+        }
+      })();
+    </script>
   </head>
   <body class="bg-[#FFFFFF] text-[#334155] font-sans antialiased selection:bg-[#2563EB] selection:text-white min-h-screen">
     {hideSidebar ? (

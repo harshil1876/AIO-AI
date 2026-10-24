@@ -163,6 +163,9 @@ import Footer from '../components/Footer.astro';
   const googleSignupBtn = document.getElementById('googleSignupBtn');
   const googleModal = document.getElementById('signupGoogleModal');
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const redirectTarget = urlParams.get('redirect') || '/dashboard';
+
   // 1. Google Sign-Up Handler
   googleSignupBtn?.addEventListener('click', async () => {
     if (isSupabaseConfigured) {
@@ -170,7 +173,7 @@ import Footer from '../components/Footer.astro';
         const { error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: window.location.origin + '/dashboard'
+            redirectTo: window.location.origin + redirectTarget
           }
         });
         if (!error) return;
@@ -195,7 +198,7 @@ import Footer from '../components/Footer.astro';
         created_at: new Date().toISOString()
       };
       localStorage.setItem('aio_user', JSON.stringify(googleUser));
-      window.location.href = '/dashboard';
+      window.location.href = redirectTarget;
     });
   });
 
@@ -210,7 +213,7 @@ import Footer from '../components/Footer.astro';
       created_at: new Date().toISOString()
     };
     localStorage.setItem('aio_user', JSON.stringify(demoUser));
-    window.location.href = '/dashboard';
+    window.location.href = redirectTarget;
   });
 
   // 3. Email Signup
@@ -245,7 +248,7 @@ import Footer from '../components/Footer.astro';
             role: 'member',
             created_at: new Date().toISOString()
           }));
-          window.location.href = '/dashboard';
+          window.location.href = redirectTarget;
           return;
         }
       } catch (e) {}
@@ -261,6 +264,6 @@ import Footer from '../components/Footer.astro';
       created_at: new Date().toISOString()
     };
     localStorage.setItem('aio_user', JSON.stringify(localUser));
-    window.location.href = '/dashboard';
+    window.location.href = redirectTarget;
   });
 </script>

@@ -28,7 +28,7 @@
       </div>
       <div>
         <h3 class="text-base font-bold text-[#09090B]" id="authGateTitle">Sign In Required</h3>
-        <p class="text-xs text-slate-500" id="authGateSubtitle">Sign in to save items and interact with the platform.</p>
+        <p class="text-xs text-slate-500" id="authGateSubtitle">Please sign in to access this feature and your personal workspace.</p>
       </div>
     </div>
 
@@ -36,9 +36,9 @@
     <div class="p-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] mb-5 text-xs text-slate-600">
       <div class="font-bold text-[#09090B] mb-1 flex items-center gap-1.5">
         <span class="w-1.5 h-1.5 rounded-full bg-[#2563EB]"></span>
-        <span id="authGateActionLabel">Action: Bookmark Resource</span>
+        <span id="authGateActionLabel">Feature: AI Tools & Intelligence</span>
       </div>
-      <p id="authGateActionDesc">Free accounts get unlimited bookmarks, custom AI stack saving, review submissions, and workflow exports.</p>
+      <p id="authGateActionDesc">Sign in with Google or Email to unlock 113+ verified tools, production workflows, open-source models, and developer utilities.</p>
     </div>
 
     <!-- Action Buttons -->
@@ -156,25 +156,36 @@
 
 <script is:inline>
   (function() {
+    window.__currentAuthRedirect = '/dashboard';
+
     window.closeAuthGateModal = function() {
       var modal = document.getElementById('authGateModal');
       if (modal) modal.classList.add('hidden');
     };
 
     window.isUserLoggedIn = function() {
-      return Boolean(localStorage.getItem('aio_user') || localStorage.getItem('supabase.auth.token'));
+      if (localStorage.getItem('aio_user')) return true;
+      if (localStorage.getItem('supabase.auth.token')) return true;
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1) {
+          return true;
+        }
+      }
+      return false;
     };
 
     window.openAuthGateModal = function(action, returnUrl) {
-      action = action || 'Interact with Platform';
+      action = action || 'Access Feature';
       returnUrl = returnUrl || '/dashboard';
+      window.__currentAuthRedirect = returnUrl;
 
       var modal = document.getElementById('authGateModal');
       var actionLabel = document.getElementById('authGateActionLabel');
       var loginBtn = document.getElementById('authGateLoginBtn');
       var signupBtn = document.getElementById('authGateSignupBtn');
 
-      if (actionLabel) actionLabel.textContent = 'Action: ' + action;
+      if (actionLabel) actionLabel.textContent = 'Feature: ' + action;
       if (loginBtn) loginBtn.setAttribute('href', '/login?redirect=' + encodeURIComponent(returnUrl));
       if (signupBtn) signupBtn.setAttribute('href', '/signup?redirect=' + encodeURIComponent(returnUrl));
       if (modal) modal.classList.remove('hidden');
@@ -182,7 +193,7 @@
 
     // Universal Dual-Mode Google Sign In
     window.handleGoogleSignIn = async function(redirectUrl) {
-      redirectUrl = redirectUrl || '/dashboard';
+      redirectUrl = redirectUrl || window.__currentAuthRedirect || '/dashboard';
 
       // Check if Supabase client is available globally or fallback to local dialog
       if (window.supabase && typeof window.supabase.auth?.signInWithOAuth === 'function') {
@@ -234,9 +245,8 @@
             created_at: new Date().toISOString()
           };
           localStorage.setItem('aio_user', JSON.stringify(googleUser));
-          var urlParams = new URLSearchParams(window.location.search);
-          var redirectTarget = urlParams.get('redirect') || '/dashboard';
-          window.location.href = redirectTarget;
+          var target = window.__currentAuthRedirect || '/dashboard';
+          window.location.href = target;
         });
       });
 
@@ -252,7 +262,8 @@
           created_at: new Date().toISOString()
         };
         localStorage.setItem('aio_user', JSON.stringify(demoUser));
-        window.location.href = '/dashboard';
+        var target = window.__currentAuthRedirect || '/dashboard';
+        window.location.href = target;
       });
 
       // Intercept any click with data-auth-required
@@ -262,7 +273,8 @@
           e.preventDefault();
           e.stopPropagation();
           var action = target.getAttribute('data-auth-action') || 'Action requires sign in';
-          window.openAuthGateModal(action, window.location.pathname);
+          var returnUrl = target.getAttribute('href') || window.location.pathname;
+          window.openAuthGateModal(action, returnUrl);
         }
       }, true);
     });
