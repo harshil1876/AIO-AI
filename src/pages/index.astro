@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ToolCard from '../components/ToolCard.astro';
 import CategoryIcon from '../components/CategoryIcon.astro';
@@ -24,24 +23,67 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
 ---
 
 <Layout 
-  title="AIO AI | Unified AI Discovery Platform — Tools, Workflows, News & Creators"
-  description="Find the right AI for anything. Explore 113+ verified tools, 16+ production workflows, 20+ open-source repos, 18+ YouTube creators, daily Neo-Brutalist tech news, and built-in developer utilities."
+  title="AIO AI — All-In-One AI Intelligence, Tools, Workflows & Creators"
+  description="The unified, intent-driven AI discovery platform: 113+ verified tools, 16+ production workflows, 20+ open-source repos, 18+ YouTube creators, daily Neo-Brutalist tech news, and built-in creator utilities."
+  hideSidebar={true}
 >
-  <Header currentPath="/" />
+  <!-- Public Marketing Header (Clean & Uncluttered — No internal workspace sidebar toggle) -->
+  <header class="w-full border-b border-[#E2E8F0] bg-white/95 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-6 py-3.5 transition-colors">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-2.5 group">
+        <div class="w-8 h-8 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-black text-sm tracking-tight shadow-xs group-hover:bg-[#2563EB] transition-colors">
+          AI
+        </div>
+        <span class="font-black text-[#09090B] text-lg tracking-tight group-hover:text-[#2563EB] transition-colors">
+          AIO AI
+        </span>
+      </a>
+
+      <!-- Public Marketing Nav Links -->
+      <nav class="hidden md:flex items-center gap-6 text-xs font-bold text-slate-600">
+        <a href="/tools" class="hover:text-[#2563EB] transition-colors">Explore Tools</a>
+        <a href="/finder" class="hover:text-[#2563EB] transition-colors text-[#2563EB] flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+          </svg>
+          <span>AI Finder</span>
+        </a>
+        <a href="/workflows" class="hover:text-[#2563EB] transition-colors">Workflows</a>
+        <a href="/news/daily" class="hover:text-[#2563EB] transition-colors">Daily AI News</a>
+        <a href="/open-source" class="hover:text-[#2563EB] transition-colors">Open Source</a>
+        <a href="/creators" class="hover:text-[#2563EB] transition-colors">Creators</a>
+        <a href="/docs" class="hover:text-[#2563EB] transition-colors">Docs</a>
+      </nav>
+
+      <!-- Public Auth CTAs -->
+      <div class="flex items-center gap-3">
+        <a href="/login" class="text-xs font-bold text-slate-700 hover:text-ink px-3 py-2 rounded-xl hover:bg-slate-100 transition-colors" id="publicNavLogin">
+          Sign In
+        </a>
+        <a href="/signup" class="text-xs font-bold bg-[#09090B] hover:bg-[#2563EB] text-white px-4 py-2 rounded-xl transition-all shadow-xs" id="publicNavSignup">
+          Get Started Free
+        </a>
+        <a href="/dashboard" class="hidden text-xs font-bold bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-all shadow-xs" id="publicNavDashboard">
+          Go to Workspace Dashboard &rarr;
+        </a>
+      </div>
+    </div>
+  </header>
 
   <main class="w-full flex flex-col bg-[#FFFFFF]">
     
-    <!-- MODULE 1: HERO COMMAND CENTER -->
+    <!-- MODULE 1: HERO PLATFORM SHOWCASE -->
     <section class="w-full px-4 sm:px-6 pt-16 pb-14 md:pt-24 md:pb-20 flex flex-col items-center justify-center text-center max-w-5xl mx-auto">
       
-      <!-- Live Verified Platform Badge -->
+      <!-- Live Verified Platform Badge (Zero Emoji) -->
       <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#BFDBFE] bg-[#EFF6FF] text-xs font-semibold text-[#2563EB] mb-8 shadow-xs">
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>AIO AI v2.0 &bull; 113 Verified Tools &bull; Zero Fabricated Reviews</span>
+        <span>AIO AI • 113 Verified Tools • Zero Fabricated Reviews</span>
       </div>
 
       <!-- Main Display Headline -->
-      <h1 class="text-4xl sm:text-6xl md:text-7xl font-black text-ink tracking-tight mb-6 leading-tight max-w-4xl" style="letter-spacing: -2px;">
+      <h1 class="text-4xl sm:text-6xl md:text-7xl font-black text-[#09090B] tracking-tight mb-6 leading-tight max-w-4xl" style="letter-spacing: -2px;">
         Find the right AI <br class="hidden sm:inline" />
         <span class="text-[#2563EB] relative inline-block">
           for anything.
@@ -49,11 +91,11 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
       </h1>
       
       <p class="text-base sm:text-xl text-slate-600 mb-8 max-w-2xl font-normal leading-relaxed">
-        The unified decision loop connecting <strong class="text-ink font-semibold">113+ verified AI tools</strong>, multi-step workflows, open-source models, and creator intelligence in one high-contrast platform.
+        The unified decision loop connecting <strong class="text-[#09090B] font-bold">113+ verified AI tools</strong>, multi-step production workflows, open-source models, and creator intelligence in one high-contrast platform.
       </p>
       
       <!-- Wide Search / Intent Input Box -->
-      <form action="/tools" method="GET" class="w-full max-w-2xl bg-white border-2 border-[#09090B] rounded-xl shadow-[6px_6px_0px_0px_#09090B] p-2 flex items-center mb-6 transition-all focus-within:shadow-[8px_8px_0px_0px_#2563EB]">
+      <form action="/finder" method="GET" class="w-full max-w-2xl bg-white border-2 border-[#09090B] rounded-2xl shadow-[6px_6px_0px_0px_#09090B] p-2 flex items-center mb-6 transition-all focus-within:shadow-[8px_8px_0px_0px_#2563EB]">
         <span class="pl-3 text-slate-400">
           <svg class="w-5 h-5 text-[#2563EB]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -63,246 +105,168 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
           type="text" 
           name="q"
           placeholder="What do you want to build or automate? (e.g. video editing, code pair, RAG)" 
-          class="w-full bg-transparent text-ink placeholder-slate-400 px-3 py-2.5 outline-none text-sm sm:text-base font-sans" 
+          class="w-full bg-transparent text-[#09090B] placeholder-slate-400 px-3 py-2.5 outline-none text-xs sm:text-sm font-sans" 
         />
         <button 
           type="submit" 
-          class="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm rounded-lg px-5 py-2.5 transition-colors whitespace-nowrap cursor-pointer shadow-xs border border-[#09090B]"
+          class="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm rounded-xl px-5 py-2.5 transition-colors whitespace-nowrap cursor-pointer shadow-xs border border-[#09090B]"
         >
-          Search All
+          Match Blueprint
         </button>
       </form>
 
       <!-- Quick Intent Chips -->
       <div class="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-600 max-w-3xl mb-8">
-        <span class="font-bold text-ink font-mono text-[11px] uppercase">Popular:</span>
-        <a href="/finder" class="hover:text-white hover:bg-[#2563EB] transition-all px-3 py-1 rounded-md border border-[#BFDBFE] bg-[#EFF6FF] text-[#2563EB] font-semibold flex items-center gap-1 shadow-2xs">
+        <span class="font-bold text-[#09090B] font-mono text-[11px] uppercase">Popular:</span>
+        <a href="/finder" class="hover:text-white hover:bg-[#2563EB] transition-all px-3 py-1 rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] text-[#2563EB] font-bold flex items-center gap-1 shadow-2xs">
           <span>AI Intent Finder</span>
           <span>&rarr;</span>
         </a>
-        <a href="/tools?q=video" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-md border border-[#E2E8F0] bg-[#F8FAFF]">YouTube Shorts & Video</a>
-        <a href="/tools?category=code-assistants" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-md border border-[#E2E8F0] bg-[#F8FAFF]">AI Coding Pair</a>
-        <a href="/tools?category=india-first" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-md border border-orange-200 bg-orange-50 text-orange-800 font-medium">India-First AI (16)</a>
-        <a href="/open-source" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-md border border-purple-200 bg-purple-50 text-purple-800 font-medium">Open Source (20+)</a>
+        <a href="/tools?q=video" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-lg border border-[#E2E8F0] bg-[#F8FAFF]">YouTube Shorts & Video</a>
+        <a href="/tools?category=code-assistants" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-lg border border-[#E2E8F0] bg-[#F8FAFF]">AI Coding Pair</a>
+        <a href="/tools?category=india-first" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-lg border border-orange-200 bg-orange-50 text-orange-800 font-bold">India-First AI (16)</a>
+        <a href="/open-source" class="hover:text-[#2563EB] transition-colors px-2.5 py-1 rounded-lg border border-purple-200 bg-purple-50 text-purple-800 font-bold">Open Source (20+)</a>
       </div>
 
       <!-- Live Platform Counters Bento Strip -->
       <div class="w-full grid grid-cols-2 sm:grid-cols-5 gap-3 max-w-4xl pt-4 border-t border-[#E2E8F0] text-center font-mono">
-        <div class="p-2.5 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
-          <div class="text-xl font-bold text-ink">113+</div>
-          <div class="text-[10px] uppercase text-slate-500 font-semibold">Verified Tools</div>
+        <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
+          <div class="text-xl font-black text-[#09090B]">113+</div>
+          <div class="text-[10px] uppercase text-slate-500 font-bold">Verified Tools</div>
         </div>
-        <div class="p-2.5 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
-          <div class="text-xl font-bold text-[#2563EB]">16+</div>
-          <div class="text-[10px] uppercase text-slate-500 font-semibold">AI Workflows</div>
+        <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
+          <div class="text-xl font-black text-[#2563EB]">16+</div>
+          <div class="text-[10px] uppercase text-slate-500 font-bold">Workflows</div>
         </div>
-        <div class="p-2.5 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
-          <div class="text-xl font-bold text-purple-700">20+</div>
-          <div class="text-[10px] uppercase text-slate-500 font-semibold">Open-Source Repos</div>
+        <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
+          <div class="text-xl font-black text-purple-700">20+</div>
+          <div class="text-[10px] uppercase text-slate-500 font-bold">Open Source</div>
         </div>
-        <div class="p-2.5 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
-          <div class="text-xl font-bold text-red-600">18+</div>
-          <div class="text-[10px] uppercase text-slate-500 font-semibold">YouTube Creators</div>
+        <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
+          <div class="text-xl font-black text-emerald-700">18+</div>
+          <div class="text-[10px] uppercase text-slate-500 font-bold">Educators</div>
         </div>
-        <div class="col-span-2 sm:col-span-1 p-2.5 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
-          <div class="text-xl font-bold text-emerald-700">8</div>
-          <div class="text-[10px] uppercase text-slate-500 font-semibold">Creator Utilities</div>
+        <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] col-span-2 sm:col-span-1">
+          <div class="text-xl font-black text-[#09090B]">24+</div>
+          <div class="text-[10px] uppercase text-slate-500 font-bold">News Briefings</div>
         </div>
       </div>
-
     </section>
 
-    <!-- MODULE 2: BREAKING AI NEWS SPOTLIGHT (NEO-BRUTALIST STRIP) -->
-    <section class="w-full bg-[#F8FAFF] border-y-2 border-[#09090B] px-4 sm:px-6 py-10">
+    <!-- MODULE 2: THE 6 CONNECTED PILLARS BENTO GRID -->
+    <section class="w-full px-4 sm:px-6 py-14 bg-[#F8FAFF] border-y border-[#E2E8F0]">
       <div class="max-w-7xl mx-auto">
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex items-center gap-2.5">
-            <span class="bg-[#2563EB] text-white text-[10px] font-mono uppercase font-bold px-2 py-0.5 border border-[#09090B] shadow-[2px_2px_0px_0px_#09090B]">
-              BREAKING
-            </span>
-            <h2 class="text-lg sm:text-xl font-black uppercase text-ink font-mono tracking-tight">
-              Daily AI Intelligence Briefing
-            </h2>
-          </div>
-          <a href="/news" class="text-xs font-bold text-[#2563EB] hover:underline inline-flex items-center gap-1 font-mono">
-            <span>All 24 Stories &rarr;</span>
-          </a>
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <div class="text-xs font-mono font-bold text-[#2563EB] uppercase tracking-wider mb-2">Connected Architecture</div>
+          <h2 class="text-2xl sm:text-4xl font-black text-[#09090B] tracking-tight">
+            Stop switching between 10 different sites.
+          </h2>
+          <p class="text-sm text-slate-600 mt-2">
+            AIO AI binds tools, production automations, open-source replacements, daily news, and token economics into one connected graph.
+          </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {topNews.map((story) => (
-            <article class="bg-white border-2 border-[#09090B] p-4 rounded-xl shadow-[3px_3px_0px_0px_#09090B] hover:shadow-[5px_5px_0px_0px_#2563EB] hover:-translate-y-0.5 transition-all flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-2">
-                  <span class="text-[#2563EB] font-bold uppercase">{story.topic}</span>
-                  <span>{story.publishedDate}</span>
-                </div>
-                <h3 class="text-xs sm:text-sm font-bold text-ink leading-snug mb-2 hover:text-[#2563EB] transition-colors">
-                  <a href={`/news/${story.slug}`}>
-                    {story.headline}
-                  </a>
-                </h3>
-                <p class="text-[11px] text-slate-600 line-clamp-2 mb-3">
-                  {story.whyItMatters}
-                </p>
-              </div>
-              <div class="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[11px]">
-                <span class="text-slate-400 truncate max-w-[120px]">{story.sourceName}</span>
-                <a href={`/news/${story.slug}`} class="font-bold text-[#2563EB] hover:underline">
-                  Read &rarr;
-                </a>
-              </div>
-            </article>
-          ))}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
+            <div class="text-xs font-mono font-bold text-[#2563EB] uppercase mb-1">01. Verified Catalog</div>
+            <h3 class="text-lg font-black text-[#09090B] mb-2">113+ Audited AI Tools</h3>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Real pricing, India payment support, API availability, and zero pay-for-placement bias.
+            </p>
+            <a href="/tools" class="text-xs font-bold text-[#2563EB] hover:underline">Explore Catalog &rarr;</a>
+          </div>
+
+          <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
+            <div class="text-xs font-mono font-bold text-[#2563EB] uppercase mb-1">02. Decision Engine</div>
+            <h3 class="text-lg font-black text-[#09090B] mb-2">5-Layer Connected Blueprint</h3>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Get matched with the primary tool, 100% free option, production workflow, and tutorial in seconds.
+            </p>
+            <a href="/finder" class="text-xs font-bold text-[#2563EB] hover:underline">Launch AI Finder &rarr;</a>
+          </div>
+
+          <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
+            <div class="text-xs font-mono font-bold text-[#2563EB] uppercase mb-1">03. Production Recipes</div>
+            <h3 class="text-lg font-black text-[#09090B] mb-2">16 Multi-Step Workflows</h3>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Step-by-step automation pipelines with Free vs Freemium vs Paid monthly cost comparisons.
+            </p>
+            <a href="/workflows" class="text-xs font-bold text-[#2563EB] hover:underline">View Workflows &rarr;</a>
+          </div>
+
+          <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
+            <div class="text-xs font-mono font-bold text-[#2563EB] uppercase mb-1">04. Self-Hosting Hub</div>
+            <h3 class="text-lg font-black text-[#09090B] mb-2">20 Flagship Open-Source Repos</h3>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Docker commands, VRAM calculations, and zero-cost commercial replacements (Ollama, vLLM, ComfyUI).
+            </p>
+            <a href="/open-source" class="text-xs font-bold text-[#2563EB] hover:underline">Self-Host Hub &rarr;</a>
+          </div>
+
+          <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
+            <div class="text-xs font-mono font-bold text-[#2563EB] uppercase mb-1">05. Daily Intelligence</div>
+            <h3 class="text-lg font-black text-[#09090B] mb-2">Neo-Brutalist Daily Briefing</h3>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Factual, technical daily newspaper categorizing major model drops, APIs, and policy shifts.
+            </p>
+            <a href="/news/daily" class="text-xs font-bold text-[#2563EB] hover:underline">Read Daily News &rarr;</a>
+          </div>
+
+          <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
+            <div class="text-xs font-mono font-bold text-[#2563EB] uppercase mb-1">06. Developer Utilities</div>
+            <h3 class="text-lg font-black text-[#09090B] mb-2">8-in-1 Client-Side Suite</h3>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Token Calculator, Prompt Optimizer, Hook Generator, Image Resizer, and JSON-to-TypeScript.
+            </p>
+            <a href="/utilities" class="text-xs font-bold text-[#2563EB] hover:underline">Open Utilities &rarr;</a>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- MODULE 3: TRENDING AI TOOLS DIRECTORY -->
-    <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-16">
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+    <!-- MODULE 3: FEATURED TOOLS PREVIEW -->
+    <section class="w-full px-4 sm:px-6 py-14 max-w-7xl mx-auto">
+      <div class="flex items-end justify-between mb-8 pb-3 border-b border-[#E2E8F0]">
         <div>
-          <div class="text-xs font-mono font-bold uppercase tracking-wider text-[#2563EB] mb-1">Curated Catalog</div>
-          <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-ink">Trending AI Tools</h2>
-          <p class="text-sm text-slate-600 mt-1">Highest platform quality and utility scores across 113 verified models.</p>
+          <div class="text-xs font-mono font-bold text-[#2563EB] uppercase tracking-wider mb-1">Curated Catalog</div>
+          <h2 class="text-2xl sm:text-3xl font-black text-[#09090B] tracking-tight">Verified Production AI Tools</h2>
         </div>
-        <a href="/tools" class="text-xs font-bold text-white bg-[#09090B] hover:bg-neutral-800 px-4 py-2 rounded-lg transition-colors border border-[#09090B] shadow-[2px_2px_0px_0px_#2563EB] shrink-0 inline-flex items-center gap-1.5">
-          <span>Explore All 113 Tools</span>
-          <span>&rarr;</span>
-        </a>
+        <a href="/tools" class="text-xs font-bold text-[#2563EB] hover:underline">View All 113+ Tools &rarr;</a>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {trendingTools.map(tool => (
           <ToolCard tool={tool} />
         ))}
       </div>
     </section>
 
-    <!-- MODULE 4: TAXONOMY BY JOB-TO-BE-DONE -->
-    <section class="w-full bg-[#F8FAFF] border-y border-[#E2E8F0] px-4 sm:px-6 py-16">
+    <!-- MODULE 4: PRODUCTION WORKFLOWS SPOTLIGHT -->
+    <section class="w-full px-4 sm:px-6 py-14 bg-[#F8FAFF] border-t border-[#E2E8F0]">
       <div class="max-w-7xl mx-auto">
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex items-end justify-between mb-8 pb-3 border-b border-[#E2E8F0]">
           <div>
-            <div class="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 mb-1">Intent Taxonomy</div>
-            <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-ink">Explore by Category</h2>
+            <div class="text-xs font-mono font-bold text-[#2563EB] uppercase tracking-wider mb-1">Automations</div>
+            <h2 class="text-2xl sm:text-3xl font-black text-[#09090B] tracking-tight">Production AI Workflows</h2>
           </div>
-          <a href="/categories" class="text-xs font-bold text-[#2563EB] hover:underline font-mono">
-            View All 13 Taxonomy Maps &rarr;
-          </a>
+          <a href="/workflows" class="text-xs font-bold text-[#2563EB] hover:underline">All 16 Workflows &rarr;</a>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {categories.slice(0, 12).map(cat => (
-            <a 
-              href={`/tools?category=${cat.slug}`}
-              class="bg-white border-2 border-[#E2E8F0] hover:border-[#2563EB] rounded-xl p-4 flex flex-col items-start transition-all hover:shadow-[3px_3px_0px_0px_#2563EB] group"
-            >
-              <div class="mb-2 p-2 rounded-lg bg-[#EFF6FF] text-[#2563EB] group-hover:scale-105 transition-transform">
-                <CategoryIcon iconName={cat.icon} />
-              </div>
-              <span class="text-xs font-bold text-ink group-hover:text-[#2563EB] transition-colors leading-tight mb-1">
-                {cat.name}
-              </span>
-              <span class="text-[10px] font-mono text-slate-500 font-semibold">
-                {cat.count} tools cataloged
-              </span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- MODULE 5: MULTI-STEP WORKFLOW BLUEPRINTS SHOWCASE -->
-    <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-16">
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-        <div>
-          <div class="text-xs font-mono font-bold uppercase tracking-wider text-[#2563EB] mb-1">Production Automation</div>
-          <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-ink">Multi-Step AI Workflows</h2>
-          <p class="text-sm text-slate-600 mt-1">Platform-agnostic blueprints comparing Free, Freemium, and Paid stack costs.</p>
-        </div>
-        <a href="/workflows" class="text-xs font-bold text-ink hover:text-[#2563EB] inline-flex items-center gap-1 font-mono">
-          <span>Browse 16+ Blueprints &rarr;</span>
-        </a>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {featuredWorkflows.map(wf => (
-          <div class="bg-white border-2 border-[#09090B] rounded-xl p-6 shadow-[5px_5px_0px_0px_#09090B] hover:shadow-[7px_7px_0px_0px_#2563EB] hover:-translate-y-0.5 transition-all flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between text-xs font-mono mb-3">
-                <span class="bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] font-bold px-2 py-0.5 rounded-xs text-[10px] uppercase">
-                  {wf.category}
-                </span>
-                <span class="text-slate-500 font-medium">{wf.difficulty} &bull; {wf.time}</span>
-              </div>
-
-              <h3 class="text-base font-bold text-ink leading-snug mb-2">
-                <a href={`/workflows/${wf.id}`} class="hover:text-[#2563EB] transition-colors">
-                  {wf.title}
-                </a>
-              </h3>
-
-              <p class="text-xs text-slate-600 mb-4 leading-relaxed line-clamp-2">
-                {wf.goal}
-              </p>
-
-              <!-- Mini Step Flow -->
-              <div class="p-3 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0] text-[11px] mb-4 space-y-1.5">
-                <div class="text-[10px] font-mono uppercase text-slate-500 font-bold">Execution Pipeline:</div>
-                <div class="truncate text-slate-700">1. {wf.steps[0]?.title}</div>
-                <div class="truncate text-slate-700">2. {wf.steps[1]?.title}</div>
-                {wf.steps[2] && <div class="truncate text-slate-700">3. {wf.steps[2]?.title}</div>}
-              </div>
-            </div>
-
-            <div class="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
-              <span class="text-[11px] font-mono text-slate-600 truncate max-w-[170px]">
-                {wf.estimatedCost}
-              </span>
-              <a href={`/workflows/${wf.id}`} class="font-bold text-[#2563EB] hover:underline">
-                View Blueprint &rarr;
-              </a>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- MODULE 6: INDIA-FIRST AI INNOVATIONS SPOTLIGHT -->
-    <section class="w-full bg-[#FFFBF7] border-y-2 border-orange-200 px-4 sm:px-6 py-16">
-      <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-          <div>
-            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-xs bg-orange-100 border border-orange-300 text-orange-800 text-[11px] font-mono font-bold uppercase mb-2">
-              Sovereign Compute &bull; Indic Languages
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-ink">India-First AI Innovations</h2>
-            <p class="text-sm text-slate-600 mt-1">16 verified models and platforms engineered specifically for Indian regional contexts.</p>
-          </div>
-          <a href="/tools?category=india-first" class="text-xs font-bold text-orange-800 hover:underline font-mono">
-            View All 16 Indian AI Tools &rarr;
-          </a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {indianTools.slice(0, 4).map(tool => (
-            <div class="bg-white border-2 border-orange-200 hover:border-orange-400 rounded-xl p-5 shadow-[4px_4px_0px_0px_#FED7AA] transition-all flex flex-col justify-between">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {featuredWorkflows.map(wf => (
+            <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B] flex flex-col justify-between">
               <div>
-                <div class="flex items-center justify-between mb-3">
-                  <span class="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded bg-orange-50 text-orange-700 border border-orange-200">
-                    India AI
-                  </span>
-                  <span class="text-xs font-mono font-bold text-slate-700">Score: {tool.platformScore}</span>
+                <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-400 mb-2">
+                  <span>{wf.difficulty}</span>
+                  <span>{wf.steps.length} Steps</span>
                 </div>
-                <h3 class="text-base font-bold text-ink mb-1">{tool.name}</h3>
-                <p class="text-xs text-slate-600 line-clamp-3 mb-3">{tool.tagline}</p>
+                <h3 class="text-base font-black text-[#09090B] mb-2">{wf.title}</h3>
+                <p class="text-xs text-slate-600 line-clamp-3 mb-4 leading-relaxed">{wf.goal}</p>
               </div>
-
-              <div class="pt-3 border-t border-orange-100 flex items-center justify-between text-xs">
-                <span class="text-slate-500 font-mono text-[11px]">{tool.pricingType}</span>
-                <a href={`/tools/${tool.slug}`} class="font-bold text-orange-700 hover:underline">
-                  Details &rarr;
+              <div class="pt-4 border-t border-[#E2E8F0] flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-emerald-700">Free Tier: $0/mo</span>
+                <a href={`/workflows/${wf.id}`} class="text-xs font-bold text-[#2563EB] hover:underline">
+                  Inspect &rarr;
                 </a>
               </div>
             </div>
@@ -311,216 +275,30 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
       </div>
     </section>
 
-    <!-- MODULE 7: TRENDING OPEN-SOURCE & SELF-HOSTABLE AI -->
-    <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-16">
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-        <div>
-          <div class="text-xs font-mono font-bold uppercase tracking-wider text-purple-700 mb-1">Local & Private AI</div>
-          <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-ink">Trending Open-Source Repositories</h2>
-          <p class="text-sm text-slate-600 mt-1">20+ flagship self-hostable runtimes, coding agents, and vector engines.</p>
-        </div>
-        <a href="/open-source" class="text-xs font-bold text-purple-700 hover:underline font-mono">
-          Explore All 20+ Repos &rarr;
-        </a>
-      </div>
+    <!-- MODULE 5: FINAL HIGH-CONVERTING CTA -->
+    <section class="w-full px-4 sm:px-6 py-16 md:py-24 bg-[#09090B] text-white text-center">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl sm:text-5xl font-black tracking-tight mb-4">
+          Unlock your personal AI workspace.
+        </h2>
+        <p class="text-sm sm:text-base text-slate-400 mb-8 max-w-xl mx-auto leading-relaxed">
+          Create an account to save custom stacks, calculate token usage, track local open-source models, and submit verified reviews.
+        </p>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        {featuredRepos.map(repo => (
-          <div class="bg-white border-2 border-[#09090B] rounded-xl p-5 shadow-[4px_4px_0px_0px_#09090B] hover:shadow-[5px_5px_0px_0px_#7C3AED] hover:-translate-y-0.5 transition-all flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between text-xs font-mono mb-2">
-                <span class="text-purple-700 font-bold uppercase text-[10px]">{repo.category}</span>
-                <span class="font-bold text-slate-800">★ {repo.stars}</span>
-              </div>
-
-              <h3 class="text-base font-bold text-ink mb-1 hover:text-purple-700 transition-colors">
-                <a href={`/open-source/${repo.slug}`}>
-                  {repo.name}
-                </a>
-              </h3>
-
-              <p class="text-xs text-slate-600 line-clamp-2 mb-3">
-                {repo.oneMinuteSummary || repo.description}
-              </p>
-
-              <div class="p-2 rounded bg-[#F8FAFF] border border-[#E2E8F0] font-mono text-[10px] text-slate-700 truncate mb-3">
-                {repo.quickstartCommands?.cli || repo.quickstartCommands?.docker || 'git clone ' + repo.url}
-              </div>
-            </div>
-
-            <div class="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
-              <span class="text-[10px] font-mono text-slate-500">VRAM: {repo.hardwareSpecs?.minVramGb}</span>
-              <a href={`/open-source/${repo.slug}`} class="font-bold text-purple-700 hover:underline">
-                Quickstart &rarr;
-              </a>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- MODULE 8: TOP AI & TECH YOUTUBE CREATORS -->
-    <section class="w-full bg-[#F8FAFF] border-y border-[#E2E8F0] px-4 sm:px-6 py-16">
-      <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-          <div>
-            <div class="text-xs font-mono font-bold uppercase tracking-wider text-red-600 mb-1">Creator Intelligence</div>
-            <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-ink">Learn from Leading AI Creators</h2>
-            <p class="text-sm text-slate-600 mt-1">18+ verified YouTube educators breaking down AI coding, research, and workflows.</p>
-          </div>
-          <a href="/creators" class="text-xs font-bold text-red-600 hover:underline font-mono">
-            View All 18 Creators &rarr;
-          </a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {featuredCreators.map(creator => (
-            <div class="bg-white border-2 border-[#09090B] rounded-xl p-5 shadow-[4px_4px_0px_0px_#09090B] hover:shadow-[5px_5px_0px_0px_#DC2626] hover:-translate-y-0.5 transition-all flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between text-xs font-mono mb-2">
-                  <span class="text-red-700 font-bold uppercase text-[10px]">{creator.primaryCategory}</span>
-                  <span class="font-bold text-slate-700">{creator.subscribersEstimate}</span>
-                </div>
-
-                <h3 class="text-base font-bold text-ink mb-1 hover:text-red-600 transition-colors">
-                  <a href={`/creators/${creator.slug}`}>
-                    {creator.channelName}
-                  </a>
-                </h3>
-
-                <p class="text-xs text-slate-600 line-clamp-2 mb-3">
-                  {creator.description}
-                </p>
-
-                <div class="text-[11px] text-slate-500 mb-3">
-                  <span class="font-semibold text-slate-700">Teaches:</span> {creator.toolsTaught?.slice(0, 3).join(', ')}
-                </div>
-              </div>
-
-              <div class="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
-                <span class="text-[10px] font-mono text-slate-500">{creator.uploadCadence}</span>
-                <a href={`/creators/${creator.slug}`} class="font-bold text-red-600 hover:underline">
-                  Curriculum &rarr;
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- MODULE 9: BUILT-IN CREATOR UTILITIES BAR -->
-    <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-16">
-      <div class="p-8 rounded-2xl bg-[#09090B] text-white border-2 border-[#09090B] shadow-[8px_8px_0px_0px_#2563EB]">
-        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-8">
-          <div>
-            <span class="bg-[#2563EB] text-white text-[10px] font-mono uppercase font-bold px-2.5 py-1 rounded-xs">
-              ZERO SERVER UPLOADS &bull; 100% CLIENT-SIDE
-            </span>
-            <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white mt-3 mb-1">
-              8 Built-In Creator & Developer Utilities
-            </h2>
-            <p class="text-slate-400 text-sm max-w-xl">
-              High-performance in-browser tools to architect structured prompts, generate viral hooks, compress images, and calculate LLM API token costs.
-            </p>
-          </div>
-          <a href="/utilities" class="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs px-5 py-3 rounded-lg shadow-xs transition-colors shrink-0 font-mono">
-            Open Utilities Hub &rarr;
-          </a>
-        </div>
-
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-          <a href="/token-calculator" class="p-3.5 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-[#2563EB] transition-colors">
-            <div class="text-xs font-bold text-white mb-0.5">LLM Token Calculator</div>
-            <div class="text-[11px] text-slate-400">13 official model pricing matrices</div>
-          </a>
-          <a href="/utilities#prompt-improver" class="p-3.5 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-[#2563EB] transition-colors">
-            <div class="text-xs font-bold text-white mb-0.5">Prompt Architect</div>
-            <div class="text-[11px] text-slate-400">Role-Context-Constraint format</div>
-          </a>
-          <a href="/utilities#hook-generator" class="p-3.5 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-[#2563EB] transition-colors">
-            <div class="text-xs font-bold text-white mb-0.5">Viral Hook Generator</div>
-            <div class="text-[11px] text-slate-400">0-5s YouTube Shorts hooks</div>
-          </a>
-          <a href="/utilities#image-resizer" class="p-3.5 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-[#2563EB] transition-colors">
-            <div class="text-xs font-bold text-white mb-0.5">Image Resizer & WebP</div>
-            <div class="text-[11px] text-slate-400">Browser canvas compression</div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- MODULE 10: ACTIVE COMMUNITY & STACK BUILDER CALLOUT -->
-    <section class="w-full bg-[#F8FAFF] border-t border-[#E2E8F0] px-4 sm:px-6 py-16">
-      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <!-- Left: Recent Community Discussions (Col 7) -->
-        <div class="lg:col-span-7">
-          <div class="flex items-center justify-between mb-6">
-            <div>
-              <div class="text-xs font-mono font-bold uppercase tracking-wider text-[#2563EB] mb-1">Ecosystem Forum</div>
-              <h2 class="text-xl sm:text-2xl font-black tracking-tight text-ink">Active Practitioner Discussions</h2>
-            </div>
-            <a href="/community" class="text-xs font-bold text-[#2563EB] hover:underline font-mono">
-              View All Topics &rarr;
-            </a>
-          </div>
-
-          <div class="space-y-4">
-            {recentPosts.map(post => (
-              <div class="bg-white border-2 border-[#09090B] rounded-xl p-4 shadow-[3px_3px_0px_0px_#09090B] flex flex-col justify-between">
-                <div>
-                  <div class="flex items-center justify-between text-[11px] font-mono text-slate-500 mb-1">
-                    <span class="text-[#2563EB] font-bold">{post.category}</span>
-                    <span>{post.timestamp}</span>
-                  </div>
-                  <h4 class="text-sm font-bold text-ink mb-1 hover:text-[#2563EB] transition-colors">
-                    <a href="/community">
-                      {post.title}
-                    </a>
-                  </h4>
-                  <p class="text-xs text-slate-600 line-clamp-2">{post.content}</p>
-                </div>
-                <div class="pt-2 border-t border-[#E2E8F0] mt-2 flex items-center justify-between text-[11px] text-slate-500">
-                  <span>by {post.author}</span>
-                  <span>{post.repliesCount} replies</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <!-- Right: AI Stack Builder Callout (Col 5) -->
-        <div class="lg:col-span-5 bg-white border-2 border-[#09090B] rounded-xl p-6 shadow-[6px_6px_0px_0px_#09090B] flex flex-col justify-between">
-          <div>
-            <span class="bg-emerald-50 text-emerald-800 border border-emerald-300 text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-xs">
-              COST-TO-VALUE ENGINE
-            </span>
-            <h3 class="text-xl font-black text-ink mt-3 mb-2">Build Your Custom AI Stack</h3>
-            <p class="text-xs text-slate-600 leading-relaxed mb-4">
-              Select tools from across our 113+ verified catalog to calculate your exact combined monthly SaaS cost, identify overlapping capabilities, and export stack blueprints.
-            </p>
-
-            <div class="p-3.5 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0] space-y-2 text-xs mb-4">
-              <div class="flex items-center justify-between">
-                <span class="text-slate-600">Sample Creator Stack:</span>
-                <span class="font-bold text-ink">$37 / month</span>
-              </div>
-              <div class="flex items-center justify-between text-[11px] text-slate-500">
-                <span>Claude + ElevenLabs + n8n</span>
-                <span class="text-emerald-700 font-semibold">Saves $120/mo</span>
-              </div>
-            </div>
-          </div>
-
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a 
-            href="/stack-builder" 
-            class="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs py-3 px-4 rounded-lg border-2 border-[#09090B] shadow-[3px_3px_0px_0px_#09090B] transition-all text-center font-mono"
+            href="/signup" 
+            class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#2563EB] hover:bg-blue-600 text-white font-bold text-sm transition-all shadow-md"
           >
-            Launch Interactive Stack Builder &rarr;
+            Get Started Free
+          </a>
+          <a 
+            href="/login" 
+            class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 transition-all"
+          >
+            Sign In with Google
           </a>
         </div>
-
       </div>
     </section>
 
@@ -528,3 +306,32 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
 
   <Footer />
 </Layout>
+
+<script is:inline>
+  // Auto-Redirect Signed-In Users to Workspace Dashboard
+  (function() {
+    var userStr = localStorage.getItem('aio_user');
+    var tokenStr = localStorage.getItem('supabase.auth.token');
+    var urlParams = new URLSearchParams(window.location.search);
+    var stay = urlParams.get('stay') === 'true';
+
+    // If authenticated and user didn't explicitly request ?stay=true, redirect to /dashboard
+    if ((userStr || tokenStr) && !stay) {
+      window.location.replace('/dashboard');
+      return;
+    }
+
+    // If user is authenticated but stayed, adapt public nav buttons
+    if (userStr || tokenStr) {
+      var loginBtn = document.getElementById('publicNavLogin');
+      var signupBtn = document.getElementById('publicNavSignup');
+      var dashBtn = document.getElementById('publicNavDashboard');
+      if (loginBtn) loginBtn.classList.add('hidden');
+      if (signupBtn) signupBtn.classList.add('hidden');
+      if (dashBtn) {
+        dashBtn.classList.remove('hidden');
+        dashBtn.classList.add('inline-flex');
+      }
+    }
+  })();
+</script>

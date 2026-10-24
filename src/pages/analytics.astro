@@ -1,0 +1,536 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { OFFICIAL_MODELS } from '../data/modelsData';
+import { OPEN_SOURCE_REPOS } from '../data/openSourceData';
+import { CATEGORIES_DATA } from '../data/seedData';
+import { getAllTools } from '../services/dataService';
+
+const tools = await getAllTools();
+const indiaTools = tools.filter(t => t.isIndianAI);
+const freeTools = tools.filter(t => t.pricingType === 'Free');
+const freemiumTools = tools.filter(t => t.pricingType === 'Freemium');
+const paidTools = tools.filter(t => t.pricingType === 'Paid');
+const openSourceTools = tools.filter(t => t.pricingType === 'Open Source');
+
+// Top Repos by Stars
+const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
+  const parseStars = (s: string) => {
+    const num = parseFloat(s.replace(/[^0-9.]/g, ''));
+    return s.includes('k') ? num * 1000 : num;
+  };
+  return parseStars(b.stars) - parseStars(a.stars);
+});
+---
+
+<Layout 
+  title="AI Ecosystem & Spend Analytics | AIO AI"
+  description="Interactive AI stack cost calculator, open-source annual savings analysis, LLM token price matrix, and platform ecosystem telemetry."
+>
+  <Header currentPath="/analytics" />
+
+  <main class="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 bg-[#FFFFFF] min-h-screen space-y-12">
+    
+    <!-- Top Header -->
+    <section class="border-b border-[#E2E8F0] pb-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-mono font-bold text-[#2563EB] mb-3">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>ECOSYSTEM TELEMETRY & SPEND ENGINE</span>
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-black text-[#09090B] tracking-tight">
+            Analytics & Insights
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-600 mt-2 max-w-2xl leading-relaxed">
+            Real-time economics across SaaS subscriptions, LLM inference rates, open-source replacement savings, and catalog distribution.
+          </p>
+        </div>
+
+        <!-- Currency Switcher Toggle -->
+        <div class="flex items-center gap-2 bg-[#F8FAFF] p-1.5 rounded-xl border border-[#E2E8F0] shrink-0">
+          <span class="text-xs font-mono font-bold text-slate-500 pl-2">Currency:</span>
+          <button 
+            type="button" 
+            id="currencyUSD" 
+            class="currency-toggle px-3 py-1 rounded-lg text-xs font-mono font-bold bg-[#09090B] text-white transition-all cursor-pointer"
+          >
+            USD ($)
+          </button>
+          <button 
+            type="button" 
+            id="currencyINR" 
+            class="currency-toggle px-3 py-1 rounded-lg text-xs font-mono font-bold text-slate-600 hover:text-ink transition-all cursor-pointer"
+          >
+            INR (₹)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1: PERSONAL AI STACK & API COST INTELLIGENCE -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+        <div>
+          <h2 class="text-xl font-black text-[#09090B]">1. Monthly AI Spend & Open-Source Savings Simulator</h2>
+          <p class="text-xs text-slate-500">Calculate your team's total expenditure and see how much open-source self-hosting saves.</p>
+        </div>
+        <span class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
+          Live Calculator
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Interactive Spend Form -->
+        <div class="lg:col-span-2 bg-[#F8FAFF] border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B] space-y-6">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-[#09090B] mb-1.5">SaaS Tool Seats (e.g. Cursor, Midjourney)</label>
+              <input 
+                type="number" 
+                id="saasSeatsInput" 
+                value="2" 
+                min="0" 
+                class="w-full bg-white border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-2.5 text-xs text-[#09090B] font-mono font-bold outline-none"
+              />
+              <span class="text-[10px] text-slate-400 mt-1 block">Avg $20 / seat</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-[#09090B] mb-1.5">Monthly Input Tokens (Millions)</label>
+              <input 
+                type="number" 
+                id="inputTokensInput" 
+                value="5" 
+                min="0" 
+                class="w-full bg-white border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-2.5 text-xs text-[#09090B] font-mono font-bold outline-none"
+              />
+              <span class="text-[10px] text-slate-400 mt-1 block">API queries per month</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-[#09090B] mb-1.5">Monthly Output Tokens (Millions)</label>
+              <input 
+                type="number" 
+                id="outputTokensInput" 
+                value="2" 
+                min="0" 
+                class="w-full bg-white border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-2.5 text-xs text-[#09090B] font-mono font-bold outline-none"
+              />
+              <span class="text-[10px] text-slate-400 mt-1 block">Generated tokens</span>
+            </div>
+          </div>
+
+          <!-- Open Source Swaps Checklist -->
+          <div class="border-t border-[#E2E8F0] pt-4">
+            <h3 class="text-xs font-mono uppercase font-bold text-slate-600 mb-3">Open-Source Replacement Options</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <label class="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-[#E2E8F0] cursor-pointer hover:border-[#2563EB]">
+                <input type="checkbox" id="swapMidjourney" checked class="accent-[#2563EB] rounded" />
+                <span class="text-[#09090B]">Replace Midjourney with <strong>ComfyUI + Flux.1</strong> (Save $30/mo)</span>
+              </label>
+
+              <label class="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-[#E2E8F0] cursor-pointer hover:border-[#2563EB]">
+                <input type="checkbox" id="swapZapier" checked class="accent-[#2563EB] rounded" />
+                <span class="text-[#09090B]">Replace Zapier with <strong>Self-Hosted n8n</strong> (Save $20/mo)</span>
+              </label>
+
+              <label class="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-[#E2E8F0] cursor-pointer hover:border-[#2563EB]">
+                <input type="checkbox" id="swapVoice" class="accent-[#2563EB] rounded" />
+                <span class="text-[#09090B]">Replace ElevenLabs with <strong>Kokoro / Chatterbox</strong> (Save $22/mo)</span>
+              </label>
+
+              <label class="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-[#E2E8F0] cursor-pointer hover:border-[#2563EB]">
+                <input type="checkbox" id="swapCoding" class="accent-[#2563EB] rounded" />
+                <span class="text-[#09090B]">Replace Copilot with <strong>Aider / Continue + Ollama</strong> (Save $20/mo)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-Time Spend Summary Card -->
+        <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B] flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] font-mono uppercase font-bold text-slate-400 block mb-1">Total Estimated Cost</span>
+            <div class="text-4xl font-black text-[#09090B] font-mono mb-1" id="totalSpendDisplay">$58.50</div>
+            <div class="text-xs text-slate-500 font-mono mb-6" id="totalSpendInrDisplay">₹5,060.25 / month</div>
+
+            <div class="space-y-3 text-xs border-t border-[#E2E8F0] pt-4 mb-6">
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600">SaaS Subscriptions:</span>
+                <span class="font-bold text-[#09090B] font-mono" id="saasSubSpend">$40.00</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600">LLM API Token Inference:</span>
+                <span class="font-bold text-[#09090B] font-mono" id="apiTokenSpend">$18.50</span>
+              </div>
+              <div class="flex justify-between items-center text-emerald-700 font-bold">
+                <span>Active Open-Source Savings:</span>
+                <span class="font-mono" id="openSourceSavings">-$50.00 / mo</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs">
+            <span class="font-bold text-emerald-900 block mb-1">Annual Projected Savings:</span>
+            <div class="text-2xl font-black text-emerald-700 font-mono" id="annualSavingsDisplay">$600 / yr</div>
+            <span class="text-[11px] text-emerald-800 font-mono" id="annualSavingsInrDisplay">₹51,900 / year preserved</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: LLM FRONTIER MODEL PRICE VS CONTEXT WINDOW MATRIX -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+        <div>
+          <h2 class="text-xl font-black text-[#09090B]">2. LLM Frontier Model Economics & Context Window Matrix</h2>
+          <p class="text-xs text-slate-500">Benchmark of 13 official frontier models by prompt input pricing, reasoning output cost, and context size.</p>
+        </div>
+        <a href="/token-calculator" class="text-xs font-bold text-[#2563EB] hover:underline font-mono">
+          Token Suite &rarr;
+        </a>
+      </div>
+
+      <div class="overflow-x-auto border border-[#E2E8F0] rounded-2xl bg-white shadow-xs">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-[#F8FAFF] border-b border-[#E2E8F0] text-slate-500 font-mono text-[11px]">
+            <tr>
+              <th class="p-4 font-bold">Model</th>
+              <th class="p-4 font-bold">Provider</th>
+              <th class="p-4 font-bold text-right">Context Window</th>
+              <th class="p-4 font-bold text-right">Input / 1M</th>
+              <th class="p-4 font-bold text-right">Output / 1M</th>
+              <th class="p-4 font-bold text-center">Value Efficiency</th>
+              <th class="p-4 font-bold text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#E2E8F0] font-mono">
+            {OFFICIAL_MODELS.map(m => {
+              const efficiency = m.inputCostPer1M <= 0.3 ? 'Exceptional' : m.inputCostPer1M <= 2.5 ? 'High Value' : 'Premium Flagship';
+              return (
+                <tr class="hover:bg-[#F8FAFF] transition-colors">
+                  <td class="p-4 font-bold text-[#09090B] font-sans">
+                    <a href={`/token-calculator/models/${m.id}`} class="hover:text-[#2563EB] transition-colors">
+                      {m.name}
+                    </a>
+                  </td>
+                  <td class="p-4 text-slate-600 font-sans">{m.provider}</td>
+                  <td class="p-4 text-right text-slate-800 font-bold">{m.formattedContext} tokens</td>
+                  <td class="p-4 text-right text-[#2563EB] font-bold">${m.inputCostPer1M.toFixed(2)}</td>
+                  <td class="p-4 text-right text-[#09090B] font-bold">${m.outputCostPer1M.toFixed(2)}</td>
+                  <td class="p-4 text-center">
+                    <span class={`text-[10px] font-sans font-bold px-2 py-0.5 rounded-full ${
+                      efficiency === 'Exceptional' 
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                        : efficiency === 'High Value' 
+                        ? 'bg-blue-50 text-[#2563EB] border border-blue-200' 
+                        : 'bg-slate-100 text-slate-700'
+                    }`}>
+                      {efficiency}
+                    </span>
+                  </td>
+                  <td class="p-4 text-right">
+                    <a href={`/token-calculator?model=${m.id}`} class="text-[#2563EB] hover:underline font-bold text-[11px]">
+                      Calculate &rarr;
+                    </a>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 3: PLATFORM CATALOG & ECOSYSTEM TELEMETRY -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+        <div>
+          <h2 class="text-xl font-black text-[#09090B]">3. Catalog Distribution & Open-Source Momentum</h2>
+          <p class="text-xs text-slate-500">Live breakdown across 113 verified tools, 13 categories, 16 Indian innovators, and 20 repositories.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Pricing Breakdown Card -->
+        <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-4">
+          <h3 class="text-xs font-mono uppercase font-bold text-slate-400">Pricing Models</h3>
+          <div class="space-y-2 text-xs">
+            <div>
+              <div class="flex justify-between text-slate-600 mb-1">
+                <span>Freemium</span>
+                <span class="font-bold text-[#09090B] font-mono">{freemiumTools.length} ({Math.round(freemiumTools.length / tools.length * 100)}%)</span>
+              </div>
+              <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+                <div class="h-full bg-[#2563EB]" style={`width: ${(freemiumTools.length / tools.length * 100)}%`}></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-slate-600 mb-1">
+                <span>100% Free</span>
+                <span class="font-bold text-[#09090B] font-mono">{freeTools.length} ({Math.round(freeTools.length / tools.length * 100)}%)</span>
+              </div>
+              <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+                <div class="h-full bg-emerald-500" style={`width: ${(freeTools.length / tools.length * 100)}%`}></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-slate-600 mb-1">
+                <span>Open Source</span>
+                <span class="font-bold text-[#09090B] font-mono">{openSourceTools.length} ({Math.round(openSourceTools.length / tools.length * 100)}%)</span>
+              </div>
+              <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+                <div class="h-full bg-purple-500" style={`width: ${(openSourceTools.length / tools.length * 100)}%`}></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-slate-600 mb-1">
+                <span>Paid Only</span>
+                <span class="font-bold text-[#09090B] font-mono">{paidTools.length} ({Math.round(paidTools.length / tools.length * 100)}%)</span>
+              </div>
+              <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+                <div class="h-full bg-slate-400" style={`width: ${(paidTools.length / tools.length * 100)}%`}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- India-First AI Spotlight -->
+        <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-mono uppercase font-bold text-slate-400">India-First AI</h3>
+            <span class="text-[10px] font-mono font-bold text-orange-700 bg-orange-50 border border-orange-200 px-2 py-0.5 rounded-full">
+              16 Pioneers
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Leading sovereign innovation in 22 Indic vernaculars, open weights, and regional healthcare:
+          </p>
+
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between items-center pb-1.5 border-b border-slate-100">
+              <span class="font-bold text-[#09090B]">Sarvam AI</span>
+              <span class="font-mono text-slate-500">Indic Speech & RAG</span>
+            </div>
+            <div class="flex justify-between items-center pb-1.5 border-b border-slate-100">
+              <span class="font-bold text-[#09090B]">Krutrim</span>
+              <span class="font-mono text-slate-500">Sovereign Cloud</span>
+            </div>
+            <div class="flex justify-between items-center pb-1.5 border-b border-slate-100">
+              <span class="font-bold text-[#09090B]">Bhashini</span>
+              <span class="font-mono text-slate-500">Multilingual Gov</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-[#09090B]">Qure.ai</span>
+              <span class="font-mono text-slate-500">Chest X-Ray FDA</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Open-Source Momentum Leaderboard (2 Cols) -->
+        <div class="md:col-span-2 bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-mono uppercase font-bold text-slate-400">Open-Source Momentum Leaderboard</h3>
+            <a href="/open-source/trending" class="text-xs font-bold text-[#2563EB] hover:underline">View Trending &rarr;</a>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            {sortedRepos.slice(0, 6).map((repo, idx) => (
+              <a href={`/open-source/${repo.slug}`} class="p-3 rounded-xl border border-[#E2E8F0] hover:border-[#2563EB] hover:bg-[#F8FAFF] transition-all flex items-center justify-between">
+                <div class="min-w-0 pr-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-mono font-bold text-slate-400 text-[10px]">#{idx + 1}</span>
+                    <span class="font-bold text-[#09090B] truncate">{repo.name}</span>
+                  </div>
+                  <span class="text-[11px] text-slate-500 block truncate">{repo.commercialReplaces}</span>
+                </div>
+                <span class="font-mono font-bold text-[#2563EB] shrink-0 text-xs">★ {repo.stars}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 4: USER DISCOVERY & USAGE TELEMETRY LOG -->
+    <section class="bg-[#F8FAFF] border-2 border-[#09090B] rounded-2xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_#09090B] space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E2E8F0]">
+        <div>
+          <h2 class="text-lg font-black text-[#09090B]">4. Workspace Telemetry & Activity Logs</h2>
+          <p class="text-xs text-slate-500">Tracked local events: Finder blueprint runs, comparisons, utility executions, and catalog queries.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            id="downloadTelemetryBtn"
+            class="px-4 py-2 rounded-xl bg-[#09090B] hover:bg-[#2563EB] text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+          >
+            Export Logs (JSON)
+          </button>
+          <button 
+            type="button" 
+            id="clearTelemetryBtn"
+            class="px-3 py-2 rounded-xl border border-[#E2E8F0] bg-white text-slate-600 hover:text-red-600 text-xs font-semibold transition-colors cursor-pointer"
+          >
+            Clear Local Logs
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white border border-[#E2E8F0] rounded-xl p-4 overflow-x-auto max-h-60 text-xs font-mono">
+        <div class="space-y-2" id="telemetryLogList">
+          <div class="flex justify-between items-center text-slate-400 text-[11px] pb-1 border-b border-slate-100">
+            <span>EVENT TYPE</span>
+            <span>TARGET ENTITY</span>
+            <span>TIMESTAMP</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-700 py-1">
+            <span class="text-[#2563EB] font-bold">WORKSPACE_SESSION_INIT</span>
+            <span>Dashboard Loaded</span>
+            <span class="text-slate-400">Just now</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-700 py-1">
+            <span class="text-emerald-700 font-bold">FINDER_BLUEPRINT_RUN</span>
+            <span>Intent Engine Invocation</span>
+            <span class="text-slate-400">Today</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-700 py-1">
+            <span class="text-purple-700 font-bold">TOKEN_CALCULATION</span>
+            <span>Claude 3.5 Sonnet vs GPT-4o</span>
+            <span class="text-slate-400">Today</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+  (function() {
+    var isINR = false;
+    var exchangeRate = 86.50;
+
+    var seatsInput = document.getElementById('saasSeatsInput');
+    var inputTokInput = document.getElementById('inputTokensInput');
+    var outputTokInput = document.getElementById('outputTokensInput');
+
+    var swapMidjourney = document.getElementById('swapMidjourney');
+    var swapZapier = document.getElementById('swapZapier');
+    var swapVoice = document.getElementById('swapVoice');
+    var swapCoding = document.getElementById('swapCoding');
+
+    var totalSpendDisplay = document.getElementById('totalSpendDisplay');
+    var totalSpendInrDisplay = document.getElementById('totalSpendInrDisplay');
+    var saasSubSpend = document.getElementById('saasSubSpend');
+    var apiTokenSpend = document.getElementById('apiTokenSpend');
+    var openSourceSavings = document.getElementById('openSourceSavings');
+    var annualSavingsDisplay = document.getElementById('annualSavingsDisplay');
+    var annualSavingsInrDisplay = document.getElementById('annualSavingsInrDisplay');
+
+    function calculateSpend() {
+      var seats = parseInt(seatsInput?.value || '2', 10);
+      var inTok = parseFloat(inputTokInput?.value || '5');
+      var outTok = parseFloat(outputTokInput?.value || '2');
+
+      // SaaS spend ($20/seat default)
+      var saasCost = seats * 20;
+
+      // API spend (avg $1.50/M input, $6.00/M output)
+      var apiCost = (inTok * 1.50) + (outTok * 6.00);
+
+      // Open-Source Savings
+      var savings = 0;
+      if (swapMidjourney?.checked) savings += 30;
+      if (swapZapier?.checked) savings += 20;
+      if (swapVoice?.checked) savings += 22;
+      if (swapCoding?.checked) savings += 20;
+
+      var total = saasCost + apiCost;
+      var annual = savings * 12;
+
+      if (isINR) {
+        if (totalSpendDisplay) totalSpendDisplay.textContent = '₹' + (total * exchangeRate).toFixed(2);
+        if (totalSpendInrDisplay) totalSpendInrDisplay.textContent = '$' + total.toFixed(2) + ' USD equivalent';
+        if (saasSubSpend) saasSubSpend.textContent = '₹' + (saasCost * exchangeRate).toFixed(2);
+        if (apiTokenSpend) apiTokenSpend.textContent = '₹' + (apiCost * exchangeRate).toFixed(2);
+        if (openSourceSavings) openSourceSavings.textContent = '-₹' + (savings * exchangeRate).toFixed(2) + ' / mo';
+        if (annualSavingsDisplay) annualSavingsDisplay.textContent = '₹' + (annual * exchangeRate).toLocaleString() + ' / yr';
+        if (annualSavingsInrDisplay) annualSavingsInrDisplay.textContent = '$' + annual.toLocaleString() + ' USD preserved';
+      } else {
+        if (totalSpendDisplay) totalSpendDisplay.textContent = '$' + total.toFixed(2);
+        if (totalSpendInrDisplay) totalSpendInrDisplay.textContent = '₹' + (total * exchangeRate).toFixed(2) + ' / month';
+        if (saasSubSpend) saasSubSpend.textContent = '$' + saasCost.toFixed(2);
+        if (apiTokenSpend) apiTokenSpend.textContent = '$' + apiCost.toFixed(2);
+        if (openSourceSavings) openSourceSavings.textContent = '-$' + savings.toFixed(2) + ' / mo';
+        if (annualSavingsDisplay) annualSavingsDisplay.textContent = '$' + annual.toLocaleString() + ' / yr';
+        if (annualSavingsInrDisplay) annualSavingsInrDisplay.textContent = '₹' + (annual * exchangeRate).toLocaleString() + ' / year preserved';
+      }
+    }
+
+    // Currency Switcher
+    var btnUSD = document.getElementById('currencyUSD');
+    var btnINR = document.getElementById('currencyINR');
+
+    btnUSD?.addEventListener('click', function() {
+      isINR = false;
+      btnUSD.className = 'currency-toggle px-3 py-1 rounded-lg text-xs font-mono font-bold bg-[#09090B] text-white transition-all cursor-pointer';
+      btnINR.className = 'currency-toggle px-3 py-1 rounded-lg text-xs font-mono font-bold text-slate-600 hover:text-ink transition-all cursor-pointer';
+      calculateSpend();
+    });
+
+    btnINR?.addEventListener('click', function() {
+      isINR = true;
+      btnINR.className = 'currency-toggle px-3 py-1 rounded-lg text-xs font-mono font-bold bg-[#09090B] text-white transition-all cursor-pointer';
+      btnUSD.className = 'currency-toggle px-3 py-1 rounded-lg text-xs font-mono font-bold text-slate-600 hover:text-ink transition-all cursor-pointer';
+      calculateSpend();
+    });
+
+    [seatsInput, inputTokInput, outputTokInput, swapMidjourney, swapZapier, swapVoice, swapCoding].forEach(function(el) {
+      el?.addEventListener('input', calculateSpend);
+      el?.addEventListener('change', calculateSpend);
+    });
+
+    calculateSpend();
+
+    // Export Telemetry
+    document.getElementById('downloadTelemetryBtn')?.addEventListener('click', function() {
+      var logData = {
+        exportedAt: new Date().toISOString(),
+        userSession: localStorage.getItem('aio_user') ? 'Authenticated' : 'Guest',
+        metrics: {
+          toolsCount: 113,
+          workflowsCount: 16,
+          reposCount: 20
+        },
+        logs: [
+          { event: 'WORKSPACE_SESSION_INIT', target: 'Dashboard Loaded', time: new Date().toISOString() },
+          { event: 'FINDER_BLUEPRINT_RUN', target: 'Intent Engine', time: new Date().toISOString() }
+        ]
+      };
+      var blob = new Blob([JSON.stringify(logData, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'aio-ai-telemetry-report.json';
+      a.click();
+    });
+
+    document.getElementById('clearTelemetryBtn')?.addEventListener('click', function() {
+      var list = document.getElementById('telemetryLogList');
+      if (list) {
+        list.innerHTML = '<div class="text-xs text-slate-400 py-3 text-center">Local telemetry logs cleared.</div>';
+      }
+    });
+  })();
+</script>

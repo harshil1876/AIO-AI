@@ -2,49 +2,55 @@
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="w-full border-t border-hairline bg-canvas px-6 py-16 mt-auto">
+<footer class="w-full border-t border-[#E2E8F0] bg-white px-6 py-16 mt-auto">
   <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
     <div class="max-w-sm">
       <div class="flex items-center gap-2 mb-3">
-        <span class="w-6 h-6 rounded-md bg-ink text-on-primary flex items-center justify-center text-xs font-bold tracking-tighter">AI</span>
-        <span class="text-ink font-semibold tracking-tight text-base">AI Discovery</span>
+        <span class="w-7 h-7 rounded-lg bg-[#09090B] text-white flex items-center justify-center text-xs font-black tracking-tight">AI</span>
+        <span class="text-[#09090B] font-black tracking-tight text-base">AIO AI</span>
       </div>
-      <p class="text-sm text-mute leading-relaxed mb-4">
-        The trusted, intent-driven discovery platform for verified AI tools, workflows, open-source models, and creator intelligence.
+      <p class="text-xs text-slate-500 leading-relaxed mb-4">
+        The trusted, intent-driven discovery platform for verified AI tools, workflows, open-source models, creator intelligence, and token economics.
       </p>
-      <div class="text-xs text-faint">
-        © {currentYear} AI Discovery Platform. All rights reserved.
+      <div class="text-[11px] text-slate-400 font-mono">
+        © {currentYear} AIO AI Platform. Zero pay-for-placement editorial integrity.
       </div>
     </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-10 text-sm">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 text-xs">
       <div class="flex flex-col gap-2.5">
-        <span class="font-medium text-ink text-xs uppercase tracking-wider">Explore</span>
-        <a href="/tools" class="text-body hover:text-ink transition-colors">All AI Tools</a>
-        <a href="/compare" class="text-body hover:text-ink transition-colors">Compare Tools</a>
-        <a href="/finder" class="text-body hover:text-ink transition-colors">AI Finder</a>
-        <a href="/stack-builder" class="text-body hover:text-ink transition-colors">Stack Builder</a>
-        <a href="/token-calculator" class="text-body hover:text-ink transition-colors">Token Calculator</a>
-        <a href="/utilities" class="text-body hover:text-ink transition-colors">Creator Utilities</a>
-        <a href="/categories" class="text-body hover:text-ink transition-colors">Taxonomy</a>
+        <span class="font-bold text-[#09090B] uppercase tracking-wider font-mono text-[10px] text-slate-400">Workspace</span>
+        <a href="/dashboard" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Overview Dashboard</a>
+        <a href="/analytics" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Analytics & Insights</a>
+        <a href="/stack-builder" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Stack Builder</a>
+        <a href="/profile" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Saved & Profile</a>
       </div>
 
       <div class="flex flex-col gap-2.5">
-        <span class="font-medium text-ink text-xs uppercase tracking-wider">Ecosystem</span>
-        <a href="/creators" class="text-body hover:text-ink transition-colors">Creators Hub</a>
-        <a href="/open-source" class="text-body hover:text-ink transition-colors">Open Source</a>
-        <a href="/open-source/trending" class="text-body hover:text-ink transition-colors">Trending Repos</a>
-        <a href="/workflows" class="text-body hover:text-ink transition-colors">AI Workflows</a>
-        <a href="/news/daily" class="text-body hover:text-ink transition-colors">Daily Briefing</a>
-        <a href="/community" class="text-body hover:text-ink transition-colors">Community Forum</a>
-        <a href="/tools?category=india-first" class="text-body hover:text-ink transition-colors">India-First AI</a>
+        <span class="font-bold text-[#09090B] uppercase tracking-wider font-mono text-[10px] text-slate-400">Discover</span>
+        <a href="/tools" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">AI Tools Directory</a>
+        <a href="/finder" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">AI Intent Finder</a>
+        <a href="/compare" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Compare Matrix</a>
+        <a href="/tools?category=india-first" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">India-First AI</a>
+        <a href="/categories" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Taxonomy</a>
       </div>
 
       <div class="flex flex-col gap-2.5">
-        <span class="font-medium text-ink text-xs uppercase tracking-wider">Platform</span>
-        <a href="/submit" class="text-body hover:text-ink transition-colors">Submit Tool / Info</a>
-        <a href="/admin" class="text-body hover:text-ink transition-colors">Admin Console</a>
-        <a href="https://github.com/harshil1876/AIO-AI" target="_blank" rel="noopener noreferrer" class="text-body hover:text-ink transition-colors">GitHub Repository ↗</a>
+        <span class="font-bold text-[#09090B] uppercase tracking-wider font-mono text-[10px] text-slate-400">Intelligence</span>
+        <a href="/news" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Daily AI News</a>
+        <a href="/news/daily" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Newspaper Edition</a>
+        <a href="/open-source" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Open-Source Hub</a>
+        <a href="/workflows" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">AI Workflows</a>
+        <a href="/creators" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Curated Creators</a>
+      </div>
+
+      <div class="flex flex-col gap-2.5">
+        <span class="font-bold text-[#09090B] uppercase tracking-wider font-mono text-[10px] text-slate-400">Platform</span>
+        <a href="/docs" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Documentation</a>
+        <a href="/utilities" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Utilities Suite</a>
+        <a href="/token-calculator" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Token Calculator</a>
+        <a href="/community" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Community Forum</a>
+        <a href="/submit" class="text-slate-600 hover:text-[#2563EB] font-medium transition-colors">Submit Resource</a>
       </div>
     </div>
   </div>

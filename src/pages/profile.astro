@@ -59,12 +59,20 @@ import Footer from '../components/Footer.astro';
           </div>
         </div>
 
-        <button 
-          id="logoutBtn"
-          class="bg-surface border border-[#E2E8F0] hover:border-red-400 hover:text-red-600 text-neutral-700 text-xs font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer self-start sm:self-auto"
-        >
-          Sign Out
-        </button>
+        <div class="flex items-center gap-3 self-start sm:self-auto">
+          <a 
+            href="/dashboard"
+            class="bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors shadow-xs"
+          >
+            Go to Dashboard &rarr;
+          </a>
+          <button 
+            id="logoutBtn"
+            class="bg-surface border border-[#E2E8F0] hover:border-red-400 hover:text-red-600 text-neutral-700 text-xs font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer"
+          >
+            Sign Out
+          </button>
+        </div>
       </div>
 
       <!-- Saved Bookmarks Section -->

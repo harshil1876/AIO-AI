@@ -1,40 +1,43 @@
 ---
 interface Props {
   currentPath?: string;
+  hideSidebarToggle?: boolean;
 }
 
-const { currentPath = Astro.url.pathname } = Astro.props;
+const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.props;
 ---
 
 <header class="bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 md:px-6 py-2.5 sticky top-0 z-40 transition-colors">
   <div class="flex items-center justify-between gap-4 w-full">
     
-    <!-- Left: Mobile Drawer Trigger + Brand Logo -->
+    <!-- Left: Universal Sidebar Toggle + Brand Logo -->
     <div class="flex items-center gap-3 shrink-0">
-      <button
-        type="button"
-        id="mobileMenuToggleBtn"
-        onclick="window.toggleMobileSidebar && window.toggleMobileSidebar()"
-        class="lg:hidden p-2 rounded-md text-slate-700 hover:text-ink hover:bg-slate-100 transition-colors cursor-pointer border border-[#E2E8F0]"
-        aria-label="Open Navigation Sidebar"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-        </svg>
-      </button>
+      {!hideSidebarToggle && (
+        <button
+          type="button"
+          id="openSidebarBtn"
+          onclick="window.toggleSidebar && window.toggleSidebar()"
+          class="p-2 rounded-lg text-slate-700 hover:text-[#09090B] hover:bg-slate-100 transition-colors cursor-pointer border border-[#E2E8F0]"
+          title="Toggle Navigation Sidebar"
+          aria-label="Toggle Navigation Sidebar"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+      )}
 
-      <a href="/" class="flex items-center gap-2.5 group">
-        <div class="w-7 h-7 rounded-md bg-[#09090B] text-white flex items-center justify-center font-bold text-xs tracking-tight shadow-xs group-hover:bg-[#2563EB] transition-colors">
-          AIO
+      <a href="/dashboard" class="flex items-center gap-2.5 group" id="headerBrandLink">
+        <div class="w-7 h-7 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-black text-xs tracking-tight shadow-xs group-hover:bg-[#2563EB] transition-colors">
+          AI
         </div>
-        <div class="hidden sm:flex items-center gap-1.5">
-          <span class="text-ink font-bold tracking-tight text-base group-hover:text-[#2563EB] transition-colors">AIO AI</span>
-          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] font-semibold border border-[#BFDBFE]">v2.0</span>
-        </div>
+        <span class="text-[#09090B] font-black tracking-tight text-base group-hover:text-[#2563EB] transition-colors">
+          AIO AI
+        </span>
       </a>
     </div>
 
-    <!-- Center: Wide Prominent Command Palette Trigger (Cmd+K) -->
+    <!-- Center: Wide Command Palette Trigger (Cmd+K) -->
     <div class="flex-1 max-w-xl mx-auto">
       <button
         type="button"
@@ -59,7 +62,7 @@ const { currentPath = Astro.url.pathname } = Astro.props;
       <!-- Quick AI Finder Button -->
       <a
         href="/finder"
-        class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold bg-[#2563EB] text-white hover:bg-[#1D4ED8] px-3 py-1.5 rounded-lg shadow-xs transition-colors"
+        class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold bg-[#2563EB] text-white hover:bg-[#1D4ED8] px-3 py-1.5 rounded-lg shadow-xs transition-colors"
       >
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
@@ -70,9 +73,9 @@ const { currentPath = Astro.url.pathname } = Astro.props;
       <!-- Docs Link -->
       <a
         href="/docs"
-        class={`hidden md:inline-flex text-xs font-medium px-2.5 py-1.5 rounded-md transition-colors ${
+        class={`hidden md:inline-flex text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors ${
           currentPath.startsWith('/docs')
-            ? 'text-[#2563EB] bg-[#EFF6FF] font-semibold'
+            ? 'text-[#2563EB] bg-[#EFF6FF]'
             : 'text-slate-600 hover:text-ink hover:bg-slate-100'
         }`}
       >
@@ -82,7 +85,7 @@ const { currentPath = Astro.url.pathname } = Astro.props;
       <!-- Submit Resource Button -->
       <a
         href="/submit"
-        class={`hidden lg:inline-flex text-xs font-medium px-2.5 py-1.5 rounded-md border border-[#E2E8F0] transition-colors ${
+        class={`hidden lg:inline-flex text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] transition-colors ${
           currentPath.startsWith('/submit')
             ? 'bg-[#EFF6FF] text-[#2563EB] border-[#BFDBFE]'
             : 'bg-white text-slate-700 hover:text-ink hover:border-slate-300'
@@ -93,27 +96,42 @@ const { currentPath = Astro.url.pathname } = Astro.props;
 
       <!-- Auth State Control -->
       <div id="headerAuthNav" class="flex items-center gap-2 border-l border-[#E2E8F0] pl-2 sm:pl-3">
+        <!-- Logged Out View -->
         <a
           href="/login"
           id="headerLoginLink"
-          class="text-xs text-slate-700 hover:text-ink font-medium px-2 py-1.5 rounded-md hover:bg-slate-100 transition-colors"
+          class="text-xs text-slate-700 hover:text-ink font-semibold px-2.5 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
         >
           Sign In
         </a>
         <a
           href="/signup"
           id="headerSignupLink"
-          class="bg-[#09090B] text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-neutral-800 transition-colors shadow-xs"
+          class="bg-[#09090B] text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-neutral-800 transition-colors shadow-xs"
         >
-          Sign Up
+          Get Started Free
         </a>
+
+        <!-- Logged In View -->
+        <a
+          href="/dashboard"
+          id="headerDashboardLink"
+          class="hidden items-center gap-1.5 text-xs text-[#2563EB] font-bold px-2.5 py-1.5 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-blue-100 transition-colors"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+          </svg>
+          <span>Dashboard</span>
+        </a>
+
         <a
           href="/profile"
           id="headerProfileLink"
           class="hidden items-center gap-1.5 text-xs text-ink font-semibold px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] bg-[#F8FAFF] hover:border-[#BFDBFE] transition-colors"
+          title="Account Profile & Settings"
         >
           <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span>Profile</span>
+          <span id="headerProfileHandle">Profile</span>
         </a>
       </div>
     </div>
@@ -121,43 +139,41 @@ const { currentPath = Astro.url.pathname } = Astro.props;
   </div>
 </header>
 
-<script>
-  import { supabase, isSupabaseConfigured } from '../lib/supabase';
+<script is:inline>
+  function checkHeaderAuth() {
+    var loginLink = document.getElementById('headerLoginLink');
+    var signupLink = document.getElementById('headerSignupLink');
+    var dashboardLink = document.getElementById('headerDashboardLink');
+    var profileLink = document.getElementById('headerProfileLink');
+    var profileHandle = document.getElementById('headerProfileHandle');
+    var brandLink = document.getElementById('headerBrandLink');
 
-  async function checkHeaderAuth() {
-    const loginLink = document.getElementById('headerLoginLink');
-    const signupLink = document.getElementById('headerSignupLink');
-    const profileLink = document.getElementById('headerProfileLink');
-
-    let userLoggedIn = false;
-
-    // 1. Check local session storage fallback
-    const localUser = localStorage.getItem('aio_user');
-    if (localUser) {
-      userLoggedIn = true;
-    }
-
-    // 2. Check Supabase auth if configured
-    if (isSupabaseConfigured) {
+    var localUserStr = localStorage.getItem('aio_user');
+    if (localUserStr) {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session && session.user) {
-          userLoggedIn = true;
+        var user = JSON.parse(localUserStr);
+        if (loginLink) loginLink.classList.add('hidden');
+        if (signupLink) signupLink.classList.add('hidden');
+        if (dashboardLink) {
+          dashboardLink.classList.remove('hidden');
+          dashboardLink.classList.add('inline-flex');
         }
-      } catch (e) {
-        // Fallback to local
-      }
-    }
-
-    if (userLoggedIn) {
-      loginLink?.classList.add('hidden');
-      signupLink?.classList.add('hidden');
-      profileLink?.classList.remove('hidden');
-      profileLink?.classList.add('inline-flex');
+        if (profileLink) {
+          profileLink.classList.remove('hidden');
+          profileLink.classList.add('inline-flex');
+        }
+        if (profileHandle && (user.name || user.email)) {
+          var namePart = user.name || user.email.split('@')[0];
+          profileHandle.textContent = namePart.substring(0, 10);
+        }
+        if (brandLink) brandLink.setAttribute('href', '/dashboard');
+      } catch (e) {}
     } else {
-      loginLink?.classList.remove('hidden');
-      signupLink?.classList.remove('hidden');
-      profileLink?.classList.add('hidden');
+      if (loginLink) loginLink.classList.remove('hidden');
+      if (signupLink) signupLink.classList.remove('hidden');
+      if (dashboardLink) dashboardLink.classList.add('hidden');
+      if (profileLink) profileLink.classList.add('hidden');
+      if (brandLink) brandLink.setAttribute('href', '/');
     }
   }
 
