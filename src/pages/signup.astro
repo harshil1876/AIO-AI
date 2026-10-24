@@ -164,7 +164,7 @@ import Footer from '../components/Footer.astro';
   const googleModal = document.getElementById('signupGoogleModal');
 
   const urlParams = new URLSearchParams(window.location.search);
-  const redirectTarget = urlParams.get('redirect') || '/dashboard';
+  const redirectTarget = urlParams.get('redirect') || '/';
 
   // 1. Google Sign-Up Handler
   googleSignupBtn?.addEventListener('click', async () => {

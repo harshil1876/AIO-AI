@@ -20,18 +20,11 @@ interface NavGroup {
 
 const navGroups: NavGroup[] = [
   {
-    title: 'Workspace',
-    items: [
-      { href: '/dashboard', label: 'Overview / Dashboard', badge: 'PRO', badgeColor: 'blue', icon: 'layout-dashboard' },
-      { href: '/analytics', label: 'Analytics & Insights', badge: 'LIVE', badgeColor: 'emerald', icon: 'bar-chart-2' },
-      { href: '/stack-builder', label: 'My Stack Builder', icon: 'layers' },
-      { href: '/profile', label: 'Saved & Profile', icon: 'user' },
-    ]
-  },
-  {
     title: 'Discover',
     items: [
       { href: '/', label: 'Home', icon: 'home' },
+      { href: '/analytics', label: 'Analytics & Insights', badge: 'LIVE', badgeColor: 'emerald', icon: 'bar-chart-2' },
+      { href: '/stack-builder', label: 'My Stack Builder', icon: 'layers' },
       { href: '/tools', label: 'AI Tools Directory', badge: '113', badgeColor: 'blue', icon: 'grid' },
       { href: '/finder', label: 'AI Intent Finder', icon: 'sparkles' },
       { href: '/categories', label: 'Categories', badge: '13', icon: 'tag' },
@@ -70,6 +63,12 @@ const navGroups: NavGroup[] = [
       { href: '/submit', label: 'Submit Resource', icon: 'plus-circle' },
       { href: '/admin', label: 'Admin Console', icon: 'shield' },
     ]
+  },
+  {
+    title: 'Account',
+    items: [
+      { href: '/profile', label: 'Profile', icon: 'user' },
+    ]
   }
 ];
 
@@ -89,7 +88,7 @@ function isItemActive(href: string, current: string): boolean {
 >
   <!-- Brand Header with Close/Collapse Button -->
   <div class="h-14 px-4 flex items-center justify-between border-b border-[#E2E8F0] bg-white shrink-0">
-    <a href="/dashboard" class="flex items-center gap-2.5 group" id="desktopBrandLink">
+    <a href="/" class="flex items-center gap-2.5 group" id="desktopBrandLink">
       <div class="w-7 h-7 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-black text-xs tracking-tight shadow-xs group-hover:bg-[#2563EB] transition-colors">
         AI
       </div>
@@ -299,7 +298,7 @@ function isItemActive(href: string, current: string): boolean {
   <div class="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-white border-r border-[#E2E8F0] flex flex-col shadow-2xl z-10 transition-transform">
     <!-- Brand Header -->
     <div class="h-14 px-4 flex items-center justify-between border-b border-[#E2E8F0] shrink-0">
-      <a href="/dashboard" class="flex items-center gap-2.5">
+      <a href="/" class="flex items-center gap-2.5">
         <div class="w-7 h-7 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-black text-xs tracking-tight">
           AI
         </div>
@@ -468,7 +467,7 @@ function isItemActive(href: string, current: string): boolean {
           if (avatarEl && (user.name || user.email)) {
             avatarEl.textContent = (user.name || user.email).charAt(0).toUpperCase();
           }
-          if (brandLink) brandLink.setAttribute('href', '/dashboard');
+          if (brandLink) brandLink.setAttribute('href', '/');
         }
       } catch (e) {}
     }

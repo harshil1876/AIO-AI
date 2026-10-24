@@ -64,8 +64,8 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
         <a href="/signup" class="text-xs font-bold bg-[#09090B] hover:bg-[#2563EB] text-white px-4 py-2 rounded-xl transition-all shadow-xs" id="publicNavSignup">
           Get Started Free
         </a>
-        <a href="/dashboard" class="hidden text-xs font-bold bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-all shadow-xs" id="publicNavDashboard">
-          Go to Workspace Dashboard &rarr;
+        <a href="/profile" class="hidden text-xs font-bold bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-all shadow-xs" id="publicNavDashboard">
+          Profile &rarr;
         </a>
       </div>
     </div>
@@ -324,16 +324,8 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
     }
 
     var isAuth = isUserAuthenticated();
-    var urlParams = new URLSearchParams(window.location.search);
-    var stay = urlParams.get('stay') === 'true';
 
-    // Auto-redirect authenticated users to Workspace Dashboard unless ?stay=true
-    if (isAuth && !stay) {
-      window.location.replace('/dashboard');
-      return;
-    }
-
-    // Adapt public nav CTAs if user is authenticated but stayed
+    // Adapt public nav CTAs if user is authenticated
     if (isAuth) {
       var loginBtn = document.getElementById('publicNavLogin');
       var signupBtn = document.getElementById('publicNavSignup');
