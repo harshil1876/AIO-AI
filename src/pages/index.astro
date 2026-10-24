@@ -95,7 +95,7 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
       </p>
       
       <!-- Wide Search / Intent Input Box -->
-      <form id="heroIntentForm" action="/finder" method="GET" class="w-full max-w-2xl bg-white border-2 border-[#09090B] rounded-2xl shadow-[6px_6px_0px_0px_#09090B] p-2 flex items-center mb-6 transition-all focus-within:shadow-[8px_8px_0px_0px_#2563EB]">
+      <form id="heroIntentForm" action="/finder" method="GET" class="w-full max-w-2xl bg-white border border-[#E2E8F0] focus-within:border-[#2563EB] focus-within:ring-4 focus-within:ring-[#2563EB]/10 rounded-2xl shadow-sm hover:shadow-md p-2 flex items-center mb-6 transition-all">
         <span class="pl-3 text-slate-400">
           <svg class="w-5 h-5 text-[#2563EB]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -110,7 +110,7 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
         />
         <button 
           type="submit" 
-          class="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm rounded-xl px-5 py-2.5 transition-colors whitespace-nowrap cursor-pointer shadow-xs border border-[#09090B]"
+          class="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm rounded-xl px-5 py-2.5 transition-colors whitespace-nowrap cursor-pointer shadow-xs"
         >
           Match Blueprint
         </button>
@@ -168,54 +168,54 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
+          <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs hover:shadow-md transition-all group">
             <div class="text-xs font-mono font-bold text-[#2563EB] uppercase mb-1">01. Verified Catalog</div>
-            <h3 class="text-lg font-black text-[#09090B] mb-2">113+ Audited AI Tools</h3>
+            <h3 class="text-lg font-black text-[#09090B] mb-2 group-hover:text-[#2563EB] transition-colors">113+ Audited AI Tools</h3>
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
               Real pricing, India payment support, API availability, and zero pay-for-placement bias.
             </p>
             <a href="/tools" data-auth-required="true" data-auth-action="Explore 113+ Audited AI Tools" class="text-xs font-bold text-[#2563EB] hover:underline">Explore Catalog &rarr;</a>
           </div>
 
-          <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
+          <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs hover:shadow-md transition-all group">
             <div class="text-xs font-mono font-bold text-[#2563EB] uppercase mb-1">02. Decision Engine</div>
-            <h3 class="text-lg font-black text-[#09090B] mb-2">5-Layer Connected Blueprint</h3>
+            <h3 class="text-lg font-black text-[#09090B] mb-2 group-hover:text-[#2563EB] transition-colors">5-Layer Connected Blueprint</h3>
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
               Get matched with the primary tool, 100% free option, production workflow, and tutorial in seconds.
             </p>
             <a href="/finder" data-auth-required="true" data-auth-action="Launch 5-Layer Connected Blueprint" class="text-xs font-bold text-[#2563EB] hover:underline">Launch AI Finder &rarr;</a>
           </div>
 
-          <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
+          <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs hover:shadow-md transition-all group">
             <div class="text-xs font-mono font-bold text-[#2563EB] uppercase mb-1">03. Production Recipes</div>
-            <h3 class="text-lg font-black text-[#09090B] mb-2">16 Multi-Step Workflows</h3>
+            <h3 class="text-lg font-black text-[#09090B] mb-2 group-hover:text-[#2563EB] transition-colors">16 Multi-Step Workflows</h3>
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
               Step-by-step automation pipelines with Free vs Freemium vs Paid monthly cost comparisons.
             </p>
             <a href="/workflows" data-auth-required="true" data-auth-action="16 Production AI Workflows" class="text-xs font-bold text-[#2563EB] hover:underline">View Workflows &rarr;</a>
           </div>
 
-          <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
+          <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs hover:shadow-md transition-all group">
             <div class="text-xs font-mono font-bold text-[#2563EB] uppercase mb-1">04. Self-Hosting Hub</div>
-            <h3 class="text-lg font-black text-[#09090B] mb-2">20 Flagship Open-Source Repos</h3>
+            <h3 class="text-lg font-black text-[#09090B] mb-2 group-hover:text-[#2563EB] transition-colors">20 Flagship Open-Source Repos</h3>
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
               Docker commands, VRAM calculations, and zero-cost commercial replacements (Ollama, vLLM, ComfyUI).
             </p>
             <a href="/open-source" data-auth-required="true" data-auth-action="20 Flagship Open-Source Repos" class="text-xs font-bold text-[#2563EB] hover:underline">Self-Host Hub &rarr;</a>
           </div>
 
-          <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
+          <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs hover:shadow-md transition-all group">
             <div class="text-xs font-mono font-bold text-[#2563EB] uppercase mb-1">05. Daily Intelligence</div>
-            <h3 class="text-lg font-black text-[#09090B] mb-2">Neo-Brutalist Daily Briefing</h3>
+            <h3 class="text-lg font-black text-[#09090B] mb-2 group-hover:text-[#2563EB] transition-colors">Neo-Brutalist Daily Briefing</h3>
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
               Factual, technical daily newspaper categorizing major model drops, APIs, and policy shifts.
             </p>
             <a href="/news/daily" data-auth-required="true" data-auth-action="Neo-Brutalist Daily Briefing" class="text-xs font-bold text-[#2563EB] hover:underline">Read Daily News &rarr;</a>
           </div>
 
-          <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B]">
+          <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs hover:shadow-md transition-all group">
             <div class="text-xs font-mono font-bold text-[#2563EB] uppercase mb-1">06. Developer Utilities</div>
-            <h3 class="text-lg font-black text-[#09090B] mb-2">8-in-1 Client-Side Suite</h3>
+            <h3 class="text-lg font-black text-[#09090B] mb-2 group-hover:text-[#2563EB] transition-colors">8-in-1 Client-Side Suite</h3>
             <p class="text-xs text-slate-600 leading-relaxed mb-4">
               Token Calculator, Prompt Optimizer, Hook Generator, Image Resizer, and JSON-to-TypeScript.
             </p>
@@ -255,13 +255,13 @@ const recentPosts = COMMUNITY_POSTS.slice(0, 3);
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           {featuredWorkflows.map(wf => (
-            <div class="bg-white border-2 border-[#09090B] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#09090B] flex flex-col justify-between">
+            <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
               <div>
                 <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-400 mb-2">
                   <span>{wf.difficulty}</span>
                   <span>{wf.steps.length} Steps</span>
                 </div>
-                <h3 class="text-base font-black text-[#09090B] mb-2">{wf.title}</h3>
+                <h3 class="text-base font-black text-[#09090B] mb-2 group-hover:text-[#2563EB] transition-colors">{wf.title}</h3>
                 <p class="text-xs text-slate-600 line-clamp-3 mb-4 leading-relaxed">{wf.goal}</p>
               </div>
               <div class="pt-4 border-t border-[#E2E8F0] flex items-center justify-between">

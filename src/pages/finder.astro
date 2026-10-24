@@ -37,7 +37,7 @@ const allTools = await getAllTools();
 
     <!-- Interactive Finder Workspace -->
     <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 flex-1">
-      <form id="finderForm" class="bg-white border-2 border-[#09090B] rounded-xl p-6 md:p-8 shadow-[6px_6px_0px_0px_#09090B] mb-12">
+      <form id="finderForm" class="bg-white border border-[#E2E8F0] focus-within:border-[#2563EB] focus-within:ring-4 focus-within:ring-[#2563EB]/10 rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-md transition-all mb-12">
         <label for="taskPrompt" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 mb-2">
           Describe Your Goal, Task, or Budget Requirements:
         </label>
@@ -46,7 +46,7 @@ const allTools = await getAllTools();
           id="taskPrompt"
           rows="3"
           placeholder="e.g. Free AI for YouTube Shorts voiceover and video generation in Indian languages, or automated customer support on WhatsApp." 
-          class="w-full bg-[#F8FAFF] border-2 border-[#E2E8F0] hover:border-[#BFDBFE] focus:border-[#2563EB] rounded-lg p-3.5 text-ink placeholder-slate-400 resize-none outline-none text-sm leading-relaxed transition-colors mb-4 font-sans"
+          class="w-full bg-[#F8FAFF] border border-[#E2E8F0] hover:border-[#BFDBFE] focus:border-[#2563EB] rounded-xl p-3.5 text-ink placeholder-slate-400 resize-none outline-none text-sm leading-relaxed transition-colors mb-4 font-sans"
         ></textarea>
 
         <!-- Quick Intent Preset Chips -->
@@ -85,7 +85,7 @@ const allTools = await getAllTools();
           <button 
             type="submit"
             id="matchBtn"
-            class="w-full sm:w-auto bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs px-6 py-3 rounded-lg shadow-[3px_3px_0px_0px_#09090B] border-2 border-[#09090B] transition-all cursor-pointer inline-flex items-center justify-center gap-2"
+            class="w-full sm:w-auto bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs px-6 py-3 rounded-xl shadow-xs hover:shadow-md transition-all cursor-pointer inline-flex items-center justify-center gap-2"
           >
             <span>Generate Decision Blueprint</span>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -99,7 +99,7 @@ const allTools = await getAllTools();
       <div id="resultsSection" class="hidden flex-col gap-8">
         
         <!-- Results Header Banner -->
-        <div class="p-4 rounded-xl bg-[#F8FAFF] border-2 border-[#09090B] shadow-[4px_4px_0px_0px_#09090B] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div class="p-4 rounded-2xl bg-[#F8FAFF] border border-[#BFDBFE] shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             <div class="text-[11px] font-mono uppercase text-[#2563EB] font-bold tracking-wider">Ecosystem Match Result</div>
             <h2 class="text-lg md:text-xl font-bold text-ink">Connected Decision Blueprint</h2>
@@ -108,7 +108,7 @@ const allTools = await getAllTools();
           <button 
             type="button" 
             id="resetFinderBtn" 
-            class="text-xs font-semibold text-slate-600 hover:text-ink px-3 py-1.5 rounded border border-[#E2E8F0] bg-white hover:bg-slate-50 transition-colors cursor-pointer shrink-0"
+            class="text-xs font-semibold text-slate-600 hover:text-ink px-3 py-1.5 rounded-lg border border-[#E2E8F0] bg-white hover:bg-slate-50 transition-colors cursor-pointer shrink-0"
           >
             Clear Blueprint
           </button>
@@ -123,7 +123,7 @@ const allTools = await getAllTools();
         </div>
 
         <!-- Layer 2: Connected Multi-Step Workflow Blueprint -->
-        <div class="p-6 rounded-xl bg-white border-2 border-[#09090B] shadow-[4px_4px_0px_0px_#09090B]" id="workflowContainer">
+        <div class="p-6 rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#2563EB] shadow-xs hover:shadow-md transition-all" id="workflowContainer">
           <div class="flex items-center justify-between mb-4 border-b border-[#E2E8F0] pb-3">
             <div class="flex items-center gap-2">
               <span class="text-xs font-mono uppercase font-bold px-2 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
@@ -162,7 +162,7 @@ const allTools = await getAllTools();
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
           
           <!-- Open-Source Self-Hostable Alternative -->
-          <div class="p-5 rounded-xl bg-white border-2 border-[#09090B] shadow-[4px_4px_0px_0px_#09090B] flex flex-col justify-between" id="repoCard">
+          <div class="p-5 rounded-2xl bg-white border border-[#E2E8F0] hover:border-purple-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between" id="repoCard">
             <div>
               <div class="flex items-center justify-between mb-3">
                 <span class="text-[11px] font-mono uppercase font-bold px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200">
@@ -187,7 +187,7 @@ const allTools = await getAllTools();
           </div>
 
           <!-- Recommended YouTube Creator to Learn From -->
-          <div class="p-5 rounded-xl bg-white border-2 border-[#09090B] shadow-[4px_4px_0px_0px_#09090B] flex flex-col justify-between" id="creatorCard">
+          <div class="p-5 rounded-2xl bg-white border border-[#E2E8F0] hover:border-red-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between" id="creatorCard">
             <div>
               <div class="flex items-center justify-between mb-3">
                 <span class="text-[11px] font-mono uppercase font-bold px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200">
@@ -385,7 +385,7 @@ const allTools = await getAllTools();
       if (recommendationCards) {
         recommendationCards.innerHTML = `
           <!-- 1. Best Overall -->
-          <div class="bg-white border-2 border-[#09090B] rounded-xl p-5 shadow-[4px_4px_0px_0px_#2563EB] flex flex-col justify-between">
+          <div class="bg-white border border-[#BFDBFE] hover:border-[#2563EB] rounded-2xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
             <div>
               <div class="flex items-center justify-between mb-3">
                 <span class="text-[11px] font-mono uppercase font-bold px-2.5 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
@@ -393,7 +393,7 @@ const allTools = await getAllTools();
                 </span>
                 <span class="text-xs font-mono font-bold text-ink">Score: ${bestOverall.platformScore || 90}</span>
               </div>
-              <h4 class="text-base font-bold text-ink mb-1">${bestOverall.name}</h4>
+              <h4 class="text-base font-bold text-ink mb-1 group-hover:text-[#2563EB] transition-colors">${bestOverall.name}</h4>
               <p class="text-xs text-slate-600 line-clamp-2 mb-3">${bestOverall.tagline}</p>
               <div class="p-2.5 rounded bg-[#F8FAFF] border border-[#E2E8F0] text-[11px] text-[#2563EB] font-medium mb-4">
                 &bull; ${bestOverallReason}
@@ -408,7 +408,7 @@ const allTools = await getAllTools();
           </div>
 
           <!-- 2. Best Free Option -->
-          <div class="bg-white border-2 border-[#09090B] rounded-xl p-5 shadow-[4px_4px_0px_0px_#10B981] flex flex-col justify-between">
+          <div class="bg-white border border-emerald-200 hover:border-emerald-500 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
             <div>
               <div class="flex items-center justify-between mb-3">
                 <span class="text-[11px] font-mono uppercase font-bold px-2.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -416,7 +416,7 @@ const allTools = await getAllTools();
                 </span>
                 <span class="text-xs font-mono font-bold text-emerald-700">Free Tier</span>
               </div>
-              <h4 class="text-base font-bold text-ink mb-1">${bestFree.name}</h4>
+              <h4 class="text-base font-bold text-ink mb-1 group-hover:text-emerald-700 transition-colors">${bestFree.name}</h4>
               <p class="text-xs text-slate-600 line-clamp-2 mb-3">${bestFree.tagline}</p>
               <div class="p-2.5 rounded bg-emerald-50/50 border border-emerald-100 text-[11px] text-emerald-800 font-medium mb-4">
                 &bull; ${bestFreeReason}
@@ -431,7 +431,7 @@ const allTools = await getAllTools();
           </div>
 
           <!-- 3. Best Premium / Production Option -->
-          <div class="bg-white border-2 border-[#09090B] rounded-xl p-5 shadow-[4px_4px_0px_0px_#09090B] flex flex-col justify-between">
+          <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
             <div>
               <div class="flex items-center justify-between mb-3">
                 <span class="text-[11px] font-mono uppercase font-bold px-2.5 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-300">
@@ -439,7 +439,7 @@ const allTools = await getAllTools();
                 </span>
                 <span class="text-xs font-mono font-bold text-slate-700">Pro Feature Set</span>
               </div>
-              <h4 class="text-base font-bold text-ink mb-1">${bestPremium.name}</h4>
+              <h4 class="text-base font-bold text-ink mb-1 group-hover:text-[#2563EB] transition-colors">${bestPremium.name}</h4>
               <p class="text-xs text-slate-600 line-clamp-2 mb-3">${bestPremium.tagline}</p>
               <div class="p-2.5 rounded bg-[#F8FAFF] border border-[#E2E8F0] text-[11px] text-slate-700 font-medium mb-4">
                 &bull; ${bestPremiumReason}
