@@ -68,7 +68,7 @@
 
       <a 
         id="authGateLoginBtn"
-        href="/login?redirect=/" 
+        href="/login?redirect=/dashboard" 
         class="w-full flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-xs transition-colors"
       >
         Sign In with Email &rarr;
@@ -76,7 +76,7 @@
       
       <a 
         id="authGateSignupBtn"
-        href="/signup?redirect=/" 
+        href="/signup?redirect=/dashboard" 
         class="w-full flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-[#09090B] font-semibold text-xs py-2.5 px-4 rounded-xl border border-[#E2E8F0] transition-colors"
       >
         Create Free Account
@@ -87,7 +87,7 @@
 
 <script is:inline>
   (function() {
-    window.__currentAuthRedirect = '/';
+    window.__currentAuthRedirect = '/dashboard';
 
     window.closeAuthGateModal = function() {
       var modal = document.getElementById('authGateModal');
@@ -99,7 +99,7 @@
       if (localStorage.getItem('supabase.auth.token')) return true;
       for (var i = 0; i < localStorage.length; i++) {
         var k = localStorage.key(i);
-        if (k && k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1) {
+        if (k && (k === 'supabase.auth.token' || (k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1))) {
           return true;
         }
       }
@@ -108,7 +108,7 @@
 
     window.openAuthGateModal = function(action, returnUrl) {
       action = action || 'Access Feature';
-      returnUrl = returnUrl || '/';
+      returnUrl = (returnUrl && returnUrl !== '/') ? returnUrl : '/dashboard';
       window.__currentAuthRedirect = returnUrl;
 
       var modal = document.getElementById('authGateModal');
@@ -124,7 +124,7 @@
 
     // Real Supabase Google OAuth
     window.handleGoogleSignIn = async function(redirectUrl) {
-      redirectUrl = redirectUrl || window.__currentAuthRedirect || '/';
+      redirectUrl = (redirectUrl && redirectUrl !== '/') ? redirectUrl : (window.__currentAuthRedirect || '/dashboard');
 
       if (window.supabase && typeof window.supabase.auth?.signInWithOAuth === 'function') {
         try {

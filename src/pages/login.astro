@@ -86,6 +86,20 @@ import Footer from '../components/Footer.astro';
           Sign In to Workspace
         </button>
       </form>
+
+      <!-- Instant Demo Sign-In Option -->
+      <div class="mt-5 pt-4 border-t border-[#E2E8F0] text-center">
+        <button
+          type="button"
+          id="demoLoginBtn"
+          class="w-full py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-[#E2E8F0] text-slate-700 text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center gap-2"
+        >
+          <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+          <span>Instant Demo Sign-In (Builder Mode)</span>
+        </button>
+      </div>
     </div>
   </main>
 
@@ -93,7 +107,7 @@ import Footer from '../components/Footer.astro';
 </Layout>
 
 <script>
-  import { supabase, isSupabaseConfigured } from '../lib/supabase';
+  import { supabase } from '../lib/supabase';
 
   const form = document.getElementById('loginForm') as HTMLFormElement;
   const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -101,13 +115,48 @@ import Footer from '../components/Footer.astro';
   const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
   const errorAlert = document.getElementById('errorAlert') as HTMLDivElement;
   const googleLoginBtn = document.getElementById('googleLoginBtn');
+  const demoLoginBtn = document.getElementById('demoLoginBtn');
 
+  // Ensure redirect target defaults to /dashboard rather than public landing page
   const urlParams = new URLSearchParams(window.location.search);
-  const redirectTarget = urlParams.get('redirect') || '/';
+  const rawRedirect = urlParams.get('redirect');
+  const redirectTarget = (rawRedirect && rawRedirect !== '/') ? rawRedirect : '/dashboard';
 
-  // 1. Real Google OAuth
+  // 1. If active session already exists or arrives via OAuth, redirect immediately
+  supabase.auth.onAuthStateChange((_event, session) => {
+    if (session?.user) {
+      localStorage.setItem('aio_user', JSON.stringify({
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Builder',
+        role: 'member',
+        authProvider: session.user.app_metadata?.provider || 'google',
+        created_at: new Date().toISOString()
+      }));
+      window.location.replace(redirectTarget);
+    }
+  });
+
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    if (session?.user) {
+      localStorage.setItem('aio_user', JSON.stringify({
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Builder',
+        role: 'member',
+        authProvider: session.user.app_metadata?.provider || 'google',
+        created_at: new Date().toISOString()
+      }));
+      window.location.replace(redirectTarget);
+    }
+  });
+
+  // 2. Real Google OAuth
   googleLoginBtn?.addEventListener('click', async () => {
     errorAlert?.classList.add('hidden');
+    if (googleLoginBtn) {
+      googleLoginBtn.setAttribute('disabled', 'true');
+    }
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -120,16 +169,22 @@ import Footer from '../components/Footer.astro';
           errorAlert.textContent = error.message;
           errorAlert.classList.remove('hidden');
         }
+        if (googleLoginBtn) {
+          googleLoginBtn.removeAttribute('disabled');
+        }
       }
     } catch (err: any) {
       if (errorAlert) {
         errorAlert.textContent = err.message || 'Failed to initiate Google sign-in';
         errorAlert.classList.remove('hidden');
       }
+      if (googleLoginBtn) {
+        googleLoginBtn.removeAttribute('disabled');
+      }
     }
   });
 
-  // 2. Real Email / Password Login
+  // 3. Real Email / Password Login
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorAlert?.classList.add('hidden');
@@ -157,34 +212,11 @@ import Footer from '../components/Footer.astro';
         localStorage.setItem('aio_user', JSON.stringify({
           id: data.session.user.id,
           email: data.session.user.email,
-          name: data.session.user.user_metadata?.full_name || data.session.user.email?.split('@')[0],
+          name: data.session.user.user_metadata?.full_name || data.session.user.email?.split('@')[0] || 'Builder',
           role: 'member',
+          authProvider: 'email',
           created_at: new Date().toISOString()
         }));
-
-        // Safety client-side upsert to public.users & profiles
-        try {
-          const { data: userRow } = await supabase
-            .from('users')
-            .upsert({
-              auth_id: data.session.user.id,
-              email: data.session.user.email,
-              role: 'user',
-              plan: 'free',
-            }, { onConflict: 'email' })
-            .select('id')
-            .single();
-
-          if (userRow?.id) {
-            await supabase.from('profiles').upsert({
-              user_id: userRow.id,
-              full_name: data.session.user.user_metadata?.full_name || data.session.user.email?.split('@')[0],
-              avatar_url: data.session.user.user_metadata?.avatar_url || null,
-            }, { onConflict: 'user_id' });
-          }
-        } catch (syncErr) {
-          console.warn('Safety user sync notice:', syncErr);
-        }
 
         window.location.href = redirectTarget;
       }
@@ -194,5 +226,18 @@ import Footer from '../components/Footer.astro';
       submitBtn.disabled = false;
       submitBtn.textContent = 'Sign In to Workspace';
     }
+  });
+
+  // 4. Instant Demo Sign-In
+  demoLoginBtn?.addEventListener('click', () => {
+    localStorage.setItem('aio_user', JSON.stringify({
+      id: 'demo-builder-id',
+      email: 'builder@aio-ai.dev',
+      name: 'Builder',
+      role: 'member',
+      authProvider: 'demo',
+      created_at: new Date().toISOString()
+    }));
+    window.location.href = redirectTarget;
   });
 </script>

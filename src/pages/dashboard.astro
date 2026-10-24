@@ -365,28 +365,53 @@ const featuredCreators = CREATORS_DATA.slice(0, 3);
     const badgeText = document.getElementById('userBadgeText');
     const countEl = document.getElementById('dashBookmarkCount');
 
-    // 1. Check active Supabase Auth session or OAuth callback
-    const { data: { session } } = await supabase.auth.getSession();
+    // Check if OAuth tokens or code exist in URL
+    const hash = window.location.hash || '';
+    const search = window.location.search || '';
+    const hasOAuthToken = hash.indexOf('access_token=') !== -1 || search.indexOf('code=') !== -1;
 
-    let currentUser = null;
-    const cachedUserStr = localStorage.getItem('aio_user');
-
-    if (session?.user) {
-      currentUser = {
-        id: session.user.id,
-        email: session.user.email,
-        name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Builder',
-        authProvider: session.user.app_metadata?.provider || 'google'
+    // Helper to apply authenticated user to UI and storage
+    function applyUser(user: any, authProvider = 'google') {
+      const displayName = user.user_metadata?.full_name || user.name || (user.email ? user.email.split('@')[0] : 'Builder');
+      const currentUser = {
+        id: user.id || 'usr-active',
+        email: user.email || '',
+        name: displayName,
+        authProvider: authProvider
       };
       localStorage.setItem('aio_user', JSON.stringify(currentUser));
 
-      // Item 1: Client-side safety upsert into public.users and public.profiles
+      if (nameDisplay) nameDisplay.textContent = currentUser.name;
+      if (emailDisplay) emailDisplay.textContent = currentUser.email;
+      if (badgeText) {
+        badgeText.textContent = authProvider === 'google' ? 'Google Account' : 'Verified Member';
+      }
+
+      // Clean the URL hash so tokens aren't displayed in browser address bar
+      if (window.location.hash && window.location.hash.indexOf('access_token=') !== -1) {
+        try {
+          window.history.replaceState(null, '', window.location.pathname + window.location.search);
+        } catch (e) {}
+      }
+
+      // Fallback bookmark count from localStorage
+      const bookmarks = JSON.parse(localStorage.getItem('aio_bookmarks') || '[]');
+      if (countEl && bookmarks.length > 0) {
+        countEl.textContent = bookmarks.length.toString();
+      }
+
+      // Sync bookmarks and DB profile in background (non-blocking)
+      syncUserDb(currentUser, user);
+    }
+
+    async function syncUserDb(currentUser: any, rawUser: any) {
+      if (!currentUser.email) return;
       try {
         const { data: userRow } = await supabase
           .from('users')
           .upsert({
-            auth_id: session.user.id,
-            email: session.user.email,
+            auth_id: rawUser.id || undefined,
+            email: currentUser.email,
             role: 'user',
             plan: 'free',
           }, { onConflict: 'email' })
@@ -397,10 +422,9 @@ const featuredCreators = CREATORS_DATA.slice(0, 3);
           await supabase.from('profiles').upsert({
             user_id: userRow.id,
             full_name: currentUser.name,
-            avatar_url: session.user.user_metadata?.avatar_url || null,
+            avatar_url: rawUser.user_metadata?.avatar_url || null,
           }, { onConflict: 'user_id' });
 
-          // Sync saved bookmarks count from Supabase
           const { data: dbBookmarks } = await supabase
             .from('bookmarks')
             .select('id')
@@ -411,41 +435,57 @@ const featuredCreators = CREATORS_DATA.slice(0, 3);
           }
         }
       } catch (err) {
-        console.warn('Auth user safety sync notice:', err);
-      }
-    } else if (cachedUserStr) {
-      try {
-        currentUser = JSON.parse(cachedUserStr);
-      } catch (e) {
-        currentUser = null;
+        console.warn('Background profile sync notice:', err);
       }
     }
 
-    // If still unauthenticated, redirect to login
-    if (!currentUser) {
-      window.location.replace('/login?redirect=/dashboard');
+    // 1. Check existing session first
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      applyUser(session.user, session.user.app_metadata?.provider || 'google');
       return;
     }
 
-    // Hydrate UI displays
-    if (nameDisplay) nameDisplay.textContent = currentUser.name || 'Builder';
-    if (emailDisplay) emailDisplay.textContent = currentUser.email || '';
-    if (badgeText) {
-      badgeText.textContent = currentUser.authProvider === 'google' ? 'Google Account' : 'Verified Member';
+    // 2. Check cached localStorage user
+    const cachedUserStr = localStorage.getItem('aio_user');
+    if (cachedUserStr) {
+      try {
+        const parsed = JSON.parse(cachedUserStr);
+        applyUser(parsed, parsed.authProvider || 'member');
+        return;
+      } catch (e) {}
     }
 
-    // Fallback bookmark count from localStorage if not updated from Supabase
-    if (countEl && countEl.textContent === '0') {
-      const bookmarks = JSON.parse(localStorage.getItem('aio_bookmarks') || '[]');
-      if (bookmarks.length > 0) {
-        countEl.textContent = bookmarks.length.toString();
-      }
+    // 3. If OAuth tokens are currently in the URL, wait for Supabase to process them
+    if (hasOAuthToken) {
+      if (badgeText) badgeText.textContent = 'Authenticating...';
+      
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, newSession) => {
+        if (newSession?.user) {
+          subscription.unsubscribe();
+          applyUser(newSession.user, newSession.user.app_metadata?.provider || 'google');
+        }
+      });
+
+      // Safety timeout: if after 4 seconds no session is established, redirect to login
+      setTimeout(async () => {
+        const { data: { session: retrySession } } = await supabase.auth.getSession();
+        if (retrySession?.user) {
+          applyUser(retrySession.user, retrySession.user.app_metadata?.provider || 'google');
+        } else if (!localStorage.getItem('aio_user')) {
+          window.location.replace('/login?redirect=/dashboard');
+        }
+      }, 4000);
+      return;
     }
+
+    // 4. Truly unauthenticated: redirect to login
+    window.location.replace('/login?redirect=/dashboard');
   }
 
-  // Handle auth state changes (e.g. initial OAuth token exchange)
+  // Handle ongoing auth state changes
   supabase.auth.onAuthStateChange((_event, session) => {
-    if (session) {
+    if (session?.user && !localStorage.getItem('aio_user')) {
       initDashboardAuth();
     }
   });

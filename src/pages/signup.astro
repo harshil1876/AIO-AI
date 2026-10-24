@@ -85,6 +85,20 @@ import Footer from '../components/Footer.astro';
           Create Free Account
         </button>
       </form>
+
+      <!-- Instant Demo Sign-In Option -->
+      <div class="mt-5 pt-4 border-t border-[#E2E8F0] text-center">
+        <button
+          type="button"
+          id="demoSignupBtn"
+          class="w-full py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-[#E2E8F0] text-slate-700 text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center gap-2"
+        >
+          <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+          <span>Instant Demo Sign-In (Builder Mode)</span>
+        </button>
+      </div>
     </div>
   </main>
 
@@ -101,13 +115,31 @@ import Footer from '../components/Footer.astro';
   const errorAlert = document.getElementById('errorAlert') as HTMLDivElement;
   const successAlert = document.getElementById('successAlert') as HTMLDivElement;
   const googleSignupBtn = document.getElementById('googleSignupBtn');
+  const demoSignupBtn = document.getElementById('demoSignupBtn');
 
   const urlParams = new URLSearchParams(window.location.search);
-  const redirectTarget = urlParams.get('redirect') || '/';
+  const rawRedirect = urlParams.get('redirect');
+  const redirectTarget = (rawRedirect && rawRedirect !== '/') ? rawRedirect : '/dashboard';
 
-  // 1. Real Google OAuth Sign-Up
+  // 1. If active session already exists, redirect immediately
+  supabase.auth.onAuthStateChange((_event, session) => {
+    if (session?.user) {
+      localStorage.setItem('aio_user', JSON.stringify({
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Builder',
+        role: 'member',
+        authProvider: session.user.app_metadata?.provider || 'google',
+        created_at: new Date().toISOString()
+      }));
+      window.location.replace(redirectTarget);
+    }
+  });
+
+  // 2. Real Google OAuth Sign-Up
   googleSignupBtn?.addEventListener('click', async () => {
     errorAlert?.classList.add('hidden');
+    if (googleSignupBtn) googleSignupBtn.setAttribute('disabled', 'true');
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -120,16 +152,18 @@ import Footer from '../components/Footer.astro';
           errorAlert.textContent = error.message;
           errorAlert.classList.remove('hidden');
         }
+        if (googleSignupBtn) googleSignupBtn.removeAttribute('disabled');
       }
     } catch (err: any) {
       if (errorAlert) {
         errorAlert.textContent = err.message || 'Failed to initiate Google sign-in';
         errorAlert.classList.remove('hidden');
       }
+      if (googleSignupBtn) googleSignupBtn.removeAttribute('disabled');
     }
   });
 
-  // 2. Real Email Sign-Up
+  // 3. Real Email Sign-Up
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorAlert?.classList.add('hidden');
@@ -164,7 +198,6 @@ import Footer from '../components/Footer.astro';
         }));
         window.location.href = redirectTarget;
       } else {
-        // Confirmation email required
         successAlert.textContent = 'Account created successfully! Please check your email to confirm your account, then sign in.';
         successAlert.classList.remove('hidden');
         submitBtn.disabled = false;
@@ -176,5 +209,18 @@ import Footer from '../components/Footer.astro';
       submitBtn.disabled = false;
       submitBtn.textContent = 'Create Free Account';
     }
+  });
+
+  // 4. Instant Demo Sign-In
+  demoSignupBtn?.addEventListener('click', () => {
+    localStorage.setItem('aio_user', JSON.stringify({
+      id: 'demo-builder-id',
+      email: 'builder@aio-ai.dev',
+      name: 'Builder',
+      role: 'member',
+      authProvider: 'demo',
+      created_at: new Date().toISOString()
+    }));
+    window.location.href = redirectTarget;
   });
 </script>
