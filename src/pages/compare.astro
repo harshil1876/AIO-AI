@@ -7,49 +7,49 @@ import { getAllTools } from '../services/dataService';
 const allTools = await getAllTools();
 
 // Read query params for tool comparison
-const toolASlug = Astro.url.searchParams.get('a') || 'chatgpt';
-const toolBSlug = Astro.url.searchParams.get('b') || 'claude';
+const toolASlug = Astro.url.searchParams.get('a') || Astro.url.searchParams.get('tool1') || 'chatgpt';
+const toolBSlug = Astro.url.searchParams.get('b') || Astro.url.searchParams.get('tool2') || 'claude';
 ---
 
 <Layout 
-  title="Side-by-Side AI Tool Comparison | AIO AI"
+  title="Side-by-Side AI Tool Comparison | ROI Matrix & Benchmarks"
   description="Compare leading AI models and platforms head-to-head on Cost-to-Value score, free tier generosity, features, and benchmarks."
 >
   <Header currentPath="/compare" />
 
   <main class="w-full flex flex-col min-h-screen bg-canvas">
     <!-- Header -->
-    <section class="border-b border-[#E2E8F0] bg-surface px-6 py-12 md:py-16 text-center">
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-10 md:py-14 text-center">
       <div class="max-w-4xl mx-auto">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-xs font-semibold text-primary mb-4 font-mono">
-          <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-hairline bg-canvas text-xs font-medium text-mute mb-3 font-mono">
+          <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
           </svg>
-          <span>HEAD-TO-HEAD BENCHMARK MATRIX</span>
+          <span>Head-to-Head Benchmark & ROI Matrix</span>
         </div>
-        <h1 class="text-3xl md:text-5xl font-black text-ink tracking-tight mb-4">
+        <h1 class="text-3xl sm:text-4xl font-semibold text-ink tracking-tight mb-2">
           Compare AI Tools
         </h1>
-        <p class="text-neutral-600 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+        <p class="text-mute text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
           Evaluate pricing, free tier generosity, cost-to-value scores, and practical capabilities side-by-side.
         </p>
 
         <!-- Quick Comparison Presets -->
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
-          <span class="text-xs text-neutral-400 font-mono font-medium">Popular Comparisons:</span>
-          <a href="/compare?a=chatgpt&b=claude" class="text-xs bg-white hover:border-primary hover:text-primary px-3 py-1.5 rounded-full border border-[#E2E8F0] text-neutral-700 transition-colors shadow-xs">
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
+          <span class="text-xs text-mute font-mono">Popular Comparisons:</span>
+          <a href="/compare?a=chatgpt&b=claude" class="text-xs bg-canvas hover:border-faint px-3 py-1 rounded-full border border-hairline text-body hover:text-ink transition-colors shadow-xs">
             ChatGPT vs Claude
           </a>
-          <a href="/compare?a=cursor&b=github-copilot" class="text-xs bg-white hover:border-primary hover:text-primary px-3 py-1.5 rounded-full border border-[#E2E8F0] text-neutral-700 transition-colors shadow-xs">
+          <a href="/compare?a=cursor&b=github-copilot" class="text-xs bg-canvas hover:border-faint px-3 py-1 rounded-full border border-hairline text-body hover:text-ink transition-colors shadow-xs">
             Cursor vs GitHub Copilot
           </a>
-          <a href="/compare?a=make&b=n8n" class="text-xs bg-white hover:border-primary hover:text-primary px-3 py-1.5 rounded-full border border-[#E2E8F0] text-neutral-700 transition-colors shadow-xs">
+          <a href="/compare?a=make&b=n8n" class="text-xs bg-canvas hover:border-faint px-3 py-1 rounded-full border border-hairline text-body hover:text-ink transition-colors shadow-xs">
             Make vs n8n (Open Source)
           </a>
-          <a href="/compare?a=midjourney&b=flux" class="text-xs bg-white hover:border-primary hover:text-primary px-3 py-1.5 rounded-full border border-[#E2E8F0] text-neutral-700 transition-colors shadow-xs">
+          <a href="/compare?a=midjourney&b=flux" class="text-xs bg-canvas hover:border-faint px-3 py-1 rounded-full border border-hairline text-body hover:text-ink transition-colors shadow-xs">
             Midjourney vs Flux.1
           </a>
-          <a href="/compare?a=sarvam-ai&b=krutrim" class="text-xs bg-white hover:border-primary hover:text-primary px-3 py-1.5 rounded-full border border-[#E2E8F0] text-neutral-700 transition-colors shadow-xs">
+          <a href="/compare?a=sarvam-ai&b=krutrim" class="text-xs bg-canvas hover:border-faint px-3 py-1 rounded-full border border-hairline text-body hover:text-ink transition-colors shadow-xs">
             Sarvam AI vs Krutrim (India)
           </a>
         </div>
@@ -57,21 +57,21 @@ const toolBSlug = Astro.url.searchParams.get('b') || 'claude';
     </section>
 
     <!-- Comparison Container -->
-    <div class="w-full max-w-6xl mx-auto px-6 py-12 flex-1">
+    <div class="w-full max-w-6xl mx-auto px-6 py-10 flex-1">
       <!-- Selector Row -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div class="bg-white border border-[#E2E8F0] rounded-xl p-4 flex items-center justify-between gap-4 shadow-xs">
-          <label class="text-xs font-mono font-bold uppercase tracking-wider text-neutral-500">Tool A:</label>
-          <select id="selectToolA" class="flex-1 bg-surface border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-ink font-semibold outline-none cursor-pointer focus:border-primary">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-canvas-elevated border border-hairline rounded-lg p-3.5 flex items-center justify-between gap-4 shadow-xs">
+          <label class="text-xs font-mono font-semibold uppercase tracking-wider text-mute">Tool A:</label>
+          <select id="selectToolA" class="flex-1 bg-canvas border border-hairline rounded px-3 py-1.5 text-xs text-ink font-medium outline-none cursor-pointer hover:border-faint">
             {allTools.map(t => (
               <option value={t.slug} selected={t.slug === toolASlug}>{t.name} ({t.pricingType})</option>
             ))}
           </select>
         </div>
 
-        <div class="bg-white border border-[#E2E8F0] rounded-xl p-4 flex items-center justify-between gap-4 shadow-xs">
-          <label class="text-xs font-mono font-bold uppercase tracking-wider text-neutral-500">Tool B:</label>
-          <select id="selectToolB" class="flex-1 bg-surface border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-ink font-semibold outline-none cursor-pointer focus:border-primary">
+        <div class="bg-canvas-elevated border border-hairline rounded-lg p-3.5 flex items-center justify-between gap-4 shadow-xs">
+          <label class="text-xs font-mono font-semibold uppercase tracking-wider text-mute">Tool B:</label>
+          <select id="selectToolB" class="flex-1 bg-canvas border border-hairline rounded px-3 py-1.5 text-xs text-ink font-medium outline-none cursor-pointer hover:border-faint">
             {allTools.map(t => (
               <option value={t.slug} selected={t.slug === toolBSlug}>{t.name} ({t.pricingType})</option>
             ))}
@@ -79,13 +79,27 @@ const toolBSlug = Astro.url.searchParams.get('b') || 'claude';
         </div>
       </div>
 
+      <!-- VISUAL ROI & FEATURE RADAR SUMMARY BAR (Toolify.ai feature) -->
+      <div id="roiComparisonBar" class="bg-canvas-elevated border border-hairline rounded-lg p-5 mb-6 shadow-xs">
+        <div class="flex items-center justify-between mb-4 border-b border-hairline pb-2.5">
+          <h3 class="text-xs font-mono uppercase font-semibold text-ink">
+            Head-to-Head Metric Radar (Direct Score Comparison)
+          </h3>
+          <span class="text-[11px] font-mono text-mute">Normalized 0-100 Benchmark</span>
+        </div>
+
+        <div class="space-y-3 text-xs font-mono" id="metricsRadarContainer">
+          <!-- Dynamically populated by client script below -->
+        </div>
+      </div>
+
       <!-- Comparison Matrix Grid -->
-      <div id="comparisonMatrix" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div id="comparisonMatrix" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Tool A Card -->
-        <div id="cardToolA" class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs flex flex-col justify-between"></div>
+        <div id="cardToolA" class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs flex flex-col justify-between"></div>
 
         <!-- Tool B Card -->
-        <div id="cardToolB" class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs flex flex-col justify-between"></div>
+        <div id="cardToolB" class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs flex flex-col justify-between"></div>
       </div>
     </div>
   </main>
@@ -105,6 +119,7 @@ const toolBSlug = Astro.url.searchParams.get('b') || 'claude';
     const selectB = document.getElementById('selectToolB');
     const cardA = document.getElementById('cardToolA');
     const cardB = document.getElementById('cardToolB');
+    const radarContainer = document.getElementById('metricsRadarContainer');
     const tools = window.AIO_ALL_TOOLS || [];
 
     function renderToolCard(tool, container) {
@@ -113,70 +128,70 @@ const toolBSlug = Astro.url.searchParams.get('b') || 'claude';
       container.innerHTML = `
         <div>
           <!-- Header -->
-          <div class="flex items-start justify-between gap-4 mb-5 pb-5 border-b border-[#E2E8F0]">
+          <div class="flex items-start justify-between gap-4 mb-4 pb-4 border-b border-hairline">
             <div>
-              <div class="flex items-center gap-2 mb-1.5 flex-wrap">
-                <h2 class="text-2xl font-black text-ink tracking-tight">${tool.name}</h2>
-                <span class="text-xs px-2.5 py-0.5 rounded-full border border-blue-200 bg-blue-50 text-primary font-mono font-bold">${tool.pricingType}</span>
-                ${tool.isIndianAI ? '<span class="text-xs px-2 py-0.5 rounded-full bg-orange-50 text-orange-700 border border-orange-200 font-mono font-bold">India AI</span>' : ''}
+              <div class="flex items-center gap-2 mb-1 flex-wrap">
+                <h2 class="text-xl font-semibold text-ink tracking-tight">${tool.name}</h2>
+                <span class="text-xs px-2 py-0.5 rounded bg-hairline-soft border border-hairline text-ink font-mono font-medium">${tool.pricingType}</span>
+                ${tool.isIndianAI ? '<span class="text-xs px-2 py-0.5 rounded bg-orange-500/10 text-orange-600 border border-orange-500/20 font-mono font-medium">India AI</span>' : ''}
               </div>
-              <p class="text-xs text-neutral-600 leading-relaxed">${tool.tagline || ''}</p>
+              <p class="text-xs text-body leading-relaxed">${tool.tagline || ''}</p>
             </div>
           </div>
 
           <!-- Key Scores -->
-          <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="p-3.5 rounded-xl border border-[#E2E8F0] bg-surface">
-              <span class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider font-bold block mb-1">Platform Score</span>
-              <span class="text-2xl font-black font-mono text-ink">${tool.platformScore || 85}<span class="text-xs font-normal text-neutral-400">/100</span></span>
+          <div class="grid grid-cols-2 gap-3 mb-5">
+            <div class="p-3 rounded bg-canvas border border-hairline">
+              <span class="text-[10px] text-mute font-mono uppercase font-semibold block mb-0.5">Platform Score</span>
+              <span class="text-xl font-bold font-mono text-ink">${tool.platformScore || 85}<span class="text-xs font-normal text-mute">/100</span></span>
             </div>
-            <div class="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50">
-              <span class="text-[10px] text-emerald-800 font-mono uppercase tracking-wider font-bold block mb-1">Value Score</span>
-              <span class="text-2xl font-black font-mono text-emerald-700">${tool.valueScore || 88}<span class="text-xs font-normal text-emerald-600">/100</span></span>
+            <div class="p-3 rounded bg-canvas border border-hairline">
+              <span class="text-[10px] text-mute font-mono uppercase font-semibold block mb-0.5">Value Score</span>
+              <span class="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400">${tool.valueScore || 88}<span class="text-xs font-normal text-mute">/100</span></span>
             </div>
           </div>
 
           <!-- Pricing & Free Tier -->
-          <div class="space-y-3 mb-6 text-xs">
-            <div class="flex justify-between items-center pb-2 border-b border-neutral-100">
-              <span class="text-neutral-500 font-medium">Starting Price:</span>
-              <span class="font-mono font-bold text-ink">${tool.startingPrice || 'Free'}</span>
+          <div class="space-y-2.5 mb-5 text-xs">
+            <div class="flex justify-between items-center pb-1.5 border-b border-hairline">
+              <span class="text-mute">Starting Price:</span>
+              <span class="font-mono font-semibold text-ink">${tool.startingPrice || 'Free'}</span>
             </div>
-            <div class="flex justify-between items-center pb-2 border-b border-neutral-100">
-              <span class="text-neutral-500 font-medium">Free Tier Generosity:</span>
-              <span class="font-mono font-bold text-primary">${tool.freeTierGenerosity || 8} / 10</span>
+            <div class="flex justify-between items-center pb-1.5 border-b border-hairline">
+              <span class="text-mute">Free Tier Generosity:</span>
+              <span class="font-mono font-semibold text-ink">${tool.freeTierGenerosity || 8} / 10</span>
             </div>
-            <div class="flex justify-between items-center pb-2 border-b border-neutral-100">
-              <span class="text-neutral-500 font-medium">Pricing Scalability:</span>
-              <span class="font-mono font-bold text-ink">${tool.pricingScalability || 8} / 10</span>
+            <div class="flex justify-between items-center pb-1.5 border-b border-hairline">
+              <span class="text-mute">Pricing Scalability:</span>
+              <span class="font-mono font-semibold text-ink">${tool.pricingScalability || 8} / 10</span>
             </div>
           </div>
 
           <!-- Verdict -->
-          <div class="p-3.5 rounded-xl border border-[#E2E8F0] bg-surface text-xs text-neutral-700 mb-6 leading-relaxed">
-            <strong class="text-ink font-bold block mb-0.5">Value Verdict:</strong>
+          <div class="p-3 rounded bg-canvas border border-hairline text-xs text-body mb-5 leading-relaxed">
+            <strong class="text-ink font-semibold block mb-0.5 font-mono text-[10px] uppercase">Value Verdict:</strong>
             ${tool.valueVerdict || 'Reliable tool suitable for production deployment with competitive pricing.'}
           </div>
 
           <!-- Features -->
-          <div class="mb-6">
-            <h4 class="text-xs font-mono font-bold uppercase tracking-wider text-neutral-400 mb-2.5">Key Capabilities</h4>
-            <ul class="space-y-1.5 text-xs text-neutral-700">
-              ${(tool.features || []).map(f => `<li class="flex items-start gap-2"><span class="text-primary font-bold">•</span><span>${f}</span></li>`).join('')}
+          <div class="mb-5">
+            <h4 class="text-[10px] font-mono font-semibold uppercase tracking-wider text-mute mb-2">Key Capabilities</h4>
+            <ul class="space-y-1 text-xs text-body">
+              ${(tool.features || []).slice(0, 4).map(f => `<li class="flex items-start gap-1.5"><span class="text-emerald-600">•</span><span>${f}</span></li>`).join('')}
             </ul>
           </div>
 
           <!-- Pros & Cons -->
-          <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs">
-              <strong class="text-emerald-900 block font-bold mb-1.5">Top Strengths</strong>
-              <ul class="space-y-1 text-emerald-950 text-[11px]">
+          <div class="grid grid-cols-2 gap-3 mb-5">
+            <div class="p-3 rounded bg-emerald-500/5 border border-emerald-500/20 text-xs">
+              <strong class="text-emerald-700 dark:text-emerald-400 block font-semibold mb-1">Top Strengths</strong>
+              <ul class="space-y-1 text-body text-[11px]">
                 ${(tool.pros || []).slice(0, 2).map(p => `<li>• ${p}</li>`).join('')}
               </ul>
             </div>
-            <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs">
-              <strong class="text-amber-900 block font-bold mb-1.5">Considerations</strong>
-              <ul class="space-y-1 text-amber-950 text-[11px]">
+            <div class="p-3 rounded bg-amber-500/5 border border-amber-500/20 text-xs">
+              <strong class="text-amber-700 dark:text-amber-400 block font-semibold mb-1">Considerations</strong>
+              <ul class="space-y-1 text-body text-[11px]">
                 ${(tool.cons || []).slice(0, 2).map(c => `<li>• ${c}</li>`).join('')}
               </ul>
             </div>
@@ -184,15 +199,41 @@ const toolBSlug = Astro.url.searchParams.get('b') || 'claude';
         </div>
 
         <!-- Footer Actions -->
-        <div class="pt-4 border-t border-[#E2E8F0] flex items-center justify-between gap-3">
-          <a href="/tools/${tool.slug}" class="text-xs font-bold text-neutral-600 hover:text-primary transition-colors">
+        <div class="pt-3 border-t border-hairline flex items-center justify-between gap-3">
+          <a href="/tools/${tool.slug}" class="text-xs font-medium text-mute hover:text-ink transition-colors">
             Full Details →
           </a>
-          <a href="${tool.websiteUrl}" target="_blank" rel="noopener noreferrer" class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors shadow-xs">
+          <a href="${tool.websiteUrl}" target="_blank" rel="noopener noreferrer" class="bg-ink hover:bg-neutral-800 text-on-primary text-xs font-medium px-3.5 py-1.5 rounded transition-colors shadow-xs">
             Visit Website ↗
           </a>
         </div>
       `;
+    }
+
+    function renderRadar(toolA, toolB) {
+      if (!radarContainer || !toolA || !toolB) return;
+
+      const metrics = [
+        { name: 'Platform Score', valA: toolA.platformScore || 85, valB: toolB.platformScore || 85 },
+        { name: 'Cost-to-Value', valA: toolA.valueScore || 85, valB: toolB.valueScore || 85 },
+        { name: 'Free Generosity', valA: (toolA.freeTierGenerosity || 8) * 10, valB: (toolB.freeTierGenerosity || 8) * 10 },
+        { name: 'Scalability', valA: (toolA.pricingScalability || 8) * 10, valB: (toolB.pricingScalability || 8) * 10 }
+      ];
+
+      radarContainer.innerHTML = metrics.map(m => `
+        <div>
+          <div class="flex justify-between items-center mb-1 text-[11px]">
+            <span class="text-ink font-semibold">${toolA.name}: <strong class="text-emerald-600">${m.valA}%</strong></span>
+            <span class="text-mute">${m.name}</span>
+            <span class="text-ink font-semibold">${toolB.name}: <strong class="text-emerald-600">${m.valB}%</strong></span>
+          </div>
+          <div class="h-1.5 rounded-full bg-canvas border border-hairline flex overflow-hidden">
+            <div class="h-full bg-ink" style="width: ${m.valA / 2}%"></div>
+            <div class="h-full bg-canvas flex-1"></div>
+            <div class="h-full bg-emerald-600" style="width: ${m.valB / 2}%"></div>
+          </div>
+        </div>
+      `).join('');
     }
 
     function updateComparison() {
@@ -204,6 +245,7 @@ const toolBSlug = Astro.url.searchParams.get('b') || 'claude';
 
       renderToolCard(toolA, cardA);
       renderToolCard(toolB, cardB);
+      renderRadar(toolA, toolB);
 
       const url = new URL(window.location);
       url.searchParams.set('a', slugA);

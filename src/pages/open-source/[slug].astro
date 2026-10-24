@@ -5,6 +5,7 @@ import Footer from '../../components/Footer.astro';
 import { OPEN_SOURCE_REPOS, type OpenSourceRepo } from '../../data/openSourceData';
 import { TOOLS_DATA } from '../../data/seedData';
 import { WORKFLOWS_DATA } from '../../data/workflowsData';
+import { HARDWARE_PRESETS } from '../../services/githubLiveService';
 
 export function getStaticPaths() {
   return OPEN_SOURCE_REPOS.map((repo) => ({
@@ -30,45 +31,51 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
   w.toolsUsed?.some(t => t.slug === repo.slug || t.name.toLowerCase() === repo.name.toLowerCase()) ||
   w.budgetVariants?.free?.stack?.some(s => s.toLowerCase().includes(repo.name.toLowerCase()))
 );
+
+const [repoOwner, repoShortName] = (repo.repo || '').split('/');
+const minVramNumber = parseInt((repo.hardwareSpecs?.minVramGb || '8').replace(/[^0-9]/g, '')) || 8;
 ---
 
 <Layout 
-  title={`${repo.name} | Open-Source AI Repo & 3-Layer Setup Guide`}
+  title={`${repo.name} | Open-Source AI Repo & 4-Tab Inspector`}
   description={repo.description}
 >
   <Header currentPath="/open-source" />
 
-  <main class="w-full flex flex-col min-h-screen bg-[#FFFFFF]">
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
     <!-- Breadcrumb -->
-    <div class="border-b border-[#E2E8F0] bg-[#F8FAFF] px-4 sm:px-6 py-3">
-      <div class="max-w-5xl w-full mx-auto flex items-center gap-2 text-xs font-mono text-slate-500">
-        <a href="/" class="hover:text-ink transition-colors">HOME</a>
+    <div class="border-b border-hairline bg-canvas px-6 py-3">
+      <div class="max-w-5xl w-full mx-auto flex items-center gap-2 text-xs font-mono text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
         <span>/</span>
-        <a href="/open-source" class="hover:text-ink transition-colors">OPEN SOURCE</a>
+        <a href="/open-source" class="hover:text-ink transition-colors">Open Source</a>
         <span>/</span>
-        <span class="text-ink font-bold uppercase truncate">{repo.name}</span>
+        <span class="text-ink font-medium uppercase truncate">{repo.name}</span>
       </div>
     </div>
 
     <!-- Header Banner -->
-    <section class="max-w-5xl w-full mx-auto px-4 sm:px-6 py-10">
-      <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-xs">
-        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 pb-6 border-b border-[#E2E8F0]">
+    <section class="max-w-5xl w-full mx-auto px-6 py-8">
+      <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 sm:p-8 shadow-xs">
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 pb-6 border-b border-hairline">
           <div>
-            <div class="flex flex-wrap items-center gap-2.5 mb-2">
-              <h1 class="text-2xl sm:text-4xl font-black text-ink tracking-tight">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <h1 class="text-2xl sm:text-3xl font-semibold text-ink tracking-tight">
                 {repo.name}
               </h1>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-purple-50 text-purple-700 border border-purple-200 uppercase">
+              <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-hairline-soft text-ink border border-hairline uppercase">
                 {repo.category}
               </span>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+              <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-canvas text-body border border-hairline">
                 {repo.license}
+              </span>
+              <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                100% Free Forever
               </span>
             </div>
             
-            <div class="text-xs font-mono text-slate-500 mb-3">{repo.repo} &bull; Primary: {repo.language}</div>
-            <p class="text-sm text-slate-700 leading-relaxed max-w-2xl">
+            <div class="text-xs font-mono text-mute mb-3">{repo.repo} &bull; Primary: {repo.language}</div>
+            <p class="text-xs sm:text-sm text-body leading-relaxed max-w-2xl">
               {repo.description}
             </p>
           </div>
@@ -78,8 +85,11 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
               href={repo.url} 
               target="_blank" 
               rel="noopener noreferrer" 
-              class="bg-[#09090B] hover:bg-[#2563EB] text-white font-semibold text-xs px-5 py-2.5 rounded-xl shadow-xs transition-all inline-flex items-center gap-2"
+              class="bg-ink hover:bg-neutral-800 text-on-primary font-medium text-xs px-4 py-2.5 rounded-md shadow-xs transition-colors inline-flex items-center gap-2"
             >
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+              </svg>
               <span>GitHub Repo</span>
               <span>↗</span>
             </a>
@@ -87,71 +97,105 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
         </div>
 
         <!-- 4-Stat Public Metrics Bar -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 text-center font-mono">
-          <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-            <div class="text-xl font-black text-ink">★ {repo.stars}</div>
-            <div class="text-[10px] text-slate-500 uppercase font-bold">GitHub Stars</div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 text-center font-mono">
+          <div class="p-3 rounded bg-canvas border border-hairline">
+            <div class="text-lg font-bold text-ink" id="liveStarsDisplay">★ {repo.stars}</div>
+            <div class="text-[10px] text-mute uppercase font-semibold">Stars</div>
           </div>
-          <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-            <div class="text-xl font-black text-purple-700">{repo.forks}</div>
-            <div class="text-[10px] text-slate-500 uppercase font-bold">Forks</div>
+          <div class="p-3 rounded bg-canvas border border-hairline">
+            <div class="text-lg font-bold text-ink" id="liveForksDisplay">{repo.forks}</div>
+            <div class="text-[10px] text-mute uppercase font-semibold">Forks</div>
           </div>
-          <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-            <div class="text-xl font-black text-slate-800">{repo.hardwareSpecs?.minVramGb}</div>
-            <div class="text-[10px] text-slate-500 uppercase font-bold">Min VRAM</div>
+          <div class="p-3 rounded bg-canvas border border-hairline">
+            <div class="text-lg font-bold text-ink">{repo.hardwareSpecs?.minVramGb}</div>
+            <div class="text-[10px] text-mute uppercase font-semibold">Min VRAM</div>
           </div>
-          <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-            <div class="text-xl font-black text-emerald-700">{repo.difficulty}</div>
-            <div class="text-[10px] text-slate-500 uppercase font-bold">Difficulty</div>
+          <div class="p-3 rounded bg-canvas border border-hairline">
+            <div class="text-lg font-bold text-emerald-600 dark:text-emerald-400 capitalize">{repo.difficulty}</div>
+            <div class="text-[10px] text-mute uppercase font-semibold">Difficulty</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 3-LAYER INFORMATION ARCHITECTURE -->
-    <div class="max-w-5xl w-full mx-auto px-4 sm:px-6 pb-16 flex-1 space-y-8">
+    <!-- 4-TAB REPOSITORY INSPECTOR -->
+    <div class="max-w-5xl w-full mx-auto px-6 pb-16 flex-1 space-y-6">
+      
+      <!-- Tab Navigation Header -->
+      <div class="flex items-center gap-1.5 border-b border-hairline overflow-x-auto pb-1" id="inspectorTabs">
+        {[
+          { id: 'tab-overview', label: '1. Overview & SaaS Replacement' },
+          { id: 'tab-setup', label: '2. Local & Docker Setup' },
+          { id: 'tab-hardware', label: '3. Can My PC Run This? (VRAM)' },
+          { id: 'tab-readme', label: '4. Live GitHub README & Releases' }
+        ].map((t, idx) => (
+          <button 
+            type="button" 
+            class={`inspector-tab-btn px-4 py-2 rounded-t-md text-xs font-medium cursor-pointer transition-colors border-t border-x shrink-0 ${
+              idx === 0 
+                ? 'bg-canvas-elevated text-ink border-hairline font-semibold -mb-[1px]' 
+                : 'bg-canvas text-mute hover:text-ink border-transparent'
+            }`}
+            data-target={t.id}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
 
-      <!-- LAYER 1: 1-MINUTE PLAIN-ENGLISH SUMMARY -->
-      <section class="bg-[#F8FAFF] border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-xs">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="w-2 h-2 rounded-full bg-purple-700"></span>
-          <h2 class="text-xs font-mono uppercase font-bold tracking-wider text-purple-700">
-            Layer 1: 1-Minute Plain-English Summary (For Beginners)
+      <!-- TAB 1: OVERVIEW & SAAS REPLACEMENT -->
+      <div id="tab-overview" class="inspector-panel bg-canvas-elevated border border-hairline rounded-lg p-6 sm:p-8 shadow-xs space-y-6">
+        <div>
+          <h2 class="text-lg font-semibold text-ink tracking-tight mb-2">
+            Plain-English Overview
           </h2>
+          <p class="text-xs sm:text-sm text-body leading-relaxed">
+            {repo.oneMinuteSummary || repo.description}
+          </p>
         </div>
-        <h3 class="text-xl font-bold text-ink mb-3">What does {repo.name} do, and why should you use it?</h3>
-        
-        <p class="text-sm text-slate-800 leading-relaxed mb-6 font-normal">
-          {repo.oneMinuteSummary}
-        </p>
 
-        <!-- Replaces commercial tool badge -->
-        <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs sm:text-sm text-emerald-900 font-medium flex items-center justify-between gap-4">
+        <!-- Commercial SaaS replacement badge -->
+        <div class="p-4 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-xs text-body flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <strong class="font-bold text-emerald-950 uppercase tracking-wider text-[11px] block font-mono">Commercial SaaS It Replaces:</strong>
-            <span>{repo.replacesCommercialTool}</span>
+            <strong class="font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-[10px] block font-mono">
+              Commercial SaaS It Replaces:
+            </strong>
+            <span class="text-ink font-medium">{repo.replacesCommercialTool}</span>
           </div>
-          <span class="text-xs font-bold text-emerald-800 font-mono shrink-0">100% Free Forever</span>
+          <span class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">Zero Recurring Subscriptions</span>
         </div>
-      </section>
 
-      <!-- LAYER 2: PRACTICAL QUICKSTART & CLI SETUP GUIDE -->
-      <section class="bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-xs">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="w-2 h-2 rounded-full bg-[#2563EB]"></span>
-          <h2 class="text-xs font-mono uppercase font-bold tracking-wider text-[#2563EB]">
-            Layer 2: Practical Quickstart & Setup Commands
+        {matchingTools.length > 0 && (
+          <div class="pt-4 border-t border-hairline">
+            <h3 class="text-xs font-mono uppercase font-semibold text-mute mb-3">Linked Commercial Tools in Catalog</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {matchingTools.map(t => (
+                <a href={`/tools/${t.slug}`} class="p-3 rounded border border-hairline bg-canvas hover:border-faint transition-colors flex items-center justify-between">
+                  <span class="text-xs font-semibold text-ink">{t.name}</span>
+                  <span class="text-xs text-mute font-mono">{t.pricingType} &rarr;</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <!-- TAB 2: LOCAL & DOCKER SETUP -->
+      <div id="tab-setup" class="inspector-panel hidden bg-canvas-elevated border border-hairline rounded-lg p-6 sm:p-8 shadow-xs space-y-5">
+        <div>
+          <h2 class="text-lg font-semibold text-ink tracking-tight mb-1">
+            Run {repo.name} in 60 Seconds
           </h2>
+          <p class="text-xs text-mute">Instant production commands for CLI, Docker, and Git.</p>
         </div>
-        <h3 class="text-xl font-bold text-ink mb-4">Run {repo.name} in 60 Seconds</h3>
 
         <div class="space-y-4">
           {repo.quickstartCommands?.cli && (
             <div>
-              <span class="text-xs font-mono uppercase font-bold text-slate-600 block mb-1">CLI Terminal Command:</span>
-              <div class="flex items-center justify-between p-3.5 rounded-xl bg-[#09090B] text-white font-mono text-xs overflow-x-auto">
+              <span class="text-xs font-mono uppercase font-semibold text-mute block mb-1">CLI Terminal Command:</span>
+              <div class="flex items-center justify-between p-3.5 rounded bg-canvas border border-hairline font-mono text-xs overflow-x-auto text-ink">
                 <span>{repo.quickstartCommands.cli}</span>
-                <button type="button" class="copy-cmd-btn text-[11px] font-mono text-[#2563EB] hover:underline font-bold ml-3 shrink-0 cursor-pointer" data-cmd={repo.quickstartCommands.cli}>
+                <button type="button" class="copy-cmd-btn text-xs font-mono text-ink hover:underline font-semibold ml-3 shrink-0 cursor-pointer" data-cmd={repo.quickstartCommands.cli}>
                   Copy
                 </button>
               </div>
@@ -160,10 +204,10 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
 
           {repo.quickstartCommands?.docker && (
             <div>
-              <span class="text-xs font-mono uppercase font-bold text-slate-600 block mb-1">Docker Compose / Run Command:</span>
-              <div class="flex items-center justify-between p-3.5 rounded-xl bg-[#09090B] text-white font-mono text-xs overflow-x-auto">
+              <span class="text-xs font-mono uppercase font-semibold text-mute block mb-1">Docker Compose / Run Command:</span>
+              <div class="flex items-center justify-between p-3.5 rounded bg-canvas border border-hairline font-mono text-xs overflow-x-auto text-ink">
                 <span class="truncate max-w-xl">{repo.quickstartCommands.docker}</span>
-                <button type="button" class="copy-cmd-btn text-[11px] font-mono text-[#2563EB] hover:underline font-bold ml-3 shrink-0 cursor-pointer" data-cmd={repo.quickstartCommands.docker}>
+                <button type="button" class="copy-cmd-btn text-xs font-mono text-ink hover:underline font-semibold ml-3 shrink-0 cursor-pointer" data-cmd={repo.quickstartCommands.docker}>
                   Copy
                 </button>
               </div>
@@ -172,82 +216,119 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
 
           {repo.quickstartCommands?.gitClone && (
             <div>
-              <span class="text-xs font-mono uppercase font-bold text-slate-600 block mb-1">Git Clone Command:</span>
-              <div class="flex items-center justify-between p-3.5 rounded-xl bg-[#09090B] text-white font-mono text-xs overflow-x-auto">
+              <span class="text-xs font-mono uppercase font-semibold text-mute block mb-1">Git Clone Command:</span>
+              <div class="flex items-center justify-between p-3.5 rounded bg-canvas border border-hairline font-mono text-xs overflow-x-auto text-ink">
                 <span>{repo.quickstartCommands.gitClone}</span>
-                <button type="button" class="copy-cmd-btn text-[11px] font-mono text-[#2563EB] hover:underline font-bold ml-3 shrink-0 cursor-pointer" data-cmd={repo.quickstartCommands.gitClone}>
+                <button type="button" class="copy-cmd-btn text-xs font-mono text-ink hover:underline font-semibold ml-3 shrink-0 cursor-pointer" data-cmd={repo.quickstartCommands.gitClone}>
                   Copy
                 </button>
               </div>
             </div>
           )}
         </div>
-      </section>
+      </div>
 
-      <!-- LAYER 3: HARDWARE, VRAM & DEVELOPER METADATA -->
-      <section class="bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-xs">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="w-2 h-2 rounded-full bg-slate-700"></span>
-          <h2 class="text-xs font-mono uppercase font-bold tracking-wider text-slate-700">
-            Layer 3: Hardware, VRAM & Developer Specifications
+      <!-- TAB 3: HARDWARE & VRAM CALCULATOR ("Can My PC Run This?") -->
+      <div id="tab-hardware" class="inspector-panel hidden bg-canvas-elevated border border-hairline rounded-lg p-6 sm:p-8 shadow-xs space-y-6">
+        <div>
+          <h2 class="text-lg font-semibold text-ink tracking-tight mb-1">
+            "Can My PC Run This?" Hardware & Quantization Calculator
           </h2>
-        </div>
-        <h3 class="text-xl font-bold text-ink mb-4">Production Hardware Requirements</h3>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 font-mono text-xs mb-6">
-          <div class="p-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-            <span class="text-slate-500 uppercase font-bold text-[10px] block mb-1">Minimum VRAM:</span>
-            <span class="text-ink font-bold">{repo.hardwareSpecs?.minVramGb}</span>
-          </div>
-          <div class="p-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-            <span class="text-slate-500 uppercase font-bold text-[10px] block mb-1">Recommended GPU:</span>
-            <span class="text-ink font-bold">{repo.hardwareSpecs?.recommendedGpu}</span>
-          </div>
-          <div class="p-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-            <span class="text-slate-500 uppercase font-bold text-[10px] block mb-1">Minimum RAM:</span>
-            <span class="text-ink font-bold">{repo.hardwareSpecs?.minRamGb}</span>
-          </div>
-          <div class="p-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-            <span class="text-slate-500 uppercase font-bold text-[10px] block mb-1">Verified Freshness:</span>
-            <span class="text-emerald-700 font-bold">{repo.verifiedAt}</span>
-          </div>
+          <p class="text-xs text-mute">Test your local system specs against verified minimum and recommended GPU VRAM boundaries.</p>
         </div>
 
-        <div class="pt-4 border-t border-[#E2E8F0]">
-          <span class="text-xs font-mono uppercase font-bold text-slate-600 block mb-2">Supported Deployment Modes:</span>
+        <div class="p-4 rounded-md bg-canvas border border-hairline space-y-3">
+          <label class="block text-xs font-mono uppercase font-semibold text-mute">Select Your PC / Workstation Hardware:</label>
+          <select id="detailHardwareSelect" class="w-full bg-canvas-elevated border border-hairline text-ink text-xs rounded p-2.5 outline-none hover:border-faint transition-colors font-medium">
+            {HARDWARE_PRESETS.map(hw => (
+              <option value={hw.id}>{hw.label}</option>
+            ))}
+          </select>
+
+          <!-- Interactive Verdict Box -->
+          <div id="calculatorVerdictBox" class="p-4 rounded border text-xs font-mono flex items-center justify-between bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20">
+            <div>
+              <span class="font-bold block text-sm" id="calcVerdictTitle">Runs Smoothly (Full FP16/Q8)</span>
+              <span class="text-[11px] opacity-80" id="calcVerdictDesc">Your allocated VRAM is sufficient for unquantized local inference.</span>
+            </div>
+            <span class="font-bold text-xs uppercase px-2.5 py-1 rounded bg-canvas border border-hairline text-ink" id="calcVerdictPill">Supported</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 font-mono text-xs">
+          <div class="p-3 rounded bg-canvas border border-hairline">
+            <span class="text-mute uppercase font-semibold text-[10px] block mb-1">Minimum VRAM:</span>
+            <span class="text-ink font-semibold">{repo.hardwareSpecs?.minVramGb}</span>
+          </div>
+          <div class="p-3 rounded bg-canvas border border-hairline">
+            <span class="text-mute uppercase font-semibold text-[10px] block mb-1">Recommended GPU:</span>
+            <span class="text-ink font-semibold">{repo.hardwareSpecs?.recommendedGpu}</span>
+          </div>
+          <div class="p-3 rounded bg-canvas border border-hairline">
+            <span class="text-mute uppercase font-semibold text-[10px] block mb-1">Minimum RAM:</span>
+            <span class="text-ink font-semibold">{repo.hardwareSpecs?.minRamGb}</span>
+          </div>
+          <div class="p-3 rounded bg-canvas border border-hairline">
+            <span class="text-mute uppercase font-semibold text-[10px] block mb-1">Verified Date:</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-semibold">{repo.verifiedAt}</span>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-hairline">
+          <span class="text-xs font-mono uppercase font-semibold text-mute block mb-2">Supported Deployment Modes:</span>
           <div class="flex flex-wrap gap-2">
             {repo.hardwareSpecs?.deploymentModes?.map(mode => (
-              <span class="px-2.5 py-1 rounded-lg bg-[#EFF6FF] text-[#2563EB] font-mono text-xs font-semibold border border-[#BFDBFE]">
+              <span class="px-2.5 py-1 rounded bg-canvas text-body font-mono text-xs font-medium border border-hairline">
                 &bull; {mode}
               </span>
             ))}
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- Connected Workflows Using this Repo -->
+      <!-- TAB 4: LIVE GITHUB README & RELEASES -->
+      <div id="tab-readme" class="inspector-panel hidden bg-canvas-elevated border border-hairline rounded-lg p-6 sm:p-8 shadow-xs space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-hairline pb-4">
+          <div>
+            <h2 class="text-lg font-semibold text-ink tracking-tight">
+              Live GitHub Telemetry & README.md
+            </h2>
+            <p class="text-xs text-mute font-mono" id="livePushedText">Fetching official GitHub repository...</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-canvas border border-hairline text-ink" id="latestReleaseBadge">Latest Release: checking...</span>
+            <a href={repo.url} target="_blank" rel="noopener noreferrer" class="text-xs font-medium text-ink hover:underline">View on GitHub &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Rendered Readme Stream -->
+        <div id="readmeStream" class="p-5 rounded bg-canvas border border-hairline font-mono text-xs text-body overflow-x-auto whitespace-pre-wrap max-h-[500px] leading-relaxed selection:bg-ink selection:text-on-primary">
+          Loading README.md directly from official repository branch...
+        </div>
+      </div>
+
+      <!-- Connected Workflows Section -->
       {matchingWorkflows.length > 0 && (
-        <section class="bg-[#F8FAFF] border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-xs">
-          <h2 class="text-base font-black text-ink mb-4 font-mono uppercase flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
-            <span>Production Workflows Using {repo.name}:</span>
+        <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
+          <h2 class="text-xs font-mono uppercase font-semibold text-mute mb-3">
+            Production Workflows Using {repo.name}:
           </h2>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             {matchingWorkflows.map(wf => (
               <a 
                 href={`/workflows/${wf.id}`}
-                class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] p-5 rounded-xl shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+                class="bg-canvas border border-hairline hover:border-faint p-4 rounded transition-colors flex flex-col justify-between"
               >
                 <div>
-                  <div class="flex items-center justify-between text-[10px] font-mono mb-1">
-                    <span class="text-emerald-700 font-semibold uppercase">{wf.category}</span>
-                    <span class="text-slate-500">{wf.difficulty}</span>
+                  <div class="flex items-center justify-between text-[10px] font-mono mb-1 text-mute">
+                    <span>{wf.category}</span>
+                    <span>{wf.difficulty}</span>
                   </div>
-                  <h3 class="font-bold text-ink text-sm">{wf.title}</h3>
-                  <p class="text-xs text-slate-600 line-clamp-2 mt-1 leading-relaxed">{wf.goal}</p>
+                  <h3 class="font-medium text-ink text-xs">{wf.title}</h3>
+                  <p class="text-xs text-body line-clamp-2 mt-1 leading-relaxed">{wf.goal}</p>
                 </div>
-                <div class="mt-3 text-xs font-semibold text-[#2563EB] hover:underline">
+                <div class="mt-3 text-xs font-medium text-ink hover:underline">
                   View Full Workflow Blueprint &rarr;
                 </div>
               </a>
@@ -262,23 +343,133 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
   <Footer />
 </Layout>
 
-<script>
-  function setupCopyButtons() {
-    const btns = document.querySelectorAll('.copy-cmd-btn');
-    btns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const cmd = btn.getAttribute('data-cmd') || '';
-        navigator.clipboard.writeText(cmd).then(() => {
-          btn.textContent = 'Copied!';
-          setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
-        });
+<script define:vars={{ repoOwner, repoShortName, minVramNumber }}>
+  // Tab Switcher
+  const tabBtns = document.querySelectorAll('.inspector-tab-btn');
+  const tabPanels = document.querySelectorAll('.inspector-panel');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => {
+        b.className = 'inspector-tab-btn px-4 py-2 rounded-t-md text-xs font-medium cursor-pointer transition-colors border-t border-x shrink-0 bg-canvas text-mute hover:text-ink border-transparent';
+      });
+      btn.className = 'inspector-tab-btn px-4 py-2 rounded-t-md text-xs font-medium cursor-pointer transition-colors border-t border-x shrink-0 bg-canvas-elevated text-ink border-hairline font-semibold -mb-[1px]';
+
+      const target = btn.getAttribute('data-target');
+      tabPanels.forEach(panel => {
+        if (panel.id === target) {
+          panel.classList.remove('hidden');
+        } else {
+          panel.classList.add('hidden');
+        }
       });
     });
+  });
+
+  // Copy Commands
+  document.querySelectorAll('.copy-cmd-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cmd = btn.getAttribute('data-cmd') || '';
+      navigator.clipboard.writeText(cmd).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+      });
+    });
+  });
+
+  // Interactive Hardware Calculator
+  const detailHardwareSelect = document.getElementById('detailHardwareSelect');
+  const verdictTitle = document.getElementById('calcVerdictTitle');
+  const verdictDesc = document.getElementById('calcVerdictDesc');
+  const verdictPill = document.getElementById('calcVerdictPill');
+  const verdictBox = document.getElementById('calculatorVerdictBox');
+
+  function calculateVerdict(userHardwareId) {
+    if (!verdictTitle || !verdictDesc || !verdictPill || !verdictBox) return;
+
+    // Presets lookup
+    const vramMap = {
+      'all': 999,
+      'mac-8gb': 6,
+      'mac-16gb': 12,
+      'mac-36gb': 32,
+      'mac-64gb': 56,
+      'rtx-3060-12gb': 12,
+      'rtx-4080-16gb': 16,
+      'rtx-4090-24gb': 24,
+      'cpu-only': 4
+    };
+
+    const userVram = vramMap[userHardwareId] || 16;
+    if (userVram >= minVramNumber) {
+      verdictTitle.textContent = 'Runs Smoothly (Full FP16 / Q8)';
+      verdictDesc.textContent = `Your hardware has ${userVram}GB VRAM, exceeding the required ${minVramNumber}GB minimum. Fast native GPU performance.`;
+      verdictPill.textContent = 'Supported';
+      verdictBox.className = 'p-4 rounded border text-xs font-mono flex items-center justify-between bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20';
+    } else if (userVram >= minVramNumber * 0.45) {
+      verdictTitle.textContent = 'Quantized Only (Q4_K_M / GGUF)';
+      verdictDesc.textContent = `Your hardware has ${userVram}GB VRAM. You can run quantized 4-bit weights with acceptable performance.`;
+      verdictPill.textContent = 'Quantized';
+      verdictBox.className = 'p-4 rounded border text-xs font-mono flex items-center justify-between bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20';
+    } else {
+      verdictTitle.textContent = 'Cloud GPU Needed (> ' + minVramNumber + 'GB)';
+      verdictDesc.textContent = `Your hardware has ${userVram}GB VRAM, which will trigger out-of-memory errors. We recommend deploying on RunPod, Modal, or Lambda Labs.`;
+      verdictPill.textContent = 'Cloud Needed';
+      verdictBox.className = 'p-4 rounded border text-xs font-mono flex items-center justify-between bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20';
+    }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupCopyButtons);
-  } else {
-    setupCopyButtons();
+  detailHardwareSelect?.addEventListener('change', () => {
+    calculateVerdict(detailHardwareSelect.value);
+  });
+
+  // Hydrate Live GitHub Readme & Stats
+  async function hydrateLiveGitHub() {
+    if (!repoOwner || !repoShortName) return;
+
+    try {
+      const statsRes = await fetch(`https://api.github.com/repos/${repoOwner}/${repoShortName}`);
+      if (statsRes.ok) {
+        const data = await statsRes.json();
+        const starsDisplay = document.getElementById('liveStarsDisplay');
+        const forksDisplay = document.getElementById('liveForksDisplay');
+        const pushedText = document.getElementById('livePushedText');
+
+        if (starsDisplay && data.stargazers_count) {
+          starsDisplay.textContent = `★ ${Number(data.stargazers_count).toLocaleString()}`;
+        }
+        if (forksDisplay && data.forks_count) {
+          forksDisplay.textContent = `${Number(data.forks_count).toLocaleString()}`;
+        }
+        if (pushedText && data.pushed_at) {
+          pushedText.textContent = `Updated ${new Date(data.pushed_at).toLocaleDateString()} • Default Branch: ${data.default_branch || 'main'}`;
+        }
+      }
+
+      // Check latest release
+      const relRes = await fetch(`https://api.github.com/repos/${repoOwner}/${repoShortName}/releases/latest`);
+      if (relRes.ok) {
+        const relData = await relRes.json();
+        const relBadge = document.getElementById('latestReleaseBadge');
+        if (relBadge && relData.tag_name) {
+          relBadge.textContent = `Release: ${relData.tag_name}`;
+        }
+      }
+
+      // Fetch README.md
+      const readmeRes = await fetch(`https://raw.githubusercontent.com/${repoOwner}/${repoShortName}/main/README.md`);
+      const stream = document.getElementById('readmeStream');
+      if (readmeRes.ok && stream) {
+        const text = await readmeRes.text();
+        stream.textContent = text.substring(0, 5000) + (text.length > 5000 ? '\n\n... [Read full README on GitHub]' : '');
+      } else if (stream) {
+        stream.textContent = `Official README.md is available on GitHub: https://github.com/${repoOwner}/${repoShortName}`;
+      }
+    } catch (e) {
+      console.warn('GitHub live telemetry sync:', e);
+    }
   }
+
+  hydrateLiveGitHub();
 </script>

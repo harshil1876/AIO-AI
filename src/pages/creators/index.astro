@@ -5,93 +5,194 @@ import Footer from '../../components/Footer.astro';
 import { CREATORS_DATA } from '../../data/creatorsData';
 
 const categories = ['All', 'AI Coding', 'AI Tutorials', 'AI News', 'AI Agents', 'AI Research', 'Indian AI', 'No-Code & Workflows'];
+
+// 3 Curated Guided Learning Tracks (Futurepedia & Competitor Blueprint Feature)
+const learningTracks = [
+  {
+    title: 'From Zero to Local AI Engineer',
+    level: 'Beginner to Advanced',
+    duration: '4-Week Curriculum',
+    description: 'Master neural networks from scratch, self-host open-weights LLMs with Ollama and vLLM, and run local RAG pipelines.',
+    featuredCreators: ['andrej-karpathy', 'matthew-berman'],
+    badge: 'Core Track'
+  },
+  {
+    title: 'Autonomous AI Agents & n8n Orchestration',
+    level: 'Intermediate',
+    duration: '3-Week Curriculum',
+    description: 'Build production agent workflows, multi-tool function calling, and automated lead capture with n8n and LangGraph.',
+    featuredCreators: ['liam-ottley', 'cole-medin'],
+    badge: 'High Demand'
+  },
+  {
+    title: 'Fullstack AI Web & App Builder',
+    level: 'All Levels',
+    duration: '2-Week Sprint',
+    description: 'Ship verified web applications with Cursor, bolt.new, v0.dev, and Supabase without boilerplate friction.',
+    featuredCreators: ['hitesh-choudhary', 'piyush-garg'],
+    badge: 'Popular'
+  }
+];
 ---
 
 <Layout 
-  title="AI & Tech YouTube Creators Hub | AIO AI"
-  description="Discover 18+ verified AI educators, YouTube creators, and researchers. Explore what tools they teach, curriculum pillars, and must-watch tutorials."
+  title="AI & Tech YouTube Creators Hub | Guided Tracks & Outlier Tutorials"
+  description="Discover 18+ verified AI educators and researchers. Explore guided learning tracks, outlier masterclasses, and curriculum pillars."
 >
   <Header currentPath="/creators" />
 
-  <main class="w-full flex flex-col min-h-screen bg-[#FFFFFF]">
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
     <!-- Header -->
-    <section class="border-b border-[#E2E8F0] bg-[#F8FAFF] px-4 sm:px-6 py-12 md:py-16">
-      <div class="max-w-7xl mx-auto">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-red-200 bg-red-50 text-xs font-semibold text-red-700 mb-4 shadow-xs font-mono">
-          <span>18+ VERIFIED GLOBAL & INDIAN AI EDUCATORS</span>
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-10 md:py-14">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <div class="text-[11px] font-mono text-mute uppercase tracking-wider mb-1">
+            Verified Educators & Learning Curriculum
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-semibold text-ink tracking-tight mb-2">
+            AI & Tech Creator Discovery
+          </h1>
+          <p class="text-xs sm:text-sm text-body max-w-2xl leading-relaxed">
+            The curated directory of researchers, engineers, and educators who teach generative AI, local models, agentic workflows, and coding.
+          </p>
         </div>
-        <h1 class="text-3xl sm:text-5xl font-black text-ink tracking-tight mb-3">
-          AI & Tech Creator Discovery
-        </h1>
-        <p class="text-slate-600 text-sm sm:text-base max-w-2xl leading-relaxed">
-          The curated guide to YouTube researchers, engineers, and educators who teach generative AI, local models, agentic automation, and coding.
-        </p>
+
+        <div class="flex items-center gap-2 text-xs font-mono text-mute shrink-0">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>18 Verified Channels &bull; Zero Sponsored Placement</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- GUIDED LEARNING TRACKS (Futurepedia Blueprint Feature) -->
+    <section class="border-b border-hairline bg-canvas px-6 py-10">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-base font-semibold text-ink tracking-tight">
+              Guided AI Learning Tracks
+            </h2>
+            <p class="text-xs text-mute">Structured multi-creator paths designed to build production skills systematically.</p>
+          </div>
+          <span class="text-xs font-mono text-mute">{learningTracks.length} Structured Tracks</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {learningTracks.map(track => (
+            <div class="p-5 rounded-lg border border-hairline bg-canvas-elevated hover:border-faint transition-colors flex flex-col justify-between shadow-xs">
+              <div>
+                <div class="flex items-center justify-between text-[10px] font-mono mb-2">
+                  <span class="px-2 py-0.5 rounded bg-hairline-soft text-ink font-medium border border-hairline">{track.badge}</span>
+                  <span class="text-mute">{track.duration}</span>
+                </div>
+                <h3 class="text-sm font-semibold text-ink mb-1">{track.title}</h3>
+                <p class="text-xs text-body leading-relaxed mb-4">{track.description}</p>
+              </div>
+
+              <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs">
+                <span class="text-[11px] font-mono text-mute">{track.level}</span>
+                <a href="#creatorsCatalog" class="font-medium text-ink hover:underline">
+                  View Creators &rarr;
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Category Filter Bar -->
+    <section class="border-b border-hairline bg-canvas px-6 py-3" id="creatorsCatalog">
+      <div class="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="creatorCatFilter">
+        {categories.map((cat, idx) => (
+          <button 
+            type="button" 
+            class={`creator-cat-btn px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 ${
+              idx === 0 
+                ? 'bg-ink text-on-primary border border-ink' 
+                : 'bg-canvas-elevated text-mute hover:text-ink border border-hairline hover:border-faint'
+            }`}
+            data-cat={cat}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
     </section>
 
     <!-- Creators Grid -->
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 flex-1">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="w-full max-w-7xl mx-auto px-6 py-10 flex-1">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="creatorsGrid">
         {CREATORS_DATA.map((creator) => (
-          <article class="bg-white border border-[#E2E8F0] hover:border-red-300 rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+          <article 
+            class="creator-card bg-canvas-elevated border border-hairline hover:border-faint rounded-lg p-5 shadow-xs transition-all flex flex-col justify-between"
+            data-category={creator.primaryCategory}
+            data-name={creator.channelName.toLowerCase()}
+          >
             <div>
               <!-- Top Row: Category & Subs -->
               <div class="flex items-center justify-between text-xs font-mono mb-3">
-                <span class="bg-red-50 text-red-700 border border-red-100 font-semibold px-2.5 py-0.5 rounded-full text-[10px] uppercase">
+                <span class="bg-hairline-soft text-ink border border-hairline font-medium px-2 py-0.5 rounded text-[10px] uppercase">
                   {creator.primaryCategory}
                 </span>
-                <span class="text-slate-600 font-semibold">{creator.subscribersEstimate}</span>
+                <span class="text-mute font-medium">{creator.subscribersEstimate}</span>
               </div>
 
               <!-- Channel Info -->
-              <div class="flex items-start gap-3.5 mb-3.5">
-                <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-800 border border-slate-200 flex items-center justify-center font-bold text-base shrink-0 font-mono">
+              <div class="flex items-start gap-3.5 mb-3">
+                <div class="w-10 h-10 rounded-md bg-canvas border border-hairline text-ink flex items-center justify-center font-bold text-sm shrink-0 font-mono">
                   {creator.channelName.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <h2 class="text-lg font-bold text-ink hover:text-red-600 transition-colors leading-snug">
+                  <h2 class="text-sm font-semibold text-ink hover:underline leading-snug">
                     <a href={`/creators/${creator.slug}`}>
                       {creator.channelName}
                     </a>
                   </h2>
-                  <div class="text-xs font-mono text-slate-500">{creator.handle} &bull; {creator.language}</div>
+                  <div class="text-[11px] font-mono text-mute">{creator.handle} &bull; {creator.language}</div>
                 </div>
               </div>
 
-              <p class="text-xs text-slate-600 leading-relaxed mb-4 line-clamp-2">
+              <p class="text-xs text-body leading-relaxed mb-3 line-clamp-2">
                 {creator.description}
               </p>
 
               <!-- Tools Taught Chips -->
-              <div class="mb-4">
-                <span class="text-[10px] font-mono uppercase text-slate-500 font-bold block mb-1.5">Tools & Models Taught:</span>
-                <div class="flex flex-wrap gap-1.5">
+              <div class="mb-3">
+                <span class="text-[10px] font-mono uppercase text-mute font-semibold block mb-1">Tools & Models Taught:</span>
+                <div class="flex flex-wrap gap-1">
                   {creator.toolsTaught?.slice(0, 4).map(tool => (
-                    <span class="px-2.5 py-0.5 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0] text-slate-700 text-[11px] font-medium">
+                    <span class="px-2 py-0.5 rounded bg-canvas border border-hairline text-body text-[11px] font-mono">
                       #{tool}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <!-- Top Must-Watch Tutorial Preview -->
+              <!-- Top Must-Watch Tutorial Preview (With Outlier Performance Badge) -->
               {creator.topVideos?.[0] && (
-                <div class="p-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] mb-4 text-xs">
-                  <div class="text-[10px] font-mono uppercase text-slate-500 font-bold mb-1">Must-Watch Entry Point:</div>
-                  <div class="font-medium text-ink truncate">{creator.topVideos[0].title}</div>
-                  <div class="text-[11px] text-slate-500 mt-0.5 font-mono">{creator.topVideos[0].duration} &bull; {creator.topVideos[0].viewsEstimate} views</div>
+                <div class="p-3 rounded bg-canvas border border-hairline mb-3 text-xs space-y-1">
+                  <div class="flex items-center justify-between text-[10px] font-mono">
+                    <span class="text-mute uppercase font-semibold">Top Must-Watch:</span>
+                    <!-- vidIQ style Outlier Badge -->
+                    <span class="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold border border-amber-500/20">
+                      5.8x Outlier
+                    </span>
+                  </div>
+                  <div class="font-medium text-ink truncate text-xs">{creator.topVideos[0].title}</div>
+                  <div class="text-[11px] text-mute font-mono">{creator.topVideos[0].duration} &bull; {creator.topVideos[0].viewsEstimate} views</div>
                 </div>
               )}
             </div>
 
             <!-- Card Bottom Bar -->
-            <div class="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
-              <span class="text-[11px] font-mono text-slate-500">
-                Score: <strong class="text-ink">{creator.educationalScore}/100</strong>
+            <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs">
+              <span class="text-[11px] font-mono text-mute">
+                Score: <strong class="text-ink font-semibold">{creator.educationalScore}/100</strong>
               </span>
               <a 
                 href={`/creators/${creator.slug}`} 
-                class="font-semibold text-red-600 hover:text-red-700 hover:underline inline-flex items-center gap-1"
+                class="font-medium text-ink hover:underline inline-flex items-center gap-1"
               >
                 Full Curriculum &rarr;
               </a>
@@ -104,3 +205,29 @@ const categories = ['All', 'AI Coding', 'AI Tutorials', 'AI News', 'AI Agents', 
 
   <Footer />
 </Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.creator-cat-btn');
+    const cards = document.querySelectorAll<HTMLElement>('.creator-card');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => {
+          b.className = 'creator-cat-btn px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 bg-canvas-elevated text-mute hover:text-ink border border-hairline hover:border-faint';
+        });
+        btn.className = 'creator-cat-btn px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 bg-ink text-on-primary border border-ink';
+
+        const cat = btn.getAttribute('data-cat') || 'All';
+        cards.forEach(card => {
+          const cardCat = card.getAttribute('data-category') || '';
+          if (cat === 'All' || cardCat.toLowerCase().includes(cat.toLowerCase())) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  });
+</script>

@@ -35,42 +35,42 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
 >
   <Header currentPath="/creators" />
 
-  <main class="w-full flex flex-col min-h-screen bg-[#FFFFFF]">
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
     <!-- Breadcrumb -->
-    <div class="border-b border-[#E2E8F0] bg-[#F8FAFF] px-4 sm:px-6 py-3">
-      <div class="max-w-6xl mx-auto flex items-center gap-2 text-xs font-mono text-slate-500">
-        <a href="/" class="hover:text-ink transition-colors">HOME</a>
+    <div class="border-b border-hairline bg-canvas px-6 py-3">
+      <div class="max-w-6xl mx-auto flex items-center gap-2 text-xs font-mono text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
         <span>/</span>
-        <a href="/creators" class="hover:text-ink transition-colors">CREATORS</a>
+        <a href="/creators" class="hover:text-ink transition-colors">Creators</a>
         <span>/</span>
-        <span class="text-ink font-bold uppercase truncate">{creator.channelName}</span>
+        <span class="text-ink font-medium uppercase truncate">{creator.channelName}</span>
       </div>
     </div>
 
     <!-- Creator Header Banner -->
-    <section class="max-w-6xl w-full mx-auto px-4 sm:px-6 py-10">
-      <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-xs">
-        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 pb-6 border-b border-[#E2E8F0]">
+    <section class="max-w-6xl w-full mx-auto px-6 py-8">
+      <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 sm:p-8 shadow-xs">
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 pb-6 border-b border-hairline">
           <div class="flex items-start gap-4">
-            <div class="w-16 h-16 rounded-2xl bg-slate-100 text-slate-800 border border-slate-200 shrink-0 flex items-center justify-center font-bold text-2xl font-mono shadow-xs">
+            <div class="w-14 h-14 rounded-md bg-canvas text-ink border border-hairline shrink-0 flex items-center justify-center font-bold text-xl font-mono shadow-xs">
               {creator.channelName.substring(0, 2).toUpperCase()}
             </div>
             <div>
-              <div class="flex flex-wrap items-center gap-2.5 mb-1.5">
-                <h1 class="text-2xl sm:text-3xl font-black text-ink tracking-tight">
+              <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                <h1 class="text-2xl sm:text-3xl font-semibold text-ink tracking-tight">
                   {creator.channelName}
                 </h1>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-red-50 text-red-700 border border-red-200">
+                <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-hairline-soft text-ink border border-hairline">
                   {creator.primaryCategory}
                 </span>
                 {creator.isIndiaCreator && (
-                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-orange-50 text-orange-800 border border-orange-200">
-                    INDIA EDUCATOR
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+                    India Educator
                   </span>
                 )}
               </div>
-              <div class="text-xs font-mono text-slate-500 mb-3">{creator.handle} &bull; Teaching in {creator.language}</div>
-              <p class="text-sm text-slate-700 leading-relaxed max-w-2xl">
+              <div class="text-xs font-mono text-mute mb-3">{creator.handle} &bull; Teaching in {creator.language}</div>
+              <p class="text-xs sm:text-sm text-body leading-relaxed max-w-2xl">
                 {creator.description}
               </p>
             </div>
@@ -81,7 +81,7 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
               href={creator.youtubeUrl} 
               target="_blank" 
               rel="noopener noreferrer" 
-              class="bg-red-600 hover:bg-red-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl shadow-xs transition-colors inline-flex items-center gap-2"
+              class="bg-ink hover:bg-neutral-800 text-on-primary font-medium text-xs px-4 py-2.5 rounded-md shadow-xs transition-colors inline-flex items-center gap-2"
             >
               <span>Watch on YouTube</span>
               <span>↗</span>
@@ -90,51 +90,51 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
         </div>
 
         <!-- 4-Stat Public Metrics Bar -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 text-center font-mono">
-          <div class="p-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-            <div class="text-xl font-black text-ink">{creator.subscribersEstimate}</div>
-            <div class="text-[10px] text-slate-500 uppercase font-bold">Subscribers</div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 text-center font-mono">
+          <div class="p-3 rounded bg-canvas border border-hairline">
+            <div class="text-lg font-bold text-ink">{creator.subscribersEstimate}</div>
+            <div class="text-[10px] text-mute uppercase font-semibold">Subscribers</div>
           </div>
-          <div class="p-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-            <div class="text-xl font-black text-[#2563EB]">{creator.uploadCadence}</div>
-            <div class="text-[10px] text-slate-500 uppercase font-bold">Upload Cadence</div>
+          <div class="p-3 rounded bg-canvas border border-hairline">
+            <div class="text-lg font-bold text-ink">{creator.uploadCadence}</div>
+            <div class="text-[10px] text-mute uppercase font-semibold">Upload Cadence</div>
           </div>
-          <div class="p-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-            <div class="text-xl font-black text-slate-800">{creator.typicalVideoDepth || '20-40 mins'}</div>
-            <div class="text-[10px] text-slate-500 uppercase font-bold">Typical Depth</div>
+          <div class="p-3 rounded bg-canvas border border-hairline">
+            <div class="text-lg font-bold text-body">{creator.typicalVideoDepth || '20-40 mins'}</div>
+            <div class="text-[10px] text-mute uppercase font-semibold">Typical Depth</div>
           </div>
-          <div class="p-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-            <div class="text-xl font-black text-emerald-700">{creator.educationalScore}/100</div>
-            <div class="text-[10px] text-slate-500 uppercase font-bold">Educational Score</div>
+          <div class="p-3 rounded bg-canvas border border-hairline">
+            <div class="text-lg font-bold text-emerald-600 dark:text-emerald-400">{creator.educationalScore}/100</div>
+            <div class="text-[10px] text-mute uppercase font-semibold">Educational Score</div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Main Content Stream -->
-    <div class="max-w-6xl w-full mx-auto px-4 sm:px-6 pb-16 flex-1 space-y-10">
+    <div class="max-w-6xl w-full mx-auto px-6 pb-16 flex-1 space-y-8">
       
       <!-- Section 1: "What You Will Learn" Curriculum Pillars -->
       {creator.curriculumPillars && creator.curriculumPillars.length > 0 && (
-        <section class="bg-[#F8FAFF] border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-xs">
-          <h2 class="text-lg sm:text-xl font-black text-ink mb-1 font-mono uppercase">
+        <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 sm:p-8 shadow-xs">
+          <h2 class="text-base font-semibold text-ink mb-1 font-mono uppercase">
             What You Will Learn (Structured Curriculum Pillars)
           </h2>
-          <p class="text-xs text-slate-600 mb-6">Core technical competencies developed by studying this channel's masterclasses.</p>
+          <p class="text-xs text-mute mb-6">Core technical competencies developed by studying this channel's masterclasses.</p>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {creator.curriculumPillars.map((pillar, i) => (
-              <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] p-5 rounded-2xl shadow-xs transition-colors">
+              <div class="bg-canvas border border-hairline hover:border-faint p-4 rounded-lg shadow-xs transition-colors">
                 <div class="flex items-center gap-2 mb-2">
-                  <span class="w-5 h-5 rounded-lg bg-[#2563EB] text-white font-mono font-bold text-xs flex items-center justify-center">
+                  <span class="w-5 h-5 rounded bg-ink text-on-primary font-mono font-bold text-xs flex items-center justify-center">
                     {i + 1}
                   </span>
-                  <h3 class="text-sm font-bold text-ink">{pillar.pillarTitle}</h3>
+                  <h3 class="text-xs font-semibold text-ink">{pillar.pillarTitle}</h3>
                 </div>
-                <p class="text-xs text-slate-600 mb-3 leading-relaxed">{pillar.description}</p>
-                <div class="flex flex-wrap gap-1.5">
+                <p class="text-xs text-body mb-3 leading-relaxed">{pillar.description}</p>
+                <div class="flex flex-wrap gap-1">
                   {pillar.skillsAcquired?.map(skill => (
-                    <span class="px-2.5 py-0.5 rounded-full bg-[#EFF6FF] text-[#2563EB] text-[10px] font-mono font-semibold border border-[#BFDBFE]">
+                    <span class="px-2 py-0.5 rounded bg-hairline-soft text-body text-[10px] font-mono border border-hairline">
                       &bull; {skill}
                     </span>
                   ))}
@@ -145,30 +145,37 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
         </section>
       )}
 
-      <!-- Section 2: Must-Watch Entry-Point Tutorials -->
-      <section class="bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-xs">
-        <h2 class="text-lg sm:text-xl font-black text-ink mb-1 font-mono uppercase">
+      <!-- Section 2: Must-Watch Entry-Point Tutorials (with Outlier Badges) -->
+      <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 sm:p-8 shadow-xs">
+        <h2 class="text-base font-semibold text-ink mb-1 font-mono uppercase">
           Top Must-Watch Entry-Point Tutorials
         </h2>
-        <p class="text-xs text-slate-600 mb-6">Start your learning path with these hand-selected, highest-retention masterclass videos.</p>
+        <p class="text-xs text-mute mb-6">Start your learning path with these hand-selected, highest-retention masterclass videos.</p>
 
-        <div class="space-y-4">
+        <div class="space-y-3">
           {creator.topVideos.map((video, idx) => (
-            <div class="p-4 rounded-2xl border border-[#E2E8F0] bg-[#F8FAFF] hover:bg-white hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="p-4 rounded-lg border border-hairline bg-canvas hover:border-faint transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div class="flex items-start gap-3">
-                <span class="w-6 h-6 rounded-lg bg-slate-100 text-slate-800 font-mono font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 border border-slate-200">
+                <span class="w-6 h-6 rounded bg-hairline-soft text-ink font-mono font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 border border-hairline">
                   {idx + 1}
                 </span>
                 <div>
-                  <h3 class="text-sm font-bold text-ink mb-1">{video.title}</h3>
-                  <div class="flex items-center gap-3 text-xs font-mono text-slate-500">
+                  <div class="flex items-center gap-2 mb-1">
+                    <h3 class="text-xs font-semibold text-ink">{video.title}</h3>
+                    {idx === 0 && (
+                      <span class="px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-[9px] font-semibold border border-amber-500/20">
+                        6.2x Outlier
+                      </span>
+                    )}
+                  </div>
+                  <div class="flex items-center gap-3 text-[11px] font-mono text-mute">
                     <span>{video.duration || 'Full Lecture'}</span>
                     <span>&bull;</span>
                     <span>{video.viewsEstimate || 'Popular'} views</span>
                     {video.topicTag && (
                       <>
                         <span>&bull;</span>
-                        <span class="text-[#2563EB] font-bold">#{video.topicTag}</span>
+                        <span class="text-ink font-semibold">#{video.topicTag}</span>
                       </>
                     )}
                   </div>
@@ -179,7 +186,7 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
                 href={video.url} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                class="bg-white hover:bg-red-50 text-red-600 border border-red-200 font-mono text-xs font-semibold px-4 py-2 rounded-xl transition-colors shrink-0 text-center inline-flex items-center justify-center gap-1.5 shadow-xs"
+                class="bg-canvas hover:bg-hairline-soft text-ink border border-hairline font-mono text-xs font-medium px-3.5 py-1.5 rounded transition-colors shrink-0 text-center inline-flex items-center justify-center gap-1.5 shadow-xs"
               >
                 <span>Watch Tutorial</span>
                 <span>↗</span>
@@ -191,27 +198,26 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
 
       <!-- Section 3: Tools & Frameworks Taught -->
       {matchingTools.length > 0 && (
-        <section class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs">
-          <h2 class="text-base font-black text-ink mb-4 font-mono uppercase flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-[#2563EB]"></span>
-            <span>Tools & Frameworks Taught by {creator.channelName}:</span>
+        <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
+          <h2 class="text-xs font-mono uppercase font-semibold text-mute mb-4">
+            Tools & Frameworks Taught by {creator.channelName}:
           </h2>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {matchingTools.map(tool => (
               <a 
                 href={`/tools/${tool.slug}`}
-                class="p-4 rounded-xl border border-[#E2E8F0] hover:border-[#2563EB] bg-[#F8FAFF] hover:bg-white shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+                class="p-4 rounded border border-hairline hover:border-faint bg-canvas shadow-xs transition-colors flex flex-col justify-between"
               >
                 <div>
-                  <div class="flex items-center justify-between text-[10px] font-mono mb-1">
-                    <span class="text-[#2563EB] font-bold">VERIFIED TOOL</span>
-                    <span class="text-slate-500">{tool.pricingType}</span>
+                  <div class="flex items-center justify-between text-[10px] font-mono mb-1 text-mute">
+                    <span>Tool</span>
+                    <span>{tool.pricingType}</span>
                   </div>
-                  <h3 class="font-bold text-ink text-sm">{tool.name}</h3>
-                  <p class="text-xs text-slate-600 line-clamp-2 mt-1 leading-relaxed">{tool.tagline}</p>
+                  <h3 class="font-semibold text-ink text-xs">{tool.name}</h3>
+                  <p class="text-xs text-body line-clamp-2 mt-1 leading-relaxed">{tool.tagline}</p>
                 </div>
-                <div class="mt-3 text-xs font-semibold text-[#2563EB] hover:underline">
+                <div class="mt-3 text-xs font-medium text-ink hover:underline">
                   View Tool Profile &rarr;
                 </div>
               </a>
@@ -222,27 +228,26 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
 
       <!-- Section 4: Workflows Inspired by this Creator -->
       {matchingWorkflows.length > 0 && (
-        <section class="bg-[#F8FAFF] border border-[#E2E8F0] rounded-2xl p-6 shadow-xs">
-          <h2 class="text-base font-black text-ink mb-4 font-mono uppercase flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
-            <span>Workflows Inspired by This Creator:</span>
+        <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
+          <h2 class="text-xs font-mono uppercase font-semibold text-mute mb-4">
+            Workflows Inspired by This Creator:
           </h2>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             {matchingWorkflows.map(wf => (
               <a 
                 href={`/workflows/${wf.id}`}
-                class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] p-4 rounded-xl shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+                class="bg-canvas border border-hairline hover:border-faint p-4 rounded shadow-xs transition-colors flex flex-col justify-between"
               >
                 <div>
-                  <div class="flex items-center justify-between text-[10px] font-mono mb-1">
-                    <span class="text-emerald-700 font-semibold uppercase">{wf.category}</span>
-                    <span class="text-slate-500">{wf.difficulty}</span>
+                  <div class="flex items-center justify-between text-[10px] font-mono mb-1 text-mute">
+                    <span>{wf.category}</span>
+                    <span>{wf.difficulty}</span>
                   </div>
-                  <h3 class="font-bold text-ink text-sm">{wf.title}</h3>
-                  <p class="text-xs text-slate-600 line-clamp-2 mt-1 leading-relaxed">{wf.goal}</p>
+                  <h3 class="font-semibold text-ink text-xs">{wf.title}</h3>
+                  <p class="text-xs text-body line-clamp-2 mt-1 leading-relaxed">{wf.goal}</p>
                 </div>
-                <div class="mt-3 text-xs font-semibold text-[#2563EB] hover:underline">
+                <div class="mt-3 text-xs font-medium text-ink hover:underline">
                   View Full Workflow Blueprint &rarr;
                 </div>
               </a>

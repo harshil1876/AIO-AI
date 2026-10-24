@@ -3,82 +3,231 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { OPEN_SOURCE_REPOS } from '../../data/openSourceData';
+import { HARDWARE_PRESETS } from '../../services/githubLiveService';
 
 const categories = ['All', 'LLM Runtimes', 'Agent Frameworks', 'Image & Video Gen', 'RAG & Vector DBs', 'Voice & Audio', 'UI Frontends', 'Coding Agents'];
+
+// Parse minimum VRAM as numeric GB for hardware matching
+function parseVramGb(vramStr?: string): number {
+  if (!vramStr) return 8;
+  const num = parseInt(vramStr.replace(/[^0-9]/g, ''));
+  return isNaN(num) ? 8 : num;
+}
 ---
 
 <Layout 
   title="Open-Source AI Hub | 20+ Flagship Repositories & Local Setup"
-  description="Explore 20+ flagship self-hostable open-source AI projects. Compare VRAM requirements, Docker quickstart commands, and commercial SaaS replacements."
+  description="Explore 20+ flagship self-hostable open-source AI projects. Compare VRAM requirements, Docker quickstart commands, and hardware compatibility."
 >
   <Header currentPath="/open-source" />
 
-  <main class="w-full flex flex-col min-h-screen bg-[#FFFFFF]">
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
     <!-- Header -->
-    <section class="border-b border-[#E2E8F0] bg-[#F8FAFF] px-4 sm:px-6 py-12 md:py-16">
-      <div class="max-w-7xl mx-auto">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-purple-200 bg-purple-50 text-xs font-semibold text-purple-700 mb-4 shadow-xs font-mono">
-          <span>20+ FLAGSHIP OPEN-SOURCE AI REPOSITORIES</span>
+    <section class="border-b border-hairline bg-canvas-elevated px-6 py-10 md:py-14">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <div class="text-[11px] font-mono text-mute uppercase tracking-wider mb-1">
+            Open-Source AI Telemetry & Hardware Compatibility
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-semibold text-ink tracking-tight mb-2">
+            Open-Source AI Hub
+          </h1>
+          <p class="text-xs sm:text-sm text-body max-w-2xl leading-relaxed">
+            Index of self-hostable AI runtimes, agent frameworks, local diffusion GUIs, and vector engines. Includes real-time hardware compatibility verdicts and instant CLI commands.
+          </p>
         </div>
-        <h1 class="text-3xl sm:text-5xl font-black text-ink tracking-tight mb-3">
-          Open-Source AI Hub
-        </h1>
-        <p class="text-slate-600 text-sm sm:text-base max-w-2xl leading-relaxed">
-          The comprehensive index of self-hostable AI runtimes, agent frameworks, local diffusion GUIs, and vector engines. Includes VRAM hardware specifications and instant CLI setup commands.
-        </p>
+
+        <!-- Hardware & PC Selector ("Can My PC Run This?" feature) -->
+        <div class="bg-canvas border border-hairline rounded-lg p-3.5 w-full md:w-80 shadow-xs">
+          <label class="block text-[11px] font-mono uppercase tracking-wider text-mute mb-1.5 font-semibold">
+            Can My PC Run This? (Select Hardware)
+          </label>
+          <select 
+            id="hardwareSelector" 
+            class="w-full bg-canvas-elevated border border-hairline text-ink text-xs rounded p-2 outline-none hover:border-faint transition-colors font-medium cursor-pointer"
+          >
+            {HARDWARE_PRESETS.map(hw => (
+              <option value={hw.id}>{hw.label}</option>
+            ))}
+          </select>
+          <div class="text-[10px] text-mute font-mono mt-1.5 flex items-center justify-between">
+            <span>Dynamic FP16 / Quantization check</span>
+            <span id="hardwareSummaryBadge" class="text-ink font-semibold">All Presets</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category Filter Bar -->
+    <section class="border-b border-hairline bg-canvas px-6 py-3">
+      <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 overflow-x-auto pb-1 sm:pb-0">
+        <div class="flex items-center gap-1.5 shrink-0" id="catFilterBar">
+          {categories.map((cat, idx) => (
+            <button 
+              type="button" 
+              class={`cat-pill px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors ${
+                idx === 0 
+                  ? 'bg-ink text-on-primary border border-ink' 
+                  : 'bg-canvas-elevated text-mute hover:text-ink border border-hairline hover:border-faint'
+              }`}
+              data-cat={cat}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0 text-xs">
+          <a href="/open-source/trending" class="text-mute hover:text-ink font-mono inline-flex items-center gap-1 transition-colors">
+            <span>View Star Velocity Leaderboard</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
       </div>
     </section>
 
     <!-- Repos Grid -->
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 flex-1">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {OPEN_SOURCE_REPOS.map((repo) => (
-          <article class="bg-white border border-[#E2E8F0] hover:border-purple-300 rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between text-xs font-mono mb-2.5">
-                <span class="text-purple-700 font-semibold uppercase text-[10px] bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100">
-                  {repo.category}
+    <div class="w-full max-w-7xl mx-auto px-6 py-10 flex-1">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="reposGrid">
+        {OPEN_SOURCE_REPOS.map((repo) => {
+          const minVram = parseVramGb(repo.hardwareSpecs?.minVramGb);
+          const [owner, name] = (repo.repo || '').split('/');
+          return (
+            <article 
+              class="repo-card bg-canvas-elevated border border-hairline hover:border-faint rounded-lg p-5 shadow-xs transition-all flex flex-col justify-between"
+              data-category={repo.category}
+              data-vram={minVram}
+              data-owner={owner || ''}
+              data-repo={name || repo.slug}
+            >
+              <div>
+                <div class="flex items-center justify-between text-xs font-mono mb-2.5">
+                  <span class="text-ink font-medium uppercase text-[10px] bg-hairline-soft px-2 py-0.5 rounded border border-hairline">
+                    {repo.category}
+                  </span>
+                  <span class="font-semibold text-ink live-stars">★ {repo.stars}</span>
+                </div>
+
+                <h2 class="text-sm font-semibold text-ink mb-1 hover:underline">
+                  <a href={`/open-source/${repo.slug}`}>
+                    {repo.name}
+                  </a>
+                </h2>
+
+                <p class="text-xs text-body line-clamp-3 mb-3 leading-relaxed">
+                  {repo.oneMinuteSummary || repo.description}
+                </p>
+
+                <!-- Hardware Compatibility Verdict Badge ("Can My PC Run This?") -->
+                <div class="hardware-verdict-badge mb-3 p-2 rounded text-[10px] font-mono font-medium flex items-center justify-between border bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20">
+                  <span class="verdict-label">Runs Smoothly (FP16)</span>
+                  <span class="verdict-vram">{repo.hardwareSpecs?.minVramGb}</span>
+                </div>
+
+                <!-- Replaces commercial tool badge -->
+                <div class="p-2 rounded bg-hairline-soft/40 border border-hairline text-[11px] text-body mb-3 truncate">
+                  <span class="text-mute font-mono text-[10px] block">Replaces:</span>
+                  <span class="font-medium text-ink truncate block">{repo.replacesCommercialTool}</span>
+                </div>
+
+                <!-- Quick Command Snippet -->
+                <div class="p-2 rounded bg-canvas border border-hairline font-mono text-[10px] text-body truncate mb-3 flex items-center justify-between">
+                  <span class="truncate">{repo.quickstartCommands?.cli || repo.quickstartCommands?.docker || 'git clone ' + repo.url}</span>
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs">
+                <span class="text-[10px] font-mono text-mute">
+                  Min: {repo.hardwareSpecs?.minVramGb}
                 </span>
-                <span class="font-semibold text-slate-700">★ {repo.stars}</span>
-              </div>
-
-              <h2 class="text-base font-bold text-ink mb-1.5 hover:text-purple-700 transition-colors">
-                <a href={`/open-source/${repo.slug}`}>
-                  {repo.name}
+                <a 
+                  href={`/open-source/${repo.slug}`} 
+                  class="font-medium text-ink hover:underline inline-flex items-center gap-0.5"
+                >
+                  Setup Guide &rarr;
                 </a>
-              </h2>
-
-              <p class="text-xs text-slate-600 line-clamp-3 mb-3 leading-relaxed">
-                {repo.oneMinuteSummary || repo.description}
-              </p>
-
-              <!-- One minute replacement notice -->
-              <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-[11px] text-emerald-800 font-medium mb-3">
-                {repo.replacesCommercialTool}
               </div>
-
-              <!-- Quick Command Snippet -->
-              <div class="p-2.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] font-mono text-[10px] text-slate-700 truncate mb-3">
-                {repo.quickstartCommands?.cli || repo.quickstartCommands?.docker || 'git clone ' + repo.url}
-              </div>
-            </div>
-
-            <div class="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
-              <span class="text-[10px] font-mono text-slate-500">
-                {repo.hardwareSpecs?.minVramGb}
-              </span>
-              <a 
-                href={`/open-source/${repo.slug}`} 
-                class="font-semibold text-purple-700 hover:text-purple-800 hover:underline inline-flex items-center gap-0.5"
-              >
-                Setup Guide &rarr;
-              </a>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
     </div>
   </main>
 
   <Footer />
 </Layout>
+
+<script>
+  import { HARDWARE_PRESETS, checkHardwareCompatibility, fetchLiveRepoStats } from '../../services/githubLiveService';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const selector = document.getElementById('hardwareSelector') as HTMLSelectElement | null;
+    const summaryBadge = document.getElementById('hardwareSummaryBadge');
+    const repoCards = document.querySelectorAll<HTMLElement>('.repo-card');
+    const catPills = document.querySelectorAll<HTMLButtonElement>('.cat-pill');
+
+    let activeCat = 'All';
+
+    // Hardware Compatibility Evaluator
+    function updateHardwareVerdicts(presetId: string) {
+      const preset = HARDWARE_PRESETS.find(p => p.id === presetId) || HARDWARE_PRESETS[0];
+      if (summaryBadge) summaryBadge.textContent = preset.id === 'all' ? 'All Hardware' : `${preset.vramGb}GB Allocated`;
+
+      repoCards.forEach(card => {
+        const minVram = Number(card.getAttribute('data-vram')) || 8;
+        const badge = card.querySelector('.hardware-verdict-badge');
+        const label = card.querySelector('.verdict-label');
+        
+        if (badge && label) {
+          const result = checkHardwareCompatibility(minVram, presetId);
+          label.textContent = result.label;
+
+          badge.className = `hardware-verdict-badge mb-3 p-2 rounded text-[10px] font-mono font-medium flex items-center justify-between border ${result.badgeClass}`;
+        }
+      });
+    }
+
+    selector?.addEventListener('change', () => {
+      updateHardwareVerdicts(selector.value);
+    });
+
+    // Category Filtering
+    catPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        catPills.forEach(p => {
+          p.className = 'cat-pill px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors bg-canvas-elevated text-mute hover:text-ink border border-hairline hover:border-faint';
+        });
+        pill.className = 'cat-pill px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors bg-ink text-on-primary border border-ink';
+        
+        activeCat = pill.getAttribute('data-cat') || 'All';
+
+        repoCards.forEach(card => {
+          const cardCat = card.getAttribute('data-category') || '';
+          if (activeCat === 'All' || cardCat.toLowerCase().includes(activeCat.toLowerCase())) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Hydrate Live GitHub Stars
+    repoCards.forEach(async (card) => {
+      const owner = card.getAttribute('data-owner');
+      const repo = card.getAttribute('data-repo');
+      if (owner && repo) {
+        try {
+          const stats = await fetchLiveRepoStats(owner, repo);
+          if (stats?.formattedStars) {
+            const starEl = card.querySelector('.live-stars');
+            if (starEl) starEl.textContent = `★ ${stats.formattedStars}`;
+          }
+        } catch (e) {}
+      }
+    });
+
+    // Initial run
+    updateHardwareVerdicts(selector?.value || 'all');
+  });
+</script>

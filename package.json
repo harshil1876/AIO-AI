@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "db:push": "drizzle-kit push",
-    "db:seed": "tsx src/db/seed.ts"
+    "db:seed": "tsx src/db/seed.ts",
+    "db:secure": "tsx scripts/secureDb.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

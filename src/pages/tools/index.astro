@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import ToolCard from '../../components/ToolCard.astro';
-import { getAllTools, getAllCategories } from '../../services/dataService';
+import { getAllTools, getAllCategories, type ToolData } from '../../services/dataService';
 
 const tools = await getAllTools();
 const categories = await getAllCategories();
@@ -13,20 +13,58 @@ const queryParam = Astro.url.searchParams.get('q') || '';
 const categoryParam = Astro.url.searchParams.get('category') || 'all';
 const pricingParam = Astro.url.searchParams.get('pricing') || 'all';
 const sortParam = Astro.url.searchParams.get('sort') || 'score';
+
+// Helper to determine role and timeline tags for each tool
+function getToolMetadata(tool: ToolData) {
+  const cats = tool.categorySlugs || [];
+  const text = `${tool.name} ${tool.tagline} ${tool.description} ${(tool.features || []).join(' ')} ${(tool.useCases || []).join(' ')}`.toLowerCase();
+  
+  const roles: string[] = ['all'];
+  if (cats.some(c => ['code-assistants', 'devops-cloud', 'open-source-models', 'web-app-builders'].includes(c)) || text.includes('code') || text.includes('developer') || text.includes('git') || text.includes('sdk')) {
+    roles.push('developers');
+  }
+  if (cats.some(c => ['video-generation', 'image-art', 'audio-voice'].includes(c)) || text.includes('video') || text.includes('creator') || text.includes('youtube') || text.includes('audio') || text.includes('image')) {
+    roles.push('creators');
+  }
+  if (cats.some(c => ['writing-copy', 'marketing-sales', 'seo'].includes(c)) || text.includes('market') || text.includes('seo') || text.includes('copy') || text.includes('email') || text.includes('ad')) {
+    roles.push('marketers');
+  }
+  if (cats.some(c => ['research-analysis', 'general-chatbots'].includes(c)) || text.includes('research') || text.includes('student') || text.includes('paper') || text.includes('pdf')) {
+    roles.push('students');
+  }
+  if (cats.some(c => ['productivity-agents', 'workflow-automation', 'business-operations'].includes(c)) || text.includes('founder') || text.includes('startup') || text.includes('workflow') || text.includes('automate')) {
+    roles.push('founders');
+  }
+
+  // Timeline classification
+  let timeline = 'all';
+  const highMomentumSlugs = ['claude', 'deepseek', 'cursor', 'bolt-new', 'v0-dev', 'gemini-flash', 'ollama', 'elevenlabs', 'midjourney', 'runway', 'kling'];
+  const newLaunchSlugs = ['deepseek', 'bolt-new', 'lovable', 'sarvam-ai', 'kruso-ai', 'whisper-web', 'vllm'];
+  
+  if (newLaunchSlugs.includes(tool.slug)) {
+    timeline = 'just-launched';
+  } else if (highMomentumSlugs.includes(tool.slug)) {
+    timeline = 'today';
+  } else if (tool.platformScore >= 92) {
+    timeline = 'this-week';
+  }
+
+  return { roles: roles.join(','), timeline };
+}
 ---
 
-<Layout title="AI Tools Directory | AI Discovery Platform" description="Explore verified AI tools with real user ratings, pricing models, platform scores, and category filters.">
+<Layout title="AI Tools Directory | Verified Catalog & Leaderboard" description="Explore 100+ verified AI tools with real pricing, open-source alternatives, platform scores, job role filters, and launch timeline.">
   <Header currentPath="/tools" />
 
-  <main class="w-full flex flex-col min-h-screen">
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
     <!-- Subheader -->
     <section class="border-b border-hairline bg-canvas-elevated px-6 py-8">
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <div class="text-xs text-mute uppercase font-mono tracking-wider mb-1">Directory</div>
+          <div class="text-[11px] text-mute uppercase font-mono tracking-wider mb-1">Directory & Leaderboard</div>
           <h1 class="text-3xl font-semibold text-ink tracking-tight">AI Tools Catalog</h1>
-          <p class="text-sm text-body mt-1">
-            Browse {tools.length} verified AI tools across creative, developer, workflow, and enterprise categories.
+          <p class="text-xs md:text-sm text-body mt-1">
+            Browse {tools.length} verified AI tools across creative, developer, workflow, and enterprise workflows.
           </p>
         </div>
 
@@ -43,9 +81,62 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
               type="text" 
               value={queryParam}
               placeholder="Search by name, task, or feature..." 
-              class="w-full bg-canvas border border-hairline hover:border-faint focus:border-ink rounded-md pl-9 pr-3 py-2 text-sm text-ink placeholder-faint outline-none transition-colors"
+              class="w-full bg-canvas border border-hairline hover:border-faint focus:border-ink rounded-md pl-9 pr-3 py-2 text-xs md:text-sm text-ink placeholder-faint outline-none transition-colors"
             />
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Filter Bars: Launch Timeline + Job Roles -->
+    <section class="border-b border-hairline bg-canvas px-6 py-3">
+      <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <!-- Launch Timeline (There's An AI For That feature) -->
+        <div class="flex items-center gap-1.5 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0" id="timelineBar">
+          <span class="text-[11px] font-mono uppercase text-mute mr-1 shrink-0">Timeline:</span>
+          {[
+            { id: 'all', label: 'All Time' },
+            { id: 'this-week', label: 'Trending This Week' },
+            { id: 'today', label: 'Featured Today' },
+            { id: 'just-launched', label: 'Just Launched' },
+          ].map((t, idx) => (
+            <button 
+              type="button"
+              class={`timeline-chip px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 ${
+                idx === 0 
+                  ? 'bg-ink text-on-primary border border-ink' 
+                  : 'bg-canvas-elevated text-body hover:text-ink border border-hairline hover:border-faint'
+              }`}
+              data-timeline={t.id}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        <!-- Job Roles Filter Bar -->
+        <div class="flex items-center gap-1.5 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0" id="roleBar">
+          <span class="text-[11px] font-mono uppercase text-mute mr-1 shrink-0">For:</span>
+          {[
+            { id: 'all', label: 'All Roles' },
+            { id: 'developers', label: 'Developers' },
+            { id: 'creators', label: 'Creators & YouTubers' },
+            { id: 'marketers', label: 'Marketers' },
+            { id: 'students', label: 'Students' },
+            { id: 'founders', label: 'Founders' },
+          ].map((r, idx) => (
+            <button 
+              type="button"
+              class={`role-chip px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors shrink-0 ${
+                idx === 0 
+                  ? 'bg-ink text-on-primary border border-ink' 
+                  : 'bg-canvas border border-hairline text-mute hover:text-ink hover:border-faint'
+              }`}
+              data-role={r.id}
+            >
+              {r.label}
+            </button>
+          ))}
         </div>
       </div>
     </section>
@@ -54,6 +145,29 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
     <div class="flex-1 w-full max-w-7xl mx-auto flex flex-col md:flex-row px-6 py-8 gap-8">
       <!-- Sidebar Filters -->
       <aside class="w-full md:w-60 flex flex-col gap-6 shrink-0">
+        <!-- Quick Action Toggles (AIxploria Top 10 + India + Free) -->
+        <div class="bg-canvas-elevated border border-hairline rounded-md p-3.5 space-y-2.5">
+          <div class="text-[10px] font-mono uppercase tracking-wider text-mute font-semibold">Discovery Toggles</div>
+          
+          <label class="flex items-center gap-2 text-xs text-ink font-medium cursor-pointer select-none">
+            <input type="checkbox" id="toggleTop10" class="accent-ink rounded" />
+            <span>Top 10 Leaderboard Only</span>
+          </label>
+
+          <label class="flex items-center gap-2 text-xs text-ink font-medium cursor-pointer select-none">
+            <input type="checkbox" id="toggleIndiaOnly" class="accent-ink rounded" />
+            <span class="flex items-center gap-1.5">
+              <span>India-First AI Only</span>
+              <span class="text-[9px] bg-orange-500/10 text-orange-600 dark:text-orange-400 font-mono px-1 rounded">16 tools</span>
+            </span>
+          </label>
+
+          <label class="flex items-center gap-2 text-xs text-ink font-medium cursor-pointer select-none">
+            <input type="checkbox" id="toggleFreeOnly" class="accent-ink rounded" />
+            <span>Free or Open Source</span>
+          </label>
+        </div>
+
         <!-- Pricing Filter -->
         <div>
           <h3 class="text-xs font-semibold text-mute uppercase tracking-wider mb-2.5">Pricing Model</h3>
@@ -65,7 +179,7 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
               { id: 'Paid', label: 'Paid' },
               { id: 'Open Source', label: 'Open Source' },
             ].map(p => (
-              <label class="flex items-center justify-between text-sm text-body hover:text-ink cursor-pointer px-2 py-1 rounded-sm hover:bg-hairline-soft transition-colors">
+              <label class="flex items-center justify-between text-xs text-body hover:text-ink cursor-pointer px-2 py-1 rounded-sm hover:bg-hairline-soft transition-colors">
                 <span class="flex items-center gap-2">
                   <input 
                     type="radio" 
@@ -89,8 +203,8 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
               Reset
             </button>
           </div>
-          <div class="flex flex-col gap-1 max-h-[420px] overflow-y-auto pr-1" id="categoryFilters">
-            <label class="flex items-center justify-between text-sm text-body hover:text-ink cursor-pointer px-2 py-1 rounded-sm hover:bg-hairline-soft transition-colors">
+          <div class="flex flex-col gap-1 max-h-[380px] overflow-y-auto pr-1" id="categoryFilters">
+            <label class="flex items-center justify-between text-xs text-body hover:text-ink cursor-pointer px-2 py-1 rounded-sm hover:bg-hairline-soft transition-colors">
               <span class="flex items-center gap-2">
                 <input 
                   type="radio" 
@@ -101,10 +215,10 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
                 />
                 <span>All Categories</span>
               </span>
-              <span class="text-xs text-mute font-mono">{tools.length}</span>
+              <span class="text-[11px] text-mute font-mono">{tools.length}</span>
             </label>
             {categories.map(c => (
-              <label class="flex items-center justify-between text-sm text-body hover:text-ink cursor-pointer px-2 py-1 rounded-sm hover:bg-hairline-soft transition-colors">
+              <label class="flex items-center justify-between text-xs text-body hover:text-ink cursor-pointer px-2 py-1 rounded-sm hover:bg-hairline-soft transition-colors">
                 <span class="flex items-center gap-2 truncate">
                   <input 
                     type="radio" 
@@ -115,7 +229,7 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
                   />
                   <span class="truncate">{c.name}</span>
                 </span>
-                <span class="text-xs text-mute font-mono">{c.count || 0}</span>
+                <span class="text-[11px] text-mute font-mono">{c.count || 0}</span>
               </label>
             ))}
           </div>
@@ -126,12 +240,13 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
       <div class="flex-1 flex flex-col">
         <!-- Results Bar -->
         <div class="flex items-center justify-between mb-6 pb-3 border-b border-hairline">
-          <div class="text-xs text-mute">
-            Showing <span id="toolCount" class="font-medium text-ink font-mono">{tools.length}</span> tools
+          <div class="text-xs text-mute flex items-center gap-2">
+            <span>Showing <strong id="toolCount" class="font-medium text-ink font-mono">{tools.length}</strong> verified tools</span>
+            <span id="activeFilterPill" class="hidden text-[10px] font-mono px-2 py-0.5 rounded bg-hairline-soft text-ink">Filtered</span>
           </div>
 
           <div class="flex items-center gap-2">
-            <span class="text-xs text-mute">Sort by:</span>
+            <span class="text-xs text-mute">Sort:</span>
             <select 
               id="sortSelect" 
               class="bg-canvas-elevated border border-hairline text-ink text-xs rounded-sm px-2.5 py-1.5 outline-none hover:border-faint transition-colors cursor-pointer font-medium"
@@ -145,20 +260,26 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
 
         <!-- Tool Cards Grid -->
         <div id="toolsGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {tools.map(tool => (
-            <div 
-              class="tool-card-wrapper" 
-              data-name={tool.name.toLowerCase()}
-              data-tagline={tool.tagline.toLowerCase()}
-              data-pricing={tool.pricingType}
-              data-categories={(Array.isArray(tool.categorySlugs) ? tool.categorySlugs : (tool.categorySlug ? [tool.categorySlug] : [])).join(',')}
-              data-score={tool.platformScore}
-              data-rating={tool.rating}
-              data-free={tool.freeTier ? 'true' : 'false'}
-            >
-              <ToolCard tool={tool} />
-            </div>
-          ))}
+          {tools.map(tool => {
+            const meta = getToolMetadata(tool);
+            return (
+              <div 
+                class="tool-card-wrapper" 
+                data-name={tool.name.toLowerCase()}
+                data-tagline={tool.tagline.toLowerCase()}
+                data-pricing={tool.pricingType}
+                data-categories={(Array.isArray(tool.categorySlugs) ? tool.categorySlugs : (tool.categorySlug ? [tool.categorySlug] : [])).join(',')}
+                data-score={tool.platformScore}
+                data-rating={tool.rating || 0}
+                data-free={tool.freeTier ? 'true' : 'false'}
+                data-roles={meta.roles}
+                data-timeline={meta.timeline}
+                data-indian={tool.isIndianAI ? 'true' : 'false'}
+              >
+                <ToolCard tool={tool} />
+              </div>
+            );
+          })}
         </div>
 
         <!-- Empty State -->
@@ -169,8 +290,8 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
             </svg>
           </div>
           <h3 class="text-base font-semibold text-ink mb-1">No AI tools matched your filters</h3>
-          <p class="text-xs text-mute max-w-sm mb-4">Try clearing your search term, selecting "All Categories", or switching pricing to "All".</p>
-          <button id="clearAllBtn" class="bg-ink text-on-primary text-xs font-medium px-4 py-2 rounded-pill hover:bg-black transition-colors cursor-pointer">
+          <p class="text-xs text-mute max-w-sm mb-4">Try clearing your search term, switching role or timeline filters, or resetting pricing.</p>
+          <button id="clearAllBtn" class="bg-ink text-on-primary text-xs font-medium px-4 py-2 rounded-md hover:bg-neutral-800 transition-colors cursor-pointer">
             Reset All Filters
           </button>
         </div>
@@ -182,7 +303,6 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
 </Layout>
 
 <script is:inline>
-  // Interactive client-side filtering script
   document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('directorySearch');
     const sortSelect = document.getElementById('sortSelect');
@@ -192,22 +312,63 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
     const grid = document.getElementById('toolsGrid');
     const clearAllBtn = document.getElementById('clearAllBtn');
     const resetCategoryBtn = document.getElementById('resetCategoryBtn');
+    const activeFilterPill = document.getElementById('activeFilterPill');
+    
+    // Toggles
+    const toggleTop10 = document.getElementById('toggleTop10');
+    const toggleIndiaOnly = document.getElementById('toggleIndiaOnly');
+    const toggleFreeOnly = document.getElementById('toggleFreeOnly');
+
+    // State
+    let activeTimeline = 'all';
+    let activeRole = 'all';
+
+    // Timeline chips
+    const timelineButtons = document.querySelectorAll('.timeline-chip');
+    timelineButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        timelineButtons.forEach(b => {
+          b.className = 'timeline-chip px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 bg-canvas-elevated text-body hover:text-ink border border-hairline hover:border-faint';
+        });
+        btn.className = 'timeline-chip px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 bg-ink text-on-primary border border-ink';
+        activeTimeline = btn.getAttribute('data-timeline') || 'all';
+        applyFilters();
+      });
+    });
+
+    // Role chips
+    const roleButtons = document.querySelectorAll('.role-chip');
+    roleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        roleButtons.forEach(b => {
+          b.className = 'role-chip px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors shrink-0 bg-canvas border border-hairline text-mute hover:text-ink hover:border-faint';
+        });
+        btn.className = 'role-chip px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors shrink-0 bg-ink text-on-primary border border-ink';
+        activeRole = btn.getAttribute('data-role') || 'all';
+        applyFilters();
+      });
+    });
 
     function applyFilters() {
       const query = (searchInput?.value || '').toLowerCase().trim();
       const selectedPricing = (document.querySelector('input[name="pricing"]:checked')?.value || 'all');
       const selectedCategory = (document.querySelector('input[name="category"]:checked')?.value || 'all');
       const sortBy = sortSelect?.value || 'score';
+      const onlyTop10 = toggleTop10?.checked || false;
+      const onlyIndia = toggleIndiaOnly?.checked || false;
+      const onlyFree = toggleFreeOnly?.checked || false;
 
-      let visibleCount = 0;
+      let matchedWrappers = [];
 
-      // Filter
       toolWrappers.forEach(el => {
         const name = el.getAttribute('data-name') || '';
         const tagline = el.getAttribute('data-tagline') || '';
         const pricing = el.getAttribute('data-pricing') || '';
         const categories = (el.getAttribute('data-categories') || '').split(',');
         const freeTier = el.getAttribute('data-free') === 'true';
+        const roles = (el.getAttribute('data-roles') || '').split(',');
+        const timeline = el.getAttribute('data-timeline') || 'all';
+        const isIndian = el.getAttribute('data-indian') === 'true';
 
         let matchesSearch = !query || name.includes(query) || tagline.includes(query) || categories.some(c => c.includes(query));
         
@@ -220,17 +381,23 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
 
         let matchesCategory = selectedCategory === 'all' || categories.includes(selectedCategory);
 
-        if (matchesSearch && matchesPricing && matchesCategory) {
-          el.style.display = '';
-          visibleCount++;
+        let matchesRole = activeRole === 'all' || roles.includes(activeRole);
+
+        let matchesTimeline = activeTimeline === 'all' || timeline === activeTimeline || (activeTimeline === 'this-week' && ['today', 'just-launched'].includes(timeline));
+
+        let matchesIndia = !onlyIndia || isIndian;
+
+        let matchesFreeToggle = !onlyFree || (pricing === 'Free' || pricing === 'Open Source' || freeTier);
+
+        if (matchesSearch && matchesPricing && matchesCategory && matchesRole && matchesTimeline && matchesIndia && matchesFreeToggle) {
+          matchedWrappers.push(el);
         } else {
           el.style.display = 'none';
         }
       });
 
-      // Sort visible wrappers
-      const visibleWrappers = toolWrappers.filter(el => el.style.display !== 'none');
-      visibleWrappers.sort((a, b) => {
+      // Sort matched
+      matchedWrappers.sort((a, b) => {
         if (sortBy === 'score') {
           return Number(b.getAttribute('data-score')) - Number(a.getAttribute('data-score'));
         } else if (sortBy === 'rating') {
@@ -241,11 +408,34 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
         return 0;
       });
 
-      // Re-append sorted elements
-      visibleWrappers.forEach(el => grid.appendChild(el));
+      // Handle Top 10 Leaderboard Toggle
+      if (onlyTop10) {
+        matchedWrappers.slice(0, 10).forEach(el => {
+          el.style.display = '';
+          grid.appendChild(el);
+        });
+        matchedWrappers.slice(10).forEach(el => {
+          el.style.display = 'none';
+        });
+      } else {
+        matchedWrappers.forEach(el => {
+          el.style.display = '';
+          grid.appendChild(el);
+        });
+      }
+
+      const visibleCount = onlyTop10 ? Math.min(matchedWrappers.length, 10) : matchedWrappers.length;
 
       // Update counter and empty state
       if (toolCount) toolCount.textContent = visibleCount.toString();
+      if (activeFilterPill) {
+        if (activeRole !== 'all' || activeTimeline !== 'all' || query || selectedPricing !== 'all' || selectedCategory !== 'all' || onlyTop10 || onlyIndia || onlyFree) {
+          activeFilterPill.classList.remove('hidden');
+        } else {
+          activeFilterPill.classList.add('hidden');
+        }
+      }
+
       if (emptyState) {
         if (visibleCount === 0) {
           emptyState.classList.remove('hidden');
@@ -259,6 +449,9 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
 
     searchInput?.addEventListener('input', applyFilters);
     sortSelect?.addEventListener('change', applyFilters);
+    toggleTop10?.addEventListener('change', applyFilters);
+    toggleIndiaOnly?.addEventListener('change', applyFilters);
+    toggleFreeOnly?.addEventListener('change', applyFilters);
 
     document.querySelectorAll('.filter-pricing').forEach(radio => {
       radio.addEventListener('change', applyFilters);
@@ -278,10 +471,25 @@ const sortParam = Astro.url.searchParams.get('sort') || 'score';
 
     clearAllBtn?.addEventListener('click', () => {
       if (searchInput) searchInput.value = '';
+      if (toggleTop10) toggleTop10.checked = false;
+      if (toggleIndiaOnly) toggleIndiaOnly.checked = false;
+      if (toggleFreeOnly) toggleFreeOnly.checked = false;
       const allPricing = document.querySelector('input[name="pricing"][value="all"]');
       const allCat = document.querySelector('input[name="category"][value="all"]');
       if (allPricing) allPricing.checked = true;
       if (allCat) allCat.checked = true;
+      activeTimeline = 'all';
+      activeRole = 'all';
+      timelineButtons.forEach((b, idx) => {
+        b.className = idx === 0 
+          ? 'timeline-chip px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 bg-ink text-on-primary border border-ink' 
+          : 'timeline-chip px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 bg-canvas-elevated text-body hover:text-ink border border-hairline hover:border-faint';
+      });
+      roleButtons.forEach((b, idx) => {
+        b.className = idx === 0
+          ? 'role-chip px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors shrink-0 bg-ink text-on-primary border border-ink' 
+          : 'role-chip px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors shrink-0 bg-canvas border border-hairline text-mute hover:text-ink hover:border-faint';
+      });
       applyFilters();
     });
 

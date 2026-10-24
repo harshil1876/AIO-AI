@@ -1,7 +1,7 @@
 export interface LLMModel {
   id: string;
   name: string;
-  provider: 'OpenAI' | 'Anthropic' | 'Google' | 'DeepSeek' | 'Mistral';
+  provider: 'OpenAI' | 'Anthropic' | 'Google' | 'DeepSeek' | 'Mistral' | 'Meta' | 'Qwen' | 'xAI' | 'Indic AI';
   providerSlug: string;
   description: string;
   contextWindow: number;
@@ -16,9 +16,89 @@ export interface LLMModel {
   modelIdentifier: string;
   status: 'Active' | 'Preview';
   officialDocsUrl: string;
+  isReasoningModel?: boolean;
 }
 
 export const OFFICIAL_MODELS: LLMModel[] = [
+  // --- Anthropic Models ---
+  {
+    id: 'claude-3-7-sonnet',
+    name: 'Claude 3.7 Sonnet (Hybrid Reasoning)',
+    provider: 'Anthropic',
+    providerSlug: 'anthropic',
+    description: 'First hybrid model with dynamic reasoning tokens, industry-leading coding benchmarks, and full tool use capabilities.',
+    contextWindow: 200000,
+    formattedContext: '200,000',
+    maxOutputTokens: 64000,
+    formattedMaxOutput: '64,000',
+    inputCostPer1M: 3.00,
+    outputCostPer1M: 15.00,
+    inputCostPer1K: 0.0030,
+    outputCostPer1K: 0.0150,
+    endpointUrl: 'https://api.anthropic.com/v1/messages',
+    modelIdentifier: 'claude-3-7-sonnet-20250219',
+    status: 'Active',
+    officialDocsUrl: 'https://docs.anthropic.com/en/docs/about-claude/models',
+    isReasoningModel: true
+  },
+  {
+    id: 'claude-3-5-sonnet',
+    name: 'Claude 3.5 Sonnet',
+    provider: 'Anthropic',
+    providerSlug: 'anthropic',
+    description: 'Gold standard in code generation, nuanced reasoning, vision understanding, and autonomous agent orchestration.',
+    contextWindow: 200000,
+    formattedContext: '200,000',
+    maxOutputTokens: 8192,
+    formattedMaxOutput: '8,192',
+    inputCostPer1M: 3.00,
+    outputCostPer1M: 15.00,
+    inputCostPer1K: 0.0030,
+    outputCostPer1K: 0.0150,
+    endpointUrl: 'https://api.anthropic.com/v1/messages',
+    modelIdentifier: 'claude-3-5-sonnet-20241022',
+    status: 'Active',
+    officialDocsUrl: 'https://docs.anthropic.com/en/docs/about-claude/models'
+  },
+  {
+    id: 'claude-3-5-haiku',
+    name: 'Claude 3.5 Haiku',
+    provider: 'Anthropic',
+    providerSlug: 'anthropic',
+    description: 'Ultra-fast, compact model with near-instant response times for low-latency production pipelines.',
+    contextWindow: 200000,
+    formattedContext: '200,000',
+    maxOutputTokens: 8192,
+    formattedMaxOutput: '8,192',
+    inputCostPer1M: 0.80,
+    outputCostPer1M: 4.00,
+    inputCostPer1K: 0.0008,
+    outputCostPer1K: 0.0040,
+    endpointUrl: 'https://api.anthropic.com/v1/messages',
+    modelIdentifier: 'claude-3-5-haiku-20241022',
+    status: 'Active',
+    officialDocsUrl: 'https://docs.anthropic.com/en/docs/about-claude/models'
+  },
+  {
+    id: 'claude-3-opus',
+    name: 'Claude 3 Opus',
+    provider: 'Anthropic',
+    providerSlug: 'anthropic',
+    description: 'Anthropic powerhouse for highly complex analysis, academic research, and multifaceted technical writing.',
+    contextWindow: 200000,
+    formattedContext: '200,000',
+    maxOutputTokens: 4096,
+    formattedMaxOutput: '4,096',
+    inputCostPer1M: 15.00,
+    outputCostPer1M: 75.00,
+    inputCostPer1K: 0.0150,
+    outputCostPer1K: 0.0750,
+    endpointUrl: 'https://api.anthropic.com/v1/messages',
+    modelIdentifier: 'claude-3-opus-20240229',
+    status: 'Active',
+    officialDocsUrl: 'https://docs.anthropic.com/en/docs/about-claude/models'
+  },
+
   // --- OpenAI Models ---
   {
     id: 'gpt-4o',
@@ -75,7 +155,8 @@ export const OFFICIAL_MODELS: LLMModel[] = [
     endpointUrl: 'https://api.openai.com/v1/chat/completions',
     modelIdentifier: 'o3-mini',
     status: 'Active',
-    officialDocsUrl: 'https://platform.openai.com/docs/models/o3-mini'
+    officialDocsUrl: 'https://platform.openai.com/docs/models/o3-mini',
+    isReasoningModel: true
   },
   {
     id: 'o1',
@@ -94,69 +175,49 @@ export const OFFICIAL_MODELS: LLMModel[] = [
     endpointUrl: 'https://api.openai.com/v1/chat/completions',
     modelIdentifier: 'o1',
     status: 'Active',
-    officialDocsUrl: 'https://platform.openai.com/docs/models/o1'
-  },
-
-  // --- Anthropic Models ---
-  {
-    id: 'claude-3-5-sonnet',
-    name: 'Claude 3.5 Sonnet',
-    provider: 'Anthropic',
-    providerSlug: 'anthropic',
-    description: 'Industry benchmark in code generation, nuanced reasoning, vision understanding, and autonomous tool use.',
-    contextWindow: 200000,
-    formattedContext: '200,000',
-    maxOutputTokens: 8192,
-    formattedMaxOutput: '8,192',
-    inputCostPer1M: 3.00,
-    outputCostPer1M: 15.00,
-    inputCostPer1K: 0.0030,
-    outputCostPer1K: 0.0150,
-    endpointUrl: 'https://api.anthropic.com/v1/messages',
-    modelIdentifier: 'claude-3-5-sonnet-20241022',
-    status: 'Active',
-    officialDocsUrl: 'https://docs.anthropic.com/en/docs/about-claude/models'
+    officialDocsUrl: 'https://platform.openai.com/docs/models/o1',
+    isReasoningModel: true
   },
   {
-    id: 'claude-3-5-haiku',
-    name: 'Claude 3.5 Haiku',
-    provider: 'Anthropic',
-    providerSlug: 'anthropic',
-    description: 'Ultra-fast, compact model with near-instant response times for low-latency production pipelines.',
-    contextWindow: 200000,
-    formattedContext: '200,000',
-    maxOutputTokens: 8192,
-    formattedMaxOutput: '8,192',
-    inputCostPer1M: 0.80,
-    outputCostPer1M: 4.00,
-    inputCostPer1K: 0.0008,
-    outputCostPer1K: 0.0040,
-    endpointUrl: 'https://api.anthropic.com/v1/messages',
-    modelIdentifier: 'claude-3-5-haiku-20241022',
-    status: 'Active',
-    officialDocsUrl: 'https://docs.anthropic.com/en/docs/about-claude/models'
-  },
-  {
-    id: 'claude-3-opus',
-    name: 'Claude 3 Opus',
-    provider: 'Anthropic',
-    providerSlug: 'anthropic',
-    description: 'Anthropic powerful model for highly complex analysis, academic research, and multifaceted technical writing.',
-    contextWindow: 200000,
-    formattedContext: '200,000',
-    maxOutputTokens: 4096,
-    formattedMaxOutput: '4,096',
-    inputCostPer1M: 15.00,
-    outputCostPer1M: 75.00,
-    inputCostPer1K: 0.0150,
-    outputCostPer1K: 0.0750,
-    endpointUrl: 'https://api.anthropic.com/v1/messages',
-    modelIdentifier: 'claude-3-opus-20240229',
-    status: 'Active',
-    officialDocsUrl: 'https://docs.anthropic.com/en/docs/about-claude/models'
+    id: 'gpt-4-5-preview',
+    name: 'GPT-4.5 Preview',
+    provider: 'OpenAI',
+    providerSlug: 'openai',
+    description: 'Massive parameter dense foundation model delivering immense world knowledge, creative depth, and reduced hallucinations.',
+    contextWindow: 128000,
+    formattedContext: '128,000',
+    maxOutputTokens: 16384,
+    formattedMaxOutput: '16,384',
+    inputCostPer1M: 75.00,
+    outputCostPer1M: 150.00,
+    inputCostPer1K: 0.0750,
+    outputCostPer1K: 0.1500,
+    endpointUrl: 'https://api.openai.com/v1/chat/completions',
+    modelIdentifier: 'gpt-4.5-preview',
+    status: 'Preview',
+    officialDocsUrl: 'https://platform.openai.com/docs/models'
   },
 
   // --- Google DeepMind Models ---
+  {
+    id: 'gemini-2-5-pro',
+    name: 'Gemini 2.5 Pro',
+    provider: 'Google',
+    providerSlug: 'google',
+    description: 'Frontier reasoning and multimodal flagship model with 2M token context, native code execution, and audio-visual understanding.',
+    contextWindow: 2097152,
+    formattedContext: '2,097,152',
+    maxOutputTokens: 8192,
+    formattedMaxOutput: '8,192',
+    inputCostPer1M: 1.25,
+    outputCostPer1M: 5.00,
+    inputCostPer1K: 0.00125,
+    outputCostPer1K: 0.0050,
+    endpointUrl: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent',
+    modelIdentifier: 'gemini-2.5-pro',
+    status: 'Preview',
+    officialDocsUrl: 'https://ai.google.dev/gemini-api/docs/models/gemini'
+  },
   {
     id: 'gemini-2-0-flash',
     name: 'Gemini 2.0 Flash',
@@ -173,6 +234,25 @@ export const OFFICIAL_MODELS: LLMModel[] = [
     outputCostPer1K: 0.0004,
     endpointUrl: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
     modelIdentifier: 'gemini-2.0-flash',
+    status: 'Active',
+    officialDocsUrl: 'https://ai.google.dev/gemini-api/docs/models/gemini'
+  },
+  {
+    id: 'gemini-2-0-flash-lite',
+    name: 'Gemini 2.0 Flash-Lite',
+    provider: 'Google',
+    providerSlug: 'google',
+    description: 'Hyper-optimized budget model designed for extreme cost efficiency in high-throughput enterprise pipelines.',
+    contextWindow: 1048576,
+    formattedContext: '1,048,576',
+    maxOutputTokens: 8192,
+    formattedMaxOutput: '8,192',
+    inputCostPer1M: 0.075,
+    outputCostPer1M: 0.30,
+    inputCostPer1K: 0.000075,
+    outputCostPer1K: 0.0003,
+    endpointUrl: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent',
+    modelIdentifier: 'gemini-2.0-flash-lite',
     status: 'Active',
     officialDocsUrl: 'https://ai.google.dev/gemini-api/docs/models/gemini'
   },
@@ -196,7 +276,7 @@ export const OFFICIAL_MODELS: LLMModel[] = [
     officialDocsUrl: 'https://ai.google.dev/gemini-api/docs/models/gemini'
   },
 
-  // --- DeepSeek Official API ---
+  // --- DeepSeek Official Models ---
   {
     id: 'deepseek-v3',
     name: 'DeepSeek-V3',
@@ -233,10 +313,11 @@ export const OFFICIAL_MODELS: LLMModel[] = [
     endpointUrl: 'https://api.deepseek.com/chat/completions',
     modelIdentifier: 'deepseek-reasoner',
     status: 'Active',
-    officialDocsUrl: 'https://api-docs.deepseek.com/'
+    officialDocsUrl: 'https://api-docs.deepseek.com/',
+    isReasoningModel: true
   },
 
-  // --- Mistral AI Official API ---
+  // --- Mistral AI Models ---
   {
     id: 'mistral-large',
     name: 'Mistral Large 2',
@@ -274,6 +355,186 @@ export const OFFICIAL_MODELS: LLMModel[] = [
     modelIdentifier: 'codestral-latest',
     status: 'Active',
     officialDocsUrl: 'https://docs.mistral.ai/getting-started/models/models_overview/'
+  },
+  {
+    id: 'ministral-8b',
+    name: 'Ministral 8B',
+    provider: 'Mistral',
+    providerSlug: 'mistral',
+    description: 'Edge-optimized small language model designed for on-device inference, local agents, and private workstation deployments.',
+    contextWindow: 128000,
+    formattedContext: '128,000',
+    maxOutputTokens: 8192,
+    formattedMaxOutput: '8,192',
+    inputCostPer1M: 0.10,
+    outputCostPer1M: 0.10,
+    inputCostPer1K: 0.0001,
+    outputCostPer1K: 0.0001,
+    endpointUrl: 'https://api.mistral.ai/v1/chat/completions',
+    modelIdentifier: 'ministral-8b-latest',
+    status: 'Active',
+    officialDocsUrl: 'https://docs.mistral.ai/getting-started/models/models_overview/'
+  },
+
+  // --- Meta Open Weights Models ---
+  {
+    id: 'llama-3-3-70b',
+    name: 'Meta Llama 3.3 70B Instruct',
+    provider: 'Meta',
+    providerSlug: 'meta',
+    description: 'Flagship open-weights model matching prior 405B capabilities on common industry benchmarks.',
+    contextWindow: 128000,
+    formattedContext: '128,000',
+    maxOutputTokens: 8192,
+    formattedMaxOutput: '8,192',
+    inputCostPer1M: 0.40,
+    outputCostPer1M: 0.70,
+    inputCostPer1K: 0.0004,
+    outputCostPer1K: 0.0007,
+    endpointUrl: 'https://api.groq.com/openai/v1/chat/completions',
+    modelIdentifier: 'meta-llama/llama-3.3-70b-instruct',
+    status: 'Active',
+    officialDocsUrl: 'https://llama.meta.com/'
+  },
+  {
+    id: 'llama-3-1-405b',
+    name: 'Meta Llama 3.1 405B Instruct',
+    provider: 'Meta',
+    providerSlug: 'meta',
+    description: 'First frontier-level open-weights model capable of synthetic data generation and complex scientific reasoning.',
+    contextWindow: 128000,
+    formattedContext: '128,000',
+    maxOutputTokens: 8192,
+    formattedMaxOutput: '8,192',
+    inputCostPer1M: 1.50,
+    outputCostPer1M: 2.50,
+    inputCostPer1K: 0.0015,
+    outputCostPer1K: 0.0025,
+    endpointUrl: 'https://openrouter.ai/api/v1/chat/completions',
+    modelIdentifier: 'meta-llama/llama-3.1-405b-instruct',
+    status: 'Active',
+    officialDocsUrl: 'https://llama.meta.com/'
+  },
+
+  // --- Qwen (Alibaba) Models ---
+  {
+    id: 'qwen-2-5-max',
+    name: 'Qwen 2.5 Max',
+    provider: 'Qwen',
+    providerSlug: 'qwen',
+    description: 'Leading frontier MoE model excelling in mathematics, coding, and multi-lingual reasoning with large context.',
+    contextWindow: 128000,
+    formattedContext: '128,000',
+    maxOutputTokens: 8192,
+    formattedMaxOutput: '8,192',
+    inputCostPer1M: 0.20,
+    outputCostPer1M: 0.60,
+    inputCostPer1K: 0.0002,
+    outputCostPer1K: 0.0006,
+    endpointUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
+    modelIdentifier: 'qwen-max',
+    status: 'Active',
+    officialDocsUrl: 'https://help.aliyun.com/document_detail/2712574.html'
+  },
+  {
+    id: 'qwen-2-5-coder-32b',
+    name: 'Qwen 2.5 Coder 32B Instruct',
+    provider: 'Qwen',
+    providerSlug: 'qwen',
+    description: 'World-class open-weights coding model rivaling GPT-4o on HumanEval and repository-level refactoring.',
+    contextWindow: 128000,
+    formattedContext: '128,000',
+    maxOutputTokens: 8192,
+    formattedMaxOutput: '8,192',
+    inputCostPer1M: 0.15,
+    outputCostPer1M: 0.30,
+    inputCostPer1K: 0.00015,
+    outputCostPer1K: 0.0003,
+    endpointUrl: 'https://openrouter.ai/api/v1/chat/completions',
+    modelIdentifier: 'qwen/qwen-2.5-coder-32b-instruct',
+    status: 'Active',
+    officialDocsUrl: 'https://github.com/QwenLM/Qwen2.5-Coder'
+  },
+
+  // --- xAI Models ---
+  {
+    id: 'grok-3',
+    name: 'Grok 3 (Preview)',
+    provider: 'xAI',
+    providerSlug: 'xai',
+    description: 'xAI flagship model trained on massive Colossus cluster, excelling in real-time truth-seeking and reasoning.',
+    contextWindow: 131072,
+    formattedContext: '131,072',
+    maxOutputTokens: 8192,
+    formattedMaxOutput: '8,192',
+    inputCostPer1M: 3.00,
+    outputCostPer1M: 15.00,
+    inputCostPer1K: 0.0030,
+    outputCostPer1K: 0.0150,
+    endpointUrl: 'https://api.x.ai/v1/chat/completions',
+    modelIdentifier: 'grok-3-preview',
+    status: 'Preview',
+    officialDocsUrl: 'https://docs.x.ai/',
+    isReasoningModel: true
+  },
+  {
+    id: 'grok-2',
+    name: 'Grok 2',
+    provider: 'xAI',
+    providerSlug: 'xai',
+    description: 'Frontier model with native image generation, structured JSON extraction, and high-velocity reasoning.',
+    contextWindow: 131072,
+    formattedContext: '131,072',
+    maxOutputTokens: 8192,
+    formattedMaxOutput: '8,192',
+    inputCostPer1M: 2.00,
+    outputCostPer1M: 10.00,
+    inputCostPer1K: 0.0020,
+    outputCostPer1K: 0.0100,
+    endpointUrl: 'https://api.x.ai/v1/chat/completions',
+    modelIdentifier: 'grok-2-1212',
+    status: 'Active',
+    officialDocsUrl: 'https://docs.x.ai/'
+  },
+
+  // --- Indic AI Foundation Models ---
+  {
+    id: 'sarvam-2b',
+    name: 'Sarvam 2B (Indic-LLM)',
+    provider: 'Indic AI',
+    providerSlug: 'indic-ai',
+    description: 'Sovereign 2B Indic foundation model optimized for Hindi, Tamil, Telugu, and 10+ regional Indian languages.',
+    contextWindow: 32768,
+    formattedContext: '32,768',
+    maxOutputTokens: 4096,
+    formattedMaxOutput: '4,096',
+    inputCostPer1M: 0.05,
+    outputCostPer1M: 0.15,
+    inputCostPer1K: 0.00005,
+    outputCostPer1K: 0.00015,
+    endpointUrl: 'https://api.sarvam.ai/v1/chat/completions',
+    modelIdentifier: 'sarvam-2b-v0.5',
+    status: 'Active',
+    officialDocsUrl: 'https://docs.sarvam.ai/'
+  },
+  {
+    id: 'krutrim-spectre',
+    name: 'Krutrim Spectre',
+    provider: 'Indic AI',
+    providerSlug: 'indic-ai',
+    description: 'Made-in-India generative architecture designed for enterprise multilingual tasks across 22 official Indian languages.',
+    contextWindow: 65536,
+    formattedContext: '65,536',
+    maxOutputTokens: 8192,
+    formattedMaxOutput: '8,192',
+    inputCostPer1M: 0.12,
+    outputCostPer1M: 0.36,
+    inputCostPer1K: 0.00012,
+    outputCostPer1K: 0.00036,
+    endpointUrl: 'https://cloud.olakrutrim.com/v1/chat/completions',
+    modelIdentifier: 'krutrim-spectre-latest',
+    status: 'Active',
+    officialDocsUrl: 'https://cloud.olakrutrim.com/docs'
   }
 ];
 
