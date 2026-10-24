@@ -37,20 +37,22 @@ const DOMAINS = [
 ---
 
 <Layout 
-  title="AI Categories & Taxonomy | AI Discovery Platform"
+  title="AI Categories & Taxonomy | AIO AI"
   description="Explore our comprehensive 5-domain taxonomy covering all creative, development, automation, and regional AI tools."
 >
   <Header currentPath="/categories" />
 
-  <main class="w-full flex flex-col min-h-screen">
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
     <!-- Header -->
-    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16">
+    <section class="border-b border-[#E2E8F0] bg-surface px-6 py-12 md:py-16">
       <div class="max-w-7xl mx-auto">
-        <div class="text-xs text-mute uppercase font-mono tracking-wider mb-2">Taxonomy</div>
-        <h1 class="text-3xl md:text-4xl font-semibold text-ink tracking-tight mb-2">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-mono font-semibold text-primary mb-3">
+          TAXONOMY & ARCHITECTURE
+        </div>
+        <h1 class="text-3xl md:text-5xl font-black text-ink tracking-tight mb-2">
           Explore AI Categories
         </h1>
-        <p class="text-sm md:text-base text-body max-w-2xl leading-relaxed">
+        <p class="text-sm md:text-base text-neutral-600 max-w-2xl leading-relaxed">
           Structured by domain and user intent, helping you locate specialized models and workflows in seconds.
         </p>
       </div>
@@ -62,31 +64,36 @@ const DOMAINS = [
         const domainCats = categories.filter(c => domain.slugs.includes(c.slug));
         return (
           <section>
-            <div class="border-b border-hairline pb-3 mb-6">
-              <h2 class="text-xl font-semibold text-ink tracking-tight">{domain.title}</h2>
-              <p class="text-xs text-mute mt-0.5">{domain.description}</p>
+            <div class="border-b border-[#E2E8F0] pb-3 mb-6">
+              <h2 class="text-xl md:text-2xl font-black text-ink tracking-tight">{domain.title}</h2>
+              <p class="text-xs text-neutral-500 mt-0.5">{domain.description}</p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {domainCats.map(cat => (
                 <a 
                   href={`/tools?category=${cat.slug}`}
-                  class="bg-canvas-elevated border border-hairline rounded-md p-5 flex flex-col justify-between hover:border-faint transition-all hover:shadow-xs group"
+                  class="bg-white border border-[#E2E8F0] rounded-xl p-5 flex flex-col justify-between hover:border-primary hover:shadow-md transition-all group"
                 >
                   <div>
-                    <div class="mb-3 p-2 rounded-md bg-hairline-soft/80 w-fit group-hover:scale-105 transition-transform">
-                      <CategoryIcon slug={cat.slug} class="w-6 h-6 text-ink" />
+                    <div class="mb-3 p-2.5 rounded-xl bg-surface border border-[#E2E8F0] w-fit group-hover:scale-105 group-hover:bg-blue-50 group-hover:border-blue-200 transition-all">
+                      <CategoryIcon slug={cat.slug} class="w-6 h-6 text-primary" />
                     </div>
-                    <h3 class="font-semibold text-ink text-base group-hover:text-link transition-colors mb-1.5">
+                    <h3 class="font-bold text-ink text-base group-hover:text-primary transition-colors mb-1.5">
                       {cat.name}
                     </h3>
-                    <p class="text-xs text-body leading-relaxed mb-4">
+                    <p class="text-xs text-neutral-600 leading-relaxed mb-4">
                       {cat.description}
                     </p>
                   </div>
-                  <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs text-mute">
-                    <span class="font-mono">{cat.count || 0} tools</span>
-                    <span class="group-hover:text-ink transition-colors font-medium">Browse →</span>
+                  <div class="pt-3 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
+                    <span class="font-mono text-neutral-400">{cat.count || 0} tools</span>
+                    <span class="group-hover:text-primary transition-colors font-semibold flex items-center gap-1">
+                      <span>Browse</span>
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                      </svg>
+                    </span>
                   </div>
                 </a>
               ))}

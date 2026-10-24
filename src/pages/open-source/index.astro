@@ -3,92 +3,78 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { OPEN_SOURCE_REPOS } from '../../data/openSourceData';
+
+const categories = ['All', 'LLM Runtimes', 'Agent Frameworks', 'Image & Video Gen', 'RAG & Vector DBs', 'Voice & Audio', 'UI Frontends', 'Coding Agents'];
 ---
 
 <Layout 
-  title="Open Source AI Projects & Repositories | AI Discovery"
-  description="Discover trending open-source AI frameworks, local LLM runners, model serving engines, and autonomous agent tools on GitHub."
+  title="Open-Source AI Hub | 20+ Flagship Repositories & Local Setup"
+  description="Explore 20+ flagship self-hostable open-source AI projects. Compare VRAM requirements, Docker quickstart commands, and commercial SaaS replacements."
 >
   <Header currentPath="/open-source" />
 
-  <main class="w-full flex flex-col min-h-screen">
+  <main class="w-full flex flex-col min-h-screen bg-[#FFFFFF]">
     <!-- Header -->
-    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16">
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <div class="text-xs text-mute uppercase font-mono tracking-wider mb-2">Open Source</div>
-          <h1 class="text-3xl md:text-4xl font-semibold text-ink tracking-tight mb-2">
-            Trending Open-Source AI Repositories
-          </h1>
-          <p class="text-sm md:text-base text-body max-w-2xl leading-relaxed">
-            Curated GitHub projects, self-hostable tools, and local inference engines with verified licenses and real metrics.
-          </p>
+    <section class="border-b border-[#E2E8F0] bg-[#F8FAFF] px-4 sm:px-6 py-12 md:py-16">
+      <div class="max-w-7xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-purple-200 bg-purple-50 text-xs font-semibold text-purple-700 mb-4 shadow-xs font-mono">
+          <span>20+ FLAGSHIP OPEN-SOURCE AI REPOSITORIES</span>
         </div>
-
-        <a 
-          href="https://github.com/trending" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          class="text-xs text-mute hover:text-ink font-medium border border-hairline px-3 py-2 rounded-md hover:bg-hairline-soft transition-colors shrink-0"
-        >
-          View GitHub Trending ↗
-        </a>
+        <h1 class="text-3xl sm:text-5xl font-black text-ink tracking-tight mb-3">
+          Open-Source AI Hub
+        </h1>
+        <p class="text-slate-600 text-sm sm:text-base max-w-2xl leading-relaxed">
+          The comprehensive index of self-hostable AI runtimes, agent frameworks, local diffusion GUIs, and vector engines. Includes VRAM hardware specifications and instant CLI setup commands.
+        </p>
       </div>
     </section>
 
-    <!-- Repositories Grid -->
-    <div class="w-full max-w-7xl mx-auto px-6 py-12">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {OPEN_SOURCE_REPOS.map(repo => (
-          <div class="bg-canvas-elevated border border-hairline rounded-md p-6 flex flex-col justify-between hover:border-faint transition-all shadow-xs">
+    <!-- Repos Grid -->
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 flex-1">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {OPEN_SOURCE_REPOS.map((repo) => (
+          <article class="bg-white border-2 border-[#09090B] rounded-xl p-6 shadow-[5px_5px_0px_0px_#09090B] hover:shadow-[7px_7px_0px_0px_#7C3AED] hover:-translate-y-0.5 transition-all flex flex-col justify-between">
             <div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-mono font-medium text-mute">{repo.category}</span>
-                <span class={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${
-                  repo.difficulty === 'Beginner'
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                    : repo.difficulty === 'Intermediate'
-                    ? 'bg-blue-50 text-blue-700 border-blue-200'
-                    : 'bg-amber-50 text-amber-700 border-amber-200'
-                }`}>
-                  {repo.difficulty}
+              <div class="flex items-center justify-between text-xs font-mono mb-2">
+                <span class="text-purple-700 font-bold uppercase text-[10px] bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+                  {repo.category}
                 </span>
+                <span class="font-bold text-slate-800">★ {repo.stars}</span>
               </div>
 
-              <h2 class="text-lg font-semibold text-ink tracking-tight mb-1">
-                <a href={repo.url} target="_blank" rel="noopener noreferrer" class="hover:text-link transition-colors inline-flex items-center gap-1.5">
-                  <span>{repo.name}</span>
-                  <span class="text-xs text-mute">↗</span>
+              <h2 class="text-base font-bold text-ink mb-1 hover:text-purple-700 transition-colors">
+                <a href={`/open-source/${repo.slug}`}>
+                  {repo.name}
                 </a>
               </h2>
-              <div class="text-xs font-mono text-mute mb-3">{repo.repo}</div>
 
-              <p class="text-xs md:text-sm text-body leading-relaxed mb-6">
-                {repo.description}
+              <p class="text-xs text-slate-600 line-clamp-3 mb-3 leading-relaxed">
+                {repo.oneMinuteSummary || repo.description}
               </p>
+
+              <!-- One minute replacement notice -->
+              <div class="p-2.5 rounded bg-emerald-50/60 border border-emerald-200 text-[11px] text-emerald-800 font-medium mb-3">
+                {repo.replacesCommercialTool}
+              </div>
+
+              <!-- Quick Command Snippet -->
+              <div class="p-2 rounded bg-[#F8FAFF] border border-[#E2E8F0] font-mono text-[10px] text-slate-700 truncate mb-3">
+                {repo.quickstartCommands?.cli || repo.quickstartCommands?.docker || 'git clone ' + repo.url}
+              </div>
             </div>
 
-            <div class="pt-4 border-t border-hairline flex items-center justify-between text-xs text-mute">
-              <div class="flex items-center gap-3">
-                <span class="inline-flex items-center gap-1 font-mono">
-                  <svg class="w-3.5 h-3.5 text-amber-500 fill-amber-500" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292Z" />
-                  </svg>
-                  <span>{repo.stars}</span>
-                </span>
-                <span class="inline-flex items-center gap-1 font-mono">
-                  <svg class="w-3.5 h-3.5 text-mute" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918" />
-                  </svg>
-                  <span>{repo.forks}</span>
-                </span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="font-mono bg-hairline-soft px-1.5 py-0.5 rounded-xs text-ink">{repo.language}</span>
-                <span>{repo.license}</span>
-              </div>
+            <div class="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
+              <span class="text-[10px] font-mono text-slate-500">
+                {repo.hardwareSpecs?.minVramGb}
+              </span>
+              <a 
+                href={`/open-source/${repo.slug}`} 
+                class="font-bold text-purple-700 hover:underline inline-flex items-center gap-0.5"
+              >
+                Setup Guide &rarr;
+              </a>
             </div>
-          </div>
+          </article>
         ))}
       </div>
     </div>

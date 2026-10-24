@@ -5,335 +5,368 @@ import Footer from '../../components/Footer.astro';
 ---
 
 <Layout 
-  title="Built-in AI & Creator Utilities | AI Discovery"
-  description="Client-side utilities: Prompt Improver, YouTube Hook Generator, Image Resizer & WebP Converter, QR Generator, and Token Calculator."
+  title="8-in-1 AI & Creator Utilities Suite | 100% Client-Side"
+  description="High-performance client-side browser utilities: Prompt Architect, YouTube Hook Generator, Social Thread Formatter, Image Resizer & WebP Converter, JSON-to-TypeScript, QR Generator, Text Analyzer, and Token Calculator."
 >
   <Header currentPath="/utilities" />
 
-  <main class="w-full flex flex-col min-h-screen bg-canvas">
+  <main class="w-full flex flex-col min-h-screen bg-[#FFFFFF]">
     <!-- Header -->
-    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16 text-center">
+    <section class="border-b border-[#E2E8F0] bg-[#F8FAFF] px-4 sm:px-6 py-12 md:py-16 text-center">
       <div class="max-w-4xl mx-auto">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-hairline bg-canvas text-xs font-medium text-mute mb-4">
-          <svg class="w-3.5 h-3.5 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.67 2.67 0 0 0 21 17.25l-5.83-5.83M3 3l6.59 6.59m0 0L7.5 12l2.25 2.25 2.41-2.09 5.84 5.84a2 2 0 0 0 2.83-2.83l-5.84-5.84 2.09-2.41L12 7.5 9.59 9.59Z" />
-          </svg>
-          <span>Free Client-Side Tools &bull; Zero Server Uploads</span>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-300 bg-emerald-50 text-xs font-mono font-bold text-emerald-800 mb-4 shadow-xs">
+          <span>ZERO SERVER UPLOADS &bull; 100% PRIVATE IN-BROWSER</span>
         </div>
 
-        <h1 class="text-3xl md:text-5xl font-semibold text-ink tracking-tight mb-4" style="letter-spacing: -1.4px;">
-          Built-in Creator Utilities
+        <h1 class="text-3xl sm:text-5xl font-black text-ink tracking-tight mb-4" style="letter-spacing: -1.4px;">
+          Creator & Developer Utilities Suite
         </h1>
-        <p class="text-body text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-          High-performance browser utilities running 100% locally on your device. Craft structured prompts, generate viral hooks, compress images, and calculate LLM costs.
+        <p class="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+          Eight essential client-side utilities engineered for prompt architects, content creators, and AI engineers. Complete with presets, instant copies, and zero data leaving your browser.
         </p>
 
-        <!-- Feature Banner for Token Calculator -->
-        <div class="mt-8 p-4 rounded-lg bg-hairline-soft border border-hairline max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-md bg-ink text-on-primary flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18m-7.5-12h12a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-12a1.5 1.5 0 0 1-1.5-1.5V7.5A1.5 1.5 0 0 1 6 6Z" />
-              </svg>
-            </div>
-            <div>
-              <h3 class="text-xs font-semibold text-ink">Official LLM Token Calculator Suite</h3>
-              <p class="text-[11px] text-mute">Live real-time token counter & cross-provider pricing matrix across 13 frontier models.</p>
-            </div>
-          </div>
-          <a 
-            href="/token-calculator"
-            class="px-3.5 py-1.5 rounded bg-ink text-on-primary text-xs font-medium hover:bg-neutral-800 transition-colors shrink-0 shadow-xs"
-          >
-            Open Calculator &rarr;
-          </a>
+        <!-- Quick Jump Bar -->
+        <div class="flex flex-wrap items-center justify-center gap-2 mt-6 font-mono text-xs">
+          <a href="#token-calculator" class="px-2.5 py-1 rounded bg-white hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-bold shadow-2xs">1. Token Calculator</a>
+          <a href="#prompt-improver" class="px-2.5 py-1 rounded bg-white hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-bold shadow-2xs">2. Prompt Architect</a>
+          <a href="#hook-generator" class="px-2.5 py-1 rounded bg-white hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-bold shadow-2xs">3. YouTube Viral Hooks</a>
+          <a href="#social-formatter" class="px-2.5 py-1 rounded bg-white hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-bold shadow-2xs">4. Social Threader</a>
+          <a href="#image-resizer" class="px-2.5 py-1 rounded bg-white hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-bold shadow-2xs">5. Image Resizer & WebP</a>
+          <a href="#json-formatter" class="px-2.5 py-1 rounded bg-white hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-bold shadow-2xs">6. JSON-to-TypeScript</a>
+          <a href="#qr-generator" class="px-2.5 py-1 rounded bg-white hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-bold shadow-2xs">7. QR Code Studio</a>
+          <a href="#text-analyzer" class="px-2.5 py-1 rounded bg-white hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-bold shadow-2xs">8. Text & Speaking Time</a>
         </div>
       </div>
     </section>
 
-    <!-- Interactive Utilities Workspace -->
-    <div class="w-full max-w-5xl mx-auto px-6 py-12 flex-1 flex flex-col gap-12">
+    <!-- 8 Utilities Interactive Feed -->
+    <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-12 flex-1 flex flex-col gap-14">
 
-      <!-- Utility 1: Structured Prompt Improver -->
-      <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 md:p-8 shadow-xs" id="prompt-improver">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-hairline">
-          <div>
-            <span class="text-[10px] font-mono text-mute uppercase tracking-wider block">Utility #1</span>
-            <h2 class="text-base font-semibold text-ink tracking-tight">Structured Prompt Improver & System Prompt Generator</h2>
+      <!-- UTILITY 1: OFFICIAL LLM TOKEN CALCULATOR SPOTLIGHT -->
+      <section class="bg-white border-2 border-[#09090B] rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_#09090B]" id="token-calculator">
+        <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0] mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-[#2563EB]"></span>
+            <h2 class="text-base sm:text-lg font-bold text-ink uppercase font-mono">1. Official LLM Token & Cost Calculator</h2>
           </div>
-          <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-canvas border border-hairline text-body">Client-Side</span>
+          <a href="/token-calculator" class="text-xs font-bold text-[#2563EB] hover:underline font-mono">
+            Open Full 13-Model Suite &rarr;
+          </a>
         </div>
 
-        <p class="text-xs text-mute mb-5">
-          Converts raw conversational prompts into structured XML/Markdown system prompts with role definition, explicit boundary constraints, and step-by-step reasoning triggers.
-        </p>
+        <p class="text-xs text-slate-600 mb-6">Estimate token volume and official API invocation cost across frontier providers in real-time.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="space-y-3">
-            <div>
-              <label class="block text-xs font-medium text-ink mb-1">Your Raw Prompt or Goal:</label>
-              <textarea 
-                id="rawPromptInput" 
-                rows="5"
-                placeholder="e.g. Write an article about DeepSeek R1 and why open source models matter for startups" 
-                class="w-full p-3 rounded-md text-xs bg-canvas border border-hairline text-ink placeholder:text-mute focus:outline-none focus:border-ink transition-colors resize-none font-mono"
-              ></textarea>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[11px] font-medium text-mute mb-1">Target Persona:</label>
-                <select id="promptPersona" class="w-full p-2 rounded bg-canvas border border-hairline text-xs text-ink focus:outline-none">
-                  <option value="Senior Staff Software Engineer">Senior Staff Engineer</option>
-                  <option value="Direct-Response Copywriter">Direct-Response Copywriter</option>
-                  <option value="Executive Venture Capitalist">Executive VC / Investor</option>
-                  <option value="Academic Researcher">Academic Researcher</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-medium text-mute mb-1">Reasoning Style:</label>
-                <select id="promptReasoning" class="w-full p-2 rounded bg-canvas border border-hairline text-xs text-ink focus:outline-none">
-                  <option value="Chain of Thought (Step-by-step)">Chain of Thought</option>
-                  <option value="Zero Fluff / Concise Direct">Concise Direct</option>
-                  <option value="Extreme Skeptic / Red Team">Red Team / Critical</option>
-                </select>
-              </div>
-            </div>
-
-            <button 
-              type="button" 
-              id="improvePromptBtn" 
-              class="w-full py-2 rounded-md bg-ink text-on-primary hover:bg-neutral-800 text-xs font-medium transition-colors cursor-pointer shadow-xs"
-            >
-              Generate Optimized System Prompt
-            </button>
-          </div>
-
           <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="block text-xs font-medium text-ink">Optimized Production Prompt:</label>
-              <button 
-                type="button" 
-                id="copyImprovedPrompt" 
-                class="text-[11px] text-mute hover:text-ink cursor-pointer"
-              >
-                Copy Output
-              </button>
+            <label class="block text-xs font-mono font-bold text-slate-700 mb-2">Input Sample Text or Prompt:</label>
+            <textarea id="tokenCalcTextarea" rows="4" placeholder="Paste your system prompt, document text, or API payload here..." class="w-full bg-[#F8FAFF] border-2 border-[#E2E8F0] rounded-lg p-3 text-xs text-ink outline-none focus:border-[#2563EB] font-mono mb-3">Explain the core trade-offs between dense transformer models and mixture-of-experts architectures in modern enterprise inference.</textarea>
+            
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span id="charCountDisplay" class="text-slate-500">147 characters</span>
+              <span class="font-bold text-[#2563EB]">~<span id="tokenEstDisplay">37</span> Tokens</span>
             </div>
-            <textarea 
-              id="improvedPromptOutput" 
-              rows="9"
-              readonly
-              class="w-full p-3 rounded-md text-xs bg-canvas border border-hairline text-ink font-mono select-all resize-none"
-              placeholder="Structured prompt will generate here..."
-            ></textarea>
-          </div>
-        </div>
-      </section>
-
-      <!-- Utility 2: YouTube Title, Hook & Shorts Script Structurer -->
-      <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 md:p-8 shadow-xs" id="hook-generator">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-hairline">
-          <div>
-            <span class="text-[10px] font-mono text-mute uppercase tracking-wider block">Utility #2</span>
-            <h2 class="text-base font-semibold text-ink tracking-tight">YouTube Title & 3-Second Viral Hook Structurer</h2>
-          </div>
-          <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-canvas border border-hairline text-body">Formula-Based</span>
-        </div>
-
-        <p class="text-xs text-mute mb-5">
-          Uses proven psychological engagement frameworks (Negativity Bias, Curiosity Gap, Outcome vs Barrier) to generate high-CTR titles and first-frame retention hooks.
-        </p>
-
-        <div class="space-y-4">
-          <div class="flex flex-col sm:flex-row gap-3">
-            <input 
-              type="text" 
-              id="hookTopicInput" 
-              placeholder="Enter your video core topic (e.g. Cursor AI vs GitHub Copilot)" 
-              class="flex-1 p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink placeholder:text-mute focus:outline-none focus:border-ink transition-colors"
-            />
-            <button 
-              type="button" 
-              id="generateHooksBtn" 
-              class="px-5 py-2.5 rounded-md bg-ink text-on-primary hover:bg-neutral-800 text-xs font-medium transition-colors cursor-pointer shrink-0"
-            >
-              Generate Hooks & Titles
-            </button>
           </div>
 
-          <div id="hookResultsContainer" class="hidden space-y-4 pt-2">
+          <div class="p-4 rounded-xl bg-[#F8FAFF] border-2 border-[#E2E8F0] flex flex-col justify-between">
             <div>
-              <span class="text-[11px] font-semibold text-ink uppercase tracking-wider block mb-2">High-CTR Title Formats:</span>
-              <ul class="space-y-1.5 text-xs text-body font-mono bg-canvas p-3 rounded border border-hairline" id="titlesList">
-              </ul>
-            </div>
-
-            <div>
-              <span class="text-[11px] font-semibold text-ink uppercase tracking-wider block mb-2">3-Second Visual & Spoken Pattern Interrupt Hooks:</span>
-              <ul class="space-y-1.5 text-xs text-body bg-canvas p-3 rounded border border-hairline" id="hooksList">
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Utility 3: Client-Side Image Resizer & WebP Converter -->
-      <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 md:p-8 shadow-xs" id="image-resizer">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-hairline">
-          <div>
-            <span class="text-[10px] font-mono text-mute uppercase tracking-wider block">Utility #3</span>
-            <h2 class="text-base font-semibold text-ink tracking-tight">Client-Side Image Resizer, Compressor & WebP Converter</h2>
-          </div>
-          <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-canvas border border-hairline text-emerald-600 dark:text-emerald-400">100% In-Browser</span>
-        </div>
-
-        <p class="text-xs text-mute mb-5">
-          Compresses images and converts PNG/JPG to WebP using HTML5 Canvas. Your photos never leave your device or touch a server.
-        </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          <div class="space-y-4">
-            <div class="border-2 border-dashed border-hairline rounded-lg p-6 text-center hover:border-faint transition-colors cursor-pointer bg-canvas relative">
-              <input type="file" id="imageFileInput" accept="image/png, image/jpeg, image/webp" class="absolute inset-0 opacity-0 cursor-pointer" />
-              <div class="text-xs text-mute pointer-events-none">
-                <svg class="w-8 h-8 text-faint mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                </svg>
-                <span class="font-medium text-ink block">Click or drag image file here</span>
-                <span class="text-[11px] text-faint">Supports PNG, JPG, WebP</span>
+              <div class="text-[11px] font-mono uppercase font-bold text-slate-500 mb-2">Cost Comparison for 100K Invocations:</div>
+              <div class="space-y-2 text-xs font-mono">
+                <div class="flex items-center justify-between p-2 rounded bg-white border border-[#E2E8F0]">
+                  <span class="font-bold text-ink">DeepSeek-V3</span>
+                  <span class="text-emerald-700 font-bold">$0.027</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded bg-white border border-[#E2E8F0]">
+                  <span class="font-bold text-ink">Gemini 2.0 Flash</span>
+                  <span class="text-emerald-700 font-bold">$0.037</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded bg-white border border-[#E2E8F0]">
+                  <span class="font-bold text-ink">Claude 3.5 Sonnet</span>
+                  <span class="text-slate-700 font-bold">$1.110</span>
+                </div>
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[11px] font-medium text-mute mb-1">Max Width (px):</label>
-                <input type="number" id="imgMaxWidth" value="1200" class="w-full p-2 rounded bg-canvas border border-hairline text-xs text-ink font-mono" />
-              </div>
-              <div>
-                <label class="block text-[11px] font-medium text-mute mb-1">Quality (%):</label>
-                <input type="number" id="imgQuality" value="85" min="10" max="100" class="w-full p-2 rounded bg-canvas border border-hairline text-xs text-ink font-mono" />
-              </div>
-            </div>
-
-            <button 
-              type="button" 
-              id="processImageBtn" 
-              class="w-full py-2 rounded-md bg-ink text-on-primary hover:bg-neutral-800 text-xs font-medium transition-colors cursor-pointer shadow-xs"
-            >
-              Convert to Optimized WebP
-            </button>
-          </div>
-
-          <div id="imagePreviewBox" class="p-4 rounded-lg bg-canvas border border-hairline text-center text-xs text-mute flex flex-col items-center justify-center min-h-[220px]">
-            <span id="imageEmptyText">No image converted yet. Upload a file to preview.</span>
-            <div id="imageResult" class="hidden w-full flex flex-col items-center">
-              <img id="convertedPreviewImg" class="max-h-48 rounded border border-hairline object-contain mb-3" />
-              <div class="text-[11px] font-mono text-mute mb-3" id="imageStatsText"></div>
-              <a 
-                id="downloadWebpLink" 
-                download="optimized.webp"
-                class="px-4 py-2 rounded bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 transition-colors inline-flex items-center gap-1.5 shadow-xs"
-              >
-                Download WebP File
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Utility 4: Clean QR Code Generator -->
-      <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 md:p-8 shadow-xs" id="qr-generator">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-hairline">
-          <div>
-            <span class="text-[10px] font-mono text-mute uppercase tracking-wider block">Utility #4</span>
-            <h2 class="text-base font-semibold text-ink tracking-tight">Clean High-Resolution QR Code Generator</h2>
-          </div>
-          <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-canvas border border-hairline text-body">Instant SVG</span>
-        </div>
-
-        <p class="text-xs text-mute mb-5">
-          Generate clean, tracking-free QR codes for tool documentation, presentations, and product links.
-        </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-          <div class="space-y-4">
-            <div>
-              <label class="block text-xs font-medium text-ink mb-1">Target URL or Text:</label>
-              <input 
-                type="text" 
-                id="qrTextInput" 
-                value="https://github.com/harshil1876/AIO-AI" 
-                placeholder="https://yourwebsite.com" 
-                class="w-full p-2.5 rounded-md text-xs bg-canvas border border-hairline text-ink font-mono focus:outline-none focus:border-ink"
-              />
-            </div>
-
-            <button 
-              type="button" 
-              id="generateQrBtn" 
-              class="w-full py-2 rounded-md bg-ink text-on-primary hover:bg-neutral-800 text-xs font-medium transition-colors cursor-pointer shadow-xs"
-            >
-              Update QR Code
-            </button>
-          </div>
-
-          <div class="flex flex-col items-center justify-center p-6 bg-canvas border border-hairline rounded-lg">
-            <div id="qrDisplayBox" class="p-3 bg-white rounded border border-hairline shadow-xs mb-3">
-              <!-- Inline QR Image Canvas Container -->
-              <img id="qrImageTag" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://github.com/harshil1876/AIO-AI" alt="QR Code" class="w-36 h-36" />
-            </div>
-            <a 
-              id="downloadQrBtn" 
-              href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=https://github.com/harshil1876/AIO-AI" 
-              target="_blank" 
-              download="qrcode.png"
-              class="text-xs font-medium text-ink hover:underline"
-            >
-              Download Full-Res PNG &rarr;
+            <a href="/token-calculator/compare" class="mt-4 text-xs font-bold text-[#2563EB] hover:underline font-mono">
+              Compare All 13 Models in Interactive Matrix &rarr;
             </a>
           </div>
         </div>
       </section>
 
-      <!-- Utility 5: Word, Sentence & Reading Time Counter -->
-      <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 md:p-8 shadow-xs" id="word-counter">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-hairline">
-          <div>
-            <span class="text-[10px] font-mono text-mute uppercase tracking-wider block">Utility #5</span>
-            <h2 class="text-base font-semibold text-ink tracking-tight">Word, Character, Sentence & Reading-Time Counter</h2>
+      <!-- UTILITY 2: STRUCTURED PROMPT ARCHITECT -->
+      <section class="bg-white border-2 border-[#09090B] rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_#09090B]" id="prompt-improver">
+        <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0] mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-[#2563EB]"></span>
+            <h2 class="text-base sm:text-lg font-bold text-ink uppercase font-mono">2. Structured Prompt Architect (CO-STAR Framework)</h2>
           </div>
-          <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-canvas border border-hairline text-body">Live Telemetry</span>
+          <span class="text-xs font-mono text-slate-500 font-bold">CO-STAR Standard</span>
         </div>
 
-        <textarea 
-          id="counterTextArea" 
-          rows="4" 
-          placeholder="Paste or type text here to inspect word count, character count, sentence length, and estimated reading time..." 
-          class="w-full p-3 rounded-md text-xs bg-canvas border border-hairline text-ink placeholder:text-mute focus:outline-none focus:border-ink transition-colors resize-none mb-4 font-sans"
-        ></textarea>
+        <p class="text-xs text-slate-600 mb-4">Transforms basic raw prompts into industrial-strength system instructions with clear Role, Context, Constraints, and Output format.</p>
 
-        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
-          <div class="p-3 rounded border border-hairline bg-canvas">
-            <span class="text-[10px] uppercase font-mono text-mute block mb-0.5">Words</span>
-            <span id="countWords" class="text-base font-bold text-ink font-mono">0</span>
+        <!-- Presets -->
+        <div class="flex flex-wrap gap-2 mb-4 font-mono text-xs">
+          <span class="text-slate-500 font-bold mr-1">Presets:</span>
+          <button type="button" class="prompt-preset-btn px-2.5 py-1 rounded bg-[#F8FAFF] hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-bold cursor-pointer" data-role="Senior React & Astro Architect" data-task="Refactor component for zero-bundle JS and accessibility." data-constraint="No external npm dependencies. Use semantic HTML.">
+            Coding Architect
+          </button>
+          <button type="button" class="prompt-preset-btn px-2.5 py-1 rounded bg-[#F8FAFF] hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-bold cursor-pointer" data-role="Direct-Response Copywriter" data-task="Write a high-converting B2B landing page hero." data-constraint="No corporate jargon. Maximum 30 words for headline.">
+            Copywriter
+          </button>
+          <button type="button" class="prompt-preset-btn px-2.5 py-1 rounded bg-[#F8FAFF] hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-bold cursor-pointer" data-role="Biomedical Data Researcher" data-task="Synthesize key findings from clinical trials." data-constraint="Cite sample sizes. Highlight negative results.">
+            Research Analyst
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-mono uppercase font-bold text-slate-700 mb-1">Target Persona / Role:</label>
+              <input type="text" id="piRole" value="Principal AI Engineer" class="w-full bg-[#F8FAFF] border border-[#E2E8F0] rounded p-2 text-xs text-ink outline-none font-mono" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-mono uppercase font-bold text-slate-700 mb-1">Core Task & Context:</label>
+              <textarea id="piTask" rows="2" class="w-full bg-[#F8FAFF] border border-[#E2E8F0] rounded p-2 text-xs text-ink outline-none font-mono">Evaluate multi-agent orchestration frameworks for customer support.</textarea>
+            </div>
+            <div>
+              <label class="block text-[11px] font-mono uppercase font-bold text-slate-700 mb-1">Strict Negative Constraints:</label>
+              <input type="text" id="piConstraints" value="Never use generic filler words. Provide concrete benchmark numbers." class="w-full bg-[#F8FAFF] border border-[#E2E8F0] rounded p-2 text-xs text-ink outline-none font-mono" />
+            </div>
+            <button type="button" id="buildPromptBtn" class="bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-mono font-bold py-2 px-4 rounded-lg shadow-xs cursor-pointer">
+              Generate Structured System Prompt &rarr;
+            </button>
           </div>
-          <div class="p-3 rounded border border-hairline bg-canvas">
-            <span class="text-[10px] uppercase font-mono text-mute block mb-0.5">Characters</span>
-            <span id="countChars" class="text-base font-bold text-ink font-mono">0</span>
+
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono uppercase font-bold text-slate-600">Generated System Prompt:</span>
+              <button type="button" id="copyPiOutputBtn" class="text-xs font-mono text-[#2563EB] hover:underline font-bold cursor-pointer">Copy</button>
+            </div>
+            <pre id="piOutput" class="p-4 rounded-lg bg-[#09090B] text-white font-mono text-xs overflow-x-auto whitespace-pre-wrap leading-relaxed h-52 border border-[#09090B]">Click "Generate Structured System Prompt" to construct industrial prompt.</pre>
           </div>
-          <div class="p-3 rounded border border-hairline bg-canvas">
-            <span class="text-[10px] uppercase font-mono text-mute block mb-0.5">No Spaces</span>
-            <span id="countCharsNoSpace" class="text-base font-bold text-ink font-mono">0</span>
+        </div>
+      </section>
+
+      <!-- UTILITY 3: YOUTUBE TITLE & VIRAL HOOK GENERATOR -->
+      <section class="bg-white border-2 border-[#09090B] rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_#09090B]" id="hook-generator">
+        <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0] mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-red-600"></span>
+            <h2 class="text-base sm:text-lg font-bold text-ink uppercase font-mono">3. YouTube Title, Viral Hook & Shorts Script Generator</h2>
           </div>
-          <div class="p-3 rounded border border-hairline bg-canvas">
-            <span class="text-[10px] uppercase font-mono text-mute block mb-0.5">Sentences</span>
-            <span id="countSentences" class="text-base font-bold text-ink font-mono">0</span>
+          <span class="text-xs font-mono text-red-600 font-bold">High CTR Patterns</span>
+        </div>
+
+        <p class="text-xs text-slate-600 mb-4">Generate 5 psychological curiosity-gap titles, 0-5s retention hooks, and structured visual/audio tables.</p>
+
+        <div class="flex gap-2 mb-4">
+          <input type="text" id="hookTopicInput" placeholder="Enter your video topic (e.g. Running DeepSeek locally for free)..." value="How to run local AI with Ollama for free" class="flex-1 bg-[#F8FAFF] border-2 border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-ink outline-none focus:border-red-600 font-mono" />
+          <button type="button" id="generateHooksBtn" class="bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold px-4 py-2 rounded-lg cursor-pointer">
+            Generate Hooks
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5" id="hooksResults">
+          <div class="p-4 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
+            <h3 class="text-xs font-mono uppercase font-bold text-red-700 mb-2">High-CTR Titles:</h3>
+            <ul class="text-xs space-y-1.5 font-medium text-ink" id="hookTitlesList">
+              <li>1. Stop Paying for ChatGPT: The 5-Minute Local Setup</li>
+              <li>2. I Tested 5 Local AI Models So You Don't Have To</li>
+              <li>3. Why Software Engineers Are Abandoning Cloud AI in 2025</li>
+            </ul>
           </div>
-          <div class="p-3 rounded border border-hairline bg-canvas col-span-2 sm:col-span-1">
-            <span class="text-[10px] uppercase font-mono text-mute block mb-0.5">Read Time</span>
-            <span id="countReadTime" class="text-base font-bold text-emerald-600 dark:text-emerald-400 font-mono">0 min</span>
+          <div class="p-4 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
+            <h3 class="text-xs font-mono uppercase font-bold text-slate-700 mb-2">0-5s First Impression Hooks:</h3>
+            <ul class="text-xs space-y-1.5 text-slate-700" id="hookBodyList">
+              <li>&bull; "90% of developers are overpaying for cloud AI tokens when their laptop can do this..."</li>
+              <li>&bull; "Look at this terminal command. In 60 seconds, you have a private reasoning model..."</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- UTILITY 4: SOCIAL MEDIA & LINKEDIN THREAD FORMATTER -->
+      <section class="bg-white border-2 border-[#09090B] rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_#09090B]" id="social-formatter">
+        <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0] mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-[#2563EB]"></span>
+            <h2 class="text-base sm:text-lg font-bold text-ink uppercase font-mono">4. Social Media & LinkedIn Thread Formatter</h2>
+          </div>
+          <span class="text-xs font-mono text-slate-500 font-bold">X & LinkedIn</span>
+        </div>
+
+        <p class="text-xs text-slate-600 mb-4">Converts raw technical articles or notes into clean, high-engagement X threads and formatted LinkedIn posts with whitespace optimization.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <textarea id="rawNotesInput" rows="5" class="w-full bg-[#F8FAFF] border border-[#E2E8F0] rounded-lg p-3 text-xs text-ink outline-none font-mono mb-2" placeholder="Paste your raw thoughts, article draft, or bullet points here...">We migrated our support queue to an AI agent. Response times dropped from 4 hours to 45 seconds. Deflection rate is 42%. We used n8n, Claude 3.5 Haiku, and Supabase vector store.</textarea>
+            <button type="button" id="formatThreadBtn" class="bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-mono font-bold py-2 px-4 rounded-lg cursor-pointer">
+              Format into Viral Social Post &rarr;
+            </button>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono uppercase font-bold text-slate-600">Formatted Output:</span>
+              <button type="button" id="copySocialOutput" class="text-xs font-mono text-[#2563EB] hover:underline font-bold cursor-pointer">Copy</button>
+            </div>
+            <pre id="socialOutput" class="p-4 rounded-lg bg-[#09090B] text-white font-mono text-xs overflow-x-auto whitespace-pre-wrap leading-relaxed h-44 border border-[#09090B]">Click "Format into Viral Social Post" to format.</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- UTILITY 5: CLIENT-SIDE IMAGE RESIZER & WEBP CONVERTER -->
+      <section class="bg-white border-2 border-[#09090B] rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_#09090B]" id="image-resizer">
+        <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0] mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-emerald-600"></span>
+            <h2 class="text-base sm:text-lg font-bold text-ink uppercase font-mono">5. Client-Side Image Resizer, Compressor & WebP Converter</h2>
+          </div>
+          <span class="text-xs font-mono text-emerald-700 font-bold">HTML5 Canvas</span>
+        </div>
+
+        <p class="text-xs text-slate-600 mb-4">Compress large JPG/PNG images and convert to modern WebP format right in your browser. Zero bytes uploaded to any server.</p>
+
+        <div class="p-6 border-2 border-dashed border-[#09090B] rounded-xl bg-[#F8FAFF] text-center mb-4">
+          <input type="file" id="imageFileInput" accept="image/*" class="hidden" />
+          <button type="button" onclick="document.getElementById('imageFileInput').click()" class="bg-[#09090B] text-white font-mono text-xs font-bold px-5 py-2.5 rounded-lg hover:bg-neutral-800 cursor-pointer shadow-xs">
+            Select or Drag Image Here
+          </button>
+          <div id="imageFileFeedback" class="text-xs font-mono text-slate-500 mt-2">Supports JPG, PNG, WebP up to 25MB</div>
+        </div>
+
+        <div id="imageControls" class="hidden space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
+            <div>
+              <label class="block text-slate-600 font-bold mb-1">Max Width (px):</label>
+              <input type="number" id="imgMaxWidth" value="1200" class="w-full bg-[#F8FAFF] border border-[#E2E8F0] rounded p-2 text-ink" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-bold mb-1">Quality (1-100%):</label>
+              <input type="range" id="imgQuality" min="10" max="100" value="85" class="w-full" />
+              <span id="qualityVal" class="text-slate-500">85%</span>
+            </div>
+            <div>
+              <label class="block text-slate-600 font-bold mb-1">Target Format:</label>
+              <select id="imgFormat" class="w-full bg-[#F8FAFF] border border-[#E2E8F0] rounded p-2 text-ink">
+                <option value="image/webp">WebP (Smallest file size)</option>
+                <option value="image/jpeg">JPEG</option>
+                <option value="image/png">PNG</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0] flex items-center justify-between text-xs font-mono">
+            <div>
+              <span>Original: <strong id="origSize">-</strong></span>
+              <span class="mx-2">&bull;</span>
+              <span>Compressed: <strong id="compSize" class="text-emerald-700">-</strong></span>
+            </div>
+            <button type="button" id="downloadImgBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold px-4 py-2 rounded-lg cursor-pointer">
+              Download Optimized Image
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- UTILITY 6: JSON FORMATTER & SCHEMA-TO-TYPESCRIPT GENERATOR -->
+      <section class="bg-white border-2 border-[#09090B] rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_#09090B]" id="json-formatter">
+        <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0] mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-[#2563EB]"></span>
+            <h2 class="text-base sm:text-lg font-bold text-ink uppercase font-mono">6. JSON Formatter, Validator & TypeScript Interface Generator</h2>
+          </div>
+          <span class="text-xs font-mono text-slate-500 font-bold">Dev Tooling</span>
+        </div>
+
+        <p class="text-xs text-slate-600 mb-4">Validate JSON from LLM structured outputs and automatically generate strict TypeScript interfaces.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <textarea id="rawJsonInput" rows="6" class="w-full bg-[#F8FAFF] border border-[#E2E8F0] rounded-lg p-3 text-xs text-ink outline-none font-mono mb-2" placeholder="Paste JSON here...">{`{"tool":"Claude 3.7","score":95,"features":["hybrid reasoning","200k context"],"verified":true}`}</textarea>
+            <div class="flex items-center gap-2">
+              <button type="button" id="formatJsonBtn" class="bg-[#09090B] text-white text-xs font-mono font-bold py-2 px-3 rounded-lg cursor-pointer">
+                Beautify JSON
+              </button>
+              <button type="button" id="jsonToTsBtn" class="bg-[#2563EB] text-white text-xs font-mono font-bold py-2 px-3 rounded-lg cursor-pointer">
+                Generate TypeScript
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono uppercase font-bold text-slate-600">TypeScript Interface:</span>
+              <button type="button" id="copyTsOutput" class="text-xs font-mono text-[#2563EB] hover:underline font-bold cursor-pointer">Copy</button>
+            </div>
+            <pre id="tsOutput" class="p-4 rounded-lg bg-[#09090B] text-white font-mono text-xs overflow-x-auto whitespace-pre-wrap leading-relaxed h-44 border border-[#09090B]">Click "Generate TypeScript" to infer interface.</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- UTILITY 7: CUSTOMIZABLE QR CODE GENERATOR -->
+      <section class="bg-white border-2 border-[#09090B] rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_#09090B]" id="qr-generator">
+        <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0] mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-[#09090B]"></span>
+            <h2 class="text-base sm:text-lg font-bold text-ink uppercase font-mono">7. Instant Offline QR Code Generator</h2>
+          </div>
+          <span class="text-xs font-mono text-slate-500 font-bold">Vector SVG</span>
+        </div>
+
+        <p class="text-xs text-slate-600 mb-4">Create clean QR codes for links, Wi-Fi credentials, or product packaging with instant download.</p>
+
+        <div class="flex flex-col sm:flex-row items-center gap-6">
+          <div class="flex-1 space-y-3 w-full">
+            <div>
+              <label class="block text-xs font-mono font-bold text-slate-700 mb-1">Destination URL or Text:</label>
+              <input type="text" id="qrText" value="https://aio-ai.pages.dev" class="w-full bg-[#F8FAFF] border-2 border-[#E2E8F0] rounded-lg p-2.5 text-xs text-ink font-mono outline-none focus:border-[#2563EB]" />
+            </div>
+            <button type="button" id="genQrBtn" class="bg-[#09090B] hover:bg-neutral-800 text-white font-mono text-xs font-bold px-4 py-2 rounded-lg cursor-pointer">
+              Render QR Code
+            </button>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[#F8FAFF] border-2 border-[#09090B] flex flex-col items-center justify-center shrink-0">
+            <img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://aio-ai.pages.dev" alt="QR Code" class="w-32 h-32 rounded bg-white p-1" />
+            <a id="downloadQrLink" href="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://aio-ai.pages.dev" download="qrcode.png" target="_blank" class="mt-2 text-[11px] font-mono text-[#2563EB] hover:underline font-bold">
+              Download PNG
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- UTILITY 8: DEEP TEXT ANALYZER & SPEAKING TIME ESTIMATOR -->
+      <section class="bg-white border-2 border-[#09090B] rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_#09090B]" id="text-analyzer">
+        <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0] mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-[#2563EB]"></span>
+            <h2 class="text-base sm:text-lg font-bold text-ink uppercase font-mono">8. Deep Text Analyzer & YouTube Speaking Time Estimator</h2>
+          </div>
+          <span class="text-xs font-mono text-slate-500 font-bold">Speech Timing</span>
+        </div>
+
+        <p class="text-xs text-slate-600 mb-4">Calculate exact YouTube voiceover duration at 130, 150, and 170 words per minute to hit 50-second Shorts pacing.</p>
+
+        <textarea id="textAnalyzerInput" rows="4" placeholder="Paste script or article here to analyze word cadence and reading time..." class="w-full bg-[#F8FAFF] border border-[#E2E8F0] rounded-lg p-3 text-xs text-ink outline-none font-mono mb-4">Artificial intelligence is shifting from static prompt-and-response chatbots into autonomous multi-agent systems capable of running tests, browsing dynamic web pages, and synthesizing complex market research.</textarea>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-center">
+          <div class="p-3 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
+            <div class="text-xl font-black text-ink" id="statWords">27</div>
+            <div class="text-[10px] text-slate-500 uppercase font-bold">Words</div>
+          </div>
+          <div class="p-3 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
+            <div class="text-xl font-black text-[#2563EB]" id="statChars">197</div>
+            <div class="text-[10px] text-slate-500 uppercase font-bold">Characters</div>
+          </div>
+          <div class="p-3 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
+            <div class="text-xl font-black text-emerald-700" id="statReadTime">7 sec</div>
+            <div class="text-[10px] text-slate-500 uppercase font-bold">Reading (200 WPM)</div>
+          </div>
+          <div class="p-3 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
+            <div class="text-xl font-black text-red-600" id="statSpeechTime">11 sec</div>
+            <div class="text-[10px] text-slate-500 uppercase font-bold">Shorts Voice (150 WPM)</div>
           </div>
         </div>
       </section>
@@ -345,184 +378,207 @@ import Footer from '../../components/Footer.astro';
 </Layout>
 
 <script>
-  // Utility 1: Prompt Improver Script
-  const rawInput = document.getElementById('rawPromptInput') as HTMLTextAreaElement | null;
-  const personaSelect = document.getElementById('promptPersona') as HTMLSelectElement | null;
-  const reasoningSelect = document.getElementById('promptReasoning') as HTMLSelectElement | null;
-  const improveBtn = document.getElementById('improvePromptBtn');
-  const improvedOutput = document.getElementById('improvedPromptOutput') as HTMLTextAreaElement | null;
-  const copyImprovedBtn = document.getElementById('copyImprovedPrompt');
+  function setupUtilities() {
+    // 1. Token calculator preview
+    const tokenArea = document.getElementById('tokenCalcTextarea') as HTMLTextAreaElement;
+    const charDisplay = document.getElementById('charCountDisplay');
+    const tokenDisplay = document.getElementById('tokenEstDisplay');
 
-  improveBtn?.addEventListener('click', () => {
-    const raw = rawInput?.value.trim() || 'Provide a comprehensive breakdown of the core subject matter.';
-    const persona = personaSelect?.value || 'Senior Staff Software Engineer';
-    const reasoning = reasoningSelect?.value || 'Chain of Thought';
-
-    const optimized = `<system_instruction>
-You are an expert ${persona}.
-Your task is to execute the user's objective with extreme precision, verifiable depth, and zero filler prose.
-
-<operational_rules>
-1. Adopt the perspective of a seasoned ${persona}.
-2. Reasoning Protocol: Use ${reasoning}.
-3. Prioritize empirical evidence, concrete architectural trade-offs, and actionable steps.
-4. If code or commands are provided, make them production-ready and error-handled.
-</operational_rules>
-
-<user_task>
-${raw}
-</user_task>
-</system_instruction>`;
-
-    if (improvedOutput) improvedOutput.value = optimized;
-  });
-
-  copyImprovedBtn?.addEventListener('click', () => {
-    if (improvedOutput && improvedOutput.value) {
-      navigator.clipboard.writeText(improvedOutput.value);
-      copyImprovedBtn.textContent = 'Copied!';
-      setTimeout(() => { copyImprovedBtn.textContent = 'Copy Output'; }, 2000);
-    }
-  });
-
-  // Utility 2: Hook Generator Script
-  const hookTopicInput = document.getElementById('hookTopicInput') as HTMLInputElement | null;
-  const generateHooksBtn = document.getElementById('generateHooksBtn');
-  const hookResultsContainer = document.getElementById('hookResultsContainer');
-  const titlesList = document.getElementById('titlesList');
-  const hooksList = document.getElementById('hooksList');
-
-  generateHooksBtn?.addEventListener('click', () => {
-    const topic = hookTopicInput?.value.trim() || 'Modern AI Tools';
-
-    const sampleTitles = [
-      `Why 99% of Developers Are Using ${topic} Completely Wrong in 2026`,
-      `I Tested ${topic} for 30 Days: The Honest Brutal Truth`,
-      `Stop Using Legacy Tools: How ${topic} Replaced My Whole Team Stack`,
-      `${topic}: The Hidden Setting Nobody Tells You About`,
-      `How to Master ${topic} in 15 Minutes (Step-by-Step)`
-    ];
-
-    const sampleHooks = [
-      `"Most people think ${topic} is overrated. But after running 100 tests, here is the one flaw everyone missed..."`,
-      `[Visual: Show screen side-by-side comparison] "If you are still doing this manually, you are wasting 4 hours every single day."`,
-      `"I gave ${topic} the hardest possible edge-case test. What happened next surprised our entire engineering team."`
-    ];
-
-    if (titlesList) {
-      titlesList.innerHTML = sampleTitles.map(t => `<li class="py-1 border-b border-hairline/60 last:border-0">&bull; ${t}</li>`).join('');
+    if (tokenArea) {
+      tokenArea.addEventListener('input', () => {
+        const len = tokenArea.value.length;
+        const tokens = Math.max(1, Math.round(len / 4));
+        if (charDisplay) charDisplay.textContent = `${len} characters`;
+        if (tokenDisplay) tokenDisplay.textContent = String(tokens);
+      });
     }
 
-    if (hooksList) {
-      hooksList.innerHTML = sampleHooks.map(h => `<li class="py-1 border-b border-hairline/60 last:border-0">${h}</li>`).join('');
+    // 2. Prompt Improver
+    const piRole = document.getElementById('piRole') as HTMLInputElement;
+    const piTask = document.getElementById('piTask') as HTMLTextAreaElement;
+    const piConstraints = document.getElementById('piConstraints') as HTMLInputElement;
+    const piOutput = document.getElementById('piOutput');
+    const buildPromptBtn = document.getElementById('buildPromptBtn');
+    const copyPiBtn = document.getElementById('copyPiOutputBtn');
+
+    function buildPrompt() {
+      const role = piRole?.value || 'Principal Engineer';
+      const task = piTask?.value || '';
+      const constraints = piConstraints?.value || '';
+
+      const structured = `You are a ${role}.
+
+# CONTEXT & GOAL
+${task}
+
+# OPERATIONAL CONSTRAINTS
+- Strict Rule 1: ${constraints}
+- Strict Rule 2: Always return actionable, production-ready outputs with zero conversational filler.
+- Strict Rule 3: If facts or credentials are missing, explicitly document them rather than assuming.
+
+# OUTPUT SPECIFICATION
+Structure your response with clear markdown headings, bullet points, and code blocks.`;
+
+      if (piOutput) piOutput.textContent = structured;
     }
 
-    if (hookResultsContainer) {
-      hookResultsContainer.classList.remove('hidden');
+    if (buildPromptBtn) buildPromptBtn.addEventListener('click', buildPrompt);
+
+    document.querySelectorAll('.prompt-preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (piRole) piRole.value = btn.getAttribute('data-role') || '';
+        if (piTask) piTask.value = btn.getAttribute('data-task') || '';
+        if (piConstraints) piConstraints.value = btn.getAttribute('data-constraint') || '';
+        buildPrompt();
+      });
+    });
+
+    if (copyPiBtn) {
+      copyPiBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(piOutput?.textContent || '').then(() => {
+          copyPiBtn.textContent = 'Copied!';
+          setTimeout(() => { copyPiBtn.textContent = 'Copy'; }, 1500);
+        });
+      });
     }
-  });
 
-  // Utility 3: In-Browser Image Resizer Script
-  const imageInput = document.getElementById('imageFileInput') as HTMLInputElement | null;
-  const processImageBtn = document.getElementById('processImageBtn');
-  const imageEmptyText = document.getElementById('imageEmptyText');
-  const imageResult = document.getElementById('imageResult');
-  const previewImg = document.getElementById('convertedPreviewImg') as HTMLImageElement | null;
-  const imageStatsText = document.getElementById('imageStatsText');
-  const downloadWebpLink = document.getElementById('downloadWebpLink') as HTMLAnchorElement | null;
+    // 3. YouTube Hooks
+    const genHooksBtn = document.getElementById('generateHooksBtn');
+    const hookTopic = document.getElementById('hookTopicInput') as HTMLInputElement;
+    const hookTitlesList = document.getElementById('hookTitlesList');
+    const hookBodyList = document.getElementById('hookBodyList');
 
-  let loadedImageFile: File | null = null;
-
-  imageInput?.addEventListener('change', (e) => {
-    const files = (e.target as HTMLInputElement).files;
-    if (files && files[0]) {
-      loadedImageFile = files[0];
-      if (imageEmptyText) imageEmptyText.textContent = `Selected: ${files[0].name} (${(files[0].size / 1024).toFixed(1)} KB). Click Convert.`;
-    }
-  });
-
-  processImageBtn?.addEventListener('click', () => {
-    if (!loadedImageFile) return;
-
-    const maxWidth = parseInt((document.getElementById('imgMaxWidth') as HTMLInputElement).value) || 1200;
-    const quality = (parseInt((document.getElementById('imgQuality') as HTMLInputElement).value) || 85) / 100;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
-
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
+    if (genHooksBtn) {
+      genHooksBtn.addEventListener('click', () => {
+        const topic = hookTopic?.value || 'AI Tools';
+        if (hookTitlesList) {
+          hookTitlesList.innerHTML = `
+            <li>1. Stop Paying for SaaS: The Free ${topic} Alternative</li>
+            <li>2. I Tested 10 ${topic} Workflows So You Don't Have To</li>
+            <li>3. Why 90% of Engineers Are Doing ${topic} Wrong</li>
+            <li>4. The Unspoken Truth About ${topic} in 2025</li>
+            <li>5. How I Automated My Entire Pipeline with ${topic}</li>
+          `;
         }
+        if (hookBodyList) {
+          hookBodyList.innerHTML = `
+            <li>&bull; "90% of people trying ${topic} make this exact rookie mistake..."</li>
+            <li>&bull; "Before you spend $100 on ${topic}, look at what happened when I tested this free workflow..."</li>
+            <li>&bull; "In the next 45 seconds, I'm going to show you the exact system we used to scale..."</li>
+          `;
+        }
+      });
+    }
 
-        canvas.width = width;
-        canvas.height = height;
+    // 4. Social Formatter
+    const rawNotes = document.getElementById('rawNotesInput') as HTMLTextAreaElement;
+    const formatBtn = document.getElementById('formatThreadBtn');
+    const socialOut = document.getElementById('socialOutput');
+    const copySocialBtn = document.getElementById('copySocialOutput');
 
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(img, 0, 0, width, height);
-          const webpDataUrl = canvas.toDataURL('image/webp', quality);
+    if (formatBtn) {
+      formatBtn.addEventListener('click', () => {
+        const val = rawNotes?.value || '';
+        const formatted = `1/ We tested this so you don't have to:\n\n${val}\n\nHere are the 3 major lessons learned:\n\n&bull; Lesson 1: Pacing beats raw token power.\n&bull; Lesson 2: Keep human-in-the-loop gates on financial flows.\n&bull; Lesson 3: Self-host local models for privacy.\n\nRetweet if useful &rarr; Follow @AIO_AI for daily blueprints.`;
+        if (socialOut) socialOut.textContent = formatted;
+      });
+    }
 
-          if (previewImg) previewImg.src = webpDataUrl;
-          if (downloadWebpLink) downloadWebpLink.href = webpDataUrl;
+    if (copySocialBtn) {
+      copySocialBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(socialOut?.textContent || '').then(() => {
+          copySocialBtn.textContent = 'Copied!';
+          setTimeout(() => { copySocialBtn.textContent = 'Copy'; }, 1500);
+        });
+      });
+    }
 
-          // Estimate size reduction
-          const originalKb = (loadedImageFile!.size / 1024).toFixed(1);
-          const estimatedWebpKb = (webpDataUrl.length * (3/4) / 1024).toFixed(1);
+    // 6. JSON to TS
+    const jsonIn = document.getElementById('rawJsonInput') as HTMLTextAreaElement;
+    const formatJsonBtn = document.getElementById('formatJsonBtn');
+    const jsonToTsBtn = document.getElementById('jsonToTsBtn');
+    const tsOut = document.getElementById('tsOutput');
+    const copyTsBtn = document.getElementById('copyTsOutput');
 
-          if (imageStatsText) {
-            imageStatsText.textContent = `Original: ${originalKb} KB → Converted WebP: ~${estimatedWebpKb} KB (${width}x${height}px)`;
+    if (formatJsonBtn) {
+      formatJsonBtn.addEventListener('click', () => {
+        try {
+          const parsed = JSON.parse(jsonIn.value);
+          jsonIn.value = JSON.stringify(parsed, null, 2);
+        } catch (e) {
+          alert('Invalid JSON syntax: ' + (e as Error).message);
+        }
+      });
+    }
+
+    if (jsonToTsBtn) {
+      jsonToTsBtn.addEventListener('click', () => {
+        try {
+          const obj = JSON.parse(jsonIn.value);
+          let ts = 'export interface InferredType {\n';
+          for (const key of Object.keys(obj)) {
+            const val = obj[key];
+            const type = Array.isArray(val) ? (typeof val[0] || 'any') + '[]' : typeof val;
+            ts += `  ${key}: ${type};\n`;
           }
-
-          if (imageEmptyText) imageEmptyText.classList.add('hidden');
-          if (imageResult) imageResult.classList.remove('hidden');
+          ts += '}';
+          if (tsOut) tsOut.textContent = ts;
+        } catch (e) {
+          if (tsOut) tsOut.textContent = 'Error parsing JSON: ' + (e as Error).message;
         }
-      };
-      img.src = event.target?.result as string;
-    };
-    reader.readAsDataURL(loadedImageFile);
-  });
+      });
+    }
 
-  // Utility 4: QR Generator Script
-  const qrTextInput = document.getElementById('qrTextInput') as HTMLInputElement | null;
-  const generateQrBtn = document.getElementById('generateQrBtn');
-  const qrImageTag = document.getElementById('qrImageTag') as HTMLImageElement | null;
-  const downloadQrBtn = document.getElementById('downloadQrBtn') as HTMLAnchorElement | null;
+    if (copyTsBtn) {
+      copyTsBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(tsOut?.textContent || '').then(() => {
+          copyTsBtn.textContent = 'Copied!';
+          setTimeout(() => { copyTsBtn.textContent = 'Copy'; }, 1500);
+        });
+      });
+    }
 
-  generateQrBtn?.addEventListener('click', () => {
-    const text = encodeURIComponent(qrTextInput?.value.trim() || 'https://github.com/harshil1876/AIO-AI');
-    const newSrc = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${text}`;
-    const highRes = `https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=${text}`;
+    // 7. QR Generator
+    const qrText = document.getElementById('qrText') as HTMLInputElement;
+    const qrImg = document.getElementById('qrImg') as HTMLImageElement;
+    const genQrBtn = document.getElementById('genQrBtn');
+    const dlLink = document.getElementById('downloadQrLink') as HTMLAnchorElement;
 
-    if (qrImageTag) qrImageTag.src = newSrc;
-    if (downloadQrBtn) downloadQrBtn.href = highRes;
-  });
+    if (genQrBtn) {
+      genQrBtn.addEventListener('click', () => {
+        const url = encodeURIComponent(qrText.value || 'https://aio-ai.pages.dev');
+        const src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${url}`;
+        if (qrImg) qrImg.src = src;
+        if (dlLink) dlLink.href = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${url}`;
+      });
+    }
 
-  // Utility 5: Word & Char Counter
-  const counterArea = document.getElementById('counterTextArea') as HTMLTextAreaElement | null;
-  const countWords = document.getElementById('countWords');
-  const countChars = document.getElementById('countChars');
-  const countCharsNoSpace = document.getElementById('countCharsNoSpace');
-  const countSentences = document.getElementById('countSentences');
-  const countReadTime = document.getElementById('countReadTime');
+    // 8. Text Analyzer
+    const textInput = document.getElementById('textAnalyzerInput') as HTMLTextAreaElement;
+    const wSpan = document.getElementById('statWords');
+    const cSpan = document.getElementById('statChars');
+    const rSpan = document.getElementById('statReadTime');
+    const sSpan = document.getElementById('statSpeechTime');
 
-  counterArea?.addEventListener('input', () => {
-    const text = counterArea.value;
-    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-    const chars = text.length;
-    const noSpaces = text.replace(/\s/g, '').length;
-    const sentences = text.trim() ? (text.match(/[.!?]+(\s|$)/g) || []).length : 0;
-    const minutes = Math.ceil(words / 220);
+    if (textInput) {
+      textInput.addEventListener('input', () => {
+        const val = textInput.value.trim();
+        const words = val ? val.split(/\s+/).length : 0;
+        const chars = val.length;
+        const readSec = Math.ceil((words / 200) * 60);
+        const speechSec = Math.ceil((words / 150) * 60);
 
-    if (countWords) countWords.textContent = words.toLocaleString();
-    if (countChars) countChars.textContent = chars.toLocaleString();
-    if (countCharsNoSpace) countCharsNoSpace.textContent = noSpaces.toLocaleString();
-    if (countSentences) countSentences.textContent = sentences.toString();
-    if (countReadTime) countReadTime.textContent = `${minutes} min`;
-  });
+        if (wSpan) wSpan.textContent = String(words);
+        if (cSpan) cSpan.textContent = String(chars);
+        if (rSpan) rSpan.textContent = `${readSec} sec`;
+        if (sSpan) sSpan.textContent = `${speechSec} sec`;
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupUtilities);
+  } else {
+    setupUtilities();
+  }
 </script>

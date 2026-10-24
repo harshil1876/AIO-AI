@@ -7,76 +7,122 @@ const tools = await getAllTools();
 const categories = await getAllCategories();
 ---
 
-<Layout title="Admin Operations Console | AI Discovery Platform">
+<Layout title="Admin Operations Console | AIO AI">
   <div class="flex flex-col min-h-screen bg-canvas">
     <!-- Top Bar -->
-    <header class="bg-canvas border-b border-hairline px-6 py-3.5 flex items-center justify-between sticky top-0 z-50">
+    <header class="bg-white border-b border-[#E2E8F0] px-6 py-3.5 flex items-center justify-between sticky top-0 z-50">
       <div class="flex items-center gap-3">
         <a href="/" class="flex items-center gap-2">
-          <span class="w-6 h-6 rounded-md bg-ink text-on-primary flex items-center justify-center text-xs font-bold font-mono">AI</span>
-          <span class="text-ink font-semibold tracking-tight text-sm">Admin Operations Console</span>
+          <span class="w-7 h-7 rounded-lg bg-ink text-white flex items-center justify-center text-xs font-bold font-mono">AI</span>
+          <span class="text-ink font-bold tracking-tight text-sm">Admin Operations Console</span>
         </a>
-        <span class="text-[11px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">
-          PostgreSQL Ready
+        <span class="text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full font-mono font-medium">
+          PostgreSQL Active
         </span>
       </div>
 
       <div class="flex items-center gap-4 text-xs">
-        <span class="text-mute font-mono hidden sm:inline">Role: System Administrator</span>
-        <a href="/" class="text-mute hover:text-ink transition-colors font-medium">← Back to Live Site</a>
+        <span class="text-neutral-500 font-mono hidden sm:inline" id="adminRoleBadge">Session: Checking...</span>
+        <button id="lockAdminBtn" class="hidden text-red-600 hover:text-red-700 font-mono text-xs cursor-pointer">
+          Lock Session
+        </button>
+        <a href="/" class="text-neutral-500 hover:text-ink transition-colors font-medium">← Back to Site</a>
       </div>
     </header>
 
-    <div class="flex-1 max-w-7xl w-full mx-auto px-6 py-8">
+    <!-- Admin Authentication Gate Screen -->
+    <div id="adminGateScreen" class="py-20 px-6 max-w-xl mx-auto text-center">
+      <div class="bg-white border-2 border-primary rounded-2xl p-8 shadow-xl">
+        <div class="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 text-primary flex items-center justify-center mx-auto mb-4">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+          </svg>
+        </div>
+        <span class="text-xs font-mono font-bold text-primary uppercase tracking-wider">Protected System Console</span>
+        <h1 class="text-2xl font-black text-ink tracking-tight mt-1 mb-2">Administrator Verification</h1>
+        <p class="text-xs text-neutral-600 mb-6 leading-relaxed">
+          This console manages cataloged tools, PostgreSQL table schemas, batch CSV/JSON ingestion, and community moderation.
+        </p>
+
+        <div class="space-y-3">
+          <button 
+            id="unlockAdminDemoBtn"
+            type="button"
+            class="w-full py-3 px-4 rounded-xl bg-primary text-white text-xs font-bold hover:bg-blue-700 transition-colors cursor-pointer shadow-sm flex items-center justify-center gap-2"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+            </svg>
+            <span>Unlock Admin Session (Instant Demo Mode)</span>
+          </button>
+
+          <div class="flex items-center gap-2 my-2 text-neutral-400 text-xs">
+            <div class="h-px bg-neutral-200 flex-1"></div>
+            <span class="text-[10px] font-mono uppercase">or sign in with admin account</span>
+            <div class="h-px bg-neutral-200 flex-1"></div>
+          </div>
+
+          <a 
+            href="/login?redirect=/admin"
+            class="block w-full py-2.5 px-4 rounded-xl bg-surface border border-[#E2E8F0] text-ink text-xs font-semibold hover:border-ink transition-colors"
+          >
+            Sign In with Supabase
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Authenticated Admin Operations Console -->
+    <div id="adminMainContent" class="hidden flex-1 max-w-7xl w-full mx-auto px-6 py-8">
       
       <!-- Metrics Overview Cards -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-        <div class="bg-canvas-elevated border border-hairline p-5 rounded-lg shadow-xs">
-          <div class="text-[10px] text-mute font-mono uppercase tracking-wider mb-1">Cataloged Tools</div>
-          <div class="text-3xl font-semibold text-ink font-mono">{tools.length}</div>
+        <div class="bg-white border border-[#E2E8F0] p-5 rounded-xl shadow-xs">
+          <div class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider mb-1">Cataloged Tools</div>
+          <div class="text-3xl font-black text-ink font-mono">{tools.length}</div>
         </div>
-        <div class="bg-canvas-elevated border border-hairline p-5 rounded-lg shadow-xs">
-          <div class="text-[10px] text-mute font-mono uppercase tracking-wider mb-1">Active Categories</div>
-          <div class="text-3xl font-semibold text-ink font-mono">{categories.length}</div>
+        <div class="bg-white border border-[#E2E8F0] p-5 rounded-xl shadow-xs">
+          <div class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider mb-1">Active Categories</div>
+          <div class="text-3xl font-black text-ink font-mono">{categories.length}</div>
         </div>
-        <div class="bg-canvas-elevated border border-hairline p-5 rounded-lg shadow-xs">
-          <div class="text-[10px] text-mute font-mono uppercase tracking-wider mb-1">India-First Tools</div>
-          <div class="text-3xl font-semibold text-orange-600 dark:text-orange-400 font-mono">
+        <div class="bg-white border border-[#E2E8F0] p-5 rounded-xl shadow-xs">
+          <div class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider mb-1">India-First Tools</div>
+          <div class="text-3xl font-black text-orange-600 font-mono">
             {tools.filter(t => t.isIndianAI).length}
           </div>
         </div>
-        <div class="bg-canvas-elevated border border-hairline p-5 rounded-lg shadow-xs">
-          <div class="text-[10px] text-mute font-mono uppercase tracking-wider mb-1">Audit Verification</div>
-          <div class="text-3xl font-semibold text-emerald-600 dark:text-emerald-400 font-mono">100%</div>
+        <div class="bg-white border border-[#E2E8F0] p-5 rounded-xl shadow-xs">
+          <div class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider mb-1">Audit Verification</div>
+          <div class="text-3xl font-black text-emerald-600 font-mono">100%</div>
         </div>
       </div>
 
       <!-- Navigation Tabs -->
-      <div class="flex items-center gap-2 mb-6 border-b border-hairline pb-2" id="adminTabs">
-        <button class="admin-tab px-4 py-1.5 rounded-full text-xs font-medium border border-ink bg-ink text-on-primary cursor-pointer transition-colors" data-view="tools-list">
+      <div class="flex items-center gap-2 mb-6 border-b border-[#E2E8F0] pb-2 overflow-x-auto" id="adminTabs">
+        <button class="admin-tab px-4 py-2 rounded-lg text-xs font-bold border border-ink bg-ink text-white cursor-pointer transition-colors whitespace-nowrap" data-view="tools-list">
           All Tools ({tools.length})
         </button>
-        <button class="admin-tab px-4 py-1.5 rounded-full text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink cursor-pointer transition-colors" data-view="bulk-importer">
+        <button class="admin-tab px-4 py-2 rounded-lg text-xs font-semibold border border-[#E2E8F0] bg-white text-neutral-600 hover:text-ink cursor-pointer transition-colors whitespace-nowrap" data-view="bulk-importer">
           Bulk CSV/JSON Importer
         </button>
-        <button class="admin-tab px-4 py-1.5 rounded-full text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink cursor-pointer transition-colors" data-view="add-tool">
+        <button class="admin-tab px-4 py-2 rounded-lg text-xs font-semibold border border-[#E2E8F0] bg-white text-neutral-600 hover:text-ink cursor-pointer transition-colors whitespace-nowrap" data-view="add-tool">
           Single Tool Creator
         </button>
-        <button class="admin-tab px-4 py-1.5 rounded-full text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink cursor-pointer transition-colors" data-view="moderation-queue">
+        <button class="admin-tab px-4 py-2 rounded-lg text-xs font-semibold border border-[#E2E8F0] bg-white text-neutral-600 hover:text-ink cursor-pointer transition-colors whitespace-nowrap" data-view="moderation-queue">
           Corrections & Moderation Queue
         </button>
       </div>
 
-      <!-- Tab 1: Bulk CSV/JSON Importer (PRD Section 19 Requirement) -->
-      <div id="bulkImporterView" class="admin-panel hidden bg-canvas-elevated border border-hairline rounded-lg p-6 mb-8 shadow-xs">
-        <div class="border-b border-hairline pb-4 mb-5">
-          <h2 class="text-base font-semibold text-ink tracking-tight">Bulk CSV / JSON Tool Importer</h2>
-          <p class="text-xs text-mute">Batch import tools with automated column validation, URL syntax verification, and duplicate slug detection.</p>
+      <!-- Tab 1: Bulk CSV/JSON Importer -->
+      <div id="bulkImporterView" class="admin-panel hidden bg-white border border-[#E2E8F0] rounded-xl p-6 mb-8 shadow-xs">
+        <div class="border-b border-[#E2E8F0] pb-4 mb-5">
+          <h2 class="text-base font-bold text-ink tracking-tight">Bulk CSV / JSON Tool Importer</h2>
+          <p class="text-xs text-neutral-500">Batch import tools with automated column validation, URL syntax verification, and duplicate slug detection.</p>
         </div>
 
         <div class="space-y-4">
           <div>
-            <label class="block text-xs font-medium text-ink mb-1">Paste CSV or JSON Array:</label>
+            <label class="block text-xs font-semibold text-ink mb-1">Paste CSV or JSON Array:</label>
             <textarea 
               id="bulkDataInput" 
               rows="6"
@@ -84,7 +130,7 @@ const categories = await getAllCategories();
 [
   { "name": "NovelAI", "slug": "novel-ai", "websiteUrl": "https://novelai.net", "pricingType": "Paid", "category": "writing-copy", "tagline": "AI storytelling assistant" }
 ]`} 
-              class="w-full p-3 rounded-md text-xs bg-canvas border border-hairline text-ink font-mono focus:outline-none focus:border-ink resize-none"
+              class="w-full p-3 rounded-lg text-xs bg-surface border border-[#E2E8F0] text-ink font-mono focus:outline-none focus:border-primary resize-none"
             ></textarea>
           </div>
 
@@ -92,38 +138,38 @@ const categories = await getAllCategories();
             <button 
               type="button" 
               id="validateBulkBtn"
-              class="px-4 py-2 rounded-md bg-ink text-on-primary hover:bg-neutral-800 text-xs font-medium transition-colors cursor-pointer shadow-xs"
+              class="px-4 py-2 rounded-lg bg-primary text-white hover:bg-blue-700 text-xs font-semibold transition-colors cursor-pointer shadow-xs"
             >
               Validate & Preview Rows
             </button>
             <button 
               type="button" 
               id="clearBulkBtn"
-              class="px-3 py-2 rounded-md border border-hairline text-xs font-medium text-mute hover:text-ink transition-colors cursor-pointer"
+              class="px-3 py-2 rounded-lg border border-[#E2E8F0] text-xs font-medium text-neutral-600 hover:text-ink transition-colors cursor-pointer"
             >
               Clear
             </button>
           </div>
 
           <!-- Validation Report Container -->
-          <div id="bulkReportBox" class="hidden p-4 rounded-lg bg-canvas border border-hairline space-y-3 text-xs">
+          <div id="bulkReportBox" class="hidden p-4 rounded-xl bg-surface border border-[#E2E8F0] space-y-3 text-xs">
             <div class="flex items-center justify-between font-mono">
-              <span class="font-semibold text-ink" id="bulkSummaryText">Validation Complete</span>
-              <span id="bulkStatusBadge" class="px-2 py-0.5 rounded text-[10px] font-medium"></span>
+              <span class="font-bold text-ink" id="bulkSummaryText">Validation Complete</span>
+              <span id="bulkStatusBadge" class="px-2 py-0.5 rounded text-[10px] font-bold"></span>
             </div>
 
-            <div class="overflow-x-auto max-h-48 border border-hairline rounded">
+            <div class="overflow-x-auto max-h-48 border border-[#E2E8F0] rounded-lg bg-white">
               <table class="w-full text-left border-collapse text-[11px]" id="bulkPreviewTable">
-                <thead class="bg-hairline-soft text-mute font-mono">
+                <thead class="bg-surface text-neutral-500 font-mono">
                   <tr>
-                    <th class="p-2">Name</th>
-                    <th class="p-2">Slug</th>
-                    <th class="p-2">Website URL</th>
-                    <th class="p-2">Category</th>
-                    <th class="p-2">Status</th>
+                    <th class="p-2.5">Name</th>
+                    <th class="p-2.5">Slug</th>
+                    <th class="p-2.5">Website URL</th>
+                    <th class="p-2.5">Category</th>
+                    <th class="p-2.5">Status</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-hairline font-mono" id="bulkPreviewTbody">
+                <tbody class="divide-y divide-[#E2E8F0] font-mono" id="bulkPreviewTbody">
                 </tbody>
               </table>
             </div>
@@ -131,45 +177,45 @@ const categories = await getAllCategories();
             <button 
               type="button" 
               id="commitBulkBtn"
-              class="w-full py-2 rounded-md bg-emerald-600 text-white hover:bg-emerald-700 text-xs font-medium transition-colors cursor-pointer shadow-xs"
+              class="w-full py-2.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 text-xs font-semibold transition-colors cursor-pointer shadow-xs"
             >
-              Commit Valid Rows to Catalog
+              Commit Valid Rows to PostgreSQL Catalog
             </button>
           </div>
         </div>
       </div>
 
       <!-- Tab 2: Single Tool Creator -->
-      <div id="addToolView" class="admin-panel hidden bg-canvas-elevated border border-hairline rounded-lg p-6 mb-8 shadow-xs">
-        <div class="border-b border-hairline pb-4 mb-5">
-          <h2 class="text-base font-semibold text-ink tracking-tight">Add Single Verified Tool</h2>
-          <p class="text-xs text-mute">Direct entry into PostgreSQL database with live schema verification.</p>
+      <div id="addToolView" class="admin-panel hidden bg-white border border-[#E2E8F0] rounded-xl p-6 mb-8 shadow-xs">
+        <div class="border-b border-[#E2E8F0] pb-4 mb-5">
+          <h2 class="text-base font-bold text-ink tracking-tight">Add Single Verified Tool</h2>
+          <p class="text-xs text-neutral-500">Direct entry into PostgreSQL database with live schema verification.</p>
         </div>
 
         <form id="singleToolForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           <div>
-            <label class="block font-medium text-ink mb-1">Tool Name *</label>
-            <input type="text" id="singleName" placeholder="e.g. Cursor" class="w-full bg-canvas border border-hairline rounded p-2 text-ink outline-none focus:border-ink" required />
+            <label class="block font-semibold text-ink mb-1">Tool Name *</label>
+            <input type="text" id="singleName" placeholder="e.g. Cursor" class="w-full bg-surface border border-[#E2E8F0] rounded-lg p-2.5 text-ink outline-none focus:border-primary font-sans" required />
           </div>
 
           <div>
-            <label class="block font-medium text-ink mb-1">Slug *</label>
-            <input type="text" id="singleSlug" placeholder="e.g. cursor" class="w-full bg-canvas border border-hairline rounded p-2 text-ink outline-none focus:border-ink font-mono" required />
+            <label class="block font-semibold text-ink mb-1">Slug *</label>
+            <input type="text" id="singleSlug" placeholder="e.g. cursor" class="w-full bg-surface border border-[#E2E8F0] rounded-lg p-2.5 text-ink outline-none focus:border-primary font-mono" required />
           </div>
 
           <div>
-            <label class="block font-medium text-ink mb-1">Website URL *</label>
-            <input type="url" id="singleUrl" placeholder="https://..." class="w-full bg-canvas border border-hairline rounded p-2 text-ink outline-none focus:border-ink font-mono" required />
+            <label class="block font-semibold text-ink mb-1">Website URL *</label>
+            <input type="url" id="singleUrl" placeholder="https://..." class="w-full bg-surface border border-[#E2E8F0] rounded-lg p-2.5 text-ink outline-none focus:border-primary font-mono" required />
           </div>
 
           <div class="md:col-span-2">
-            <label class="block font-medium text-ink mb-1">Tagline *</label>
-            <input type="text" id="singleTagline" placeholder="AI-first code editor..." class="w-full bg-canvas border border-hairline rounded p-2 text-ink outline-none focus:border-ink" required />
+            <label class="block font-semibold text-ink mb-1">Tagline *</label>
+            <input type="text" id="singleTagline" placeholder="AI-first code editor..." class="w-full bg-surface border border-[#E2E8F0] rounded-lg p-2.5 text-ink outline-none focus:border-primary font-sans" required />
           </div>
 
           <div>
-            <label class="block font-medium text-ink mb-1">Category *</label>
-            <select id="singleCategory" class="w-full bg-canvas border border-hairline rounded p-2 text-ink outline-none">
+            <label class="block font-semibold text-ink mb-1">Category *</label>
+            <select id="singleCategory" class="w-full bg-surface border border-[#E2E8F0] rounded-lg p-2.5 text-ink outline-none font-sans">
               {CATEGORIES_DATA.map(c => (
                 <option value={c.slug}>{c.name}</option>
               ))}
@@ -177,7 +223,7 @@ const categories = await getAllCategories();
           </div>
 
           <div class="md:col-span-3 flex justify-end pt-2">
-            <button type="submit" class="bg-ink text-on-primary font-medium text-xs px-5 py-2 rounded-md hover:bg-neutral-800 transition-colors cursor-pointer shadow-xs">
+            <button type="submit" class="bg-primary text-white font-semibold text-xs px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-xs">
               Commit Tool to Database
             </button>
           </div>
@@ -185,98 +231,98 @@ const categories = await getAllCategories();
       </div>
 
       <!-- Tab 3: Moderation & Corrections Queue -->
-      <div id="moderationQueueView" class="admin-panel hidden bg-canvas-elevated border border-hairline rounded-lg p-6 mb-8 shadow-xs">
-        <div class="border-b border-hairline pb-4 mb-5">
-          <h2 class="text-base font-semibold text-ink tracking-tight">Corrections & User Submissions Queue</h2>
-          <p class="text-xs text-mute">Review community-submitted pricing corrections, broken link tickets, and new tool requests.</p>
+      <div id="moderationQueueView" class="admin-panel hidden bg-white border border-[#E2E8F0] rounded-xl p-6 mb-8 shadow-xs">
+        <div class="border-b border-[#E2E8F0] pb-4 mb-5">
+          <h2 class="text-base font-bold text-ink tracking-tight">Corrections & User Submissions Queue</h2>
+          <p class="text-xs text-neutral-500">Review community-submitted pricing corrections, broken link tickets, and new tool requests.</p>
         </div>
 
         <div class="space-y-3" id="moderationItems">
-          <div class="p-4 rounded-lg bg-canvas border border-hairline flex items-center justify-between text-xs">
+          <div class="p-4 rounded-xl bg-surface border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
             <div>
               <div class="flex items-center gap-2 mb-1">
-                <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400">Pricing Check</span>
-                <span class="font-semibold text-ink">Perplexity Pro</span>
+                <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-amber-50 text-amber-700 border border-amber-200 font-bold">Pricing Check</span>
+                <span class="font-bold text-ink">Perplexity Pro</span>
               </div>
-              <p class="text-mute text-[11px]">User reported: Annual pricing discount changed from 15% to 20% on Pro annual subscription.</p>
+              <p class="text-neutral-500 text-[11px]">User reported: Annual pricing discount changed from 15% to 20% on Pro annual subscription.</p>
             </div>
             <div class="flex items-center gap-2">
-              <button class="px-3 py-1 rounded bg-emerald-600 text-white text-[11px] font-medium hover:bg-emerald-700 transition-colors">Approve</button>
-              <button class="px-3 py-1 rounded border border-hairline text-mute hover:text-ink text-[11px] font-medium transition-colors">Dismiss</button>
+              <button class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors">Approve</button>
+              <button class="px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-neutral-600 hover:text-ink text-xs font-medium transition-colors">Dismiss</button>
             </div>
           </div>
 
-          <div class="p-4 rounded-lg bg-canvas border border-hairline flex items-center justify-between text-xs">
+          <div class="p-4 rounded-xl bg-surface border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
             <div>
               <div class="flex items-center gap-2 mb-1">
-                <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">New Tool Request</span>
-                <span class="font-semibold text-ink">Soket AI Labs (Pratham Indic Model)</span>
+                <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-blue-50 text-primary border border-blue-200 font-bold">New Tool Request</span>
+                <span class="font-bold text-ink">Soket AI Labs (Pratham Indic Model)</span>
               </div>
-              <p class="text-mute text-[11px]">Founder submission: Open-weights Indic foundation models released under Apache 2.0.</p>
+              <p class="text-neutral-500 text-[11px]">Founder submission: Open-weights Indic foundation models released under Apache 2.0.</p>
             </div>
             <div class="flex items-center gap-2">
-              <button class="px-3 py-1 rounded bg-emerald-600 text-white text-[11px] font-medium hover:bg-emerald-700 transition-colors">Approve & Publish</button>
-              <button class="px-3 py-1 rounded border border-hairline text-mute hover:text-ink text-[11px] font-medium transition-colors">Dismiss</button>
+              <button class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors">Approve & Publish</button>
+              <button class="px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-neutral-600 hover:text-ink text-xs font-medium transition-colors">Dismiss</button>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Tab 4: All Cataloged Tools Table -->
-      <div id="toolsListView" class="admin-panel bg-canvas-elevated border border-hairline rounded-lg shadow-xs overflow-hidden">
-        <div class="px-6 py-4 border-b border-hairline flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div id="toolsListView" class="admin-panel bg-white border border-[#E2E8F0] rounded-xl shadow-xs overflow-hidden">
+        <div class="px-6 py-4 border-b border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 class="text-sm font-semibold text-ink">Cataloged Tools ({tools.length})</h2>
-            <p class="text-xs text-mute">100% verified production AI tools.</p>
+            <h2 class="text-sm font-bold text-ink">Cataloged Tools ({tools.length})</h2>
+            <p class="text-xs text-neutral-500">100% verified production AI tools.</p>
           </div>
           <div class="w-full sm:w-64">
             <input 
               type="text" 
               id="adminSearchInput" 
               placeholder="Search tool or slug..." 
-              class="w-full px-3 py-1.5 rounded-md text-xs bg-canvas border border-hairline text-ink focus:outline-none focus:border-ink font-mono"
+              class="w-full px-3 py-1.5 rounded-lg text-xs bg-surface border border-[#E2E8F0] text-ink focus:outline-none focus:border-primary font-mono"
             />
           </div>
         </div>
 
         <div class="overflow-x-auto max-h-[600px]">
           <table class="w-full text-xs text-left" id="adminToolsTable">
-            <thead class="bg-canvas text-mute font-mono border-b border-hairline sticky top-0 z-10 text-[11px]">
+            <thead class="bg-surface text-neutral-500 font-mono border-b border-[#E2E8F0] sticky top-0 z-10 text-[11px]">
               <tr>
-                <th class="px-6 py-3 font-medium">Tool Name</th>
-                <th class="px-6 py-3 font-medium">Slug</th>
-                <th class="px-6 py-3 font-medium">Pricing</th>
-                <th class="px-6 py-3 font-medium text-right">Score</th>
-                <th class="px-6 py-3 font-medium text-center">Verification</th>
-                <th class="px-6 py-3 font-medium text-right">Actions</th>
+                <th class="px-6 py-3 font-semibold">Tool Name</th>
+                <th class="px-6 py-3 font-semibold">Slug</th>
+                <th class="px-6 py-3 font-semibold">Pricing</th>
+                <th class="px-6 py-3 font-semibold text-right">Score</th>
+                <th class="px-6 py-3 font-semibold text-center">Verification</th>
+                <th class="px-6 py-3 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-hairline text-body font-mono text-[11px]" id="adminToolsTbody">
+            <tbody class="divide-y divide-[#E2E8F0]">
               {tools.map(tool => (
-                <tr class="admin-tool-row hover:bg-hairline-soft/30 transition-colors" data-name={tool.name.toLowerCase()} data-slug={tool.slug}>
-                  <td class="px-6 py-3 font-semibold text-ink font-sans">
-                    <a href={`/tools/${tool.slug}`} class="hover:underline">
-                      {tool.name}
-                    </a>
+                <tr class="hover:bg-surface transition-colors admin-tool-row">
+                  <td class="px-6 py-3 font-semibold text-ink flex items-center gap-2">
                     {tool.isIndianAI && (
-                      <span class="ml-1.5 text-[9px] font-sans px-1.5 py-0.2 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
-                        India
-                      </span>
+                      <span class="w-2 h-2 rounded-full bg-orange-500 shrink-0" title="India AI"></span>
                     )}
+                    <span class="tool-name">{tool.name}</span>
                   </td>
-                  <td class="px-6 py-3 text-mute">{tool.slug}</td>
+                  <td class="px-6 py-3 font-mono text-neutral-500 text-[11px] tool-slug">{tool.slug}</td>
                   <td class="px-6 py-3">
-                    <span class="px-2 py-0.5 rounded-full border border-hairline text-[10px]">
+                    <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-neutral-100 text-neutral-700">
                       {tool.pricingType}
                     </span>
                   </td>
-                  <td class="px-6 py-3 text-right font-bold text-ink">{tool.platformScore}/100</td>
-                  <td class="px-6 py-3 text-center">
-                    <span class="text-emerald-600 dark:text-emerald-400 font-sans text-[11px]">✓ Verified</span>
+                  <td class="px-6 py-3 font-mono text-right font-bold text-primary">
+                    {tool.score || 85}
                   </td>
-                  <td class="px-6 py-3 text-right font-sans">
-                    <a href={tool.websiteUrl} target="_blank" rel="noopener noreferrer" class="text-ink hover:underline">
-                      Visit ↗
+                  <td class="px-6 py-3 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Verified
+                    </span>
+                  </td>
+                  <td class="px-6 py-3 text-right">
+                    <a href={`/tools/${tool.slug}`} target="_blank" class="text-primary hover:underline font-mono text-[11px]">
+                      View ↗
                     </a>
                   </td>
                 </tr>
@@ -290,140 +336,186 @@ const categories = await getAllCategories();
   </div>
 </Layout>
 
-<script>
-  // Admin Tabs Navigation
-  const tabs = document.querySelectorAll<HTMLButtonElement>('.admin-tab');
-  const panels = document.querySelectorAll<HTMLElement>('.admin-panel');
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const gateScreen = document.getElementById('adminGateScreen');
+    const mainContent = document.getElementById('adminMainContent');
+    const unlockDemoBtn = document.getElementById('unlockAdminDemoBtn');
+    const lockAdminBtn = document.getElementById('lockAdminBtn');
+    const roleBadge = document.getElementById('adminRoleBadge');
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => {
-        t.classList.remove('border-ink', 'bg-ink', 'text-on-primary');
-        t.classList.add('border-hairline', 'bg-canvas', 'text-body');
+    // Check Admin Authentication
+    function checkAdminAuth() {
+      const isUnlocked = localStorage.getItem('aio_admin_unlocked') === 'true';
+      const localUserStr = localStorage.getItem('aio_user');
+      let isAdminUser = false;
+      if (localUserStr) {
+        try {
+          const user = JSON.parse(localUserStr);
+          if (user.role === 'admin' || user.email?.includes('admin')) {
+            isAdminUser = true;
+          }
+        } catch(e){}
+      }
+
+      if (isUnlocked || isAdminUser) {
+        gateScreen?.classList.add('hidden');
+        mainContent?.classList.remove('hidden');
+        lockAdminBtn?.classList.remove('hidden');
+        if (roleBadge) roleBadge.textContent = 'Role: System Administrator (Verified)';
+      } else {
+        gateScreen?.classList.remove('hidden');
+        mainContent?.classList.add('hidden');
+        lockAdminBtn?.classList.add('hidden');
+        if (roleBadge) roleBadge.textContent = 'Session: Locked';
+      }
+    }
+
+    checkAdminAuth();
+
+    unlockDemoBtn?.addEventListener('click', () => {
+      localStorage.setItem('aio_admin_unlocked', 'true');
+      checkAdminAuth();
+    });
+
+    lockAdminBtn?.addEventListener('click', () => {
+      localStorage.removeItem('aio_admin_unlocked');
+      checkAdminAuth();
+    });
+
+    // Tab Switching
+    const tabs = document.querySelectorAll('.admin-tab');
+    const panels = document.querySelectorAll('.admin-panel');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => {
+          t.classList.remove('border-ink', 'bg-ink', 'text-white', 'font-bold');
+          t.classList.add('border-[#E2E8F0]', 'bg-white', 'text-neutral-600');
+        });
+        tab.classList.add('border-ink', 'bg-ink', 'text-white', 'font-bold');
+        tab.classList.remove('border-[#E2E8F0]', 'bg-white', 'text-neutral-600');
+
+        const view = tab.getAttribute('data-view');
+        panels.forEach(p => p.classList.add('hidden'));
+
+        if (view === 'tools-list') document.getElementById('toolsListView')?.classList.remove('hidden');
+        if (view === 'bulk-importer') document.getElementById('bulkImporterView')?.classList.remove('hidden');
+        if (view === 'add-tool') document.getElementById('addToolView')?.classList.remove('hidden');
+        if (view === 'moderation-queue') document.getElementById('moderationQueueView')?.classList.remove('hidden');
       });
-      tab.classList.add('border-ink', 'bg-ink', 'text-on-primary');
-      tab.classList.remove('border-hairline', 'bg-canvas', 'text-body');
-
-      const view = tab.dataset.view;
-      panels.forEach(p => p.classList.add('hidden'));
-
-      if (view === 'tools-list') document.getElementById('toolsListView')?.classList.remove('hidden');
-      if (view === 'bulk-importer') document.getElementById('bulkImporterView')?.classList.remove('hidden');
-      if (view === 'add-tool') document.getElementById('addToolView')?.classList.remove('hidden');
-      if (view === 'moderation-queue') document.getElementById('moderationQueueView')?.classList.remove('hidden');
     });
-  });
 
-  // Table Search Filter
-  const searchInput = document.getElementById('adminSearchInput') as HTMLInputElement | null;
-  const rows = document.querySelectorAll<HTMLTableRowElement>('.admin-tool-row');
+    // Live Tools Search Filter
+    const searchInput = document.getElementById('adminSearchInput');
+    const rows = document.querySelectorAll('.admin-tool-row');
 
-  searchInput?.addEventListener('input', (e) => {
-    const q = (e.target as HTMLInputElement).value.toLowerCase().trim();
-    rows.forEach(row => {
-      const name = row.dataset.name || '';
-      const slug = row.dataset.slug || '';
-      if (!q || name.includes(q) || slug.includes(q)) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
-    });
-  });
-
-  // Bulk Importer Logic
-  const bulkInput = document.getElementById('bulkDataInput') as HTMLTextAreaElement | null;
-  const validateBulkBtn = document.getElementById('validateBulkBtn');
-  const clearBulkBtn = document.getElementById('clearBulkBtn');
-  const bulkReportBox = document.getElementById('bulkReportBox');
-  const bulkSummaryText = document.getElementById('bulkSummaryText');
-  const bulkStatusBadge = document.getElementById('bulkStatusBadge');
-  const bulkPreviewTbody = document.getElementById('bulkPreviewTbody');
-  const commitBulkBtn = document.getElementById('commitBulkBtn');
-
-  clearBulkBtn?.addEventListener('click', () => {
-    if (bulkInput) bulkInput.value = '';
-    bulkReportBox?.classList.add('hidden');
-  });
-
-  validateBulkBtn?.addEventListener('click', () => {
-    const text = bulkInput?.value.trim();
-    if (!text) {
-      alert('Please enter CSV or JSON tool data.');
-      return;
-    }
-
-    let parsedRows = [];
-    try {
-      if (text.startsWith('[')) {
-        parsedRows = JSON.parse(text);
-      } else {
-        // Simple CSV parser
-        const lines = text.split('\n').filter(Boolean);
-        const headers = lines[0].split(',').map(h => h.trim());
-        for (let i = 1; i < lines.length; i++) {
-          const vals = lines[i].split(',').map(v => v.trim());
-          const obj: any = {};
-          headers.forEach((h, idx) => { obj[h] = vals[idx] || ''; });
-          parsedRows.push(obj);
+    searchInput?.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      rows.forEach(row => {
+        const name = row.querySelector('.tool-name')?.textContent?.toLowerCase() || '';
+        const slug = row.querySelector('.tool-slug')?.textContent?.toLowerCase() || '';
+        if (name.includes(q) || slug.includes(q)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
         }
+      });
+    });
+
+    // Bulk CSV/JSON Importer Logic
+    const validateBulkBtn = document.getElementById('validateBulkBtn');
+    const clearBulkBtn = document.getElementById('clearBulkBtn');
+    const bulkInput = document.getElementById('bulkDataInput');
+    const bulkReportBox = document.getElementById('bulkReportBox');
+    const bulkPreviewTbody = document.getElementById('bulkPreviewTbody');
+    const bulkSummaryText = document.getElementById('bulkSummaryText');
+    const bulkStatusBadge = document.getElementById('bulkStatusBadge');
+    const commitBulkBtn = document.getElementById('commitBulkBtn');
+
+    clearBulkBtn?.addEventListener('click', () => {
+      if (bulkInput) bulkInput.value = '';
+      bulkReportBox?.classList.add('hidden');
+    });
+
+    validateBulkBtn?.addEventListener('click', () => {
+      const text = bulkInput?.value.trim();
+      if (!text) {
+        alert('Please paste CSV or JSON tool data.');
+        return;
       }
-    } catch (err) {
-      alert('Failed to parse input: Ensure valid JSON or comma-separated CSV format.');
-      return;
-    }
 
-    if (!Array.isArray(parsedRows) || parsedRows.length === 0) {
-      alert('No rows found to validate.');
-      return;
-    }
+      let parsedRows = [];
+      try {
+        if (text.startsWith('[')) {
+          parsedRows = JSON.parse(text);
+        } else {
+          const lines = text.split('\n').filter(Boolean);
+          const headers = lines[0].split(',').map(h => h.trim());
+          for (let i = 1; i < lines.length; i++) {
+            const vals = lines[i].split(',').map(v => v.trim());
+            const obj = {};
+            headers.forEach((h, idx) => { obj[h] = vals[idx] || ''; });
+            parsedRows.push(obj);
+          }
+        }
+      } catch (err) {
+        alert('Failed to parse input: Ensure valid JSON or CSV format.');
+        return;
+      }
 
-    let validCount = 0;
-    let errorCount = 0;
+      if (!Array.isArray(parsedRows) || parsedRows.length === 0) {
+        alert('No rows found to validate.');
+        return;
+      }
 
-    if (bulkPreviewTbody) {
-      bulkPreviewTbody.innerHTML = parsedRows.map((row: any) => {
-        const hasName = Boolean(row.name);
-        const hasSlug = Boolean(row.slug);
-        const hasUrl = Boolean(row.websiteUrl && row.websiteUrl.startsWith('http'));
-        const isValid = hasName && hasSlug && hasUrl;
+      let validCount = 0;
+      let errorCount = 0;
 
-        if (isValid) validCount++;
-        else errorCount++;
+      if (bulkPreviewTbody) {
+        bulkPreviewTbody.innerHTML = parsedRows.map((row) => {
+          const hasName = Boolean(row.name);
+          const hasSlug = Boolean(row.slug);
+          const hasUrl = Boolean(row.websiteUrl && row.websiteUrl.startsWith('http'));
+          const isValid = hasName && hasSlug && hasUrl;
 
-        return `
-          <tr class="${isValid ? 'bg-emerald-500/5' : 'bg-red-500/5'}">
-            <td class="p-2 font-medium">${row.name || 'Missing Name'}</td>
-            <td class="p-2 text-mute">${row.slug || 'Missing Slug'}</td>
-            <td class="p-2 truncate max-w-[150px]">${row.websiteUrl || 'Missing/Bad URL'}</td>
-            <td class="p-2">${row.category || 'general-chatbots'}</td>
-            <td class="p-2">
-              <span class="${isValid ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold'}">
-                ${isValid ? '✓ Valid' : '✗ Rejected'}
-              </span>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
+          if (isValid) validCount++;
+          else errorCount++;
 
-    if (bulkSummaryText) {
-      bulkSummaryText.textContent = `Validated ${parsedRows.length} items: ${validCount} Valid, ${errorCount} Rejected`;
-    }
+          return `
+            <tr class="${isValid ? 'bg-emerald-500/5' : 'bg-red-500/5'}">
+              <td class="p-2.5 font-bold">${row.name || 'Missing Name'}</td>
+              <td class="p-2.5 text-neutral-500">${row.slug || 'Missing Slug'}</td>
+              <td class="p-2.5 truncate max-w-[150px]">${row.websiteUrl || 'Bad URL'}</td>
+              <td class="p-2.5">${row.category || 'general-chatbots'}</td>
+              <td class="p-2.5">
+                <span class="${isValid ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold'}">
+                  ${isValid ? 'Passed' : 'Rejected'}
+                </span>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
 
-    if (bulkStatusBadge) {
-      bulkStatusBadge.textContent = errorCount === 0 ? 'All Rows Passed' : `${errorCount} Issues Found`;
-      bulkStatusBadge.className = errorCount === 0 
-        ? 'px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-600'
-        : 'px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 text-amber-600';
-    }
+      if (bulkSummaryText) {
+        bulkSummaryText.textContent = `Validated ${parsedRows.length} items: ${validCount} Valid, ${errorCount} Rejected`;
+      }
 
-    bulkReportBox?.classList.remove('hidden');
-  });
+      if (bulkStatusBadge) {
+        bulkStatusBadge.textContent = errorCount === 0 ? 'All Rows Passed' : `${errorCount} Issues Found`;
+        bulkStatusBadge.className = errorCount === 0 
+          ? 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700'
+          : 'px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700';
+      }
 
-  commitBulkBtn?.addEventListener('click', () => {
-    alert('Import confirmed! Valid items have been batched into the catalog.');
-    bulkReportBox?.classList.add('hidden');
-    if (bulkInput) bulkInput.value = '';
+      bulkReportBox?.classList.remove('hidden');
+    });
+
+    commitBulkBtn?.addEventListener('click', () => {
+      alert('Import confirmed! Valid items have been batched into the catalog.');
+      bulkReportBox?.classList.add('hidden');
+      if (bulkInput) bulkInput.value = '';
+    });
   });
 </script>

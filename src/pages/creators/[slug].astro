@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { CREATORS_DATA, type CreatorData } from '../../data/creatorsData';
 import { TOOLS_DATA } from '../../data/seedData';
+import { WORKFLOWS_DATA } from '../../data/workflowsData';
 
 export function getStaticPaths() {
   return CREATORS_DATA.map((creator) => ({
@@ -18,158 +19,200 @@ interface Props {
 
 const { creator } = Astro.props;
 
-// Find matching tool objects for tools taught
-const matchingTools = TOOLS_DATA.filter(t => creator.toolsTaught.includes(t.slug));
+// Matching tools
+const matchingTools = TOOLS_DATA.filter(t => creator.toolsTaught?.includes(t.slug));
+
+// Matching workflows
+const matchingWorkflows = WORKFLOWS_DATA.filter(w => 
+  creator.inspiredWorkflowIds?.includes(w.id) ||
+  w.relatedCreatorSlugs?.includes(creator.slug)
+);
 ---
 
 <Layout 
-  title={`${creator.channelName} (${creator.handle}) | AI Educator Profile`}
+  title={`${creator.channelName} (${creator.handle}) | AI Educator Curriculum & Masterclasses`}
   description={`${creator.description} Discover top tutorials, tools taught, and educational focus areas by ${creator.channelName}.`}
 >
   <Header currentPath="/creators" />
 
-  <main class="w-full flex flex-col min-h-screen bg-canvas">
+  <main class="w-full flex flex-col min-h-screen bg-[#FFFFFF]">
     <!-- Breadcrumb -->
-    <div class="max-w-6xl w-full mx-auto px-6 pt-8 pb-4">
-      <a 
-        href="/creators" 
-        class="inline-flex items-center gap-1.5 text-xs text-mute hover:text-ink transition-colors font-medium group"
-      >
-        <svg class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-        </svg>
-        <span>Back to All Creators</span>
-      </a>
+    <div class="border-b border-[#E2E8F0] bg-[#F8FAFF] px-4 sm:px-6 py-3">
+      <div class="max-w-6xl mx-auto flex items-center gap-2 text-xs font-mono text-slate-500">
+        <a href="/" class="hover:text-ink transition-colors">HOME</a>
+        <span>/</span>
+        <a href="/creators" class="hover:text-ink transition-colors">CREATORS</a>
+        <span>/</span>
+        <span class="text-ink font-bold uppercase truncate">{creator.channelName}</span>
+      </div>
     </div>
 
     <!-- Creator Header Banner -->
-    <section class="max-w-6xl w-full mx-auto px-6 pb-8">
-      <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 md:p-8 shadow-xs">
-        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 pb-6 border-b border-hairline">
+    <section class="max-w-6xl w-full mx-auto px-4 sm:px-6 py-10">
+      <div class="bg-white border-2 border-[#09090B] rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_#09090B]">
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 pb-6 border-b border-[#E2E8F0]">
           <div class="flex items-start gap-4">
-            <div class="w-16 h-16 rounded-full bg-hairline-soft overflow-hidden border border-hairline shrink-0 flex items-center justify-center font-bold text-ink text-xl">
+            <div class="w-16 h-16 rounded-xl bg-[#09090B] text-white shrink-0 flex items-center justify-center font-bold text-2xl font-mono shadow-[3px_3px_0px_0px_#DC2626]">
               {creator.channelName.substring(0, 2).toUpperCase()}
             </div>
             <div>
-              <div class="flex items-center gap-3 mb-1">
-                <h1 class="text-2xl md:text-3xl font-semibold text-ink tracking-tight">
+              <div class="flex flex-wrap items-center gap-2.5 mb-1.5">
+                <h1 class="text-2xl sm:text-3xl font-black text-ink tracking-tight">
                   {creator.channelName}
                 </h1>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-canvas border border-hairline text-body">
+                <span class="px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-red-50 text-red-700 border border-red-200">
                   {creator.primaryCategory}
                 </span>
                 {creator.isIndiaCreator && (
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
-                    India AI Educator
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-orange-50 text-orange-800 border border-orange-200">
+                    INDIA EDUCATOR
                   </span>
                 )}
               </div>
-              <p class="text-xs text-mute font-mono mb-3">{creator.handle} &bull; Primary Language: {creator.language}</p>
-              <p class="text-sm text-body leading-relaxed max-w-2xl">
+              <div class="text-xs font-mono text-slate-500 mb-3">{creator.handle} &bull; Teaching in {creator.language}</div>
+              <p class="text-sm text-slate-700 leading-relaxed max-w-2xl">
                 {creator.description}
               </p>
             </div>
           </div>
 
-          <!-- YouTube Action Button -->
-          <div class="shrink-0">
+          <div class="shrink-0 flex items-center gap-3">
             <a 
-              href={creator.youtubeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-ink text-on-primary hover:bg-neutral-800 text-xs font-medium transition-colors shadow-xs"
+              href={creator.youtubeUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="bg-red-600 hover:bg-red-700 text-white font-mono font-bold text-xs px-5 py-2.5 rounded-lg shadow-[3px_3px_0px_0px_#09090B] border-2 border-[#09090B] transition-all inline-flex items-center gap-2"
             >
-              <span>Visit YouTube Channel</span>
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-              </svg>
+              <span>Watch on YouTube</span>
+              <span>↗</span>
             </a>
           </div>
         </div>
 
-        <!-- Audience & Scoring Metric Row -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6">
-          <div>
-            <span class="text-xs text-mute block mb-0.5 uppercase tracking-wider text-[10px]">Audience Reach</span>
-            <span class="text-base font-semibold text-ink font-mono">{creator.subscribersEstimate}</span>
+        <!-- 4-Stat Public Metrics Bar -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 text-center font-mono">
+          <div class="p-3 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
+            <div class="text-xl font-black text-ink">{creator.subscribersEstimate}</div>
+            <div class="text-[10px] text-slate-500 uppercase font-bold">Subscribers</div>
           </div>
-          <div>
-            <span class="text-xs text-mute block mb-0.5 uppercase tracking-wider text-[10px]">Avg Video Views</span>
-            <span class="text-base font-semibold text-ink font-mono">{creator.avgViewsEstimate}</span>
+          <div class="p-3 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
+            <div class="text-xl font-black text-[#2563EB]">{creator.uploadCadence}</div>
+            <div class="text-[10px] text-slate-500 uppercase font-bold">Upload Cadence</div>
           </div>
-          <div>
-            <span class="text-xs text-mute block mb-0.5 uppercase tracking-wider text-[10px]">Upload Frequency</span>
-            <span class="text-base font-semibold text-ink">{creator.uploadCadence}</span>
+          <div class="p-3 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
+            <div class="text-xl font-black text-slate-800">{creator.typicalVideoDepth || '20-40 mins'}</div>
+            <div class="text-[10px] text-slate-500 uppercase font-bold">Typical Depth</div>
           </div>
-          <div>
-            <span class="text-xs text-mute block mb-0.5 uppercase tracking-wider text-[10px]">Educational Score</span>
-            <span class="text-base font-semibold text-emerald-600 dark:text-emerald-400 font-mono">{creator.educationalScore}/100</span>
+          <div class="p-3 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0]">
+            <div class="text-xl font-black text-emerald-700">{creator.educationalScore}/100</div>
+            <div class="text-[10px] text-slate-500 uppercase font-bold">Educational Score</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Content Sections -->
-    <div class="max-w-6xl w-full mx-auto px-6 pb-16 flex-1 flex flex-col gap-10">
+    <!-- Main Content Stream -->
+    <div class="max-w-6xl w-full mx-auto px-4 sm:px-6 pb-16 flex-1 space-y-12">
       
-      <!-- Recommended Entry-Point Videos -->
-      <section>
-        <div class="mb-4">
-          <h2 class="text-base font-semibold text-ink tracking-tight">Recommended Masterclasses & Entry Points</h2>
-          <p class="text-xs text-mute">Curated tutorials that provide the highest conceptual and technical ROI from this educator.</p>
-        </div>
+      <!-- Section 1: "What You Will Learn" Curriculum Pillars -->
+      {creator.curriculumPillars && creator.curriculumPillars.length > 0 && (
+        <section class="bg-[#F8FAFF] border-2 border-[#09090B] rounded-xl p-6 sm:p-8 shadow-[5px_5px_0px_0px_#09090B]">
+          <h2 class="text-lg sm:text-xl font-black text-ink mb-1 font-mono uppercase">
+            What You Will Learn (Structured Curriculum Pillars)
+          </h2>
+          <p class="text-xs text-slate-600 mb-6">Core technical competencies developed by studying this channel's masterclasses.</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {creator.topVideos.map((video) => (
-            <a 
-              href={video.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="p-4 rounded-lg bg-canvas-elevated border border-hairline hover:border-faint transition-all flex flex-col justify-between group shadow-xs"
-            >
-              <div>
-                <div class="flex items-center gap-2 text-[10px] text-mute font-mono mb-2">
-                  {video.duration && <span>{video.duration}</span>}
-                  {video.viewsEstimate && <span>&bull; {video.viewsEstimate} views</span>}
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {creator.curriculumPillars.map((pillar, i) => (
+              <div class="bg-white border-2 border-[#09090B] p-5 rounded-xl shadow-[3px_3px_0px_0px_#09090B]">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="w-5 h-5 rounded bg-[#2563EB] text-white font-mono font-bold text-xs flex items-center justify-center">
+                    {i + 1}
+                  </span>
+                  <h3 class="text-sm font-bold text-ink">{pillar.pillarTitle}</h3>
                 </div>
-                <h3 class="text-sm font-semibold text-ink group-hover:underline leading-snug">
-                  {video.title}
-                </h3>
+                <p class="text-xs text-slate-600 mb-3 leading-relaxed">{pillar.description}</p>
+                <div class="flex flex-wrap gap-1.5">
+                  {pillar.skillsAcquired?.map(skill => (
+                    <span class="px-2 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] text-[10px] font-mono font-bold border border-[#BFDBFE]">
+                      &bull; {skill}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div class="mt-4 pt-3 border-t border-hairline flex items-center justify-between text-xs text-mute group-hover:text-ink">
-                <span>Watch on YouTube</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                </svg>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Section 2: Must-Watch Entry-Point Tutorials -->
+      <section class="bg-white border-2 border-[#09090B] rounded-xl p-6 sm:p-8 shadow-[5px_5px_0px_0px_#09090B]">
+        <h2 class="text-lg sm:text-xl font-black text-ink mb-1 font-mono uppercase">
+          Top Must-Watch Entry-Point Tutorials
+        </h2>
+        <p class="text-xs text-slate-600 mb-6">Start your learning path with these hand-selected, highest-retention masterclass videos.</p>
+
+        <div class="space-y-4">
+          {creator.topVideos.map((video, idx) => (
+            <div class="p-4 rounded-xl border-2 border-[#09090B] bg-[#F8FAFF] hover:bg-white hover:shadow-[4px_4px_0px_0px_#DC2626] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded bg-[#09090B] text-white font-mono font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                  {idx + 1}
+                </span>
+                <div>
+                  <h3 class="text-sm font-bold text-ink mb-1">{video.title}</h3>
+                  <div class="flex items-center gap-3 text-xs font-mono text-slate-500">
+                    <span>{video.duration || 'Full Lecture'}</span>
+                    <span>&bull;</span>
+                    <span>{video.viewsEstimate || 'Popular'} views</span>
+                    {video.topicTag && (
+                      <>
+                        <span>&bull;</span>
+                        <span class="text-[#2563EB] font-bold">#{video.topicTag}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
-            </a>
+
+              <a 
+                href={video.url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="bg-white hover:bg-red-50 text-red-600 border border-red-300 font-mono text-xs font-bold px-4 py-2 rounded-lg transition-colors shrink-0 text-center inline-flex items-center justify-center gap-1.5 shadow-2xs"
+              >
+                <span>Watch Tutorial</span>
+                <span>↗</span>
+              </a>
+            </div>
           ))}
         </div>
       </section>
 
-      <!-- Tools Taught by this Creator -->
+      <!-- Section 3: Tools & Frameworks Taught -->
       {matchingTools.length > 0 && (
-        <section>
-          <div class="mb-4">
-            <h2 class="text-base font-semibold text-ink tracking-tight">AI Tools Taught & Reviewed</h2>
-            <p class="text-xs text-mute">Tools in our directory that this creator actively breaks down in their videos.</p>
-          </div>
+        <section class="bg-white border-2 border-[#09090B] rounded-xl p-6 shadow-[5px_5px_0px_0px_#09090B]">
+          <h2 class="text-base font-black text-ink mb-4 font-mono uppercase flex items-center gap-2">
+            <span class="w-2.5 h-2.5 bg-[#2563EB]"></span>
+            <span>Tools & Frameworks Taught by {creator.channelName}:</span>
+          </h2>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {matchingTools.map((tool) => (
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {matchingTools.map(tool => (
               <a 
                 href={`/tools/${tool.slug}`}
-                class="p-4 rounded-lg bg-canvas-elevated border border-hairline hover:border-faint transition-colors flex items-start gap-3 group shadow-xs"
+                class="p-4 rounded-xl border-2 border-[#E2E8F0] hover:border-[#2563EB] bg-[#F8FAFF] hover:bg-white hover:shadow-[3px_3px_0px_0px_#2563EB] transition-all flex flex-col justify-between"
               >
-                <div class="w-9 h-9 rounded-md bg-hairline-soft flex items-center justify-center font-bold text-xs text-ink shrink-0">
-                  {tool.name.substring(0, 2).toUpperCase()}
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <h4 class="text-xs font-semibold text-ink group-hover:underline truncate">{tool.name}</h4>
-                    <span class="text-[10px] text-mute font-mono">{tool.pricingType}</span>
+                <div>
+                  <div class="flex items-center justify-between text-[10px] font-mono mb-1">
+                    <span class="text-[#2563EB] font-bold">VERIFIED TOOL</span>
+                    <span class="text-slate-500">{tool.pricingType}</span>
                   </div>
-                  <p class="text-[11px] text-mute truncate mt-0.5">{tool.tagline}</p>
+                  <h3 class="font-bold text-ink text-sm">{tool.name}</h3>
+                  <p class="text-xs text-slate-600 line-clamp-2 mt-1">{tool.tagline}</p>
+                </div>
+                <div class="mt-3 text-xs font-bold text-[#2563EB] hover:underline">
+                  View Tool Profile &rarr;
                 </div>
               </a>
             ))}
@@ -177,17 +220,36 @@ const matchingTools = TOOLS_DATA.filter(t => creator.toolsTaught.includes(t.slug
         </section>
       )}
 
-      <!-- Top Topics Tags -->
-      <section class="p-6 rounded-lg bg-canvas-elevated border border-hairline shadow-xs">
-        <h3 class="text-xs font-semibold uppercase tracking-wider text-faint mb-3">Core Expertise & Curriculum Topics</h3>
-        <div class="flex flex-wrap gap-2">
-          {creator.topTopics.map((topic) => (
-            <span class="text-xs px-3 py-1 rounded-full bg-hairline-soft text-body font-medium">
-              {topic}
-            </span>
-          ))}
-        </div>
-      </section>
+      <!-- Section 4: Workflows Inspired by this Creator -->
+      {matchingWorkflows.length > 0 && (
+        <section class="bg-[#F8FAFF] border-2 border-[#09090B] rounded-xl p-6 shadow-[5px_5px_0px_0px_#09090B]">
+          <h2 class="text-base font-black text-ink mb-4 font-mono uppercase flex items-center gap-2">
+            <span class="w-2.5 h-2.5 bg-emerald-600"></span>
+            <span>Workflows Inspired by This Creator:</span>
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {matchingWorkflows.map(wf => (
+              <a 
+                href={`/workflows/${wf.id}`}
+                class="bg-white border-2 border-[#09090B] p-4 rounded-xl hover:shadow-[4px_4px_0px_0px_#2563EB] transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div class="flex items-center justify-between text-[10px] font-mono mb-1">
+                    <span class="text-emerald-700 font-bold uppercase">{wf.category}</span>
+                    <span class="text-slate-500">{wf.difficulty}</span>
+                  </div>
+                  <h3 class="font-bold text-ink text-sm">{wf.title}</h3>
+                  <p class="text-xs text-slate-600 line-clamp-2 mt-1">{wf.goal}</p>
+                </div>
+                <div class="mt-3 text-xs font-bold text-[#2563EB] hover:underline">
+                  View Full Workflow Blueprint &rarr;
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
     </div>
   </main>

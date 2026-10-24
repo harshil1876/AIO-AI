@@ -1,0 +1,143 @@
+---
+---
+
+<div id="authGateModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+  <!-- Backdrop -->
+  <div id="authGateBackdrop" class="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"></div>
+
+  <!-- Modal Dialog -->
+  <div class="relative w-full max-w-md bg-white border-2 border-[#09090B] rounded-xl shadow-[8px_8px_0px_0px_#09090B] p-6 z-10 transition-all">
+    <!-- Close Button -->
+    <button 
+      id="closeAuthGateBtn" 
+      class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-ink hover:bg-slate-100 transition-colors cursor-pointer"
+      aria-label="Close dialog"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Header & Icon -->
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] text-[#2563EB] flex items-center justify-center shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-ink" id="authGateTitle">Sign In Required</h3>
+        <p class="text-xs text-mute" id="authGateSubtitle">Please sign in to save items and interact with the platform.</p>
+      </div>
+    </div>
+
+    <!-- Action Explanation Box -->
+    <div class="p-3.5 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0] mb-5 text-xs text-slate-600">
+      <div class="font-semibold text-ink mb-1 flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#2563EB]"></span>
+        <span id="authGateActionLabel">Action: Bookmark Resource</span>
+      </div>
+      <p id="authGateActionDesc">Free accounts get unlimited bookmarks, custom AI stack saving, review submissions, and workflow exports.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="space-y-2.5">
+      <a 
+        id="authGateLoginBtn"
+        href="/login" 
+        class="w-full flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-xs py-2.5 px-4 rounded-lg shadow-xs transition-colors"
+      >
+        Sign In with Email or Google &rarr;
+      </a>
+      
+      <a 
+        id="authGateSignupBtn"
+        href="/signup" 
+        class="w-full flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-ink font-semibold text-xs py-2.5 px-4 rounded-lg border border-[#E2E8F0] transition-colors"
+      >
+        Create Free Account
+      </a>
+
+      <!-- Quick Demo Login for Localhost Preview -->
+      <button 
+        type="button"
+        id="authGateDemoBtn"
+        class="w-full flex items-center justify-center gap-1.5 text-[11px] text-[#2563EB] hover:underline font-medium py-1.5 cursor-pointer"
+      >
+        <span>Continue with Local Demo Session (Instant Preview)</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setupAuthGate() {
+    const modal = document.getElementById('authGateModal');
+    const backdrop = document.getElementById('authGateBackdrop');
+    const closeBtn = document.getElementById('closeAuthGateBtn');
+    const actionLabel = document.getElementById('authGateActionLabel');
+    const loginBtn = document.getElementById('authGateLoginBtn') as HTMLAnchorElement;
+    const signupBtn = document.getElementById('authGateSignupBtn') as HTMLAnchorElement;
+    const demoBtn = document.getElementById('authGateDemoBtn');
+
+    function closeModal() {
+      if (modal) modal.classList.add('hidden');
+    }
+
+    if (backdrop) backdrop.addEventListener('click', closeModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    // Global helper to check login state
+    window.isUserLoggedIn = function(): boolean {
+      return Boolean(localStorage.getItem('aio_user') || localStorage.getItem('supabase.auth.token'));
+    };
+
+    // Global modal opener
+    window.openAuthGateModal = function(action = 'Interact with Platform', returnUrl = window.location.pathname) {
+      if (actionLabel) {
+        actionLabel.textContent = `Action: ${action}`;
+      }
+      if (loginBtn) {
+        loginBtn.href = `/login?redirect=${encodeURIComponent(returnUrl)}`;
+      }
+      if (signupBtn) {
+        signupBtn.href = `/signup?redirect=${encodeURIComponent(returnUrl)}`;
+      }
+      if (modal) {
+        modal.classList.remove('hidden');
+      }
+    };
+
+    // Demo session toggle for easy evaluation
+    if (demoBtn) {
+      demoBtn.addEventListener('click', () => {
+        localStorage.setItem('aio_user', JSON.stringify({
+          id: 'demo-user-1',
+          email: 'demo@aio-ai.dev',
+          name: 'Demo Practitioner',
+          role: 'user',
+          createdAt: new Date().toISOString()
+        }));
+        closeModal();
+        window.location.reload();
+      });
+    }
+
+    // Intercept clicks on any element with data-auth-gate
+    document.addEventListener('click', (e) => {
+      const target = (e.target as HTMLElement).closest('[data-auth-required]');
+      if (target && !window.isUserLoggedIn()) {
+        e.preventDefault();
+        e.stopPropagation();
+        const action = target.getAttribute('data-auth-required') || 'Perform this action';
+        window.openAuthGateModal(action);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupAuthGate);
+  } else {
+    setupAuthGate();
+  }
+</script>

@@ -5,45 +5,45 @@ import Footer from '../components/Footer.astro';
 ---
 
 <Layout 
-  title="AI Stack Builder & Cost Calculator | AI Discovery"
+  title="AI Stack Builder & Cost Calculator | AIO AI"
   description="Assemble the optimal AI stack for your role. Compare cloud subscription costs against 100% free open-source alternatives with real-time ROI calculations."
 >
   <Header currentPath="/stack-builder" />
 
-  <main class="w-full flex flex-col min-h-screen">
+  <main class="w-full flex flex-col min-h-screen bg-canvas">
     <!-- Header -->
-    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16 text-center">
+    <section class="border-b border-[#E2E8F0] bg-surface px-6 py-12 md:py-16 text-center">
       <div class="max-w-3xl mx-auto">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-hairline bg-canvas text-xs font-medium text-mute mb-4">
-          <svg class="w-3.5 h-3.5 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-xs font-semibold text-primary mb-4 font-mono">
+          <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
           </svg>
-          <span>Interactive Cost & Architecture Combinator</span>
+          <span>INTERACTIVE COST & ARCHITECTURE COMBINATOR</span>
         </div>
-        <h1 class="text-4xl md:text-5xl font-semibold text-ink tracking-tight mb-4" style="letter-spacing: -1.4px;">
+        <h1 class="text-3xl md:text-5xl font-black text-ink tracking-tight mb-4">
           AI Stack Builder
         </h1>
-        <p class="text-body text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+        <p class="text-neutral-600 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
           Select your role and customize your tool combination. Calculate your real monthly expenses vs open-source alternatives.
         </p>
       </div>
     </section>
 
     <!-- Interactive Builder Form & Calculator -->
-    <div class="w-full max-w-6xl mx-auto px-6 py-12">
+    <div class="w-full max-w-6xl mx-auto px-6 py-12 flex-1">
       <!-- Role Selector Tabs -->
       <div class="flex flex-wrap items-center justify-center gap-2 mb-10">
-        <button class="role-tab px-4 py-2 rounded-full border border-ink bg-ink text-on-primary text-xs font-medium transition-colors cursor-pointer" data-role="creator">
+        <button class="role-tab px-5 py-2.5 rounded-xl border border-ink bg-ink text-white text-xs font-bold transition-colors cursor-pointer shadow-xs" data-role="creator">
           Content Creator / YouTuber
         </button>
-        <button class="role-tab px-4 py-2 rounded-full border border-hairline bg-canvas-elevated hover:border-faint text-body text-xs font-medium transition-colors cursor-pointer" data-role="engineer">
+        <button class="role-tab px-5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-neutral-600 hover:text-ink text-xs font-semibold transition-colors cursor-pointer shadow-xs" data-role="engineer">
           Software Engineer / Dev
         </button>
-        <button class="role-tab px-4 py-2 rounded-full border border-hairline bg-canvas-elevated hover:border-faint text-body text-xs font-medium transition-colors cursor-pointer" data-role="marketer">
+        <button class="role-tab px-5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-neutral-600 hover:text-ink text-xs font-semibold transition-colors cursor-pointer shadow-xs" data-role="marketer">
           Growth & Marketing Lead
         </button>
-        <button class="role-tab px-4 py-2 rounded-full border border-hairline bg-canvas-elevated hover:border-faint text-body text-xs font-medium transition-colors cursor-pointer" data-role="india">
+        <button class="role-tab px-5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-neutral-600 hover:text-ink text-xs font-semibold transition-colors cursor-pointer shadow-xs" data-role="india">
           India-First Enterprise
         </button>
       </div>
@@ -51,8 +51,8 @@ import Footer from '../components/Footer.astro';
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Left: Tool Stack Configuration -->
         <div class="lg:col-span-2 flex flex-col gap-6">
-          <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
-            <h2 class="text-lg font-semibold text-ink tracking-tight mb-4 border-b border-hairline pb-3">
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 md:p-8 shadow-xs">
+            <h2 class="text-lg font-black text-ink tracking-tight mb-4 border-b border-[#E2E8F0] pb-3">
               Configured Tool Stack
             </h2>
 
@@ -62,11 +62,11 @@ import Footer from '../components/Footer.astro';
           </div>
 
           <!-- Architecture & Data Flow -->
-          <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
-            <h3 class="text-sm font-semibold uppercase tracking-wider text-mute mb-3">
-              How They Connect Together
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 md:p-8 shadow-xs">
+            <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-neutral-400 mb-3">
+              Data Flow Pipeline
             </h3>
-            <div id="stackConnectionDesc" class="text-sm text-body leading-relaxed p-4 rounded-md bg-canvas border border-hairline font-mono text-xs">
+            <div id="stackConnectionDesc" class="text-xs text-neutral-800 leading-relaxed p-4 rounded-xl bg-surface border border-[#E2E8F0] font-mono">
               <!-- Dynamically populated -->
             </div>
           </div>
@@ -75,39 +75,42 @@ import Footer from '../components/Footer.astro';
         <!-- Right: Cost & Savings Dashboard -->
         <div class="flex flex-col gap-6">
           <!-- Cost Breakdown Card -->
-          <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs">
-            <h3 class="text-xs font-semibold uppercase tracking-wider text-mute mb-4 border-b border-hairline pb-2">
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs">
+            <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-neutral-400 mb-4 border-b border-[#E2E8F0] pb-2">
               Monthly Cost Assessment
             </h3>
 
             <div class="space-y-4 mb-6">
               <div class="flex justify-between items-center text-sm">
-                <span class="text-body">Commercial Cloud Stack:</span>
-                <span id="commercialCostText" class="font-mono font-bold text-ink text-lg">$47 / mo</span>
+                <span class="text-neutral-600">Commercial Cloud Stack:</span>
+                <span id="commercialCostText" class="font-mono font-black text-ink text-xl">$44 / mo</span>
               </div>
               <div class="flex justify-between items-center text-sm">
-                <span class="text-body">Open-Source Local Stack:</span>
-                <span class="font-mono font-bold text-emerald-600 text-lg">$0 / mo</span>
+                <span class="text-neutral-600">Open-Source Local Stack:</span>
+                <span class="font-mono font-black text-emerald-600 text-xl">$0 / mo</span>
               </div>
-              <div class="pt-3 border-t border-hairline flex justify-between items-center text-sm">
-                <span class="text-body font-medium">Annual Savings Potential:</span>
-                <span id="annualSavingsText" class="font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-xs">
-                  $564 / yr
+              <div class="pt-3 border-t border-[#E2E8F0] flex justify-between items-center text-sm">
+                <span class="text-neutral-700 font-semibold">Annual Savings Potential:</span>
+                <span id="annualSavingsText" class="font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                  $528 / yr
                 </span>
               </div>
             </div>
 
             <button 
               id="exportStackBtn"
-              class="w-full bg-ink text-on-primary font-medium text-xs rounded-pill py-3 hover:bg-black transition-colors cursor-pointer text-center"
+              class="w-full bg-primary text-white font-bold text-xs rounded-xl py-3 hover:bg-blue-700 transition-colors cursor-pointer text-center shadow-xs flex items-center justify-center gap-2"
             >
-              Export Stack Configuration (JSON)
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+              </svg>
+              <span>Export Stack Configuration (JSON)</span>
             </button>
           </div>
 
           <!-- Privacy & Data Sovereignty Note -->
-          <div class="p-4 rounded-md border border-hairline bg-canvas text-xs text-mute leading-relaxed">
-            <strong class="text-ink font-semibold block mb-1">Local Deployment Advantage:</strong>
+          <div class="p-5 rounded-2xl border border-blue-200 bg-blue-50 text-xs text-blue-900 leading-relaxed shadow-xs">
+            <strong class="font-bold block mb-1">Local Deployment Advantage:</strong>
             Switching to open-source components guarantees 100% data residency, zero token rate limits, and full IP security.
           </div>
         </div>
@@ -122,32 +125,32 @@ import Footer from '../components/Footer.astro';
   const STACKS = {
     creator: {
       tools: [
-        { name: 'ChatGPT Plus', cost: 20, role: 'Scripts & Hooks', openAlt: 'Llama 3 8B (Free)' },
-        { name: 'ElevenLabs Starter', cost: 5, role: 'Voice Synthesis', openAlt: 'Coqui TTS (Free)' },
-        { name: 'Midjourney Standard', cost: 10, role: 'Cover Art & Thumbnails', openAlt: 'Stable Diffusion (Free)' },
+        { name: 'ChatGPT Plus', cost: 20, role: 'Scripts & Hooks', openAlt: 'Llama 3.1 8B (Free)' },
+        { name: 'ElevenLabs Starter', cost: 5, role: 'Voice Synthesis', openAlt: 'Kokoro TTS (Free)' },
+        { name: 'Midjourney Standard', cost: 10, role: 'Cover Art & Thumbnails', openAlt: 'ComfyUI + Flux (Free)' },
         { name: 'Make Core', cost: 9, role: 'Auto-Publishing Webhook', openAlt: 'n8n Self-Hosted (Free)' }
       ],
       flow: 'ChatGPT drafts script -> ElevenLabs synthesizes voiceover -> Midjourney renders visuals -> Make stitches and queues the video.'
     },
     engineer: {
       tools: [
-        { name: 'Claude 3.5 Sonnet Pro', cost: 20, role: 'Architecture & Refactoring', openAlt: 'Llama 3 70B (Free)' },
-        { name: 'GitHub Copilot', cost: 10, role: 'Inline IDE Autocomplete', openAlt: 'Continue.dev with Ollama (Free)' },
+        { name: 'Claude 3.5 Sonnet Pro', cost: 20, role: 'Architecture & Refactoring', openAlt: 'DeepSeek R1 / Qwen 2.5 Coder (Free)' },
+        { name: 'GitHub Copilot', cost: 10, role: 'Inline IDE Autocomplete', openAlt: 'Aider or Continue.dev (Free)' },
         { name: 'n8n Fair-Code', cost: 0, role: 'CI/CD Webhook & PR Review', openAlt: 'n8n Self-Hosted (Free)' }
       ],
       flow: 'Copilot suggests code inside IDE -> PR opened on GitHub -> n8n triggers Claude to audit security & edge cases.'
     },
     marketer: {
       tools: [
-        { name: 'Claude Pro', cost: 20, role: 'Long-Form Copy & SEO', openAlt: 'Llama 3 (Free)' },
-        { name: 'Make Pro', cost: 16, role: 'Lead Enrichment & CRM sync', openAlt: 'n8n (Free)' },
-        { name: 'Notion AI', cost: 10, role: 'Campaign Knowledge Base', openAlt: 'Obsidian Local (Free)' }
+        { name: 'Claude Pro', cost: 20, role: 'Long-Form Copy & SEO', openAlt: 'Llama 3.3 70B (Free)' },
+        { name: 'Make Pro', cost: 16, role: 'Lead Enrichment & CRM sync', openAlt: 'n8n Self-Hosted (Free)' },
+        { name: 'Notion AI', cost: 10, role: 'Campaign Knowledge Base', openAlt: 'AnythingLLM Local (Free)' }
       ],
       flow: 'Form submission received -> Make enriches domain via Clearbit -> Claude drafts customized email -> Notion AI logs contact.'
     },
     india: {
       tools: [
-        { name: 'Sarvam AI', cost: 0, role: 'Indic Vernacular Speech & Transcribe', openAlt: 'Sarvam 2B (Open Weights)' },
+        { name: 'Sarvam AI', cost: 0, role: 'Indic Vernacular Speech & Transcribe', openAlt: 'Sarvam Saaras (Indic Weights)' },
         { name: 'Krutrim AI', cost: 0, role: '22 Indian Language Reasoning', openAlt: 'Krutrim Sovereign Cloud' },
         { name: 'n8n Self-Hosted', cost: 0, role: 'Customer WhatsApp & Telephony Webhook', openAlt: 'n8n Docker (Free)' }
       ],
@@ -174,18 +177,18 @@ import Footer from '../components/Footer.astro';
       container.innerHTML = stack.tools.map(tool => {
         totalMonthly += tool.cost;
         return `
-          <div class="p-4 rounded-md border border-hairline bg-canvas flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="p-4 rounded-xl border border-[#E2E8F0] bg-surface flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-ink text-sm">${tool.name}</span>
-                <span class="text-xs text-mute font-mono">(${tool.role})</span>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-bold text-ink text-sm">${tool.name}</span>
+                <span class="text-xs text-neutral-400 font-mono">(${tool.role})</span>
               </div>
-              <div class="text-xs text-emerald-700 mt-1 flex items-center gap-1">
-                <span>Free Alternative:</span> <strong>${tool.openAlt}</strong>
+              <div class="text-xs text-emerald-700 flex items-center gap-1 font-mono">
+                <span>Free Alt:</span> <strong class="text-emerald-800">${tool.openAlt}</strong>
               </div>
             </div>
             <div class="text-right shrink-0">
-              <span class="font-mono font-bold text-ink text-sm">$${tool.cost}/mo</span>
+              <span class="font-mono font-black text-ink text-base">$${tool.cost}/mo</span>
             </div>
           </div>
         `;
@@ -199,11 +202,11 @@ import Footer from '../components/Footer.astro';
     roleTabs.forEach(tab => {
       tab.addEventListener('click', () => {
         roleTabs.forEach(t => {
-          t.classList.remove('border-ink', 'bg-ink', 'text-on-primary');
-          t.classList.add('border-hairline', 'bg-canvas-elevated', 'text-body');
+          t.classList.remove('border-ink', 'bg-ink', 'text-white', 'font-bold');
+          t.classList.add('border-[#E2E8F0]', 'bg-white', 'text-neutral-600', 'font-semibold');
         });
-        tab.classList.remove('border-hairline', 'bg-canvas-elevated', 'text-body');
-        tab.classList.add('border-ink', 'bg-ink', 'text-on-primary');
+        tab.classList.remove('border-[#E2E8F0]', 'bg-white', 'text-neutral-600', 'font-semibold');
+        tab.classList.add('border-ink', 'bg-ink', 'text-white', 'font-bold');
 
         currentRole = tab.getAttribute('data-role');
         renderStack(currentRole);
@@ -211,12 +214,16 @@ import Footer from '../components/Footer.astro';
     });
 
     exportBtn?.addEventListener('click', () => {
+      const localUser = localStorage.getItem('aio_user');
+      if (!localUser && typeof window.openAuthGateModal === 'function') {
+        window.openAuthGateModal('Export Stack JSON', 'Sign in to export production stack configurations and system prompts.');
+        return;
+      }
       const data = STACKS[currentRole];
       navigator.clipboard?.writeText(JSON.stringify(data, null, 2));
       alert('Selected stack configuration JSON copied to clipboard!');
     });
 
-    // Initial render
     renderStack('creator');
   });
 </script>

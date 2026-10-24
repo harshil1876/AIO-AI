@@ -1,0 +1,338 @@
+---
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = Astro.url.pathname } = Astro.props;
+
+interface NavItem {
+  href: string;
+  label: string;
+  badge?: string;
+  badgeColor?: 'blue' | 'black' | 'emerald';
+  icon: string;
+}
+
+interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
+  {
+    title: 'Discover',
+    items: [
+      { href: '/', label: 'Home', icon: 'home' },
+      { href: '/tools', label: 'AI Tools Directory', badge: '113', badgeColor: 'blue', icon: 'grid' },
+      { href: '/finder', label: 'AI Intent Finder', icon: 'sparkles' },
+      { href: '/categories', label: 'Categories', badge: '13', icon: 'tag' },
+      { href: '/compare', label: 'Side-by-Side Compare', icon: 'scale' },
+      { href: '/tools?category=india-first', label: 'India-First AI', badge: '16', badgeColor: 'emerald', icon: 'flag' },
+    ]
+  },
+  {
+    title: 'News & Intelligence',
+    items: [
+      { href: '/news', label: 'AI News Today', badge: 'NEW', badgeColor: 'blue', icon: 'newspaper' },
+      { href: '/news/daily', label: 'Daily Newspaper', icon: 'document-text' },
+      { href: '/open-source', label: 'Open-Source Hub', badge: '20+', icon: 'code' },
+      { href: '/open-source/trending', label: 'Trending GitHub', icon: 'trending' },
+    ]
+  },
+  {
+    title: 'Build & Automate',
+    items: [
+      { href: '/workflows', label: 'AI Workflows', badge: '16+', badgeColor: 'blue', icon: 'arrows-split' },
+      { href: '/stack-builder', label: 'AI Stack Builder', icon: 'layers' },
+      { href: '/token-calculator', label: 'LLM Token Calculator', icon: 'calculator' },
+      { href: '/utilities', label: 'Creator & Dev Utilities', badge: '8', icon: 'wrench' },
+    ]
+  },
+  {
+    title: 'Learn & Community',
+    items: [
+      { href: '/creators', label: 'AI & Tech Creators', badge: '18+', icon: 'video' },
+      { href: '/community', label: 'Community Hub', icon: 'chat' },
+    ]
+  },
+  {
+    title: 'Platform & Docs',
+    items: [
+      { href: '/docs', label: 'Documentation', icon: 'book' },
+      { href: '/submit', label: 'Submit Resource', icon: 'plus-circle' },
+      { href: '/profile', label: 'My Profile & Saved', icon: 'user' },
+      { href: '/admin', label: 'Admin Console', icon: 'shield' },
+    ]
+  }
+];
+
+function isItemActive(href: string, current: string): boolean {
+  if (href === '/') return current === '/';
+  if (href.includes('?')) {
+    return current === href.split('?')[0];
+  }
+  return current === href || current.startsWith(`${href}/`);
+}
+---
+
+<!-- Desktop Persistent Sidebar -->
+<aside class="hidden lg:flex flex-col w-64 shrink-0 bg-[#F8FAFF] border-r border-[#E2E8F0] min-h-screen sticky top-0 h-screen select-none z-30">
+  <!-- Brand Header -->
+  <div class="h-14 px-5 flex items-center justify-between border-b border-[#E2E8F0] bg-white shrink-0">
+    <a href="/" class="flex items-center gap-2.5 group">
+      <div class="w-7 h-7 rounded-md bg-[#09090B] text-white flex items-center justify-center font-bold text-xs tracking-tight shadow-xs group-hover:bg-[#2563EB] transition-colors">
+        AIO
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="font-bold text-ink text-base tracking-tight">AIO AI</span>
+        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] font-semibold border border-[#BFDBFE]">v2.0</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- Navigation Groups -->
+  <div class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+    {navGroups.map((group) => (
+      <div>
+        <div class="px-2.5 mb-2 text-[11px] font-mono uppercase tracking-wider text-slate-600 font-semibold">
+          {group.title}
+        </div>
+        <nav class="space-y-0.5">
+          {group.items.map((item) => {
+            const active = isItemActive(item.href, currentPath);
+            return (
+              <a
+                href={item.href}
+                class={`flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs transition-all ${
+                  active
+                    ? 'bg-[#EFF6FF] text-[#2563EB] font-semibold border-l-4 border-[#2563EB] shadow-xs'
+                    : 'text-slate-600 hover:text-ink hover:bg-white hover:shadow-xs'
+                }`}
+              >
+                <div class="flex items-center gap-2.5 truncate">
+                  <!-- Icon -->
+                  {item.icon === 'home' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                    </svg>
+                  )}
+                  {item.icon === 'grid' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'sparkles' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'tag' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'scale' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'flag' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a.75.75 0 0 0 .584-.73V4.5a.75.75 0 0 0-.918-.73l-2.78.654a9 9 0 0 1-6.086-.71l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5" />
+                    </svg>
+                  )}
+                  {item.icon === 'newspaper' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'document-text' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'code' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
+                    </svg>
+                  )}
+                  {item.icon === 'trending' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
+                    </svg>
+                  )}
+                  {item.icon === 'arrows-split' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                    </svg>
+                  )}
+                  {item.icon === 'layers' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
+                    </svg>
+                  )}
+                  {item.icon === 'calculator' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18m-7.5-12h12a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-12a1.5 1.5 0 0 1-1.5-1.5V7.5A1.5 1.5 0 0 1 6 6Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'wrench' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.67 2.67 0 0 0 21 17.25l-5.83-5.83M3 3l6.59 6.59m0 0L7.5 12l2.25 2.25 2.41-2.09 5.84 5.84a2 2 0 0 0 2.83-2.83l-5.84-5.84 2.09-2.41L12 7.5 9.59 9.59Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'video' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'chat' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v4.77Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'book' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                    </svg>
+                  )}
+                  {item.icon === 'plus-circle' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'user' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'shield' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                    </svg>
+                  )}
+                  <span class="truncate">{item.label}</span>
+                </div>
+
+                {item.badge && (
+                  <span class={`text-[10px] font-mono px-1.5 py-0.2 rounded font-bold ${
+                    item.badgeColor === 'blue'
+                      ? 'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]'
+                      : item.badgeColor === 'emerald'
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      : 'bg-slate-100 text-slate-700'
+                  }`}>
+                    {item.badge}
+                  </span>
+                )}
+              </a>
+            );
+          })}
+        </nav>
+      </div>
+    ))}
+  </div>
+
+  <!-- Bottom Pro / Quick Help Box -->
+  <div class="p-3 border-t border-[#E2E8F0] bg-white shrink-0">
+    <div class="p-3 rounded-md bg-[#F8FAFF] border border-[#BFDBFE] text-xs">
+      <div class="flex items-center gap-1.5 font-semibold text-ink mb-1">
+        <span class="w-2 h-2 rounded-full bg-[#2563EB]"></span>
+        <span>AIO AI Enterprise</span>
+      </div>
+      <p class="text-[11px] text-mute mb-2">Connect your company tools and custom workflows securely.</p>
+      <a href="/docs" class="text-[11px] font-semibold text-[#2563EB] hover:text-[#1D4ED8] inline-flex items-center gap-1">
+        Read Platform Docs &rarr;
+      </a>
+    </div>
+  </div>
+</aside>
+
+<!-- Mobile Drawer Sidebar (Toggled via JavaScript) -->
+<div id="mobileSidebarDrawer" class="fixed inset-0 z-50 hidden">
+  <!-- Backdrop -->
+  <div id="mobileSidebarBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"></div>
+  
+  <!-- Slide-out Drawer -->
+  <div class="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-white border-r border-[#E2E8F0] shadow-2xl flex flex-col z-50">
+    <div class="h-14 px-5 flex items-center justify-between border-b border-[#E2E8F0]">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-md bg-[#09090B] text-white flex items-center justify-center font-bold text-xs tracking-tight">
+          AIO
+        </div>
+        <span class="font-bold text-ink text-base">AIO AI</span>
+        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] font-semibold border border-[#BFDBFE]">v2.0</span>
+      </div>
+      <button id="closeMobileSidebarBtn" class="p-1 rounded-md text-slate-500 hover:text-ink hover:bg-slate-100 cursor-pointer">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+      {navGroups.map((group) => (
+        <div>
+          <div class="px-2.5 mb-2 text-[11px] font-mono uppercase tracking-wider text-slate-600 font-semibold">
+            {group.title}
+          </div>
+          <nav class="space-y-0.5">
+            {group.items.map((item) => {
+              const active = isItemActive(item.href, currentPath);
+              return (
+                <a
+                  href={item.href}
+                  class={`flex items-center justify-between px-2.5 py-2 rounded-md text-xs transition-colors ${
+                    active
+                      ? 'bg-[#EFF6FF] text-[#2563EB] font-semibold border-l-4 border-[#2563EB]'
+                      : 'text-slate-600 hover:text-ink hover:bg-slate-50'
+                  }`}
+                >
+                  <span class="truncate">{item.label}</span>
+                  {item.badge && (
+                    <span class={`text-[10px] font-mono px-1.5 py-0.2 rounded font-bold ${
+                      item.badgeColor === 'blue'
+                        ? 'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]'
+                        : item.badgeColor === 'emerald'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        : 'bg-slate-100 text-slate-700'
+                    }`}>
+                      {item.badge}
+                    </span>
+                  )}
+                </a>
+              );
+            })}
+          </nav>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script>
+  function setupMobileSidebar() {
+    const drawer = document.getElementById('mobileSidebarDrawer');
+    const backdrop = document.getElementById('mobileSidebarBackdrop');
+    const closeBtn = document.getElementById('closeMobileSidebarBtn');
+
+    function closeSidebar() {
+      if (drawer) drawer.classList.add('hidden');
+    }
+
+    if (backdrop) backdrop.addEventListener('click', closeSidebar);
+    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+
+    window.toggleMobileSidebar = function() {
+      if (drawer) {
+        drawer.classList.toggle('hidden');
+      }
+    };
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupMobileSidebar);
+  } else {
+    setupMobileSidebar();
+  }
+</script>

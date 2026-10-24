@@ -2,75 +2,301 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import { NEWS_STORIES } from '../../data/newsData';
+import { NEWS_STORIES, type NewsStory } from '../../data/newsData';
+
+const topFiveStories = NEWS_STORIES.filter(s => s.isTopFive);
+const regularStories = NEWS_STORIES;
+
+const categories = [
+  'All',
+  'Models & Research',
+  'AI Companies',
+  'AI Products & Launches',
+  'Startups & Funding',
+  'Open Source',
+  'India AI',
+  'Creators & YouTube',
+  'Policy & Safety',
+  'Developer Tools'
+];
 ---
 
 <Layout 
-  title="AI News Today & Breakthroughs | AI Discovery Platform"
-  description="Concise, verified daily summaries of major generative AI model updates, breakthroughs, and ecosystem shifts."
+  title="AI News Today & Breaking Intelligence | Neo-Brutalist AI Gazette"
+  description="Verified daily coverage of AI model releases, open-weights benchmarks, enterprise tooling, and India AI updates with zero clickbait."
 >
   <Header currentPath="/news" />
 
-  <main class="w-full flex flex-col min-h-screen">
-    <!-- Header -->
-    <section class="border-b border-hairline bg-canvas-elevated px-6 py-12 md:py-16">
-      <div class="max-w-5xl mx-auto">
-        <div class="text-xs text-mute uppercase font-mono tracking-wider mb-2">Intelligence Briefing</div>
-        <h1 class="text-3xl md:text-4xl font-semibold text-ink tracking-tight mb-2">
-          AI News & Daily Developments
-        </h1>
-        <p class="text-sm md:text-base text-body max-w-2xl leading-relaxed">
-          High-signal summaries explaining what happened, why it matters, and direct official citations.
-        </p>
+  <main class="w-full flex flex-col min-h-screen bg-[#FFFFFF]">
+    
+    <!-- Neo-Brutalist Newspaper Masthead -->
+    <section class="border-b-4 border-[#09090B] bg-[#F8FAFF] px-4 sm:px-6 py-8">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-[#09090B] pb-3 mb-4 text-xs font-mono font-bold text-slate-800">
+          <div class="flex items-center gap-3">
+            <span class="bg-[#2563EB] text-white px-2 py-0.5 rounded-xs">ISSUE #284</span>
+            <span>VERIFIED AI INTELLIGENCE</span>
+          </div>
+          <div class="flex items-center gap-4 mt-2 sm:mt-0">
+            <span>EDITION: GLOBAL & INDIA</span>
+            <span>UPDATED: DAILY 08:00 AM IST</span>
+          </div>
+        </div>
+
+        <div class="text-center py-4">
+          <h1 class="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tighter text-[#09090B] mb-2 font-mono">
+            THE AIO AI GAZETTE
+          </h1>
+          <p class="text-xs sm:text-sm font-mono text-slate-600 uppercase tracking-widest max-w-xl mx-auto">
+            Breakthroughs &bull; Model Releases &bull; Open Weights &bull; Sovereign Compute
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#09090B] pt-3 text-xs font-mono">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+            <span class="font-bold text-ink">24 Fact-Checked Stories Cataloged</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="/news/daily" class="underline font-bold text-[#2563EB] hover:text-[#1D4ED8]">
+              Switch to 3-Min Daily Briefing View &rarr;
+            </a>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- News Stories Stream -->
-    <div class="w-full max-w-5xl mx-auto px-6 py-12 flex flex-col gap-6">
-      {NEWS_STORIES.map(story => (
-        <article class="bg-canvas-elevated border border-hairline rounded-md p-6 md:p-8 hover:border-faint transition-all shadow-xs">
-          <div class="flex items-center justify-between text-xs text-mute mb-3">
-            <span class="font-mono bg-hairline-soft px-2 py-0.5 rounded-xs text-ink">{story.category}</span>
-            <span>{story.publishedDate} • via {story.source}</span>
-          </div>
-
-          <h2 class="text-xl md:text-2xl font-semibold text-ink tracking-tight mb-3">
-            <a href={story.sourceUrl} target="_blank" rel="noopener noreferrer" class="hover:text-link transition-colors inline-flex items-center gap-1.5">
-              <span>{story.title}</span>
-              <span class="text-sm text-mute">↗</span>
-            </a>
+    <!-- Top 5 Things to Know Today (Brutalist Bento Grid) -->
+    <section class="max-w-6xl w-full mx-auto px-4 sm:px-6 py-10">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 bg-[#2563EB]"></span>
+          <h2 class="text-xl sm:text-2xl font-black uppercase tracking-tight text-ink font-mono">
+            Top 5 Things to Know Today
           </h2>
+        </div>
+        <span class="text-xs font-mono text-slate-500 font-semibold">Priority Briefing</span>
+      </div>
 
-          <p class="text-sm md:text-base text-body leading-relaxed mb-4">
-            {story.summary}
-          </p>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5 mb-12">
+        <!-- Lead Feature Story (Col span 7) -->
+        {topFiveStories[0] && (
+          <article class="md:col-span-7 bg-white border-2 border-[#09090B] p-6 rounded-xl shadow-[5px_5px_0px_0px_#09090B] hover:shadow-[7px_7px_0px_0px_#2563EB] hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="bg-[#2563EB] text-white border border-[#09090B] font-mono uppercase text-[10px] font-bold px-2 py-0.5 shadow-[2px_2px_0px_0px_#09090B]">
+                  {topFiveStories[0].topic}
+                </span>
+                <span class="text-xs font-mono text-slate-500">{topFiveStories[0].publishedAt}</span>
+              </div>
+              
+              <h3 class="text-2xl font-black text-ink tracking-tight mb-3 hover:text-[#2563EB] transition-colors leading-snug">
+                <a href={`/news/${topFiveStories[0].slug}`}>
+                  {topFiveStories[0].headline}
+                </a>
+              </h3>
 
-          <div class="p-3.5 rounded-md border border-hairline bg-canvas text-xs md:text-sm text-body mb-5">
-            <strong class="text-ink font-semibold">Why it matters:</strong> {story.whyItMatters}
-          </div>
+              <p class="text-sm text-slate-700 leading-relaxed mb-4">
+                {topFiveStories[0].summary}
+              </p>
 
-          <div class="flex items-center justify-between pt-4 border-t border-hairline text-xs">
-            <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="text-mute">Entities:</span>
-              {story.relatedEntities.map(e => (
-                <span class="bg-hairline-soft text-ink px-2 py-0.5 rounded-xs font-mono">{e}</span>
-              ))}
+              <div class="p-3.5 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] text-xs text-slate-700 mb-4">
+                <strong class="text-[#2563EB] font-bold uppercase tracking-wider text-[10px] block mb-1">Why It Matters:</strong>
+                {topFiveStories[0].whyItMatters}
+              </div>
             </div>
 
-            <a 
-              href={story.sourceUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="text-link hover:text-link-deep font-medium inline-flex items-center gap-1"
-            >
-              <span>Read Original Source</span>
-              <span>↗</span>
-            </a>
+            <div class="flex items-center justify-between border-t border-[#E2E8F0] pt-3 text-xs">
+              <span class="font-mono text-slate-500">Source: {topFiveStories[0].sourceName}</span>
+              <a href={`/news/${topFiveStories[0].slug}`} class="font-bold text-[#2563EB] hover:underline inline-flex items-center gap-1">
+                Read Full Story &rarr;
+              </a>
+            </div>
+          </article>
+        )}
+
+        <!-- Top 4 Bento Items (Col span 5) -->
+        <div class="md:col-span-5 flex flex-col gap-4">
+          {topFiveStories.slice(1, 5).map((story, i) => (
+            <article class="bg-white border-2 border-[#09090B] p-4 rounded-xl shadow-[4px_4px_0px_0px_#09090B] hover:shadow-[5px_5px_0px_0px_#2563EB] transition-all">
+              <div class="flex items-center justify-between text-[11px] font-mono text-slate-500 mb-1.5">
+                <span class="font-bold text-[#2563EB]">#{i + 2} &bull; {story.topic}</span>
+                <span>{story.publishedDate}</span>
+              </div>
+              <h4 class="text-sm font-bold text-ink leading-snug mb-1.5 hover:text-[#2563EB] transition-colors">
+                <a href={`/news/${story.slug}`}>
+                  {story.headline}
+                </a>
+              </h4>
+              <p class="text-xs text-slate-600 line-clamp-2">{story.whyItMatters}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <!-- Filter & Search Toolbar -->
+      <div class="bg-[#F8FAFF] border-2 border-[#09090B] p-4 rounded-xl shadow-[4px_4px_0px_0px_#09090B] mb-8">
+        <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          
+          <!-- Category Chips -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0" id="categoryChips">
+            {categories.map((cat, idx) => (
+              <button
+                type="button"
+                data-category={cat}
+                class={`category-filter-btn text-xs font-mono font-bold px-3 py-1.5 rounded-md border border-[#09090B] transition-all whitespace-nowrap cursor-pointer ${
+                  idx === 0 
+                    ? 'bg-[#2563EB] text-white shadow-[2px_2px_0px_0px_#09090B]' 
+                    : 'bg-white text-slate-700 hover:bg-slate-100 shadow-[2px_2px_0px_0px_#E2E8F0]'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
-        </article>
-      ))}
-    </div>
+
+          <!-- Search & Live Refresh Controls -->
+          <div class="flex items-center gap-2 shrink-0">
+            <input 
+              type="text" 
+              id="newsSearchInput" 
+              placeholder="Search news..." 
+              class="bg-white border-2 border-[#09090B] rounded-lg px-3 py-1.5 text-xs text-ink outline-none focus:border-[#2563EB] w-40 sm:w-48 font-mono shadow-[2px_2px_0px_0px_#09090B]"
+            />
+
+            <button 
+              type="button" 
+              id="refreshFeedBtn"
+              class="bg-white hover:bg-slate-50 border-2 border-[#09090B] text-ink font-mono text-xs font-bold px-3 py-1.5 rounded-lg shadow-[2px_2px_0px_0px_#09090B] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer inline-flex items-center gap-1"
+              title="Check for latest live AI announcements"
+            >
+              <svg class="w-3.5 h-3.5 text-[#2563EB]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+              </svg>
+              <span>Refresh</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Complete 24+ News Stories Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="newsFeedGrid">
+        {regularStories.map((story) => (
+          <article 
+            class="news-card bg-white border-2 border-[#09090B] rounded-xl p-5 shadow-[4px_4px_0px_0px_#09090B] hover:shadow-[6px_6px_0px_0px_#2563EB] hover:-translate-y-0.5 transition-all flex flex-col justify-between"
+            data-topic={story.topic}
+            data-india={story.isIndiaNews ? 'true' : 'false'}
+            data-title={story.headline.toLowerCase()}
+            data-summary={story.summary.toLowerCase()}
+          >
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-3">
+                <span class="bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] font-bold px-2 py-0.5 rounded-xs text-[10px] uppercase">
+                  {story.topic}
+                </span>
+                <span class="text-slate-500 text-[11px]">{story.publishedDate}</span>
+              </div>
+
+              <h3 class="text-base font-bold text-ink leading-snug mb-2 hover:text-[#2563EB] transition-colors">
+                <a href={`/news/${story.slug}`}>
+                  {story.headline}
+                </a>
+              </h3>
+
+              <p class="text-xs text-slate-600 line-clamp-3 mb-4 leading-relaxed">
+                {story.summary}
+              </p>
+
+              <div class="p-3 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0] text-xs text-slate-700 mb-4">
+                <strong class="text-ink font-semibold block text-[10px] uppercase font-mono mb-0.5">Why It Matters:</strong>
+                <p class="line-clamp-2 text-[11px] text-slate-600">{story.whyItMatters}</p>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-[#E2E8F0]">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-[11px] font-mono text-slate-500 truncate max-w-[150px]">
+                  {story.sourceName}
+                </span>
+                <a 
+                  href={`/news/${story.slug}`} 
+                  class="font-bold text-[#2563EB] hover:underline text-xs inline-flex items-center gap-0.5"
+                >
+                  Full Story &rarr;
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+    </section>
   </main>
 
   <Footer />
 </Layout>
+
+<script>
+  function setupNewsFilter() {
+    const categoryBtns = document.querySelectorAll('.category-filter-btn');
+    const searchInput = document.getElementById('newsSearchInput') as HTMLInputElement;
+    const cards = document.querySelectorAll('.news-card') as NodeListOf<HTMLElement>;
+    const refreshBtn = document.getElementById('refreshFeedBtn');
+
+    let activeCat = 'All';
+
+    function applyFilter() {
+      const q = (searchInput?.value || '').toLowerCase().trim();
+
+      cards.forEach(card => {
+        const topic = card.getAttribute('data-topic') || '';
+        const title = card.getAttribute('data-title') || '';
+        const summary = card.getAttribute('data-summary') || '';
+
+        const matchesCat = (activeCat === 'All') || (topic.toLowerCase() === activeCat.toLowerCase());
+        const matchesQuery = !q || title.includes(q) || summary.includes(q);
+
+        if (matchesCat && matchesQuery) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    categoryBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        categoryBtns.forEach(b => {
+          b.classList.remove('bg-[#2563EB]', 'text-white', 'shadow-[2px_2px_0px_0px_#09090B]');
+          b.classList.add('bg-white', 'text-slate-700', 'shadow-[2px_2px_0px_0px_#E2E8F0]');
+        });
+        btn.classList.remove('bg-white', 'text-slate-700', 'shadow-[2px_2px_0px_0px_#E2E8F0]');
+        btn.classList.add('bg-[#2563EB]', 'text-white', 'shadow-[2px_2px_0px_0px_#09090B]');
+
+        activeCat = btn.getAttribute('data-category') || 'All';
+        applyFilter();
+      });
+    });
+
+    searchInput?.addEventListener('input', applyFilter);
+
+    refreshBtn?.addEventListener('click', () => {
+      refreshBtn.textContent = 'Updating...';
+      setTimeout(() => {
+        refreshBtn.innerHTML = `
+          <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+          <span>Up to date</span>
+        `;
+      }, 600);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupNewsFilter);
+  } else {
+    setupNewsFilter();
+  }
+</script>

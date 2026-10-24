@@ -1,0 +1,575 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+// Documentation Sections Data
+const DOCS_SECTIONS = [
+  {
+    id: 'overview',
+    title: 'Platform Overview & Quickstart',
+    description: 'Learn how AIO AI interconnects 6 ecosystem pillars to deliver unbiased AI discovery and execution.',
+    badge: 'Core Concept'
+  },
+  {
+    id: 'ai-finder',
+    title: 'AI Finder & Intent Engine',
+    description: 'Deterministic multi-signal matching algorithm that pairs your problem with the optimal tool stack.',
+    badge: 'Algorithms'
+  },
+  {
+    id: 'ranking-methodology',
+    title: 'Verification & Editorial Scoring',
+    description: 'Our mathematical scoring formula (0–100), verification lifecycle, and strict zero-pay-for-placement policy.',
+    badge: 'Integrity'
+  },
+  {
+    id: 'workflows-guide',
+    title: 'Workflows & Stack Builder Guide',
+    description: 'How to assemble multi-agent workflows, estimate 3-tier budgets (Free/Freemium/Paid), and export configurations.',
+    badge: 'Production'
+  },
+  {
+    id: 'open-source-vram',
+    title: 'Open-Source Self-Hosting & VRAM Specs',
+    description: 'Hardware calculation formula, Ollama/vLLM deployment recipes, and quantization tradeoffs (Q4 vs Q8).',
+    badge: 'Hardware'
+  },
+  {
+    id: 'token-calculator',
+    title: 'Official LLM Token Calculator Math',
+    description: 'Precision cost formulas across 13 frontier models, caching discounts, and Indian Rupee (INR) conversion.',
+    badge: 'Economics'
+  },
+  {
+    id: 'community-reputation',
+    title: 'Community, Reputation & Bounty Rules',
+    description: 'Point economy, peer review trust tiers, and the data correction bounty workflow.',
+    badge: 'Governance'
+  },
+  {
+    id: 'architecture-schema',
+    title: 'Platform Architecture & Entity Graph',
+    description: 'Astro 5 + Tailwind v4 + Supabase PostgreSQL + Drizzle ORM 24-table schema reference.',
+    badge: 'Engineering'
+  }
+];
+---
+
+<Layout 
+  title="Platform Documentation & Engineering Specifications | AIO AI"
+  description="Technical guides, scoring formulas, VRAM references, and architecture documentation for the AIO AI ecosystem."
+>
+  <Header currentPath="/docs" />
+
+  <main class="w-full flex-1 min-h-screen bg-canvas">
+    <!-- Top Hero Banner -->
+    <section class="border-b border-[#E2E8F0] bg-surface px-6 py-12 md:py-16">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-mono font-semibold text-primary mb-3">
+            <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+            </svg>
+            <span>ENGINEERING & SPECIFICATION PORTAL v2.0</span>
+          </div>
+          <h1 class="text-3xl md:text-5xl font-black text-ink tracking-tight mb-3">
+            Platform Documentation
+          </h1>
+          <p class="text-sm md:text-base text-neutral-600 max-w-2xl leading-relaxed">
+            Transparent algorithmic models, scoring formulas, deployment commands, and system architecture powering the entire AIO AI discovery platform.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0">
+          <a 
+            href="/finder"
+            class="px-4 py-2.5 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-xs flex items-center gap-2"
+          >
+            <span>Launch AI Finder</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </a>
+          <a 
+            href="/tools"
+            class="px-4 py-2.5 rounded-lg bg-white border border-[#E2E8F0] text-ink text-xs font-semibold hover:border-ink transition-colors shadow-xs"
+          >
+            Explore Catalog
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Docs Layout Container: Left Navigation + Center Content + Right TOC -->
+    <div class="max-w-7xl mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
+      
+      <!-- Sticky Left Guide Navigation -->
+      <aside class="w-full lg:w-64 shrink-0">
+        <div class="lg:sticky lg:top-24 bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-xs">
+          <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-neutral-400 mb-3 px-2">
+            Guides & References
+          </div>
+          <nav class="space-y-1" id="docsNav">
+            {DOCS_SECTIONS.map((sec, idx) => (
+              <a 
+                href={`#${sec.id}`}
+                class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-neutral-600 hover:text-primary hover:bg-blue-50 transition-colors docs-nav-link"
+                data-target={sec.id}
+              >
+                <span class="truncate">{idx + 1}. {sec.title.split('&')[0]}</span>
+                <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-500 shrink-0 ml-1">
+                  {sec.badge}
+                </span>
+              </a>
+            ))}
+          </nav>
+
+          <div class="mt-6 pt-4 border-t border-[#E2E8F0]">
+            <div class="text-[10px] font-mono text-neutral-400 uppercase tracking-wider px-2 mb-2">
+              API & Schema Specs
+            </div>
+            <a 
+              href="#architecture-schema" 
+              class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
+            >
+              <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+              </svg>
+              <span>24 PostgreSQL Tables</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Main Content -->
+      <div class="flex-1 min-w-0 space-y-16">
+
+        <!-- 1. Platform Overview & Quickstart -->
+        <section id="overview" class="scroll-mt-24 bg-white border border-[#E2E8F0] rounded-xl p-6 md:p-8 shadow-xs">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-mono font-bold text-primary px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200">Guide 01</span>
+            <span class="text-xs text-neutral-400 font-mono">Updated October 2026</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black text-ink tracking-tight mb-4">
+            Platform Overview & Connected Pillars
+          </h2>
+          <p class="text-sm text-neutral-600 leading-relaxed mb-6">
+            Unlike traditional static AI directories that only aggregate affiliate links, AIO AI is designed as a relational knowledge graph connecting tools directly to open-source self-hosted alternatives, production multi-step workflows, YouTube creator masterclasses, live daily intelligence, and interactive utilities.
+          </p>
+
+          <!-- 6 Pillars Bento Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+            <div class="p-4 rounded-lg bg-surface border border-neutral-200">
+              <div class="text-xs font-bold font-mono text-primary mb-1">01. Verified Tools</div>
+              <p class="text-xs text-neutral-600">113+ cataloged AI tools audited for API status, pricing tiers, and India payment support.</p>
+            </div>
+            <div class="p-4 rounded-lg bg-surface border border-neutral-200">
+              <div class="text-xs font-bold font-mono text-primary mb-1">02. Daily AI News</div>
+              <p class="text-xs text-neutral-600">Neo-brutalist intelligence feed categorizing technical releases, model updates, and regulatory shifts.</p>
+            </div>
+            <div class="p-4 rounded-lg bg-surface border border-neutral-200">
+              <div class="text-xs font-bold font-mono text-primary mb-1">03. Production Workflows</div>
+              <p class="text-xs text-neutral-600">16+ executable multi-step recipes with Free, Freemium, and Paid cost comparisons.</p>
+            </div>
+            <div class="p-4 rounded-lg bg-surface border border-neutral-200">
+              <div class="text-xs font-bold font-mono text-primary mb-1">04. Open-Source Hub</div>
+              <p class="text-xs font-mono text-xs text-neutral-600">20 flagship self-hosted alternatives with exact VRAM requirements and Docker commands.</p>
+            </div>
+            <div class="p-4 rounded-lg bg-surface border border-neutral-200">
+              <div class="text-xs font-bold font-mono text-primary mb-1">05. AI Educators</div>
+              <p class="text-xs text-neutral-600">18 curated global and Indian YouTube educators mapped to the specific tools they teach.</p>
+            </div>
+            <div class="p-4 rounded-lg bg-surface border border-neutral-200">
+              <div class="text-xs font-bold font-mono text-primary mb-1">06. Interactive Utilities</div>
+              <p class="text-xs text-neutral-600">8 client-side tools including LLM Token Calculator, Prompt Optimizer, and Cost Simulator.</p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-blue-50 border border-blue-200 text-xs text-blue-900 leading-relaxed">
+            <strong>Core Architecture Principle:</strong> Every detail page (e.g. <code>/tools/[slug]</code>) automatically queries cross-referenced workflows, creator tutorials, and open-source alternatives through two-way foreign keys in PostgreSQL.
+          </div>
+        </section>
+
+        <!-- 2. AI Finder & Intent Engine -->
+        <section id="ai-finder" class="scroll-mt-24 bg-white border border-[#E2E8F0] rounded-xl p-6 md:p-8 shadow-xs">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-mono font-bold text-primary px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200">Guide 02</span>
+            <span class="text-xs text-neutral-400 font-mono">Matching Engine</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black text-ink tracking-tight mb-4">
+            AI Finder & Intent Engine Algorithm
+          </h2>
+          <p class="text-sm text-neutral-600 leading-relaxed mb-4">
+            The AI Finder does not use fuzzy probabilistic search. It computes a deterministic multi-signal match score based on 4 discrete constraints input by the user:
+          </p>
+
+          <div class="bg-surface border border-[#E2E8F0] rounded-lg p-5 mb-6 font-mono text-xs text-neutral-800 space-y-3">
+            <div class="font-bold text-ink">// Mathematical Matching Weight Allocation:</div>
+            <div>Score(Tool) = W_category * S_cat + W_pricing * S_price + W_experience * S_exp + W_local * S_local</div>
+            <div class="text-neutral-500 pl-4">
+              • W_category (40%): Direct match with task intent category.<br/>
+              • W_pricing (30%): Budget filter compliance (Free, Freemium, Paid).<br/>
+              • W_experience (15%): Skill calibration (Beginner, Intermediate, Developer).<br/>
+              • W_local (15%): Indian payment or local execution requirement.
+            </div>
+          </div>
+
+          <h3 class="text-base font-bold text-ink mb-2">Connected Decision Blueprint Output</h3>
+          <p class="text-sm text-neutral-600 leading-relaxed mb-4">
+            When matched, the engine returns a 5-layer Connected Decision Blueprint rather than a single tool:
+          </p>
+          <ul class="space-y-2 text-xs text-neutral-700 list-disc list-inside">
+            <li><strong>Best Primary Tool:</strong> Highest scoring commercial or hybrid product.</li>
+            <li><strong>100% Free Option:</strong> Zero-cost tier alternative for students and bootstrappers.</li>
+            <li><strong>Matching Production Workflow:</strong> Multi-step recipe showing how to incorporate the tool.</li>
+            <li><strong>Open-Source Self-Hosted Alternative:</strong> Private, local-first repository with VRAM specs.</li>
+            <li><strong>Curated Creator Tutorial:</strong> Top educator video teaching masterclasses on the subject.</li>
+          </ul>
+        </section>
+
+        <!-- 3. Verification & Editorial Scoring -->
+        <section id="ranking-methodology" class="scroll-mt-24 bg-white border border-[#E2E8F0] rounded-xl p-6 md:p-8 shadow-xs">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-mono font-bold text-primary px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200">Guide 03</span>
+            <span class="text-xs text-neutral-400 font-mono">Platform Score</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black text-ink tracking-tight mb-4">
+            Verification & Editorial Ranking Methodology
+          </h2>
+          <p class="text-sm text-neutral-600 leading-relaxed mb-4">
+            Per PRD Section 44 and Section 67, pre-seeded catalog tools never display fabricated user star ratings. Community ratings start strictly at 0 reviews until submitted by verified accounts. To help users compare tools objectively, our editorial team computes a transparent <strong>Platform Score (0–100)</strong>.
+          </p>
+
+          <div class="bg-neutral-900 text-white rounded-lg p-5 mb-6 font-mono text-xs space-y-2">
+            <div class="text-blue-400 font-bold">// Platform Score Formula:</div>
+            <div>PlatformScore = (FeatureBreadth * 0.25) + (APIReliability * 0.25) + (PricingTransparency * 0.20) + (CommunityReputation * 0.15) + (DocumentationQuality * 0.15)</div>
+          </div>
+
+          <div class="overflow-x-auto border border-[#E2E8F0] rounded-lg mb-6">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-surface border-b border-[#E2E8F0] font-mono text-neutral-500 uppercase">
+                <tr>
+                  <th class="p-3">Component</th>
+                  <th class="p-3">Weight</th>
+                  <th class="p-3">Evaluation Criteria</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#E2E8F0]">
+                <tr>
+                  <td class="p-3 font-semibold text-ink">Feature Breadth</td>
+                  <td class="p-3 font-mono text-primary font-bold">25%</td>
+                  <td class="p-3 text-neutral-600">Model diversity, context window capacity, multimodal input/output support.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-semibold text-ink">API & Enterprise Reliability</td>
+                  <td class="p-3 font-mono text-primary font-bold">25%</td>
+                  <td class="p-3 text-neutral-600">Uptime SLA, latency benchmarks, SOC 2 compliance, rate limit tier clarity.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-semibold text-ink">Pricing Transparency</td>
+                  <td class="p-3 font-mono text-primary font-bold">20%</td>
+                  <td class="p-3 text-neutral-600">Clear token metering, explicit cancellation, zero hidden overage traps, INR billing.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-semibold text-ink">Community Reputation</td>
+                  <td class="p-3 font-mono text-primary font-bold">15%</td>
+                  <td class="p-3 text-neutral-600">Verified practitioner reviews, GitHub sentiment, active Discord responsiveness.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-semibold text-ink">Documentation & Onboarding</td>
+                  <td class="p-3 font-mono text-primary font-bold">15%</td>
+                  <td class="p-3 text-neutral-600">Code examples in Python/TS, quickstart tutorials, clear SDK documentation.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-900">
+            <strong>Zero Pay-For-Placement Guarantee:</strong> No vendor can purchase a higher Platform Score or sponsor search position. Sponsored items are strictly labeled and never affect organic sorting.
+          </div>
+        </section>
+
+        <!-- 4. Workflows & Stack Builder Guide -->
+        <section id="workflows-guide" class="scroll-mt-24 bg-white border border-[#E2E8F0] rounded-xl p-6 md:p-8 shadow-xs">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-mono font-bold text-primary px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200">Guide 04</span>
+            <span class="text-xs text-neutral-400 font-mono">Workflows</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black text-ink tracking-tight mb-4">
+            Production Workflows & Stack Builder
+          </h2>
+          <p class="text-sm text-neutral-600 leading-relaxed mb-4">
+            Workflows connect standalone tools into chained automation pipelines (e.g. Lead Scraping + LLM Enrichment + Personalized Outreach + CRM Sync). Each workflow specifies 3 distinct execution budget tiers:
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="p-4 rounded-lg bg-emerald-50 border border-emerald-200">
+              <div class="text-xs font-mono font-bold text-emerald-800 uppercase mb-1">Tier 1: 100% Free</div>
+              <p class="text-xs text-emerald-700">Utilizes open-source self-hosted tools (Ollama, n8n Community, Crawl4AI) or generous free tiers without card requirements.</p>
+            </div>
+            <div class="p-4 rounded-lg bg-blue-50 border border-blue-200">
+              <div class="text-xs font-mono font-bold text-primary uppercase mb-1">Tier 2: Freemium Hybrid</div>
+              <p class="text-xs text-blue-800">Balances managed cloud webhooks with pay-per-token inference (e.g. Make.com Free + DeepSeek API at $0.14/M tokens).</p>
+            </div>
+            <div class="p-4 rounded-lg bg-neutral-100 border border-neutral-300">
+              <div class="text-xs font-mono font-bold text-neutral-900 uppercase mb-1">Tier 3: Enterprise Pro</div>
+              <p class="text-xs text-neutral-700">Dedicated high-availability APIs with guaranteed uptime SLAs (Claude 3.5 Sonnet, Enterprise Zapier, dedicated vector DBs).</p>
+            </div>
+          </div>
+
+          <h3 class="text-base font-bold text-ink mb-2">Workflow Security & Secrets Best Practice</h3>
+          <p class="text-sm text-neutral-600 leading-relaxed mb-3">
+            Never hardcode production API keys in client templates. When exporting workflows from AIO AI:
+          </p>
+          <div class="bg-neutral-900 text-neutral-200 rounded-lg p-4 font-mono text-xs space-y-1">
+            <div class="text-neutral-400"># Recommended .env specification for exported pipelines:</div>
+            <div>OPENAI_API_KEY=sk-...</div>
+            <div>ANTHROPIC_API_KEY=sk-ant-...</div>
+            <div>OLLAMA_HOST=http://localhost:11434</div>
+            <div>DATABASE_URL=postgresql://postgres:password@localhost:5432/aio_ai</div>
+          </div>
+        </section>
+
+        <!-- 5. Open-Source Self-Hosting & VRAM Specs -->
+        <section id="open-source-vram" class="scroll-mt-24 bg-white border border-[#E2E8F0] rounded-xl p-6 md:p-8 shadow-xs">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-mono font-bold text-primary px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200">Guide 05</span>
+            <span class="text-xs text-neutral-400 font-mono">Hardware Guide</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black text-ink tracking-tight mb-4">
+            Open-Source Self-Hosting & VRAM Reference
+          </h2>
+          <p class="text-sm text-neutral-600 leading-relaxed mb-4">
+            Running LLMs and generative models locally requires understanding quantization levels and exact VRAM footprints. Here is our benchmark sizing table for local deployment:
+          </p>
+
+          <div class="bg-surface border border-[#E2E8F0] rounded-lg p-4 font-mono text-xs mb-6">
+            <div class="font-bold text-primary mb-1">VRAM Calculation Formula:</div>
+            <div>VRAM_Required (GB) = (Model_Parameters_in_Billions * Bytes_Per_Weight * 1.25 Context_Buffer)</div>
+            <div class="text-neutral-500 mt-1">Example: 8B model at 4-bit (0.5 bytes) = (8 * 0.5) * 1.25 = 5.0 GB VRAM.</div>
+          </div>
+
+          <div class="overflow-x-auto border border-[#E2E8F0] rounded-lg mb-6">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-surface border-b border-[#E2E8F0] font-mono text-neutral-500 uppercase">
+                <tr>
+                  <th class="p-3">Model Size</th>
+                  <th class="p-3">Quantization</th>
+                  <th class="p-3">Min VRAM</th>
+                  <th class="p-3">Recommended Hardware</th>
+                  <th class="p-3">Example Tool</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#E2E8F0] font-mono">
+                <tr>
+                  <td class="p-3 font-semibold text-ink">3B - 4B</td>
+                  <td class="p-3 text-neutral-600">Q4_K_M (4-bit)</td>
+                  <td class="p-3 text-emerald-600 font-bold">4 GB</td>
+                  <td class="p-3 text-neutral-600">RTX 3050, Apple M1/M2 8GB</td>
+                  <td class="p-3 text-primary">Phi-4, Qwen-2.5-3B</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-semibold text-ink">7B - 8B</td>
+                  <td class="p-3 text-neutral-600">Q4_K_M (4-bit)</td>
+                  <td class="p-3 text-emerald-600 font-bold">6 - 8 GB</td>
+                  <td class="p-3 text-neutral-600">RTX 3060 12GB, Apple M2 16GB</td>
+                  <td class="p-3 text-primary">Llama 3.1 8B, DeepSeek R1 8B</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-semibold text-ink">14B</td>
+                  <td class="p-3 text-neutral-600">Q4_K_M (4-bit)</td>
+                  <td class="p-3 text-amber-600 font-bold">12 - 14 GB</td>
+                  <td class="p-3 text-neutral-600">RTX 4070 Ti 16GB, Apple M3 Pro 18GB</td>
+                  <td class="p-3 text-primary">Qwen 2.5 14B, DeepSeek R1 14B</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-semibold text-ink">32B</td>
+                  <td class="p-3 text-neutral-600">Q4_K_M (4-bit)</td>
+                  <td class="p-3 text-red-600 font-bold">20 - 24 GB</td>
+                  <td class="p-3 text-neutral-600">RTX 3090/4090 24GB, Apple M3 Max 36GB</td>
+                  <td class="p-3 text-primary">DeepSeek R1 32B, Qwen 2.5 32B</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-semibold text-ink">70B</td>
+                  <td class="p-3 text-neutral-600">Q4_K_M (4-bit)</td>
+                  <td class="p-3 text-red-600 font-bold">44 - 48 GB</td>
+                  <td class="p-3 text-neutral-600">2x RTX 3090, Apple M2/M3 Studio 64GB+</td>
+                  <td class="p-3 text-primary">Llama 3.3 70B, Qwen 2.5 72B</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="text-base font-bold text-ink mb-2">Fast 1-Line Terminal Deployment</h3>
+          <div class="space-y-3 font-mono text-xs">
+            <div class="bg-neutral-900 text-white p-3 rounded-md flex items-center justify-between">
+              <span>ollama run deepseek-r1:8b</span>
+              <span class="text-neutral-400 text-[10px]">Instant Local Server</span>
+            </div>
+            <div class="bg-neutral-900 text-white p-3 rounded-md flex items-center justify-between">
+              <span>docker run -d -p 8080:8080 -v open-webui:/app/backend/data ghcr.io/open-webui/open-webui:main</span>
+              <span class="text-neutral-400 text-[10px]">ChatGPT UI Clone</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. Official LLM Token Calculator Math -->
+        <section id="token-calculator" class="scroll-mt-24 bg-white border border-[#E2E8F0] rounded-xl p-6 md:p-8 shadow-xs">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-mono font-bold text-primary px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200">Guide 06</span>
+            <span class="text-xs text-neutral-400 font-mono">Token Economics</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black text-ink tracking-tight mb-4">
+            Official LLM Token Calculator Methodology
+          </h2>
+          <p class="text-sm text-neutral-600 leading-relaxed mb-4">
+            Our Token Calculator benchmarks 13 official frontier LLMs from OpenAI, Anthropic, Google, and DeepSeek. Unlike general estimates, calculations compute prompt input costs, reasoning output costs, and prompt caching discounts:
+          </p>
+
+          <div class="bg-neutral-900 text-white rounded-lg p-5 font-mono text-xs space-y-2 mb-6">
+            <div class="text-blue-400 font-bold">// Pricing Execution Formula:</div>
+            <div>Cost_USD = (PromptTokens / 1,000,000 * InputRate) + (OutputTokens / 1,000,000 * OutputRate)</div>
+            <div>Cost_INR = Cost_USD * Official_USD_INR_Rate (Default: 86.50)</div>
+            <div>Cached_Savings = (PromptTokens * CacheHitRate / 1,000,000) * (InputRate - CachedInputRate)</div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-surface border border-[#E2E8F0] text-xs text-neutral-700 space-y-2">
+            <div class="font-bold text-ink">Official Provider Alignment:</div>
+            <p>
+              We benchmark pricing directly from official developer portals (e.g. OpenAI Platform, Anthropic Console, Google AI Studio, DeepSeek Platform). Third-party proxy markup providers are excluded to ensure true base-rate accuracy.
+            </p>
+          </div>
+        </section>
+
+        <!-- 7. Community, Reputation & Bounty Rules -->
+        <section id="community-reputation" class="scroll-mt-24 bg-white border border-[#E2E8F0] rounded-xl p-6 md:p-8 shadow-xs">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-mono font-bold text-primary px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200">Guide 07</span>
+            <span class="text-xs text-neutral-400 font-mono">Governance</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black text-ink tracking-tight mb-4">
+            Community, Reputation & Bounty Rules
+          </h2>
+          <p class="text-sm text-neutral-600 leading-relaxed mb-4">
+            To prevent spam reviews and affiliate brigading, member reputations are calculated through verifiable contributions:
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="p-4 rounded-lg bg-surface border border-neutral-200 text-center">
+              <div class="text-2xl font-black font-mono text-primary mb-1">+5</div>
+              <div class="text-xs font-bold text-ink mb-1">Useful Comment</div>
+              <p class="text-[11px] text-neutral-500">Upvoted by community members in a discussion thread.</p>
+            </div>
+            <div class="p-4 rounded-lg bg-surface border border-neutral-200 text-center">
+              <div class="text-2xl font-black font-mono text-primary mb-1">+25</div>
+              <div class="text-xs font-bold text-ink mb-1">Verified Review</div>
+              <p class="text-[11px] text-neutral-500">Detailed tool review with specific production use case.</p>
+            </div>
+            <div class="p-4 rounded-lg bg-surface border border-neutral-200 text-center">
+              <div class="text-2xl font-black font-mono text-primary mb-1">+50</div>
+              <div class="text-xs font-bold text-ink mb-1">Data Correction</div>
+              <p class="text-[11px] text-neutral-500">Accepted pricing or API change report with source verification.</p>
+            </div>
+            <div class="p-4 rounded-lg bg-surface border border-neutral-200 text-center">
+              <div class="text-2xl font-black font-mono text-primary mb-1">+100</div>
+              <div class="text-xs font-bold text-ink mb-1">Workflow Recipe</div>
+              <p class="text-[11px] text-neutral-500">Accepted multi-step automated workflow with valid prompts.</p>
+            </div>
+          </div>
+
+          <h3 class="text-base font-bold text-ink mb-2">Anti-Gaming & Verification Tiers</h3>
+          <ul class="space-y-2 text-xs text-neutral-700 list-disc list-inside">
+            <li><strong>Verified Member:</strong> Authenticated account via email/GitHub. Allowed to post reviews and bookmark tools.</li>
+            <li><strong>Verified Architect (250+ pts):</strong> Access to submit workflows and vote on data correction queues.</li>
+            <li><strong>Core Maintainer (1000+ pts):</strong> Direct review privileges in the Admin Operations Console.</li>
+          </ul>
+        </section>
+
+        <!-- 8. Platform Architecture & Entity Graph -->
+        <section id="architecture-schema" class="scroll-mt-24 bg-white border border-[#E2E8F0] rounded-xl p-6 md:p-8 shadow-xs">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-mono font-bold text-primary px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200">Guide 08</span>
+            <span class="text-xs text-neutral-400 font-mono">System Design</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black text-ink tracking-tight mb-4">
+            Platform Architecture & 24-Table Entity Graph
+          </h2>
+          <p class="text-sm text-neutral-600 leading-relaxed mb-4">
+            AIO AI is powered by Astro 5 with hybrid server rendering, Tailwind CSS v4 design tokens, and Supabase PostgreSQL managed via Drizzle ORM.
+          </p>
+
+          <div class="bg-neutral-900 text-white rounded-lg p-5 font-mono text-xs space-y-3 mb-6">
+            <div class="text-emerald-400 font-bold">// 24 PostgreSQL Entity Tables:</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-neutral-300">
+              <div>1. tools</div>
+              <div>2. categories</div>
+              <div>3. tool_categories</div>
+              <div>4. reviews</div>
+              <div>5. workflows</div>
+              <div>6. workflow_steps</div>
+              <div>7. creators</div>
+              <div>8. creator_topics</div>
+              <div>9. repositories</div>
+              <div>10. repo_metrics</div>
+              <div>11. news_stories</div>
+              <div>12. story_entities</div>
+              <div>13. llm_models</div>
+              <div>14. model_pricing</div>
+              <div>15. stacks</div>
+              <div>16. stack_tools</div>
+              <div>17. profiles</div>
+              <div>18. bookmarks</div>
+              <div>19. community_posts</div>
+              <div>20. comments</div>
+              <div>21. votes</div>
+              <div>22. corrections</div>
+              <div>23. audit_logs</div>
+              <div>24. platform_settings</div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-surface border border-[#E2E8F0] text-xs text-neutral-700">
+            <strong>Relational Join Guarantee:</strong> Querying a tool by slug automatically retrieves relational foreign records (e.g. <code>tools_repositories</code>, <code>workflows_steps</code>, <code>creators_tools</code>) to render deep contextual cards without disjointed data silos.
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+  // Smooth scroll and active state sync for Docs Sidebar
+  const links = document.querySelectorAll('.docs-nav-link');
+  const sections = document.querySelectorAll('section[id]');
+
+  function updateActiveLink() {
+    let current = '';
+    const scrollPos = window.scrollY + 140;
+
+    sections.forEach(sec => {
+      const top = sec.offsetTop;
+      const height = sec.offsetHeight;
+      if (scrollPos >= top && scrollPos < top + height) {
+        current = sec.getAttribute('id') || '';
+      }
+    });
+
+    links.forEach(link => {
+      const target = link.getAttribute('data-target');
+      if (target === current) {
+        link.classList.add('bg-blue-50', 'text-primary', 'font-bold');
+        link.classList.remove('text-neutral-600');
+      } else {
+        link.classList.remove('bg-blue-50', 'text-primary', 'font-bold');
+        link.classList.add('text-neutral-600');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveLink);
+  updateActiveLink();
+</script>
