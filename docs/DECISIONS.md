@@ -42,3 +42,17 @@
 2. Implement client-side safety upsert on `/dashboard` and `/login` to ensure profile readiness before any mutation.  
 3. Implement Hybrid Live Data Engine (`liveNewsService.ts`, `githubLiveService.ts`, `liveModelService.ts`) hydrating static catalogs with real-time Algolia HN AI, GitHub REST, and OpenRouter pricing APIs with graceful offline fallbacks.  
 4. Apply Row Level Security (`0001_enable_rls_policies.sql`) across all 24 PostgreSQL tables with strict anonymous read vs authenticated write isolation.
+
+## Decision 006: 9-Pillar Master Overhaul & Anti-Dummy Data Hardening
+**Date**: 2026-10-25  
+**Problem**: Audit revealed synthetic placeholder billing metrics ($44/mo savings, Pioneer ranks), fabricated community threads, opaque scores without proof, static open-source tables without live search, missing workflow execution studios, and missing dedicated pricing tiers.  
+**Decision**:  
+1. Purge all dummy billing, fake savings, and synthetic community accounts; start user counters strictly at 0 (Bookmarks, Workflows, Named Stacks, Reputation).  
+2. Replace opaque platform scores with a deterministic 5-Factor Authenticity Scorecard (Docs & API Maturity [25], Pricing Transparency [25], Workflow Interop [20], Domain Health [15], Community Signal [15]).  
+3. Introduce Live GitHub AI search safety-gated to `>=1,000` stars and overhaul `/open-source/trending` with Repositories vs Developers/Orgs tabs, language filters, and time intervals.  
+4. Rebuild `/news` into a live-first chronological wire aggregating Hacker News Algolia, Hugging Face Papers, and Dev.to AI with clickable source badges.  
+5. Standardize all 16 production workflows with complete system prompts, user templates, and JSON REST schemas; build interactive Workflow Studio (`/workflows/builder`) with token/cost calculators and step-run test runner.  
+6. Expand creator intelligence to 60+ verified channels across India and global ecosystems with country, tier, category, and language filters.  
+7. Launch custom Named Stack Builder with 5 modular slots, real-time USD/INR economics, and 1-Click Free Swap to open-source alternatives.  
+8. Transform `/profile` into a 5-tab workspace and introduce dedicated `/pricing` page with purchasing power parity (₹ INR vs $ USD) and feature matrix.  
+9. Expand automated test suite to 53 comprehensive unit and integration assertions (100% pass) and verify static compilation across 294 HTML routes.

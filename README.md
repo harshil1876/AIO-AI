@@ -1,6 +1,6 @@
 # AIO AI — The Unified AI Discovery, Workflow & Intelligence Platform
 
-[![Verification Suite](https://img.shields.io/badge/Verification%20Suite-46%2F46%20Passing-emerald)](https://github.com/harshil1876/AIO-AI)
+[![Verification Suite](https://img.shields.io/badge/Verification%20Suite-53%2F53%20Passing-emerald)](https://github.com/harshil1876/AIO-AI)
 [![Database](https://img.shields.io/badge/Supabase%20PostgreSQL-24%20Tables%20RLS-blue)](https://supabase.com)
 [![Framework](https://img.shields.io/badge/Astro-5.x%20%7C%20Tailwind%20v4-black)](https://astro.build)
 
@@ -25,25 +25,29 @@
    - Zero third-party aggregator pricing; strictly official first-party API rates.
    - Live text metrics: Tokens, Words, Characters without spaces, and Estimated Latency.
 
-4. **Production AI Workflows Hub (`/workflows`, `/workflows/[id]`)**:
-   - 16+ production-ready workflows with 1-click **"Copy Valid n8n JSON"** and interactive Node Inspector drawers.
+4. **Production AI Workflows & Interactive Studio (`/workflows`, `/workflows/[id]`, `/workflows/builder`)**:
+   - 16 production workflows with complete `systemPrompt`, `userPromptTemplate`, copyable REST JSON payloads, and 1-click **"Copy Valid n8n JSON"**.
+   - Custom **Workflow Studio (`/workflows/builder`)**: Drag-and-drop node graph canvas (Trigger, AI Model, Transform, Output), live token counter & cost calculator across 26 models, and step execution test runner.
 
 5. **Open-Source AI Hub (`/open-source`, `/open-source/trending`, `/[slug]`)**:
-   - 20+ top AI repositories with live GitHub stars, forks, open issues, and latest release tags.
+   - 20+ flagship AI repositories + **Live GitHub AI Search Engine** safety-gated to `>=1,000` stars.
+   - Authentic GitHub Trending with Repositories vs Developers/Orgs tabs, language filters, and Today / Week / Month velocity ranges.
    - Interactive **"Can My PC Run This?"** GPU hardware checker assessing VRAM suitability across 4GB, 6GB, 8GB, 12GB, 16GB, 24GB, and 48GB cards.
 
-6. **Daily AI News Wire (`/news`, `/news/[slug]`)**:
+6. **Live AI News Wire (`/news`, `/news/[slug]`)**:
    - High-contrast Neo-Brutalist technical dispatch ticker.
-   - Real-time Algolia HN AI and ArXiv research integration.
-   - "60s Bullet Mode" toggle, 30-second technical TL;DR, and practitioner discussion thread.
+   - Live-first chronological aggregation merging Hacker News Algolia, Hugging Face Daily Papers, and Dev.to AI.
+   - Clickable source verification badges, "60s Bullet Mode" toggle, and technical TL;DR.
 
 7. **Curated AI & Tech Educators Hub (`/creators`, `/creators/[slug]`)**:
-   - 18+ verified YouTube AI creators (Andrej Karpathy, 3Blue1Brown, Matthew Berman, CodeWithHarry, etc.) with 3 structured learning tracks.
+   - 60+ verified YouTube AI channels across India and global ecosystems.
+   - Multi-facet filtering by Country/Region, Subscriber Tier, Category, and Language.
 
-8. **Interactive AI Stack Builder (`/stack-builder`)**:
-   - Assemble role-specific stacks (Creator, Engineer, Marketer, India-First Enterprise).
-   - Real-time cloud subscription cost vs. 100% free open-source alternative comparison.
-   - Public stack saving and persistent sharing links (`/stack-builder?stackId=...`).
+8. **Custom Named Stack Builder & Workspace Profile (`/stack-builder`, `/profile`, `/pricing`)**:
+   - Assemble custom-named stacks with 5 modular slots (Model, Orchestrator, Vector DB, IDE, Runtime).
+   - Real-time cloud subscription cost vs 1-Click 100% Free Open-Source swap ($0/mo).
+   - 5-tab user profile hub (Account, My Workflows, My Named Stacks, Saved Bookmarks, Submitted Contributions).
+   - Dedicated Pricing page (`/pricing`) with purchasing power parity (₹ INR vs $ USD) and feature matrix.
 
 9. **Security, Compliance & Community Governance**:
    - Row Level Security (RLS) enabled across all 24 Supabase PostgreSQL tables.
@@ -82,7 +86,7 @@ npm run db:secure
 ```bash
 npm test
 ```
-*Executes 46 automated assertions validating data integrity, ranking mathematics, token costs, VRAM logic, and route completeness.*
+*Executes 53 automated assertions validating catalog integrity, ranking mathematics, token costs, VRAM logic, 5-factor scoring, and route completeness.*
 
 ### 5. Start Development Server
 ```bash
@@ -94,7 +98,7 @@ Open `http://localhost:4321` in your browser.
 ```bash
 npm run build
 ```
-Compiles 240+ optimized static HTML pages in `< 5 seconds`.
+Compiles 294 optimized static HTML pages in `< 4 seconds`.
 
 ---
 
