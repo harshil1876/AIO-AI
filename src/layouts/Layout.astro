@@ -111,13 +111,13 @@ const defaultJsonLd = jsonLd || {
       })();
     </script>
   </head>
-  <body class="bg-[#FFFFFF] text-[#334155] font-sans antialiased selection:bg-[#2563EB] selection:text-white min-h-screen">
+  <body class="aurora-canvas text-[#334155] font-sans antialiased selection:bg-[#2563EB] selection:text-white min-h-screen">
     {hideSidebar ? (
       <slot />
     ) : (
       <div class="flex min-h-screen w-full relative" id="appShellWrapper">
         <Sidebar currentPath={currentPath} />
-        <div class="flex-1 flex flex-col min-w-0 bg-[#FFFFFF] transition-all duration-200" id="mainContentContainer">
+        <div class="flex-1 flex flex-col min-w-0 bg-transparent transition-all duration-200" id="mainContentContainer">
           <slot />
         </div>
       </div>

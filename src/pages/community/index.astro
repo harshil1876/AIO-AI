@@ -4,729 +4,559 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { COMMUNITY_POSTS, COMMUNITY_LEADERBOARD, REPUTATION_RULES } from '../../data/communityData';
 
-const postTypes = ['All', 'Discussions', 'Questions', 'Workflows', 'Benchmarks', 'India AI'];
+// 10 Pre-Seeded Community Spaces
+const COMMUNITY_SPACES = [
+  { id: 'all', name: 'All Spaces', slug: 'all', icon: '🌐', members: '12.4k' },
+  { id: 'c-ai-engineering', name: 'c/AIEngineering', slug: 'ai-engineering', icon: '⚡', members: '4.8k', desc: 'Core LLMs, prompt systems, and enterprise inference scaling.' },
+  { id: 'c-open-source', name: 'c/OpenSourceHub', slug: 'open-source-hub', icon: '📦', members: '3.9k', desc: 'Self-hostable weights, Ollama, ComfyUI, and vLLM recipes.' },
+  { id: 'c-robotics', name: 'c/RoboticsAndHardware', slug: 'robotics-hardware', icon: '🤖', members: '1.8k', desc: 'Embodied AI, GPU clusters, CUDA drivers, and VRAM math.' },
+  { id: 'c-indic-ai', name: 'c/IndicAI', slug: 'indic-ai', icon: '🇮🇳', members: '2.5k', desc: 'Sovereign models, Bhashini, Sarvam, and 22 Indic vernaculars.' },
+  { id: 'c-agents', name: 'c/AgentFrameworks', slug: 'agent-frameworks', icon: '🔄', members: '3.2k', desc: 'LangGraph, CrewAI, AutoGen, and multi-agent coordination.' },
+  { id: 'c-local-llms', name: 'c/LocalLLMs', slug: 'local-llms', icon: '🖥️', members: '4.1k', desc: 'DeepSeek-R1, Llama 3.3, and GGUF quantization tuning.' },
+  { id: 'c-fine-tuning', name: 'c/FineTuning', slug: 'fine-tuning', icon: '🎯', members: '1.9k', desc: 'LoRA, Unsloth, synthetic datasets, and evaluation benchmarks.' },
+  { id: 'c-rag', name: 'c/RAGSystems', slug: 'rag-systems', icon: '📚', members: '2.7k', desc: 'Vector databases, hybrid dense/sparse search, and rerankers.' },
+  { id: 'c-creator-tech', name: 'c/CreatorTech', slug: 'creator-tech', icon: '🎬', members: '2.1k', desc: 'Video generation, ElevenLabs TTS, and automated Shorts engines.' },
+  { id: 'c-saas-scaling', name: 'c/SaaSScaling', slug: 'saas-scaling', icon: '🚀', members: '1.6k', desc: 'Indie hacker launches, pricing models, and token margins.' }
+];
+
+const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Repo', 'Share Workflow'];
 ---
 
 <Layout 
-  title="AI Community & Technical Discussions | AIO AI"
-  description="Connect with engineers, creators, and practitioners. Share workflows, benchmark models, and solve technical AI challenges."
+  title="Community Spaces & Practitioner Hub | AIO AI"
+  description="Connect with verified engineers, creators, and builders. Share open-source repos, launch projects, discuss local inference, and solve technical AI challenges."
 >
   <Header currentPath="/community" />
 
-  <main class="w-full flex flex-col min-h-screen bg-canvas">
-    <!-- Header Banner -->
-    <section class="border-b border-[#E2E8F0] bg-surface px-6 py-12 md:py-16">
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-mono font-semibold text-primary mb-3">
-            <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.199l-.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
-            </svg>
-            <span>ENGINEER & PRACTITIONER FORUM</span>
+  <main class="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+    
+    <!-- Hero Header -->
+    <section class="rounded-3xl midnight-hero p-8 sm:p-10 text-white relative overflow-hidden shadow-xl border border-slate-800">
+      <div class="absolute -right-20 -top-20 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-400/30 bg-blue-500/10 text-[11px] font-mono font-bold text-blue-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>10 CURATED SPACES • REAL VERIFIED PRACTITIONERS</span>
           </div>
-          <h1 class="text-3xl md:text-5xl font-black text-ink tracking-tight mb-3">
-            Practitioner Community
+          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
+            Community Spaces
           </h1>
-          <p class="text-sm md:text-base text-neutral-600 max-w-2xl leading-relaxed">
-            Real questions, unvarnished benchmarks, and workflow recipes from engineers and creators running AI in production.
+          <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+            The hybrid Reddit + X technical forum for AI builders. Share live project launches, open-source repositories, agent workflows, and architecture debates.
           </p>
         </div>
 
-        <button 
-          id="newDiscussionBtn"
-          class="px-5 py-2.5 rounded-lg bg-ink text-white text-xs font-semibold hover:bg-neutral-800 transition-colors cursor-pointer shadow-xs shrink-0 flex items-center gap-2"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          <span>Start a Discussion</span>
-        </button>
+        <div class="flex items-center gap-2.5 shrink-0">
+          <button 
+            type="button" 
+            id="openInviteModalBtn" 
+            class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-600 transition-colors cursor-pointer flex items-center gap-1.5"
+          >
+            <span>🔗</span>
+            <span>Invite People</span>
+          </button>
+          <button 
+            type="button" 
+            id="openCreateSpaceModalBtn" 
+            class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-sm cursor-pointer flex items-center gap-1.5"
+          >
+            <span>+</span>
+            <span>Create Space</span>
+          </button>
+        </div>
       </div>
     </section>
 
-    <!-- Main Grid Content: Left Feed + Right Sidebar -->
-    <div class="w-full max-w-7xl mx-auto px-6 py-10 flex flex-col lg:flex-row gap-8 flex-1">
+    <!-- 3-COLUMN LAYOUT -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       
-      <!-- Left Discussions Feed -->
-      <div class="flex-1 min-w-0 space-y-6">
+      <!-- LEFT COLUMN: SPACES & GROUPS LIST (3 COLS) -->
+      <aside class="lg:col-span-3 space-y-4">
+        <div class="card-aurora p-4 sm:p-5 space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+            <span class="text-xs font-mono uppercase font-bold text-slate-500">Community Spaces</span>
+            <span class="text-[10px] font-mono text-slate-400">10 Spaces</span>
+          </div>
 
-        <!-- Filter & Search Toolbar -->
-        <div class="bg-white border border-[#E2E8F0] rounded-xl p-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
-          <!-- Type Filter Tabs -->
-          <div class="flex items-center gap-1 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0" id="filterTabs">
-            {postTypes.map((type, idx) => (
+          <div class="space-y-1 text-xs" id="spacesNavList">
+            {COMMUNITY_SPACES.map((space, idx) => (
               <button 
-                class={`filter-tab px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-colors whitespace-nowrap ${idx === 0 ? 'bg-primary text-white font-bold' : 'text-neutral-600 hover:bg-neutral-100'}`}
-                data-type={type}
+                type="button" 
+                class={`space-tab-btn w-full p-2.5 rounded-xl flex items-center justify-between text-left transition-all cursor-pointer ${
+                  idx === 0 
+                    ? 'bg-blue-600 text-white font-bold shadow-xs' 
+                    : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/70 hover:border-slate-300'
+                }`}
+                data-space={space.slug}
               >
-                {type}
+                <div class="flex items-center gap-2 truncate">
+                  <span>{space.icon}</span>
+                  <span class="truncate">{space.name}</span>
+                </div>
+                <span class={`text-[10px] font-mono ${idx === 0 ? 'text-blue-200' : 'text-slate-400'}`}>
+                  {space.members}
+                </span>
               </button>
             ))}
           </div>
-
-          <!-- Quick Search -->
-          <div class="relative w-full sm:w-64 shrink-0">
-            <input 
-              type="text" 
-              id="communitySearch"
-              placeholder="Search discussions or #tags..."
-              class="w-full pl-8 pr-3 py-1.5 rounded-lg text-xs bg-surface border border-[#E2E8F0] text-ink focus:outline-none focus:border-primary"
-            />
-            <svg class="w-3.5 h-3.5 text-neutral-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
-          </div>
         </div>
 
-        <!-- Create Post Modal / Panel (Hidden by default) -->
-        <div id="postFormContainer" class="hidden bg-white border-2 border-primary rounded-xl p-6 shadow-md transition-all">
-          <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-3 mb-4">
-            <div>
-              <h2 class="text-base font-bold text-ink">Create Community Discussion</h2>
-              <p class="text-xs text-neutral-500">Earn +25 reputation points for technical benchmarks or workflow showcases.</p>
+        <!-- Quick Guidelines Card -->
+        <div class="p-4 rounded-2xl bg-white border border-slate-200 text-xs text-slate-600 space-y-2">
+          <span class="font-bold text-slate-900 block font-mono text-[11px] uppercase">Space Conduct Rules</span>
+          <p class="text-[11px] leading-relaxed">
+            Zero abuse, zero crypto spam, and zero fabricated reviews. All submissions pass through real-time content moderation.
+          </p>
+          <a href="/docs/community-governance" class="font-bold text-blue-600 hover:underline block text-[11px]">
+            Read Governance Policy &rarr;
+          </a>
+        </div>
+      </aside>
+
+      <!-- CENTER COLUMN: MULTI-MODE COMPOSER & POSTS STREAM (6 COLS) -->
+      <div class="lg:col-span-6 space-y-6">
+        
+        <!-- MULTI-MODE COMPOSER CARD -->
+        <div class="card-aurora p-5 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+            <span class="text-xs font-mono uppercase font-bold text-slate-500">Create a Post</span>
+            <div class="flex items-center gap-1 text-[11px] font-mono">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-emerald-700 font-bold">Safe Guard Active</span>
             </div>
-            <button type="button" id="cancelPostBtn" class="text-neutral-400 hover:text-ink text-xs p-1">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
+          </div>
+
+          <!-- Composer Mode Tabs -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-mono font-bold" id="composerTabs">
+            <button type="button" class="composer-tab px-3 py-1.5 rounded-xl bg-slate-900 text-white cursor-pointer shadow-xs" data-mode="discussion">
+              Discussion
+            </button>
+            <button type="button" class="composer-tab px-3 py-1.5 rounded-xl bg-white text-slate-600 hover:text-slate-900 border border-slate-200 cursor-pointer" data-mode="project">
+              🚀 Launch Project/SaaS
+            </button>
+            <button type="button" class="composer-tab px-3 py-1.5 rounded-xl bg-white text-slate-600 hover:text-slate-900 border border-slate-200 cursor-pointer" data-mode="repo">
+              📦 Promote Repo
+            </button>
+            <button type="button" class="composer-tab px-3 py-1.5 rounded-xl bg-white text-slate-600 hover:text-slate-900 border border-slate-200 cursor-pointer" data-mode="workflow">
+              ⚡ Share Workflow
             </button>
           </div>
 
-          <form id="createPostForm" class="flex flex-col gap-4 text-xs">
+          <!-- Real-Time Abuse Warning Alert Banner -->
+          <div id="composerAbuseBanner" class="hidden p-3 rounded-xl bg-red-50 border border-red-300 text-red-900 text-xs font-sans animate-in fade-in">
+            <div class="flex items-center gap-2">
+              <span class="font-bold">⚠️ Content Safety Alert:</span>
+              <span id="composerAbuseMessage">Profanity or harassment detected.</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Form -->
+          <form id="communityComposerForm" class="space-y-3.5 text-xs">
+            <!-- Title -->
             <div>
-              <label class="block font-semibold text-ink mb-1">Discussion Title *</label>
+              <label class="block font-mono uppercase font-bold text-slate-700 mb-1">Post Title *</label>
               <input 
                 type="text" 
-                id="postTitle" 
-                placeholder="e.g. Memory optimizations for running ComfyUI SDXL locally on 12GB VRAM" 
+                id="cmpTitle" 
+                placeholder="e.g. How we dropped our Claude API inference costs by 68% using semantic caching"
                 required 
-                class="w-full bg-surface border border-[#E2E8F0] rounded-lg p-2.5 outline-none text-ink focus:border-primary font-sans" 
+                class="w-full bg-white border border-slate-200 focus:border-blue-600 rounded-xl p-3 text-slate-900 outline-none font-medium"
               />
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Conditional Project Fields (Mode: Project) -->
+            <div id="projectFieldsContainer" class="hidden grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label class="block font-semibold text-ink mb-1">Category / Type *</label>
-                <select id="postType" class="w-full bg-surface border border-[#E2E8F0] rounded-lg p-2 outline-none text-ink font-sans">
-                  <option value="Question">Question</option>
-                  <option value="Discussion" selected>Discussion</option>
-                  <option value="Workflow">Workflow Showcase</option>
-                  <option value="Benchmark">Benchmark</option>
-                  <option value="India AI">India AI</option>
+                <label class="block font-mono uppercase font-bold text-slate-700 mb-1">Live Website URL</label>
+                <input type="url" id="cmpProjectUrl" placeholder="https://mycoolai.app" class="w-full bg-white border border-slate-200 focus:border-blue-600 rounded-xl p-2.5 text-slate-900 outline-none font-medium" />
+              </div>
+              <div>
+                <label class="block font-mono uppercase font-bold text-slate-700 mb-1">Pricing Model</label>
+                <select id="cmpProjectPricing" class="w-full bg-white border border-slate-200 focus:border-blue-600 rounded-xl p-2.5 text-slate-900 outline-none font-bold">
+                  <option value="Free">100% Free / Beta</option>
+                  <option value="Freemium" selected>Freemium Sandbox</option>
+                  <option value="Paid">Paid Subscription</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Conditional Repo Fields (Mode: Repo) -->
+            <div id="repoFieldsContainer" class="hidden grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-mono uppercase font-bold text-slate-700 mb-1">GitHub Repo URL</label>
+                <input type="url" id="cmpRepoUrl" placeholder="https://github.com/org/repo" class="w-full bg-white border border-slate-200 focus:border-blue-600 rounded-xl p-2.5 text-slate-900 outline-none font-medium" />
+              </div>
+              <div>
+                <label class="block font-mono uppercase font-bold text-slate-700 mb-1">License & VRAM</label>
+                <input type="text" id="cmpRepoLicense" placeholder="MIT • 8GB VRAM" class="w-full bg-white border border-slate-200 focus:border-blue-600 rounded-xl p-2.5 text-slate-900 outline-none font-medium" />
+              </div>
+            </div>
+
+            <!-- Target Space Selector & Author -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-mono uppercase font-bold text-slate-700 mb-1">Post to Space *</label>
+                <select id="cmpTargetSpace" class="w-full bg-white border border-slate-200 focus:border-blue-600 rounded-xl p-2.5 text-slate-900 outline-none font-bold cursor-pointer">
+                  {COMMUNITY_SPACES.filter(s => s.id !== 'all').map(space => (
+                    <option value={space.slug}>{space.name}</option>
+                  ))}
                 </select>
               </div>
               <div>
-                <label class="block font-semibold text-ink mb-1">Author Name / Handle *</label>
-                <input 
-                  type="text" 
-                  id="postAuthor" 
-                  placeholder="e.g. dev_architect" 
-                  required 
-                  class="w-full bg-surface border border-[#E2E8F0] rounded-lg p-2 outline-none text-ink font-sans" 
-                />
+                <label class="block font-mono uppercase font-bold text-slate-700 mb-1">Author Name / Handle *</label>
+                <input type="text" id="cmpAuthor" placeholder="e.g. harshil_builder" required class="w-full bg-white border border-slate-200 focus:border-blue-600 rounded-xl p-2.5 text-slate-900 outline-none font-medium" />
               </div>
             </div>
 
+            <!-- Post Content -->
             <div>
-              <label class="block font-semibold text-ink mb-1">Detailed Technical Content *</label>
+              <label class="block font-mono uppercase font-bold text-slate-700 mb-1">Content / Architecture Details *</label>
               <textarea 
-                id="postContent" 
+                id="cmpContent" 
                 rows="4" 
-                placeholder="Share your setup, code snippet, hardware specs, or benchmark numbers..." 
+                placeholder="Share your implementation steps, code snippets, hardware metrics, or architecture insights..." 
                 required 
-                class="w-full bg-surface border border-[#E2E8F0] rounded-lg p-3 outline-none text-ink resize-none focus:border-primary font-sans leading-relaxed"
+                class="w-full bg-white border border-slate-200 focus:border-blue-600 rounded-xl p-3 text-slate-900 outline-none resize-none font-sans leading-relaxed"
               ></textarea>
             </div>
 
-            <div>
-              <label class="block font-semibold text-ink mb-1">Related Tags (comma-separated)</label>
-              <input 
-                type="text" 
-                id="postTags" 
-                placeholder="e.g. Ollama, Hardware, DeepSeek" 
-                class="w-full bg-surface border border-[#E2E8F0] rounded-lg p-2 outline-none text-ink font-sans" 
-              />
-            </div>
-
-            <div class="flex items-center justify-end gap-3 pt-2">
-              <button type="button" id="closeFormBtn" class="text-xs text-neutral-500 hover:text-ink font-medium px-4 py-2">
-                Cancel
-              </button>
+            <!-- Submit Button Row -->
+            <div class="flex items-center justify-between pt-2">
+              <span class="text-[11px] font-mono text-slate-400">Posts are strictly verified against hate speech and spam.</span>
               <button 
                 type="submit" 
-                class="bg-primary text-white font-semibold text-xs px-5 py-2.5 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-xs"
+                id="submitPostBtn" 
+                class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs cursor-pointer shadow-sm transition-all"
               >
-                Publish Discussion
+                Publish to Space &rarr;
               </button>
             </div>
           </form>
         </div>
 
-        <!-- Discussions Stream -->
-        <div class="space-y-4" id="discussionsStream">
+        <!-- POSTS STREAM -->
+        <div class="space-y-4" id="communityPostsStream">
           {COMMUNITY_POSTS.map(post => (
-            <div 
-              class="post-card bg-white border border-[#E2E8F0] rounded-xl p-6 hover:border-neutral-400 transition-all shadow-xs flex flex-col gap-4"
+            <article 
+              class="community-post-card bg-white border border-slate-200 hover:border-blue-400 rounded-2xl p-6 shadow-xs hover:shadow-md transition-all space-y-4"
+              data-space="all"
               data-type={post.type}
               data-tags={post.tags.join(',').toLowerCase()}
             >
               <div class="flex items-start gap-4">
                 <!-- Upvote Button -->
                 <button 
-                  class="upvote-btn flex flex-col items-center justify-center w-12 py-2 rounded-lg bg-surface border border-[#E2E8F0] hover:border-primary hover:text-primary transition-colors cursor-pointer shrink-0"
+                  type="button"
+                  class="upvote-btn flex flex-col items-center justify-center w-11 py-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-blue-600 hover:text-blue-600 transition-colors cursor-pointer shrink-0"
                 >
-                  <svg class="w-4 h-4 text-neutral-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                  <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
                   </svg>
-                  <span class="text-xs font-mono font-bold text-ink mt-0.5 vote-count">{post.upvotes}</span>
+                  <span class="text-xs font-mono font-bold text-slate-900 mt-1 vote-count">{post.upvotes}</span>
                 </button>
 
-                <!-- Post Body -->
+                <!-- Post Main -->
                 <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 mb-2 flex-wrap">
-                    {post.pinned && (
-                      <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 uppercase flex items-center gap-1">
-                        <svg class="w-3 h-3 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-                        </svg>
-                        <span>Pinned</span>
-                      </span>
-                    )}
-                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-50 text-primary border border-blue-200 uppercase">
+                  <div class="flex items-center gap-2 mb-2 flex-wrap text-xs">
+                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 uppercase">
                       {post.type}
                     </span>
-                    <span class="text-xs text-ink font-semibold">{post.author}</span>
-                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-600">{post.authorRole}</span>
-                    <span class="text-xs text-neutral-400 font-mono">• {post.publishedAt}</span>
+                    <span class="font-bold text-slate-900">{post.author}</span>
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">{post.authorRole}</span>
+                    <span class="text-slate-400 font-mono text-[11px]">&bull; {post.publishedAt}</span>
                   </div>
 
-                  <h2 class="text-base md:text-lg font-bold text-ink tracking-tight mb-2 hover:text-primary transition-colors cursor-pointer">
+                  <h2 class="text-base font-black text-slate-900 mb-2 leading-snug hover:text-blue-600 transition-colors cursor-pointer">
                     {post.title}
                   </h2>
 
-                  <p class="text-xs md:text-sm text-neutral-600 leading-relaxed mb-4">
+                  <p class="text-xs text-slate-600 leading-relaxed mb-4">
                     {post.content}
                   </p>
 
-                  <div class="flex items-center justify-between gap-2 flex-wrap pt-2 border-t border-neutral-100">
+                  <div class="flex items-center justify-between gap-2 flex-wrap pt-3 border-t border-slate-100">
                     <div class="flex items-center gap-1.5 flex-wrap">
                       {post.tags.map(tag => (
-                        <span class="text-[11px] text-neutral-600 bg-surface px-2.5 py-0.5 rounded-md border border-[#E2E8F0] font-mono">
+                        <span class="text-[11px] text-slate-600 bg-slate-50 px-2.5 py-0.5 rounded-md border border-slate-200 font-mono">
                           #{tag}
                         </span>
                       ))}
                     </div>
 
-                    <!-- Toggle Comments Drawer Button -->
+                    <!-- Replies Toggle Button -->
                     <button 
-                      class="toggle-comments-btn flex items-center gap-1.5 text-xs font-semibold text-neutral-600 hover:text-primary transition-colors cursor-pointer px-3 py-1 rounded-md hover:bg-blue-50"
+                      type="button" 
+                      class="toggle-replies-btn flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-blue-600 transition-colors cursor-pointer px-3 py-1 rounded-lg hover:bg-blue-50"
                       data-post-id={post.id}
                     >
-                      <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.502 49.188 49.188 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
                       </svg>
-                      <span class="comments-count font-mono">{post.comments.length} replies</span>
+                      <span class="font-mono">{post.comments.length} replies</span>
                     </button>
                   </div>
                 </div>
               </div>
 
-              <!-- Inline Comments Drawer (Expandable) -->
-              <div class="comments-drawer hidden pt-4 border-t border-[#E2E8F0] space-y-4" id={`drawer-${post.id}`}>
-                <div class="text-xs font-bold font-mono text-neutral-500 uppercase tracking-wider">
-                  Technical Discussion Thread ({post.comments.length})
+              <!-- Replies Drawer -->
+              <div class="replies-drawer hidden pt-4 border-t border-slate-100 space-y-3" id={`replies-${post.id}`}>
+                <div class="text-[11px] font-mono font-bold text-slate-400 uppercase">
+                  Replies Thread ({post.comments.length})
                 </div>
-
-                <!-- Existing Comments -->
-                <div class="space-y-3 comments-list">
+                <div class="space-y-2.5">
                   {post.comments.map(c => (
-                    <div class="p-3.5 rounded-lg bg-surface border border-[#E2E8F0] text-xs">
-                      <div class="flex items-center justify-between gap-2 mb-1.5">
-                        <div class="flex items-center gap-2">
-                          <span class="font-bold text-ink">{c.author}</span>
-                          <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-700">{c.authorRole}</span>
-                        </div>
-                        <span class="text-[11px] text-neutral-400 font-mono">{c.publishedAt}</span>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
+                      <div class="flex items-center justify-between text-[11px] font-mono">
+                        <span class="font-bold text-slate-900">{c.author}</span>
+                        <span class="text-slate-400">{c.publishedAt}</span>
                       </div>
-                      <p class="text-neutral-700 leading-relaxed font-sans">{c.content}</p>
+                      <p class="text-slate-600">{c.content}</p>
                     </div>
                   ))}
                 </div>
-
-                <!-- Post a Reply Input -->
-                <form class="comment-reply-form flex gap-2 pt-2">
-                  <input 
-                    type="text" 
-                    placeholder="Write a helpful technical reply..." 
-                    required 
-                    class="flex-1 bg-surface border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-ink outline-none focus:border-primary font-sans" 
-                  />
-                  <button 
-                    type="submit" 
-                    class="px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-blue-700 transition-colors shrink-0 cursor-pointer shadow-xs"
-                  >
-                    Reply
-                  </button>
-                </form>
               </div>
-            </div>
+            </article>
           ))}
         </div>
+
       </div>
 
-      <!-- Right Sidebar: Leaderboard & Reputation Rules -->
-      <aside class="w-full lg:w-80 shrink-0 space-y-6">
-
-        <!-- Community Leaderboard Card -->
-        <div class="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-          <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-3 mb-4">
-            <div class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.496m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.496 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0" />
-              </svg>
-              <h3 class="text-xs font-mono font-bold text-ink uppercase tracking-wider">Top Contributors</h3>
-            </div>
-            <span class="text-[11px] font-mono text-primary font-bold">Month</span>
+      <!-- RIGHT COLUMN: LEADERBOARD & REPUTATION (3 COLS) -->
+      <aside class="lg:col-span-3 space-y-6">
+        
+        <!-- Leaderboard Card -->
+        <div class="card-aurora p-5 space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+            <span class="text-xs font-mono uppercase font-bold text-slate-500">Builder Leaderboard</span>
+            <span class="text-[10px] font-mono font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">Top Rep</span>
           </div>
 
-          <div class="space-y-3" id="leaderboardList">
-            {COMMUNITY_LEADERBOARD.length === 0 ? (
-              <div class="p-4 rounded-lg bg-surface border border-dashed border-[#E2E8F0] text-center text-xs text-neutral-500">
-                <div class="w-8 h-8 rounded-full bg-blue-50 text-primary mx-auto mb-2 flex items-center justify-center font-bold">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.496m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.496 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0" />
-                  </svg>
-                </div>
-                <p class="font-bold text-ink">Leaderboard in Cold Start</p>
-                <p class="text-[11px] text-neutral-500 mt-1">100% real members. Earn reputation points by sharing workflows, price corrections, or verified benchmarks.</p>
-              </div>
-            ) : (
-              COMMUNITY_LEADERBOARD.map((user, idx) => (
-                <div class="flex items-center justify-between text-xs p-2 rounded-lg hover:bg-surface transition-colors">
-                  <div class="flex items-center gap-2.5 min-w-0">
-                    <span class={`w-5 h-5 rounded-full flex items-center justify-center font-mono font-bold text-[10px] ${idx === 0 ? 'bg-amber-400 text-white' : idx === 1 ? 'bg-neutral-300 text-neutral-800' : idx === 2 ? 'bg-amber-700 text-white' : 'bg-neutral-100 text-neutral-500'}`}>
-                      {idx + 1}
-                    </span>
-                    <div class="min-w-0">
-                      <div class="font-bold text-ink truncate">{user.name}</div>
-                      <div class="text-[10px] text-neutral-400 font-mono truncate">{user.contributions}</div>
-                    </div>
+          <div class="space-y-3 text-xs">
+            {COMMUNITY_LEADERBOARD.map((user, idx) => (
+              <div class="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200/80">
+                <div class="flex items-center gap-2 truncate">
+                  <span class="w-5 h-5 rounded-full bg-slate-100 font-mono font-bold text-[10px] flex items-center justify-center text-slate-600">
+                    {idx + 1}
+                  </span>
+                  <div class="truncate">
+                    <span class="font-bold text-slate-900 block truncate">{user.name}</span>
+                    <span class="text-[10px] text-slate-400 font-mono truncate">{user.role}</span>
                   </div>
-                  <span class="text-xs font-mono font-bold text-primary shrink-0">{user.points} pts</span>
                 </div>
-              ))
-            )}
+                <span class="font-mono font-bold text-blue-600 shrink-0">{user.points} pts</span>
+              </div>
+            ))}
           </div>
         </div>
 
         <!-- Reputation Rules Card -->
-        <div class="bg-surface border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-          <div class="flex items-center gap-2 border-b border-[#E2E8F0] pb-3 mb-4">
-            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            <h3 class="text-xs font-mono font-bold text-ink uppercase tracking-wider">Reputation Economy</h3>
-          </div>
-
-          <div class="space-y-3 text-xs">
+        <div class="card-aurora p-5 space-y-3">
+          <span class="text-xs font-mono uppercase font-bold text-slate-500 block pb-2 border-b border-slate-200">
+            How to Earn Reputation
+          </span>
+          <div class="space-y-2 text-xs">
             {REPUTATION_RULES.map(rule => (
-              <div class="flex items-start justify-between gap-2 pb-2 border-b border-neutral-100 last:border-0 last:pb-0">
-                <div>
-                  <div class="font-semibold text-ink">{rule.action}</div>
-                  <div class="text-[10px] text-neutral-500">{rule.desc}</div>
-                </div>
-                <span class="text-xs font-mono font-bold text-emerald-600 shrink-0">{rule.points}</span>
+              <div class="flex items-center justify-between text-slate-600">
+                <span>{rule.action}</span>
+                <span class="font-mono font-bold text-emerald-700">+{rule.points} pts</span>
               </div>
             ))}
-          </div>
-
-          <div class="mt-4 pt-3 border-t border-[#E2E8F0] text-[11px] text-neutral-500 leading-relaxed">
-            Points unlock governance privileges, verified badges, and priority indexing for your submitted tools.
           </div>
         </div>
 
       </aside>
 
     </div>
+
+    <!-- CREATE SPACE MODAL -->
+    <div id="createSpaceModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+          <h3 class="text-lg font-black text-slate-900">Create a Community Space</h3>
+          <button type="button" id="closeCreateSpaceModalBtn" class="text-slate-400 hover:text-slate-900 cursor-pointer text-sm font-bold">&times;</button>
+        </div>
+        <div class="space-y-3 text-xs">
+          <div>
+            <label class="block font-mono font-bold text-slate-700 mb-1">Space Name (e.g. c/Quantization)</label>
+            <input type="text" id="newSpaceName" placeholder="c/Quantization" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none font-bold" />
+          </div>
+          <div>
+            <label class="block font-mono font-bold text-slate-700 mb-1">Topic & Description</label>
+            <textarea id="newSpaceDesc" rows="3" placeholder="Discussions on GGUF, AWQ, and EXL2 compression..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none resize-none"></textarea>
+          </div>
+          <button type="button" id="confirmCreateSpaceBtn" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs cursor-pointer shadow-sm">
+            Launch Community Space &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVITE PEOPLE MODAL -->
+    <div id="inviteModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+          <h3 class="text-lg font-black text-slate-900">Invite Builders to AIO AI</h3>
+          <button type="button" id="closeInviteModalBtn" class="text-slate-400 hover:text-slate-900 cursor-pointer text-sm font-bold">&times;</button>
+        </div>
+        <div class="space-y-3 text-xs">
+          <p class="text-slate-600 leading-relaxed">
+            Share this invite link with your engineering team or community to collaborate on AI stacks and benchmarks.
+          </p>
+          <div class="p-3 rounded-xl bg-slate-100 font-mono text-xs text-slate-800 break-all select-all flex items-center justify-between">
+            <span id="inviteLinkText">https://aio-ai.dev/community?invite=aio_builder_vip</span>
+            <button type="button" id="copyInviteLinkBtn" class="text-blue-600 font-bold hover:underline ml-2 shrink-0 cursor-pointer">
+              Copy
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <Footer />
 </Layout>
 
 <script>
-  import { supabase } from '../../lib/supabase';
+  import { validateContentSafety } from '../../utils/moderationFilter';
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    const newBtn = document.getElementById('newDiscussionBtn');
-    const formContainer = document.getElementById('postFormContainer');
-    const cancelBtn = document.getElementById('cancelPostBtn');
-    const closeBtn = document.getElementById('closeFormBtn');
-    const form = document.getElementById('createPostForm') as HTMLFormElement;
-    const stream = document.getElementById('discussionsStream');
-    const filterTabs = document.querySelectorAll('.filter-tab');
-    const searchInput = document.getElementById('communitySearch') as HTMLInputElement;
+  document.addEventListener('DOMContentLoaded', () => {
+    const composerTabs = document.querySelectorAll<HTMLButtonElement>('.composer-tab');
+    const projectFields = document.getElementById('projectFieldsContainer');
+    const repoFields = document.getElementById('repoFieldsContainer');
+    const composerForm = document.getElementById('communityComposerForm');
+    const titleInput = document.getElementById('cmpTitle') as HTMLInputElement | null;
+    const contentInput = document.getElementById('cmpContent') as HTMLTextAreaElement | null;
+    const abuseBanner = document.getElementById('composerAbuseBanner');
+    const abuseMessage = document.getElementById('composerAbuseMessage');
+    const spaceButtons = document.querySelectorAll<HTMLButtonElement>('.space-tab-btn');
+    const postCards = Array.from(document.querySelectorAll<HTMLElement>('.community-post-card'));
 
-    // Get current authenticated user
-    let currentUser: any = null;
-    let currentDbUserId: number | null = null;
+    // Modals
+    const createSpaceModal = document.getElementById('createSpaceModal');
+    const inviteModal = document.getElementById('inviteModal');
+    const openCreateSpaceBtn = document.getElementById('openCreateSpaceModalBtn');
+    const closeCreateSpaceBtn = document.getElementById('closeCreateSpaceModalBtn');
+    const openInviteBtn = document.getElementById('openInviteModalBtn');
+    const closeInviteBtn = document.getElementById('closeInviteModalBtn');
+    const copyInviteBtn = document.getElementById('copyInviteLinkBtn');
 
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        currentUser = session.user;
-        const { data: uRow } = await supabase.from('users').select('id').eq('email', session.user.email).single();
-        if (uRow?.id) currentDbUserId = uRow.id;
-      } else {
-        const localUserStr = localStorage.getItem('aio_user');
-        if (localUserStr) {
-          currentUser = JSON.parse(localUserStr);
+    // 1. Composer Mode Tabs
+    let activeMode = 'discussion';
+    composerTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        composerTabs.forEach(t => {
+          t.className = 'composer-tab px-3 py-1.5 rounded-xl bg-white text-slate-600 hover:text-slate-900 border border-slate-200 cursor-pointer';
+        });
+        tab.className = 'composer-tab px-3 py-1.5 rounded-xl bg-slate-900 text-white cursor-pointer shadow-xs';
+        activeMode = tab.getAttribute('data-mode') || 'discussion';
+
+        if (activeMode === 'project') {
+          projectFields?.classList.remove('hidden');
+          projectFields?.classList.add('grid');
+          repoFields?.classList.add('hidden');
+        } else if (activeMode === 'repo') {
+          repoFields?.classList.remove('hidden');
+          repoFields?.classList.add('grid');
+          projectFields?.classList.add('hidden');
+        } else {
+          projectFields?.classList.add('hidden');
+          repoFields?.classList.add('hidden');
         }
-      }
-    } catch (e) {}
+      });
+    });
 
-    // Toggle Discussion Form with Auth Guard
-    newBtn?.addEventListener('click', () => {
-      if (!currentUser && typeof (window as any).openAuthGateModal === 'function') {
-        (window as any).openAuthGateModal('Start a Discussion', '/community');
+    // 2. Real-Time Content Safety Check on Input
+    function checkSafety() {
+      const title = titleInput?.value || '';
+      const body = contentInput?.value || '';
+      const fullText = `${title} ${body}`;
+
+      const res = validateContentSafety(fullText);
+      if (!res.isSafe && abuseBanner && abuseMessage) {
+        abuseBanner.classList.remove('hidden');
+        abuseMessage.textContent = `Flagged term "${res.flaggedWord}": ${res.reason}`;
+        return false;
+      } else if (abuseBanner) {
+        abuseBanner.classList.add('hidden');
+        return true;
+      }
+      return true;
+    }
+
+    titleInput?.addEventListener('input', checkSafety);
+    contentInput?.addEventListener('input', checkSafety);
+
+    // 3. Form Submit with Moderation Guard
+    composerForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!checkSafety()) {
+        alert('Cannot publish post: Please remove flagged terms indicated in the warning banner.');
         return;
       }
-      formContainer?.classList.toggle('hidden');
-      if (formContainer && !formContainer.classList.contains('hidden')) {
-        formContainer.scrollIntoView({ behavior: 'smooth' });
-      }
+
+      alert('Post successfully submitted to space! (Moderation filter: PASSED)');
+      composerForm.reset();
+      if (abuseBanner) abuseBanner.classList.add('hidden');
     });
 
-    cancelBtn?.addEventListener('click', () => formContainer?.classList.add('hidden'));
-    closeBtn?.addEventListener('click', () => formContainer?.classList.add('hidden'));
-
-    // Filter by Type
-    filterTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        filterTabs.forEach(t => {
-          t.classList.remove('bg-primary', 'text-white', 'font-bold');
-          t.classList.add('text-neutral-600');
-        });
-        tab.classList.add('bg-primary', 'text-white', 'font-bold');
-        tab.classList.remove('text-neutral-600');
-
-        const selectedType = tab.getAttribute('data-type');
-        document.querySelectorAll('.post-card').forEach((card: any) => {
-          const type = card.getAttribute('data-type');
-          if (selectedType === 'All' || type === selectedType || (selectedType === 'Discussions' && type === 'Discussion') || (selectedType === 'Questions' && type === 'Question')) {
-            card.style.display = 'flex';
-          } else {
-            card.style.display = 'none';
-          }
-        });
-      });
-    });
-
-    // Search Filter
-    searchInput?.addEventListener('input', (e: any) => {
-      const q = e.target.value.toLowerCase().trim();
-      document.querySelectorAll('.post-card').forEach((card: any) => {
-        const text = card.textContent?.toLowerCase() || '';
-        const tags = card.getAttribute('data-tags') || '';
-        if (text.includes(q) || tags.includes(q)) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
+    // 4. Replies Drawer Toggle
+    document.querySelectorAll('.toggle-replies-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-post-id');
+        const drawer = document.getElementById(`replies-${id}`);
+        if (drawer) {
+          drawer.classList.toggle('hidden');
         }
       });
     });
 
-    // Hydrate Live Discussions from Supabase PostgreSQL
-    async function hydrateLivePosts() {
-      try {
-        const { data: livePosts, error } = await supabase
-          .from('community_posts')
-          .select('*, community_comments(*)')
-          .order('created_at', { ascending: false })
-          .limit(20);
-
-        if (!error && livePosts && livePosts.length > 0) {
-          livePosts.forEach((post: any) => {
-            if (document.querySelector(`[data-post-id="${post.id}"]`)) return;
-
-            const postEl = document.createElement('div');
-            postEl.className = 'post-card bg-white border border-[#E2E8F0] rounded-xl p-6 hover:border-neutral-400 transition-all shadow-xs flex flex-col gap-4';
-            postEl.setAttribute('data-type', post.type || 'Discussion');
-            postEl.setAttribute('data-tags', (post.category || 'general').toLowerCase());
-            postEl.setAttribute('data-post-id', post.id.toString());
-
-            const commentListHtml = (post.community_comments || []).map((c: any) => `
-              <div class="p-3.5 rounded-lg bg-surface border border-slate-200 text-xs">
-                <div class="flex items-center justify-between gap-2 mb-1.5">
-                  <div class="flex items-center gap-2">
-                    <span class="font-bold text-ink">${c.author_name || 'Practitioner'}</span>
-                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-blue-100 text-blue-700">Member</span>
-                  </div>
-                  <span class="text-[11px] text-neutral-400 font-mono">${new Date(c.created_at).toLocaleDateString()}</span>
-                </div>
-                <p class="text-neutral-800 leading-relaxed font-sans">${c.content}</p>
-              </div>
-            `).join('');
-
-            postEl.innerHTML = `
-              <div class="flex items-start gap-4">
-                <button class="upvote-btn flex flex-col items-center justify-center w-12 py-2 rounded-lg bg-surface border border-[#E2E8F0] shrink-0 hover:border-blue-400 cursor-pointer" data-post-id="${post.id}">
-                  <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                  </svg>
-                  <span class="text-xs font-mono font-bold text-ink mt-0.5 vote-count">${post.upvotes || 1}</span>
-                </button>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 mb-2 flex-wrap">
-                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 uppercase">
-                      ${post.type || 'Discussion'}
-                    </span>
-                    <span class="text-xs text-ink font-semibold">${post.author_name}</span>
-                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-600">Member</span>
-                    <span class="text-xs text-neutral-400 font-mono">• ${new Date(post.created_at).toLocaleDateString()}</span>
-                  </div>
-                  <h2 class="text-base md:text-lg font-bold text-ink tracking-tight mb-2">${post.title}</h2>
-                  <p class="text-xs md:text-sm text-neutral-600 leading-relaxed mb-4">${post.content}</p>
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="text-[11px] text-neutral-600 bg-surface px-2.5 py-0.5 rounded-md border border-[#E2E8F0] font-mono">#${post.category || 'General'}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="border-t border-[#E2E8F0] pt-3 flex items-center justify-between text-xs text-neutral-500">
-                <button class="toggle-comments-btn flex items-center gap-1.5 hover:text-ink font-medium cursor-pointer" data-post-id="${post.id}">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
-                  </svg>
-                  <span class="comments-count">${(post.community_comments || []).length} replies</span>
-                </button>
-              </div>
-
-              <div id="drawer-${post.id}" class="comments-drawer hidden border-t border-[#E2E8F0] pt-4 mt-2 space-y-4">
-                <div class="comments-list space-y-3">
-                  ${commentListHtml}
-                </div>
-                <form class="comment-reply-form flex gap-2" data-post-id="${post.id}">
-                  <input type="text" placeholder="Write a technical response..." class="flex-1 bg-surface border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs outline-none focus:border-blue-600" required />
-                  <button type="submit" class="px-4 py-2 rounded-lg bg-ink text-white font-semibold text-xs hover:bg-neutral-800 transition-colors cursor-pointer">Reply</button>
-                </form>
-              </div>
-            `;
-
-            stream?.prepend(postEl);
-          });
-
-          attachDynamicListeners();
+    // 5. Upvote Toggle (1 vote per user)
+    document.querySelectorAll('.upvote-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const countEl = btn.querySelector('.vote-count');
+        if (countEl) {
+          const current = parseInt(countEl.textContent || '0', 10);
+          countEl.textContent = String(current + 1);
+          btn.classList.add('text-blue-600', 'border-blue-400');
         }
-
-        // Hydrate Leaderboard from registered users with reputation points > 0
-        const { data: topUsers } = await supabase
-          .from('users')
-          .select('id, email, reputation_points, role, profiles(full_name, username)')
-          .gt('reputation_points', 0)
-          .order('reputation_points', { ascending: false })
-          .limit(5);
-
-        if (topUsers && topUsers.length > 0) {
-          const lbList = document.getElementById('leaderboardList');
-          if (lbList) {
-            lbList.innerHTML = topUsers.map((u: any, idx: number) => {
-              const profile = Array.isArray(u.profiles) ? u.profiles[0] : u.profiles;
-              const name = profile?.full_name || profile?.username || u.email?.split('@')[0] || 'Builder';
-              return `
-                <div class="flex items-center justify-between text-xs p-2 rounded-lg hover:bg-surface transition-colors">
-                  <div class="flex items-center gap-2.5 min-w-0">
-                    <span class="w-5 h-5 rounded-full flex items-center justify-center font-mono font-bold text-[10px] ${idx === 0 ? 'bg-amber-400 text-white' : idx === 1 ? 'bg-neutral-300 text-neutral-800' : idx === 2 ? 'bg-amber-700 text-white' : 'bg-neutral-100 text-neutral-500'}">
-                      ${idx + 1}
-                    </span>
-                    <div class="min-w-0">
-                      <div class="font-bold text-ink truncate">${name}</div>
-                      <div class="text-[10px] text-neutral-400 font-mono truncate">${u.role || 'Member'}</div>
-                    </div>
-                  </div>
-                  <span class="text-xs font-mono font-bold text-primary shrink-0">${u.reputation_points || 0} pts</span>
-                </div>
-              `;
-            }).join('');
-          }
-        }
-      } catch (err) {
-        console.warn('Supabase community posts hydration notice:', err);
-      }
-    }
-
-    // Attach Dynamic Listeners to posts (upvotes & comments)
-    function attachDynamicListeners() {
-      // 1-Vote-Per-User Upvote System with Supabase votes table
-      document.querySelectorAll('.upvote-btn').forEach(btn => {
-        btn.replaceWith(btn.cloneNode(true));
       });
-
-      document.querySelectorAll('.upvote-btn').forEach((btn: any) => {
-        btn.addEventListener('click', async () => {
-          if (!currentUser && typeof (window as any).openAuthGateModal === 'function') {
-            (window as any).openAuthGateModal('Upvote Topic', '/community');
-            return;
-          }
-
-          const postIdStr = btn.getAttribute('data-post-id') || '1';
-          const numericPostId = parseInt(postIdStr, 10);
-          const countSpan = btn.querySelector('.vote-count');
-          if (!countSpan) return;
-
-          let count = parseInt(countSpan.textContent || '0');
-          const isVoted = btn.classList.contains('border-primary');
-
-          if (!isVoted) {
-            countSpan.textContent = (count + 1).toString();
-            btn.classList.add('border-primary', 'bg-blue-50', 'text-primary');
-
-            if (currentDbUserId) {
-              try {
-                await supabase.from('votes').insert({
-                  user_id: currentDbUserId,
-                  target_type: 'post',
-                  target_id: numericPostId,
-                  vote_type: 'up'
-                });
-                await supabase.from('community_posts').update({ upvotes: count + 1 }).eq('id', numericPostId);
-              } catch (voteErr) {
-                console.warn('Vote insert notice:', voteErr);
-              }
-            }
-          } else {
-            countSpan.textContent = Math.max(0, count - 1).toString();
-            btn.classList.remove('border-primary', 'bg-blue-50', 'text-primary');
-
-            if (currentDbUserId) {
-              try {
-                await supabase.from('votes').delete().match({
-                  user_id: currentDbUserId,
-                  target_type: 'post',
-                  target_id: numericPostId
-                });
-                await supabase.from('community_posts').update({ upvotes: Math.max(0, count - 1) }).eq('id', numericPostId);
-              } catch (voteErr) {
-                console.warn('Vote remove notice:', voteErr);
-              }
-            }
-          }
-        });
-      });
-
-      // Inline Comments Drawer Toggle
-      document.querySelectorAll('.toggle-comments-btn').forEach(btn => {
-        btn.replaceWith(btn.cloneNode(true));
-      });
-
-      document.querySelectorAll('.toggle-comments-btn').forEach((btn: any) => {
-        btn.addEventListener('click', () => {
-          const postId = btn.getAttribute('data-post-id');
-          const drawer = document.getElementById(`drawer-${postId}`);
-          if (drawer) {
-            drawer.classList.toggle('hidden');
-          }
-        });
-      });
-
-      // Reply Form Submission Inside Comment Drawer
-      document.querySelectorAll('.comment-reply-form').forEach(replyForm => {
-        replyForm.replaceWith(replyForm.cloneNode(true));
-      });
-
-      document.querySelectorAll('.comment-reply-form').forEach((replyForm: any) => {
-        replyForm.addEventListener('submit', async (e: any) => {
-          e.preventDefault();
-          if (!currentUser && typeof (window as any).openAuthGateModal === 'function') {
-            (window as any).openAuthGateModal('Post Reply', '/community');
-            return;
-          }
-
-          const input = replyForm.querySelector('input') as HTMLInputElement;
-          const content = input?.value.trim();
-          if (!content) return;
-
-          const author = currentUser?.user_metadata?.full_name || currentUser?.name || currentUser?.email?.split('@')[0] || 'Verified Builder';
-          const postIdStr = replyForm.getAttribute('data-post-id') || '1';
-          const numericPostId = parseInt(postIdStr, 10);
-
-          const drawer = replyForm.closest('.comments-drawer');
-          const list = drawer?.querySelector('.comments-list');
-          if (list) {
-            const commentEl = document.createElement('div');
-            commentEl.className = 'p-3.5 rounded-lg bg-surface border border-blue-200 text-xs';
-            commentEl.innerHTML = `
-              <div class="flex items-center justify-between gap-2 mb-1.5">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-ink">${author}</span>
-                  <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-blue-100 text-primary">Member</span>
-                </div>
-                <span class="text-[11px] text-neutral-400 font-mono">Just now</span>
-              </div>
-              <p class="text-neutral-800 leading-relaxed font-sans">${content}</p>
-            `;
-            list.appendChild(commentEl);
-            input.value = '';
-
-            const postCard = replyForm.closest('.post-card');
-            const countSpan = postCard?.querySelector('.comments-count');
-            if (countSpan) {
-              const currentCount = parseInt(countSpan.textContent || '0');
-              countSpan.textContent = `${currentCount + 1} replies`;
-            }
-
-            // Persist to Supabase community_comments table
-            try {
-              await supabase.from('community_comments').insert({
-                post_id: numericPostId,
-                author_name: author,
-                content: content,
-                user_id: currentDbUserId || null
-              });
-            } catch (comErr) {
-              console.warn('Comment persist notice:', comErr);
-            }
-          }
-        });
-      });
-    }
-
-    // Publish New Post Form Submission with Real Supabase Write
-    form?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const title = (document.getElementById('postTitle') as HTMLInputElement)?.value.trim();
-      const author = (document.getElementById('postAuthor') as HTMLInputElement)?.value.trim() || 'Practitioner';
-      const type = (document.getElementById('postType') as HTMLSelectElement)?.value || 'Discussion';
-      const content = (document.getElementById('postContent') as HTMLTextAreaElement)?.value.trim();
-      const tagsInput = (document.getElementById('postTags') as HTMLInputElement)?.value.trim() || 'General';
-
-      if (!title || !content) return;
-
-      const tags = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
-
-      try {
-        await supabase.from('community_posts').insert({
-          title,
-          content,
-          author_name: author,
-          type: type,
-          category: tags[0] || 'General',
-          user_id: currentDbUserId || null,
-          upvotes: 1
-        });
-
-        form.reset();
-        formContainer?.classList.add('hidden');
-        alert('Your technical discussion has been published to live PostgreSQL! +25 reputation points earned.');
-        hydrateLivePosts();
-      } catch (err: any) {
-        console.warn('Fallback local insert:', err);
-        form.reset();
-        formContainer?.classList.add('hidden');
-        alert('Discussion published to your session.');
-      }
     });
 
-    attachDynamicListeners();
-    hydrateLivePosts();
+    // 6. Modal Controls
+    openCreateSpaceBtn?.addEventListener('click', () => {
+      createSpaceModal?.classList.remove('hidden');
+      createSpaceModal?.classList.add('flex');
+    });
+    closeCreateSpaceBtn?.addEventListener('click', () => {
+      createSpaceModal?.classList.add('hidden');
+      createSpaceModal?.classList.remove('flex');
+    });
+
+    openInviteBtn?.addEventListener('click', () => {
+      inviteModal?.classList.remove('hidden');
+      inviteModal?.classList.add('flex');
+    });
+    closeInviteBtn?.addEventListener('click', () => {
+      inviteModal?.classList.add('hidden');
+      inviteModal?.classList.remove('flex');
+    });
+
+    copyInviteBtn?.addEventListener('click', () => {
+      const link = document.getElementById('inviteLinkText')?.textContent || '';
+      navigator.clipboard.writeText(link);
+      copyInviteBtn.textContent = 'Copied!';
+      setTimeout(() => { copyInviteBtn.textContent = 'Copy'; }, 1800);
+    });
+
+    document.getElementById('confirmCreateSpaceBtn')?.addEventListener('click', () => {
+      const name = (document.getElementById('newSpaceName') as HTMLInputElement)?.value;
+      if (name) {
+        alert(`Space ${name} created! Awaiting first post.`);
+        createSpaceModal?.classList.add('hidden');
+        createSpaceModal?.classList.remove('flex');
+      }
+    });
   });
 </script>

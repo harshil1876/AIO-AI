@@ -1,0 +1,369 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+export function getStaticPaths() {
+  const GUIDES = [
+    {
+      slug: 'authenticity-scoring',
+      title: '5-Factor Authenticity Scoring Methodology',
+      category: 'Editorial Integrity',
+      summary: 'Mathematical breakdown of the 0–100 scoring engine: API maturity, pricing transparency, open-source alternatives, and community velocity.',
+      readTime: '6 min read',
+      badge: 'Audited Formula'
+    },
+    {
+      slug: 'solution-finder-engine',
+      title: 'Deterministic Intent Finder & Blueprint Engine',
+      category: 'Algorithms',
+      summary: 'How AIO AI maps developer queries into 3-tier Decision Blueprints (Free Local, Freemium Cloud, and Production Recipes).',
+      readTime: '7 min read',
+      badge: 'Pipeline Math'
+    },
+    {
+      slug: 'workflow-studio-guide',
+      title: 'Workflow Studio & SKILL.md Standard Specification',
+      category: 'Agent Orchestration',
+      summary: 'Architecture specification for building multi-step agent recipes, tool-calling nodes, and exporting Antigravity SKILL.md bundles.',
+      readTime: '8 min read',
+      badge: 'Engineering'
+    },
+    {
+      slug: 'utility-studio-handbook',
+      title: 'Utility Studio Architecture & Privacy Sandbox',
+      category: 'Client Security',
+      summary: 'Engineering handbook detailing client-side browser execution, memory isolation, and zero-telemetry computation.',
+      readTime: '5 min read',
+      badge: 'Zero Telemetry'
+    },
+    {
+      slug: 'open-source-vram-math',
+      title: 'Local Inference VRAM Sizing & Quantization Math',
+      category: 'Hardware Specs',
+      summary: 'Exact mathematical equations for calculating GPU memory across FP16, Q8, Q4_K_M, and KV cache context buffers.',
+      readTime: '6 min read',
+      badge: 'Hardware Proof'
+    },
+    {
+      slug: 'community-governance',
+      title: 'Community Governance, Reputation & Content Filter',
+      category: 'Trust & Safety',
+      summary: 'Peer review standards, verified creator badges, space moderation rules, and real-time anti-abuse profanity filter.',
+      readTime: '5 min read',
+      badge: 'Safety Filter'
+    },
+    {
+      slug: 'database-rls-security',
+      title: 'PostgreSQL Row Level Security & Auth Sync Architecture',
+      category: 'Infrastructure',
+      summary: 'Security blueprint for Supabase PostgreSQL RLS, user triggers between auth.users and public.users, and admin JWT defense.',
+      readTime: '9 min read',
+      badge: 'Security Spec'
+    }
+  ];
+
+  return GUIDES.map(guide => ({
+    params: { slug: guide.slug },
+    props: { guide, allGuides: GUIDES }
+  }));
+}
+
+const { guide, allGuides } = Astro.props;
+---
+
+<Layout 
+  title={`${guide.title} | Technical Documentation | AIO AI`}
+  description={guide.summary}
+>
+  <Header currentPath="/docs" />
+
+  <main class="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+    
+    <!-- Top Breadcrumbs -->
+    <div class="flex items-center justify-between text-xs font-mono text-slate-500">
+      <div class="flex items-center gap-2">
+        <a href="/docs" class="hover:text-blue-600 transition-colors">Documentation</a>
+        <span>/</span>
+        <span class="text-slate-800 font-bold">{guide.title}</span>
+      </div>
+      <a href="/docs" class="text-blue-600 hover:underline font-bold">
+        &larr; Docs Overview
+      </a>
+    </div>
+
+    <!-- Hero Header -->
+    <section class="rounded-3xl midnight-hero p-8 sm:p-10 text-white relative overflow-hidden shadow-xl border border-slate-800">
+      <div class="absolute -right-20 -top-20 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative z-10 max-w-3xl space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-400/30 bg-blue-500/10 text-[11px] font-mono font-bold text-blue-300">
+          <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+          <span>{guide.category.toUpperCase()} • {guide.badge.toUpperCase()}</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
+          {guide.title}
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          {guide.summary}
+        </p>
+        <div class="pt-2 text-xs font-mono text-slate-400">
+          Estimated reading time: {guide.readTime} &bull; Verified Production Specification
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTENT BODY + SIDEBAR NAVIGATION (2 COLS) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- MAIN TECHNICAL GUIDE BODY (8 COLS) -->
+      <article class="lg:col-span-8 card-aurora p-6 sm:p-10 space-y-8 text-slate-800 text-sm leading-relaxed">
+        
+        <!-- GUIDE 1: AUTHENTICITY SCORING -->
+        {guide.slug === 'authenticity-scoring' && (
+          <div class="space-y-6">
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">The 5-Factor Authenticity Scorecard (0–100)</h2>
+            <p>
+              Unlike legacy directories that accept sponsored placements or calculate rankings from unverified user voting, AIO AI scores every tool through an auditable, multi-signal mathematical framework.
+            </p>
+
+            <div class="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-blue-900 text-xs">
+              <strong class="font-bold">Strict Rule: Zero Pay-For-Placement.</strong> No vendor can purchase a higher platform score, featured badge, or top directory rank.
+            </div>
+
+            <h3 class="text-lg font-bold text-slate-900 pt-3">Factor Weighting Breakdown:</h3>
+            <ul class="space-y-3 pl-4 list-disc text-xs font-medium">
+              <li><strong>Documentation & API Maturity (25 pts):</strong> Evaluates presence of OpenAPI/Swagger specs, SDK support (TypeScript, Python), and uptime status page.</li>
+              <li><strong>Pricing Transparency & Tier Generosity (25 pts):</strong> Awards points for clear pricing pages without "Contact Sales" obfuscation and high free-tier allowances.</li>
+              <li><strong>Active Open-Source Alternative (20 pts):</strong> Verifies whether self-hostable equivalents exist and can replace cloud subscriptions cleanly.</li>
+              <li><strong>Community Sentiment & GitHub Star Velocity (15 pts):</strong> Analyzes genuine practitioner sentiment, issue response times, and repository commit momentum.</li>
+              <li><strong>Data Sovereignty & Security Compliance (15 pts):</strong> Verifies data retention policies, zero-training opt-outs, and regional residency standards.</li>
+            </ul>
+
+            <h3 class="text-lg font-bold text-slate-900 pt-3">Mathematical Formulation:</h3>
+            <div class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto">
+              Score = (Docs × 0.25) + (Pricing × 0.25) + (OpenSource × 0.20) + (Velocity × 0.15) + (Sovereignty × 0.15)
+            </div>
+          </div>
+        )}
+
+        <!-- GUIDE 2: SOLUTION FINDER ENGINE -->
+        {guide.slug === 'solution-finder-engine' && (
+          <div class="space-y-6">
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Deterministic Intent Matching Architecture</h2>
+            <p>
+              The Solution Finder translates vague human goals into precise 3-tier engineering blueprints. Rather than simply returning a search query list, it connects tools into operational flows.
+            </p>
+
+            <h3 class="text-lg font-bold text-slate-900 pt-3">The 3-Tier Blueprint Structure:</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200">
+                <span class="font-mono font-bold text-emerald-800 block mb-1">Option A: $0 Open Source</span>
+                Runs locally on developer hardware with complete data sovereignty and zero recurring cloud costs.
+              </div>
+              <div class="p-3.5 rounded-xl bg-blue-50 border border-blue-200">
+                <span class="font-mono font-bold text-blue-800 block mb-1">Option B: Freemium Cloud</span>
+                Balances developer velocity with managed infrastructure, maximizing free tier requests before paywalls.
+              </div>
+              <div class="p-3.5 rounded-xl bg-purple-50 border border-purple-200">
+                <span class="font-mono font-bold text-purple-800 block mb-1">Option C: Enterprise Pipeline</span>
+                Production recipe integrating triggers, reasoning loops, error handlers, and audit logging.
+              </div>
+            </div>
+
+            <h3 class="text-lg font-bold text-slate-900 pt-3">Intent Ingestion Pipeline:</h3>
+            <ol class="space-y-2 pl-4 list-decimal text-xs font-medium">
+              <li><strong>Keyword & Domain Tokenization:</strong> Extracts hardware constraints, regional requirements (e.g. Indic speech), and task domain.</li>
+              <li><strong>Hardware Capability Check:</strong> Intersects user GPU VRAM with model parameter quantizations.</li>
+              <li><strong>Execution Node Assembly:</strong> Chains Step 1 Ingestion, Step 2 Reasoning, and Step 3 Synthesis.</li>
+            </ol>
+          </div>
+        )}
+
+        <!-- GUIDE 3: WORKFLOW STUDIO GUIDE -->
+        {guide.slug === 'workflow-studio-guide' && (
+          <div class="space-y-6">
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Workflow Studio & SKILL.md Standard</h2>
+            <p>
+              Workflow Studio allows developers to build, test, and export agentic automation pipelines. Every workflow follows the open SKILL.md specification.
+            </p>
+
+            <h3 class="text-lg font-bold text-slate-900 pt-3">SKILL.md Specification Format:</h3>
+            <div class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto leading-relaxed">
+{`---
+name: pr-security-auditor
+description: Validates incoming GitHub pull requests against OWASP Top 10 guidelines.
+version: 1.0.0
+tools:
+  - read_file
+  - run_command
+  - git_diff
+environment:
+  required_vars:
+    - GITHUB_TOKEN
+---
+
+# PR Security Auditor Skill
+
+## Operational Rules
+1. Never approve pull requests with unescaped SQL string concatenation.
+2. Verify all API endpoints enforce Supabase authentication middleware.
+3. Generate structured markdown comments with actionable diff patches.`}
+            </div>
+          </div>
+        )}
+
+        <!-- GUIDE 4: UTILITY STUDIO HANDBOOK -->
+        {guide.slug === 'utility-studio-handbook' && (
+          <div class="space-y-6">
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Utility Studio Architecture & Privacy Sandbox</h2>
+            <p>
+              Every utility in the AIO AI Utility Studio runs 100% inside your client browser. No user input, prompt text, API key, or uploaded document is ever transmitted to an external logging server.
+            </p>
+
+            <h3 class="text-lg font-bold text-slate-900 pt-3">Security & Sandbox Guarantees:</h3>
+            <ul class="space-y-2 pl-4 list-disc text-xs font-medium">
+              <li><strong>Zero Server Ingestion:</strong> Text processing, token estimation, and JSON conversions occur via local JavaScript engines.</li>
+              <li><strong>Local Storage Isolation:</strong> User preferences (e.g. pinned sidebar, selected currency) persist only in your browser's private storage.</li>
+              <li><strong>Web Worker Multithreading:</strong> Heavy regex processing and chunking operations run in isolated background threads without UI freezing.</li>
+            </ul>
+          </div>
+        )}
+
+        <!-- GUIDE 5: OPEN SOURCE VRAM MATH -->
+        {guide.slug === 'open-source-vram-math' && (
+          <div class="space-y-6">
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Local Inference VRAM Sizing & Quantization Math</h2>
+            <p>
+              Self-hosting open weights requires precise GPU memory calculations. Running out of VRAM causes catastrophic memory swapping to system RAM, degrading generation speeds from 50 tok/s to 0.5 tok/s.
+            </p>
+
+            <h3 class="text-lg font-bold text-slate-900 pt-3">The Exact VRAM Formula:</h3>
+            <div class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto">
+              VRAM_Required (GB) = ((Parameters_Billions × Bits_Per_Weight) / 8) + (Context_Length × 0.12) + 1.2 GB_CUDA_Overhead
+            </div>
+
+            <h3 class="text-lg font-bold text-slate-900 pt-3">Quantization Bit Rates Table:</h3>
+            <div class="overflow-x-auto border border-slate-200 rounded-xl">
+              <table class="w-full text-left text-xs font-mono">
+                <thead class="bg-slate-50 border-b border-slate-200 text-slate-500">
+                  <tr>
+                    <th class="p-3">Quantization</th>
+                    <th class="p-3">Bits / Weight</th>
+                    <th class="p-3">Perplexity Loss</th>
+                    <th class="p-3">7B Model VRAM</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  <tr><td class="p-3 font-bold">FP16</td><td class="p-3">16.0</td><td class="p-3 text-emerald-600">0.00 (Baseline)</td><td class="p-3">~15.2 GB</td></tr>
+                  <tr><td class="p-3 font-bold">Q8_0</td><td class="p-3">8.5</td><td class="p-3 text-emerald-600">&lt; 0.01</td><td class="p-3">~8.6 GB</td></tr>
+                  <tr><td class="p-3 font-bold">Q4_K_M</td><td class="p-3">4.8</td><td class="p-3 text-blue-600">&lt; 0.05</td><td class="p-3">~5.4 GB</td></tr>
+                  <tr><td class="p-3 font-bold">Q3_K_M</td><td class="p-3">3.9</td><td class="p-3 text-amber-600">~ 0.15</td><td class="p-3">~4.6 GB</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        <!-- GUIDE 6: COMMUNITY GOVERNANCE -->
+        {guide.slug === 'community-governance' && (
+          <div class="space-y-6">
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Community Governance & Safety Architecture</h2>
+            <p>
+              AIO AI Community Spaces combine structured discussions, open-source project promotions, and technical peer reviews. All posts are filtered in real-time by a deterministic safety guard.
+            </p>
+
+            <h3 class="text-lg font-bold text-slate-900 pt-3">The Moderation & Anti-Abuse Filter:</h3>
+            <p class="text-xs">
+              Every post submitted on /community passes through <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">validateContentSafety()</code> before database storage:
+            </p>
+            <ul class="space-y-2 pl-4 list-disc text-xs font-medium">
+              <li><strong>Hate Speech & Harassment:</strong> Blocks slurs, derogatory targeting, and abusive language in both English and Hinglish vernaculars.</li>
+              <li><strong>Phishing & Malware Patterns:</strong> Rejects suspicious shorteners (e.g. bit.ly, grabify) and executable binaries.</li>
+              <li><strong>Spam Repetition:</strong> Detects copy-pasted promotional blast campaigns across multiple community spaces.</li>
+            </ul>
+          </div>
+        )}
+
+        <!-- GUIDE 7: DATABASE RLS SECURITY -->
+        {guide.slug === 'database-rls-security' && (
+          <div class="space-y-6">
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">PostgreSQL Row Level Security & Auth Architecture</h2>
+            <p>
+              With client-side Supabase credentials embedded in browser bundles, strict PostgreSQL Row Level Security (RLS) is the only barrier protecting platform tables from malicious tampering.
+            </p>
+
+            <h3 class="text-lg font-bold text-slate-900 pt-3">Critical Security Measures Implemented:</h3>
+            <ul class="space-y-2 pl-4 list-disc text-xs font-medium">
+              <li><strong>Strict Table RLS:</strong> Every table in <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">src/db/schema.ts</code> has RLS enabled with explicit SELECT, INSERT, and UPDATE policies.</li>
+              <li><strong>Auth Users Synchronization Trigger:</strong> PostgreSQL trigger <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">on_auth_user_created</code> synchronizes Supabase OAuth users into <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">public.users</code> to prevent foreign key errors.</li>
+              <li><strong>Cryptographic Admin Verification:</strong> Admin permissions never trust client localStorage. The server verifies the cryptographic JWT email against PostgreSQL policies.</li>
+            </ul>
+
+            <h3 class="text-lg font-bold text-slate-900 pt-3">PostgreSQL RLS Policy Example:</h3>
+            <div class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto leading-relaxed">
+{`-- Enforce strict user isolation on bookmarks
+CREATE POLICY "Users can only read own bookmarks"
+ON public.bookmarks
+FOR SELECT
+USING (auth.uid() = user_id);
+
+-- Enforce strict user isolation on reviews
+CREATE POLICY "Users can only insert own reviews"
+ON public.reviews
+FOR INSERT
+WITH CHECK (auth.uid() = user_id);`}
+            </div>
+          </div>
+        )}
+
+      </article>
+
+      <!-- SIDEBAR COMPANION: ALL GUIDES LIST (4 COLS) -->
+      <aside class="lg:col-span-4 space-y-4">
+        <div class="card-aurora p-6 space-y-4">
+          <h3 class="text-base font-black text-slate-900 tracking-tight pb-3 border-b border-slate-200">
+            All 7 Technical Guides
+          </h3>
+
+          <div class="space-y-2 text-xs">
+            {allGuides.map(g => (
+              <a 
+                href={`/docs/${g.slug}`} 
+                class={`block p-3 rounded-xl transition-all ${
+                  g.slug === guide.slug 
+                    ? 'bg-blue-600 text-white font-bold shadow-xs' 
+                    : 'bg-white hover:bg-slate-50 border border-slate-200 text-slate-700'
+                }`}
+              >
+                <div class="flex items-center justify-between mb-1">
+                  <span class={`text-[10px] font-mono uppercase ${g.slug === guide.slug ? 'text-blue-200' : 'text-slate-400'}`}>
+                    {g.category}
+                  </span>
+                  <span class={`text-[10px] font-mono ${g.slug === guide.slug ? 'text-blue-100' : 'text-slate-400'}`}>
+                    {g.readTime}
+                  </span>
+                </div>
+                <div class="leading-snug">{g.title}</div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- Quick Help Card -->
+        <div class="p-5 rounded-2xl bg-blue-50 border border-blue-200 text-blue-900 text-xs space-y-2">
+          <span class="font-bold block">Need an API integration or correction?</span>
+          <p class="text-blue-800">
+            Submit a verified correction bounty or propose a new workflow directly through the community portal.
+          </p>
+          <a href="/submit" class="font-bold text-blue-700 hover:underline inline-block pt-1">
+            Submit / Correct &rarr;
+          </a>
+        </div>
+      </aside>
+
+    </div>
+
+  </main>
+
+  <Footer />
+</Layout>

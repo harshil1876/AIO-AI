@@ -7,7 +7,7 @@ import { getCreatorAvatar } from '../../services/youtubeLiveService';
 
 const categories = ['All', 'AI Coding', 'AI Tutorials', 'AI News', 'AI Agents', 'AI Research', 'Indian AI', 'No-Code & Workflows'];
 
-// 3 Curated Guided Learning Tracks (Futurepedia & Competitor Blueprint Feature)
+// 3 Curated Guided Learning Tracks
 const learningTracks = [
   {
     title: 'From Zero to Local AI Engineer',
@@ -37,261 +37,289 @@ const learningTracks = [
 ---
 
 <Layout 
-  title="AI & Tech YouTube Creators Hub | 60+ Global & Indian Channels"
-  description="Discover 60+ verified AI educators, researchers, and engineers across India, US, UK, and Europe. Explore guided tracks, subscriber metrics, and curriculum pillars."
+  title="AI & Tech YouTube Creators Hub | 100+ Verified Global & Indian Channels"
+  description="Discover 100+ verified AI educators, researchers, and engineers across India, US, UK, and Europe. Explore guided tracks, subscriber metrics, and curriculum pillars."
 >
   <Header currentPath="/creators" />
 
-  <main class="w-full flex flex-col min-h-screen bg-canvas">
-    <!-- Header -->
-    <section class="border-b border-hairline bg-canvas-elevated px-6 py-10 md:py-14">
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <div class="text-[11px] font-mono text-mute uppercase tracking-wider mb-1">
-            Verified Educators & Learning Curriculum
+  <main class="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+    
+    <!-- Hero Header -->
+    <section class="rounded-3xl midnight-hero p-8 sm:p-10 text-white relative overflow-hidden shadow-xl border border-slate-800">
+      <div class="absolute -right-20 -top-20 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-purple-400/30 bg-purple-500/10 text-[11px] font-mono font-bold text-purple-300">
+            <span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
+            <span>100+ VERIFIED CHANNELS • ZERO FAKE ACCOUNTS</span>
           </div>
-          <h1 class="text-3xl sm:text-4xl font-semibold text-ink tracking-tight mb-2">
+          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
             AI &amp; Tech Creator Discovery
           </h1>
-          <p class="text-xs sm:text-sm text-body max-w-2xl leading-relaxed">
-            The curated directory of researchers, engineers, and educators who teach generative AI, local models, agentic workflows, and coding.
+          <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+            The authoritative registry of verified researchers, engineers, and educators teaching generative AI, open-source weights, agentic systems, and full-stack software.
           </p>
         </div>
 
-        <div class="flex items-center gap-2 text-xs font-mono text-mute shrink-0">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <div class="flex items-center gap-2 text-xs font-mono text-purple-300 bg-slate-900/60 border border-slate-700 px-3.5 py-2 rounded-2xl shrink-0">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>{CREATORS_DATA.length} Verified Channels &bull; Global &amp; India Coverage</span>
         </div>
       </div>
     </section>
 
-    <!-- GUIDED LEARNING TRACKS (Futurepedia Blueprint Feature) -->
-    <section class="border-b border-hairline bg-canvas px-6 py-10">
-      <div class="max-w-7xl mx-auto">
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h2 class="text-base font-semibold text-ink tracking-tight">
-              Guided AI Learning Tracks
-            </h2>
-            <p class="text-xs text-mute">Structured multi-creator paths designed to build production skills systematically.</p>
-          </div>
-          <span class="text-xs font-mono text-mute">{learningTracks.length} Structured Tracks</span>
+    <!-- GUIDED LEARNING TRACKS -->
+    <section class="card-aurora p-6 sm:p-8 space-y-6">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div>
+          <h2 class="text-xl font-black text-slate-900 tracking-tight">
+            Guided AI Learning Tracks
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">Structured multi-creator paths designed to build production skills systematically.</p>
         </div>
+        <span class="text-xs font-mono font-bold text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-1 rounded-lg">
+          {learningTracks.length} Guided Curricula
+        </span>
+      </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {learningTracks.map(track => (
-            <div class="p-5 rounded-lg border border-hairline bg-canvas-elevated hover:border-faint transition-colors flex flex-col justify-between shadow-xs">
-              <div>
-                <div class="flex items-center justify-between text-[10px] font-mono mb-2">
-                  <span class="px-2 py-0.5 rounded bg-hairline-soft text-ink font-medium border border-hairline">{track.badge}</span>
-                  <span class="text-mute">{track.duration}</span>
-                </div>
-                <h3 class="text-sm font-semibold text-ink mb-1">{track.title}</h3>
-                <p class="text-xs text-body leading-relaxed mb-4">{track.description}</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {learningTracks.map(track => (
+          <div class="p-5 rounded-2xl border border-slate-200 bg-white hover:border-purple-300 transition-all flex flex-col justify-between shadow-xs">
+            <div>
+              <div class="flex items-center justify-between text-[10px] font-mono mb-2">
+                <span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-bold border border-purple-200">{track.badge}</span>
+                <span class="text-slate-400">{track.duration}</span>
               </div>
-
-              <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs">
-                <span class="text-[11px] font-mono text-mute">{track.level}</span>
-                <a href="#creatorsCatalog" class="font-medium text-ink hover:underline">
-                  View Creators &rarr;
-                </a>
-              </div>
+              <h3 class="text-sm font-black text-slate-900 mb-1">{track.title}</h3>
+              <p class="text-xs text-slate-500 leading-relaxed mb-4">{track.description}</p>
             </div>
-          ))}
-        </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-[11px] font-mono text-slate-400">{track.level}</span>
+              <a href="#creatorsCatalog" class="font-bold text-purple-700 hover:underline">
+                Explore Channels &rarr;
+              </a>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
 
     <!-- Multi-Facet Search & Filter Toolbar -->
-    <section class="border-b border-hairline bg-surface px-6 py-4" id="creatorsCatalog">
-      <div class="max-w-7xl mx-auto space-y-3">
-        <!-- Top Row: Search Input + Select Dropdowns -->
-        <div class="flex flex-col md:flex-row items-center justify-between gap-3">
-          <!-- Quick Search -->
-          <div class="relative w-full md:w-80">
-            <input 
-              type="text" 
-              id="creatorSearchInput" 
-              placeholder="Search by name, handle, or tool..." 
-              class="w-full pl-9 pr-3 py-1.5 rounded-lg bg-canvas-elevated border border-hairline text-ink text-xs focus:outline-none focus:border-primary font-sans"
-            />
-            <svg class="w-3.5 h-3.5 text-mute absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
-          </div>
-
-          <!-- Dropdowns: Country, Sub Tier, Language -->
-          <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end">
-            <!-- Country Filter -->
-            <div class="flex items-center gap-1 text-xs">
-              <span class="text-[11px] font-mono text-mute">Region:</span>
-              <select id="countryFilter" class="bg-canvas-elevated border border-hairline rounded-md px-2 py-1 text-xs text-ink outline-none cursor-pointer font-medium">
-                <option value="all">All Regions</option>
-                <option value="india">India (IN)</option>
-                <option value="united states">United States (US)</option>
-                <option value="united kingdom">United Kingdom (UK)</option>
-                <option value="europe">Europe (EU)</option>
-                <option value="canada">Canada (CA)</option>
-                <option value="australia">Australia (AU)</option>
-              </select>
-            </div>
-
-            <!-- Subscriber Count Tier -->
-            <div class="flex items-center gap-1 text-xs">
-              <span class="text-[11px] font-mono text-mute">Tier:</span>
-              <select id="tierFilter" class="bg-canvas-elevated border border-hairline rounded-md px-2 py-1 text-xs text-ink outline-none cursor-pointer font-medium">
-                <option value="all">All Tiers</option>
-                <option value="<100k">&lt; 100K (Emerging)</option>
-                <option value="100k-500k">100K - 500K (Core)</option>
-                <option value="500k-2m">500K - 2M (Authority)</option>
-                <option value="2m+">2M+ (Global Scale)</option>
-              </select>
-            </div>
-
-            <!-- Language Filter -->
-            <div class="flex items-center gap-1 text-xs">
-              <span class="text-[11px] font-mono text-mute">Lang:</span>
-              <select id="langFilter" class="bg-canvas-elevated border border-hairline rounded-md px-2 py-1 text-xs text-ink outline-none cursor-pointer font-medium">
-                <option value="all">All Languages</option>
-                <option value="english">English</option>
-                <option value="hindi">Hindi / Hinglish</option>
-                <option value="spanish">Spanish</option>
-              </select>
-            </div>
-          </div>
+    <section class="card-aurora p-5 space-y-4" id="creatorsCatalog">
+      <!-- Top Row: Search Input + Select Dropdowns -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+        <!-- Quick Search -->
+        <div class="relative w-full md:w-80">
+          <input 
+            type="text" 
+            id="creatorSearchInput" 
+            placeholder="Search 100+ creators by name, handle, or tool..." 
+            class="w-full pl-9 pr-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-blue-600 font-sans shadow-xs font-medium"
+          />
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
         </div>
 
-        <!-- Bottom Row: Category Pills -->
-        <div class="flex items-center gap-1.5 overflow-x-auto pb-1" id="creatorCatFilter">
-          {categories.map((cat, idx) => (
-            <button 
-              type="button" 
-              class={`creator-cat-btn px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 ${
-                idx === 0 
-                  ? 'bg-ink text-on-primary border border-ink' 
-                  : 'bg-canvas-elevated text-mute hover:text-ink border border-hairline hover:border-faint'
-              }`}
-              data-cat={cat}
-            >
-              {cat}
-            </button>
-          ))}
+        <!-- Dropdowns: Country, Sub Tier, Language -->
+        <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end">
+          <!-- Region Filter -->
+          <div class="flex items-center gap-1.5 text-xs">
+            <span class="text-[11px] font-mono font-bold text-slate-400">Region:</span>
+            <select id="countryFilter" class="bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 outline-none cursor-pointer font-bold">
+              <option value="all">All Regions</option>
+              <option value="india">India (IN)</option>
+              <option value="united states">United States (US)</option>
+              <option value="united kingdom">United Kingdom (UK)</option>
+              <option value="europe">Europe (EU)</option>
+              <option value="canada">Canada (CA)</option>
+              <option value="australia">Australia (AU)</option>
+            </select>
+          </div>
+
+          <!-- Subscriber Count Tier -->
+          <div class="flex items-center gap-1.5 text-xs">
+            <span class="text-[11px] font-mono font-bold text-slate-400">Audience:</span>
+            <select id="tierFilter" class="bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 outline-none cursor-pointer font-bold">
+              <option value="all">All Tiers</option>
+              <option value="10k-100k">10K - 100K (Emerging)</option>
+              <option value="100k-500k">100K - 500K (Core)</option>
+              <option value="500k-2m">500K - 2M (Authority)</option>
+              <option value="2m+">2M+ (Global Scale)</option>
+            </select>
+          </div>
+
+          <!-- Language Filter -->
+          <div class="flex items-center gap-1.5 text-xs">
+            <span class="text-[11px] font-mono font-bold text-slate-400">Lang:</span>
+            <select id="langFilter" class="bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 outline-none cursor-pointer font-bold">
+              <option value="all">All Languages</option>
+              <option value="english">English</option>
+              <option value="hindi">Hindi / Hinglish</option>
+              <option value="spanish">Spanish</option>
+            </select>
+          </div>
         </div>
+      </div>
+
+      <!-- Bottom Row: Category Pills -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1" id="creatorCatFilter">
+        {categories.map((cat, idx) => (
+          <button 
+            type="button" 
+            class={`creator-cat-btn px-3 py-1 rounded-xl text-xs font-bold cursor-pointer transition-all shrink-0 ${
+              idx === 0 
+                ? 'bg-slate-900 text-white shadow-xs' 
+                : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200 hover:border-slate-300'
+            }`}
+            data-cat={cat}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
     </section>
 
-    <!-- Creators Grid -->
-    <div class="w-full max-w-7xl mx-auto px-6 py-10 flex-1">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="creatorsGrid">
-        {CREATORS_DATA.map((creator) => {
-          const subsStr = creator.subscribersEstimate || '100K';
-          const subsNum = creator.subscriberCountNumeric || 
-            (subsStr.includes('M') ? parseFloat(subsStr) * 1000000 : parseFloat(subsStr) * 1000);
-          const computedTier = subsNum >= 2000000 ? '2m+' : subsNum >= 500000 ? '500k-2m' : subsNum >= 100000 ? '100k-500k' : '<100k';
-          const computedCountry = creator.country || (creator.isIndiaCreator ? 'India' : 'United States');
+    <!-- Pagination Status Header & Page Size Selector -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 font-mono" id="creatorPaginationStatusHeader">
+      <div id="creatorRangeIndicator">
+        Showing 1–20 of {CREATORS_DATA.length} Verified AI &amp; Tech Creators (Page 1 of {Math.ceil(CREATORS_DATA.length / 20)})
+      </div>
 
-          return (
-            <article 
-              class="creator-card bg-canvas-elevated border border-hairline hover:border-faint rounded-lg p-5 shadow-xs transition-all flex flex-col justify-between"
-              data-category={creator.primaryCategory}
-              data-name={creator.channelName.toLowerCase()}
-              data-handle={(creator.handle || '').toLowerCase()}
-              data-country={computedCountry.toLowerCase()}
-              data-tier={creator.subscriberTier || computedTier}
-              data-lang={(creator.language || 'English').toLowerCase()}
-              data-tools={(creator.toolsTaught || []).join(' ').toLowerCase()}
-            >
-              <div>
-                <!-- Top Row: Category & Subs -->
-                <div class="flex items-center justify-between text-xs font-mono mb-3">
-                  <div class="flex items-center gap-1.5">
-                    <span class="bg-hairline-soft text-ink border border-hairline font-medium px-2 py-0.5 rounded text-[10px] uppercase">
-                      {creator.primaryCategory}
-                    </span>
-                    {creator.isIndiaCreator && (
-                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-orange-50 text-orange-700 border border-orange-200 uppercase">
-                        India
-                      </span>
-                    )}
-                  </div>
-                  <span class="text-mute font-medium live-subs" data-handle={creator.handle}>{creator.subscribersEstimate}</span>
-                </div>
-
-                <!-- Channel Info -->
-                <div class="flex items-start gap-3.5 mb-3">
-                  <img 
-                    src={getCreatorAvatar(creator.handle, creator.avatarUrl)} 
-                    alt={creator.channelName} 
-                    class="w-10 h-10 rounded-lg border border-hairline bg-surface object-cover shrink-0 shadow-2xs" 
-                    loading="lazy" 
-                    onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent(this.alt) + '&background=2563EB&color=fff&size=128';"
-                  />
-                  <div>
-                    <h2 class="text-sm font-semibold text-ink hover:underline leading-snug">
-                      <a href={`/creators/${creator.slug}`}>
-                        {creator.channelName}
-                      </a>
-                    </h2>
-                    <div class="text-[11px] font-mono text-mute">{creator.handle} &bull; {computedCountry}</div>
-                  </div>
-                </div>
-
-                <p class="text-xs text-body leading-relaxed mb-3 line-clamp-2">
-                  {creator.description}
-                </p>
-
-                <!-- Tools Taught Chips -->
-                <div class="mb-3">
-                  <span class="text-[10px] font-mono uppercase text-mute font-semibold block mb-1">Tools &amp; Models Taught:</span>
-                  <div class="flex flex-wrap gap-1">
-                    {creator.toolsTaught?.slice(0, 4).map(tool => (
-                      <a 
-                        href={`/tools/${tool}`} 
-                        class="px-2 py-0.5 rounded bg-canvas hover:bg-hairline-soft border border-hairline text-body text-[11px] font-mono transition-colors"
-                      >
-                        #{tool}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-
-                <!-- Top Must-Watch Tutorial Preview (Interactive Modal / Link) -->
-                {creator.topVideos?.[0] && (
-                  <a 
-                    href={creator.topVideos[0].url} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    class="block p-3 rounded-lg bg-canvas hover:bg-slate-50 border border-hairline hover:border-faint mb-3 text-xs space-y-1 transition-colors group cursor-pointer"
-                  >
-                    <div class="flex items-center justify-between text-[10px] font-mono">
-                      <span class="text-mute uppercase font-semibold group-hover:text-primary">Top Must-Watch:</span>
-                      <span class="px-1.5 py-0.5 rounded bg-blue-50 text-primary font-semibold border border-blue-200">
-                        {creator.topVideos[0].viewsEstimate || 'Verified'} views ↗
-                      </span>
-                    </div>
-                    <div class="font-medium text-ink truncate text-xs group-hover:text-primary transition-colors">{creator.topVideos[0].title}</div>
-                    <div class="text-[11px] text-mute font-mono">{creator.topVideos[0].duration} &bull; {creator.language}</div>
-                  </a>
-                )}
-              </div>
-
-              <!-- Card Bottom Bar -->
-              <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs">
-                <span class="text-[11px] font-mono text-mute">
-                  Score: <strong class="text-ink font-semibold">{creator.educationalScore}/100</strong>
-                </span>
-                <a 
-                  href={`/creators/${creator.slug}`} 
-                  class="font-medium text-ink hover:underline inline-flex items-center gap-1"
-                >
-                  Full Curriculum &rarr;
-                </a>
-              </div>
-            </article>
-          );
-        })}
+      <div class="flex items-center gap-2 self-start sm:self-auto">
+        <label for="creatorsPerPageSelect" class="text-slate-500 font-bold">Creators per page:</label>
+        <select id="creatorsPerPageSelect" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-800 font-bold outline-none cursor-pointer">
+          <option value="20" selected>20</option>
+          <option value="40">40</option>
+          <option value="60">60</option>
+          <option value="all">All ({CREATORS_DATA.length})</option>
+        </select>
       </div>
     </div>
+
+    <!-- Creators Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="creatorsGrid">
+      {CREATORS_DATA.map((creator) => {
+        const subsStr = creator.subscribersEstimate || '100K';
+        const subsNum = creator.subscriberCountNumeric || 
+          (subsStr.includes('M') ? parseFloat(subsStr) * 1000000 : parseFloat(subsStr) * 1000);
+        const computedTier = subsNum >= 2000000 ? '2m+' : subsNum >= 500000 ? '500k-2m' : subsNum >= 100000 ? '100k-500k' : '10k-100k';
+        const computedCountry = creator.country || (creator.isIndiaCreator ? 'India' : 'United States');
+
+        return (
+          <article 
+            class="creator-card bg-white border border-slate-200 hover:border-purple-500 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+            data-category={creator.primaryCategory}
+            data-name={creator.channelName.toLowerCase()}
+            data-handle={(creator.handle || '').toLowerCase()}
+            data-country={computedCountry.toLowerCase()}
+            data-tier={creator.subscriberTier || computedTier}
+            data-lang={(creator.language || 'English').toLowerCase()}
+            data-tools={(creator.toolsTaught || []).join(' ').toLowerCase()}
+          >
+            <div>
+              <!-- Top Row: Category & Subs -->
+              <div class="flex items-center justify-between text-xs font-mono mb-3">
+                <div class="flex items-center gap-1.5">
+                  <span class="bg-slate-100 text-slate-700 border border-slate-200 font-bold px-2 py-0.5 rounded-md text-[10px] uppercase">
+                    {creator.primaryCategory}
+                  </span>
+                  {creator.isIndiaCreator && (
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-orange-50 text-orange-700 border border-orange-200 uppercase">
+                      India
+                    </span>
+                  )}
+                </div>
+                <span class="text-slate-500 font-bold live-subs" data-handle={creator.handle}>{creator.subscribersEstimate}</span>
+              </div>
+
+              <!-- Channel Info -->
+              <div class="flex items-start gap-3.5 mb-3">
+                <img 
+                  src={getCreatorAvatar(creator.handle, creator.avatarUrl)} 
+                  alt={creator.channelName} 
+                  class="w-11 h-11 rounded-xl border border-slate-200 bg-slate-50 object-cover shrink-0 shadow-2xs" 
+                  loading="lazy" 
+                  onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent(this.alt) + '&background=2563EB&color=fff&size=128';"
+                />
+                <div>
+                  <h2 class="text-sm font-black text-slate-900 hover:text-purple-600 transition-colors leading-snug">
+                    <a href={`/creators/${creator.slug}`}>
+                      {creator.channelName}
+                    </a>
+                  </h2>
+                  <div class="text-[11px] font-mono text-slate-400">{creator.handle} &bull; {computedCountry}</div>
+                </div>
+              </div>
+
+              <p class="text-xs text-slate-500 leading-relaxed mb-3 line-clamp-2">
+                {creator.description}
+              </p>
+
+              <!-- Tools Taught Chips -->
+              <div class="mb-3">
+                <span class="text-[10px] font-mono uppercase text-slate-400 font-bold block mb-1">Tools &amp; Models Taught:</span>
+                <div class="flex flex-wrap gap-1">
+                  {creator.toolsTaught?.slice(0, 4).map(tool => (
+                    <a 
+                      href={`/tools/${tool}`} 
+                      class="px-2 py-0.5 rounded-md bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-mono transition-colors"
+                    >
+                      #{tool}
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              <!-- Top Must-Watch Tutorial Preview -->
+              {creator.topVideos?.[0] && (
+                <a 
+                  href={creator.topVideos[0].url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="block p-3 rounded-xl bg-slate-50 hover:bg-purple-50/50 border border-slate-200 hover:border-purple-200 mb-3 text-xs space-y-1 transition-colors group cursor-pointer"
+                >
+                  <div class="flex items-center justify-between text-[10px] font-mono">
+                    <span class="text-slate-400 uppercase font-bold group-hover:text-purple-700">Must-Watch:</span>
+                    <span class="px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 font-bold border border-purple-200">
+                      {creator.topVideos[0].viewsEstimate || 'Verified'} views ↗
+                    </span>
+                  </div>
+                  <div class="font-bold text-slate-800 truncate text-xs group-hover:text-purple-700 transition-colors">{creator.topVideos[0].title}</div>
+                  <div class="text-[11px] text-slate-400 font-mono">{creator.topVideos[0].duration} &bull; {creator.language}</div>
+                </a>
+              )}
+            </div>
+
+            <!-- Card Bottom Bar -->
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-[11px] font-mono text-slate-500">
+                Score: <strong class="text-slate-900 font-bold">{creator.educationalScore}/100</strong>
+              </span>
+              <a 
+                href={`/creators/${creator.slug}`} 
+                class="font-bold text-purple-700 hover:underline inline-flex items-center gap-1"
+              >
+                Full Curriculum &rarr;
+              </a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <!-- PAGINATION CONTROLS BAR -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-200" id="creatorPaginationFooter">
+      <div class="text-xs font-mono text-slate-500" id="creatorPaginationBottomCounter">
+        Page 1 of {Math.ceil(CREATORS_DATA.length / 20)}
+      </div>
+
+      <div class="flex items-center gap-1.5 font-mono text-xs" id="creatorPaginationControls">
+        <!-- Buttons injected dynamically by script -->
+      </div>
+    </div>
+
   </main>
 
   <Footer />
@@ -302,30 +330,20 @@ const learningTracks = [
 
   document.addEventListener('DOMContentLoaded', () => {
     const buttons = document.querySelectorAll<HTMLButtonElement>('.creator-cat-btn');
-    const cards = document.querySelectorAll<HTMLElement>('.creator-card');
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.creator-card'));
     const searchInput = document.getElementById('creatorSearchInput') as HTMLInputElement | null;
     const countryFilter = document.getElementById('countryFilter') as HTMLSelectElement | null;
     const tierFilter = document.getElementById('tierFilter') as HTMLSelectElement | null;
     const langFilter = document.getElementById('langFilter') as HTMLSelectElement | null;
+    const perPageSelect = document.getElementById('creatorsPerPageSelect') as HTMLSelectElement | null;
+    const paginationControls = document.getElementById('creatorPaginationControls');
+    const rangeIndicator = document.getElementById('creatorRangeIndicator');
+    const bottomCounter = document.getElementById('creatorPaginationBottomCounter');
 
     let activeCat = 'All';
-
-    // Hydrate live YouTube stats if API key or cache available
-    const handlesToFetch = Array.from(document.querySelectorAll<HTMLElement>('.live-subs'))
-      .map(el => el.getAttribute('data-handle') || '')
-      .filter(Boolean);
-
-    if (handlesToFetch.length > 0) {
-      batchRefreshCreatorStats(handlesToFetch).then(statsMap => {
-        document.querySelectorAll<HTMLElement>('.live-subs').forEach(el => {
-          const rawHandle = el.getAttribute('data-handle') || '';
-          const clean = rawHandle.replace(/^@/, '');
-          if (statsMap[clean]?.formattedSubscribers) {
-            el.textContent = `${statsMap[clean].formattedSubscribers} Subs`;
-          }
-        });
-      }).catch(() => {});
-    }
+    let currentPage = 1;
+    let itemsPerPage: number | 'all' = 20;
+    let filteredCards: HTMLElement[] = [...cards];
 
     function applyFilters() {
       const q = (searchInput?.value || '').toLowerCase().trim();
@@ -333,7 +351,7 @@ const learningTracks = [
       const selectedTier = (tierFilter?.value || 'all').toLowerCase();
       const selectedLang = (langFilter?.value || 'all').toLowerCase();
 
-      cards.forEach(card => {
+      filteredCards = cards.filter(card => {
         const cat = card.getAttribute('data-category') || '';
         const name = card.getAttribute('data-name') || '';
         const handle = card.getAttribute('data-handle') || '';
@@ -348,29 +366,143 @@ const learningTracks = [
         const matchesTier = selectedTier === 'all' || tier === selectedTier;
         const matchesLang = selectedLang === 'all' || lang.includes(selectedLang);
 
-        if (matchesCat && matchesQuery && matchesCountry && matchesTier && matchesLang) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
+        return matchesCat && matchesQuery && matchesCountry && matchesTier && matchesLang;
       });
+
+      const totalItems = filteredCards.length;
+      const pageSize = itemsPerPage === 'all' ? totalItems : Number(itemsPerPage);
+      const totalPages = Math.max(1, Math.ceil(totalItems / (pageSize || 1)));
+
+      if (currentPage > totalPages) currentPage = 1;
+
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = itemsPerPage === 'all' ? totalItems : Math.min(startIndex + pageSize, totalItems);
+
+      // Hide all cards first
+      cards.forEach(c => c.style.display = 'none');
+
+      // Show cards in current slice
+      filteredCards.slice(startIndex, endIndex).forEach(card => {
+        card.style.display = 'flex';
+      });
+
+      // Update counters
+      const displayStart = totalItems === 0 ? 0 : startIndex + 1;
+      const displayEnd = endIndex;
+      if (rangeIndicator) {
+        rangeIndicator.textContent = `Showing ${displayStart}–${displayEnd} of ${totalItems} Verified AI & Tech Creators (Page ${currentPage} of ${totalPages})`;
+      }
+      if (bottomCounter) {
+        bottomCounter.textContent = `Page ${currentPage} of ${totalPages}`;
+      }
+
+      // Render Pagination Buttons
+      renderPaginationControls(totalPages);
     }
 
+    function renderPaginationControls(totalPages: number) {
+      if (!paginationControls) return;
+      paginationControls.innerHTML = '';
+
+      if (totalPages <= 1) return;
+
+      // Prev Button
+      const prevBtn = document.createElement('button');
+      prevBtn.className = `px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-bold transition-colors cursor-pointer ${
+        currentPage === 1 ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white hover:bg-slate-50 text-slate-800'
+      }`;
+      prevBtn.textContent = '← Prev';
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          applyFilters();
+          scrollToTop();
+        }
+      });
+      paginationControls.appendChild(prevBtn);
+
+      // Numbered Page Buttons
+      for (let p = 1; p <= totalPages; p++) {
+        const pageBtn = document.createElement('button');
+        const isActive = p === currentPage;
+        pageBtn.className = `w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+          isActive 
+            ? 'bg-purple-600 text-white shadow-xs' 
+            : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+        }`;
+        pageBtn.textContent = String(p);
+        pageBtn.addEventListener('click', () => {
+          currentPage = p;
+          applyFilters();
+          scrollToTop();
+        });
+        paginationControls.appendChild(pageBtn);
+      }
+
+      // Next Button
+      const nextBtn = document.createElement('button');
+      nextBtn.className = `px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-bold transition-colors cursor-pointer ${
+        currentPage === totalPages ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white hover:bg-slate-50 text-slate-800'
+      }`;
+      nextBtn.textContent = 'Next →';
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          applyFilters();
+          scrollToTop();
+        }
+      });
+      paginationControls.appendChild(nextBtn);
+    }
+
+    function scrollToTop() {
+      const topEl = document.getElementById('creatorPaginationStatusHeader');
+      if (topEl) {
+        topEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Category Button Clicks
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
         buttons.forEach(b => {
-          b.className = 'creator-cat-btn px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 bg-canvas-elevated text-mute hover:text-ink border border-hairline hover:border-faint';
+          b.className = 'creator-cat-btn px-3 py-1 rounded-xl text-xs font-bold cursor-pointer transition-all shrink-0 bg-white text-slate-600 hover:text-slate-900 border border-slate-200 hover:border-slate-300';
         });
-        btn.className = 'creator-cat-btn px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors shrink-0 bg-ink text-on-primary border border-ink';
+        btn.className = 'creator-cat-btn px-3 py-1 rounded-xl text-xs font-bold cursor-pointer transition-all shrink-0 bg-slate-900 text-white shadow-xs';
 
         activeCat = btn.getAttribute('data-cat') || 'All';
+        currentPage = 1;
         applyFilters();
       });
     });
 
-    searchInput?.addEventListener('input', applyFilters);
-    countryFilter?.addEventListener('change', applyFilters);
-    tierFilter?.addEventListener('change', applyFilters);
-    langFilter?.addEventListener('change', applyFilters);
+    perPageSelect?.addEventListener('change', () => {
+      const val = perPageSelect.value;
+      itemsPerPage = val === 'all' ? 'all' : Number(val);
+      currentPage = 1;
+      applyFilters();
+    });
+
+    searchInput?.addEventListener('input', () => {
+      currentPage = 1;
+      applyFilters();
+    });
+    countryFilter?.addEventListener('change', () => {
+      currentPage = 1;
+      applyFilters();
+    });
+    tierFilter?.addEventListener('change', () => {
+      currentPage = 1;
+      applyFilters();
+    });
+    langFilter?.addEventListener('change', () => {
+      currentPage = 1;
+      applyFilters();
+    });
+
+    // Initial Hydration
+    applyFilters();
   });
 </script>

@@ -239,22 +239,24 @@ function getToolMetadata(tool: ToolData) {
       <!-- Main Tools Area -->
       <div class="flex-1 flex flex-col">
         <!-- Results Bar -->
-        <div class="flex items-center justify-between mb-6 pb-3 border-b border-hairline">
-          <div class="text-xs text-mute flex items-center gap-2">
-            <span>Showing <strong id="toolCount" class="font-medium text-ink font-mono">{tools.length}</strong> verified tools</span>
-            <span id="activeFilterPill" class="hidden text-[10px] font-mono px-2 py-0.5 rounded bg-hairline-soft text-ink">Filtered</span>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-hairline">
+          <div class="text-xs text-mute flex items-center gap-2 flex-wrap">
+            <span>Showing <strong id="toolRangeStart" class="font-bold text-ink font-mono">1</strong>–<strong id="toolRangeEnd" class="font-bold text-ink font-mono">20</strong> of <strong id="toolCount" class="font-bold text-ink font-mono">{tools.length}</strong> Verified AI Tools (<span id="pageIndicatorText" class="font-medium text-slate-600">Page 1 of 6</span>)</span>
+            <span id="activeFilterPill" class="hidden text-[10px] font-mono px-2 py-0.5 rounded bg-hairline-soft text-ink font-bold">Filtered</span>
           </div>
 
-          <div class="flex items-center gap-2">
-            <span class="text-xs text-mute">Sort:</span>
-            <select 
-              id="sortSelect" 
-              class="bg-canvas-elevated border border-hairline text-ink text-xs rounded-sm px-2.5 py-1.5 outline-none hover:border-faint transition-colors cursor-pointer font-medium"
-            >
-              <option value="score" selected={sortParam === 'score'}>Platform Score (Highest)</option>
-              <option value="rating" selected={sortParam === 'rating'}>User Rating (Highest)</option>
-              <option value="name" selected={sortParam === 'name'}>Name (A-Z)</option>
-            </select>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs text-mute">Sort:</span>
+              <select 
+                id="sortSelect" 
+                class="bg-canvas-elevated border border-hairline text-ink text-xs rounded-sm px-2.5 py-1.5 outline-none hover:border-faint transition-colors cursor-pointer font-medium"
+              >
+                <option value="score" selected={sortParam === 'score'}>Platform Score (Highest)</option>
+                <option value="rating" selected={sortParam === 'rating'}>User Rating (Highest)</option>
+                <option value="name" selected={sortParam === 'name'}>Name (A-Z)</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -293,6 +295,38 @@ function getToolMetadata(tool: ToolData) {
           })}
         </div>
 
+        <!-- 20-Tools-Per-Page Sleek Pagination Bar -->
+        <div id="toolsPaginationBar" class="mt-8 pt-4 border-t border-[#CBD5E1] flex flex-col sm:flex-row items-center justify-between gap-4 select-none">
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-500 font-mono">Per Page:</span>
+            <select id="itemsPerPageSelect" class="bg-white border border-[#CBD5E1] text-xs font-mono font-bold rounded-lg px-2.5 py-1 text-slate-700 outline-none focus:border-indigo-600">
+              <option value="20" selected>20 per page</option>
+              <option value="40">40 per page</option>
+            </select>
+          </div>
+
+          <!-- Page Controls: Prev + Numbers + Next -->
+          <div class="flex items-center gap-1.5" id="paginationControls">
+            <button
+              type="button"
+              id="prevPageBtn"
+              class="px-3 py-1.5 rounded-lg border border-[#CBD5E1] bg-white text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            >
+              &larr; Previous
+            </button>
+            <div id="paginationNumbers" class="flex items-center gap-1">
+              <!-- Dynamically rendered numbered buttons -->
+            </div>
+            <button
+              type="button"
+              id="nextPageBtn"
+              class="px-3 py-1.5 rounded-lg border border-[#CBD5E1] bg-white text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            >
+              Next &rarr;
+            </button>
+          </div>
+        </div>
+
         <!-- Empty State -->
         <div id="emptyState" class="hidden flex-col items-center justify-center py-16 text-center border border-dashed border-hairline rounded-md bg-canvas-elevated">
           <div class="w-12 h-12 rounded-full bg-hairline-soft flex items-center justify-center text-mute mb-3">
@@ -325,6 +359,19 @@ function getToolMetadata(tool: ToolData) {
     const resetCategoryBtn = document.getElementById('resetCategoryBtn');
     const activeFilterPill = document.getElementById('activeFilterPill');
     
+    // Pagination State
+    let currentPage = 1;
+    let itemsPerPage = 20;
+
+    const toolRangeStart = document.getElementById('toolRangeStart');
+    const toolRangeEnd = document.getElementById('toolRangeEnd');
+    const pageIndicatorText = document.getElementById('pageIndicatorText');
+    const prevPageBtn = document.getElementById('prevPageBtn') as HTMLButtonElement | null;
+    const nextPageBtn = document.getElementById('nextPageBtn') as HTMLButtonElement | null;
+    const paginationNumbers = document.getElementById('paginationNumbers');
+    const itemsPerPageSelect = document.getElementById('itemsPerPageSelect') as HTMLSelectElement | null;
+    const paginationBar = document.getElementById('toolsPaginationBar');
+
     // Toggles
     const toggleTop10 = document.getElementById('toggleTop10');
     const toggleIndiaOnly = document.getElementById('toggleIndiaOnly') as HTMLInputElement | null;
@@ -367,7 +414,7 @@ function getToolMetadata(tool: ToolData) {
       });
     });
 
-    function applyFilters() {
+    function applyFilters(resetPage = true) {
       const query = (searchInput?.value || '').toLowerCase().trim();
       const selectedPricing = (document.querySelector('input[name="pricing"]:checked')?.value || 'all');
       const selectedCategory = (document.querySelector('input[name="category"]:checked')?.value || 'all');
@@ -426,23 +473,28 @@ function getToolMetadata(tool: ToolData) {
         return 0;
       });
 
-      // Handle Top 10 Leaderboard Toggle
-      if (onlyTop10) {
-        matchedWrappers.slice(0, 10).forEach(el => {
-          el.style.display = '';
-          grid.appendChild(el);
-        });
-        matchedWrappers.slice(10).forEach(el => {
-          el.style.display = 'none';
-        });
-      } else {
-        matchedWrappers.forEach(el => {
-          el.style.display = '';
-          grid.appendChild(el);
-        });
+      // Filter to Top 10 if toggle is active
+      const activeList = onlyTop10 ? matchedWrappers.slice(0, 10) : matchedWrappers;
+      const totalCount = activeList.length;
+      const totalPages = Math.max(1, Math.ceil(totalCount / itemsPerPage));
+
+      if (resetPage) {
+        currentPage = 1;
+      } else if (currentPage > totalPages) {
+        currentPage = totalPages;
       }
 
-      const visibleCount = onlyTop10 ? Math.min(matchedWrappers.length, 10) : matchedWrappers.length;
+      // Hide all tools first
+      toolWrappers.forEach(el => { el.style.display = 'none'; });
+
+      // Show paginated slice
+      const startIdx = (currentPage - 1) * itemsPerPage;
+      const endIdx = Math.min(startIdx + itemsPerPage, totalCount);
+
+      activeList.slice(startIdx, endIdx).forEach(el => {
+        el.style.display = '';
+        if (grid) grid.appendChild(el);
+      });
 
       // Update banner visibility
       if (activeFreeModeBanner) {
@@ -455,8 +507,46 @@ function getToolMetadata(tool: ToolData) {
         }
       }
 
-      // Update counter and empty state
-      if (toolCount) toolCount.textContent = visibleCount.toString();
+      // Update counter and range text
+      if (toolCount) toolCount.textContent = totalCount.toString();
+      if (toolRangeStart) toolRangeStart.textContent = totalCount === 0 ? '0' : String(startIdx + 1);
+      if (toolRangeEnd) toolRangeEnd.textContent = String(endIdx);
+      if (pageIndicatorText) pageIndicatorText.textContent = `Page ${currentPage} of ${totalPages}`;
+
+      // Render Page Numbers
+      if (paginationNumbers) {
+        paginationNumbers.innerHTML = '';
+        for (let p = 1; p <= totalPages; p++) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = String(p);
+          btn.className = (p === currentPage)
+            ? 'w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold text-xs shadow-xs'
+            : 'w-8 h-8 rounded-lg bg-white border border-[#CBD5E1] text-slate-700 hover:bg-slate-50 font-medium text-xs transition-colors';
+          btn.addEventListener('click', () => {
+            currentPage = p;
+            applyFilters(false);
+            if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+          paginationNumbers.appendChild(btn);
+        }
+      }
+
+      // Update Prev / Next button states
+      if (prevPageBtn) prevPageBtn.disabled = (currentPage === 1);
+      if (nextPageBtn) nextPageBtn.disabled = (currentPage >= totalPages);
+
+      // Hide pagination bar if only 1 page or empty
+      if (paginationBar) {
+        if (totalPages <= 1) {
+          paginationBar.classList.add('hidden');
+          paginationBar.classList.remove('flex');
+        } else {
+          paginationBar.classList.remove('hidden');
+          paginationBar.classList.add('flex');
+        }
+      }
+
       if (activeFilterPill) {
         if (activeRole !== 'all' || activeTimeline !== 'all' || query || selectedPricing !== 'all' || selectedCategory !== 'all' || onlyTop10 || onlyIndia || onlyFree) {
           activeFilterPill.classList.remove('hidden');
@@ -466,7 +556,7 @@ function getToolMetadata(tool: ToolData) {
       }
 
       if (emptyState) {
-        if (visibleCount === 0) {
+        if (totalCount === 0) {
           emptyState.classList.remove('hidden');
           emptyState.classList.add('flex');
         } else {
@@ -475,6 +565,25 @@ function getToolMetadata(tool: ToolData) {
         }
       }
     }
+
+    prevPageBtn?.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        applyFilters(false);
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    nextPageBtn?.addEventListener('click', () => {
+      currentPage++;
+      applyFilters(false);
+      if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    itemsPerPageSelect?.addEventListener('change', () => {
+      itemsPerPage = parseInt(itemsPerPageSelect?.value || '20', 10);
+      applyFilters(true);
+    });
 
     searchInput?.addEventListener('input', applyFilters);
     sortSelect?.addEventListener('change', applyFilters);

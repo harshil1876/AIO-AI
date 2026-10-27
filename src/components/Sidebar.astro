@@ -5,20 +5,10 @@ interface Props {
 
 const { currentPath = Astro.url.pathname } = Astro.props;
 
-interface NavSubItem {
-  href: string;
-  label: string;
-  badge?: string;
-  badgeColor?: 'blue' | 'black' | 'emerald';
-}
-
 interface NavItem {
   href: string;
   label: string;
-  badge?: string;
-  badgeColor?: 'blue' | 'black' | 'emerald';
   icon: string;
-  children?: NavSubItem[];
 }
 
 interface NavGroup {
@@ -26,73 +16,42 @@ interface NavGroup {
   items: NavItem[];
 }
 
-// Clean Collapsible Tree Groups (10 High-Signal Pillars + Indented Sub-Pages)
+// Clean SaaS 4-Pillar Taxonomy with Zero Badges & Zero Sub-arrows
 const navGroups: NavGroup[] = [
   {
     title: 'Workspace',
     items: [
-      { href: '/dashboard', label: 'Command Center', icon: 'home' },
-      { href: '/analytics', label: 'Ecosystem Analytics', badge: 'LIVE', badgeColor: 'emerald', icon: 'bar-chart-2' },
-      { href: '/stack-builder', label: 'My Stack Builder', badge: 'CUSTOM', badgeColor: 'blue', icon: 'layers' },
+      { href: '/dashboard', label: 'Overview', icon: 'home' },
+      { href: '/analytics', label: 'Market Intelligence', icon: 'bar-chart-2' },
+      { href: '/stack-builder', label: 'Stack Architect', icon: 'layers' },
     ]
   },
   {
-    title: 'Discover AI',
+    title: 'Discover',
     items: [
-      { 
-        href: '/tools', 
-        label: 'AI Tools Directory', 
-        badge: '113', 
-        badgeColor: 'blue', 
-        icon: 'grid',
-        children: [
-          { href: '/categories', label: 'Categories Bento', badge: '13' },
-          { href: '/india-ai', label: 'India-First AI', badge: '16', badgeColor: 'emerald' },
-          { href: '/compare', label: 'Side-by-Side Compare' },
-        ]
-      },
-      { href: '/finder', label: 'AI Intent Finder', badge: 'PRO', badgeColor: 'emerald', icon: 'sparkles' },
-      { 
-        href: '/open-source', 
-        label: 'Open-Source & VRAM', 
-        badge: '20+', 
-        icon: 'code',
-        children: [
-          { href: '/open-source/trending', label: 'GitHub Trending' }
-        ]
-      },
+      { href: '/tools', label: 'AI Directory', icon: 'grid' },
+      { href: '/categories', label: 'Categories', icon: 'tag' },
+      { href: '/india-ai', label: 'Sovereign India AI', icon: 'globe' },
+      { href: '/compare', label: 'Comparison Matrix', icon: 'columns' },
+      { href: '/finder', label: 'Solution Finder', icon: 'sparkles' },
+      { href: '/open-source', label: 'Open-Source Hub', icon: 'code' },
     ]
   },
   {
     title: 'Build & Automate',
     items: [
-      { 
-        href: '/workflows', 
-        label: 'AI Workflows', 
-        badge: '16', 
-        badgeColor: 'blue', 
-        icon: 'zap',
-        children: [
-          { href: '/workflows/builder', label: 'Workflow Studio', badge: 'NEW', badgeColor: 'emerald' }
-        ]
-      },
-      { 
-        href: '/token-calculator', 
-        label: 'Token Calculator', 
-        badge: '26', 
-        icon: 'calculator',
-        children: [
-          { href: '/utilities', label: '9 Dev & Creator Utilities' }
-        ]
-      },
+      { href: '/workflows', label: 'Workflow Library', icon: 'zap' },
+      { href: '/workflows/builder', label: 'Workflow Studio', icon: 'cpu' },
+      { href: '/utilities', label: 'Utility Studio', icon: 'tool' },
+      { href: '/token-calculator', label: 'Token Economics', icon: 'calculator' },
     ]
   },
   {
-    title: 'Pulse & Community',
+    title: 'Network & Pulse',
     items: [
-      { href: '/news', label: 'AI News Gazette', badge: 'LIVE', badgeColor: 'emerald', icon: 'newspaper' },
-      { href: '/creators', label: 'Creators & Tutorials', badge: '62', icon: 'video' },
-      { href: '/community', label: 'Community Forum', icon: 'chat' },
+      { href: '/news', label: 'AI Pulse', icon: 'newspaper' },
+      { href: '/creators', label: 'Creator Network', icon: 'video' },
+      { href: '/community', label: 'Community Spaces', icon: 'users' },
     ]
   }
 ];
@@ -102,20 +61,18 @@ function isItemActive(href: string, current: string): boolean {
   if (href.includes('?')) {
     return current === href.split('?')[0];
   }
-  // Exact match
   if (current === href) return true;
 
-  // Specificity checks for nested routes
-  if (href === '/open-source/trending') return current.startsWith('/open-source/trending');
-  if (href === '/open-source') return current.startsWith('/open-source') && !current.startsWith('/open-source/trending');
+  if (href === '/open-source') return current.startsWith('/open-source');
   if (href === '/workflows/builder') return current.startsWith('/workflows/builder');
   if (href === '/workflows') return current.startsWith('/workflows') && !current.startsWith('/workflows/builder');
-  if (href === '/token-calculator') return current.startsWith('/token-calculator');
   if (href === '/utilities') return current.startsWith('/utilities');
+  if (href === '/token-calculator') return current.startsWith('/token-calculator');
   if (href === '/india-ai') return current.startsWith('/india-ai') || current.includes('category=india-first');
   if (href === '/tools') return current.startsWith('/tools') && !current.includes('category=india-first') && !current.startsWith('/categories') && !current.startsWith('/compare');
   if (href === '/categories') return current.startsWith('/categories');
   if (href === '/compare') return current.startsWith('/compare');
+  if (href === '/finder') return current.startsWith('/finder');
   if (href === '/pricing') return current.startsWith('/pricing');
   if (href === '/docs') return current.startsWith('/docs');
   if (href === '/submit') return current.startsWith('/submit');
@@ -126,192 +83,150 @@ function isItemActive(href: string, current: string): boolean {
   if (href === '/stack-builder') return current.startsWith('/stack-builder');
   if (href === '/dashboard') return current === '/dashboard';
 
-  return current === href || current.startsWith(`${href}/`);
+  return current.startsWith(`${href}/`);
 }
 ---
 
-<!-- Desktop Persistent Collapsible Sidebar -->
+<!-- Desktop Hover-Expanding & Pinnable Rail (68px -> 252px) -->
 <aside 
   id="desktopSidebar" 
-  class="hidden lg:flex flex-col w-64 shrink-0 bg-[#F8FAFF] border-r border-[#E2E8F0] min-h-screen sticky top-0 h-screen select-none z-30 transition-all duration-200"
+  class="group/sidebar hidden lg:flex flex-col w-[68px] shrink-0 bg-gradient-to-b from-slate-900 via-[#111827] to-[#1E1B4B] text-slate-100 border-r border-indigo-500/20 min-h-screen sticky top-0 h-screen select-none z-30 transition-all duration-200 ease-out overflow-x-hidden shadow-xl"
+  data-pinned="false"
 >
-  <!-- Brand Header with Close/Collapse Button -->
-  <div class="h-14 px-4 flex items-center justify-between border-b border-[#E2E8F0] bg-white shrink-0">
-    <a href="/dashboard" class="flex items-center gap-2.5 group" id="desktopBrandLink">
-      <div class="w-7 h-7 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-black text-xs tracking-tight shadow-xs group-hover:bg-[#2563EB] transition-colors">
+  <!-- Brand Header & Pin Lock Toggle -->
+  <div class="h-14 px-3.5 flex items-center justify-between border-b border-indigo-500/20 bg-slate-900/60 backdrop-blur-md shrink-0">
+    <a href="/dashboard" class="flex items-center gap-3 min-w-0" id="desktopBrandLink">
+      <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-xs tracking-tight shadow-md shrink-0 ring-1 ring-white/20">
         AI
       </div>
-      <span class="font-black text-[#09090B] text-base tracking-tight group-hover:text-[#2563EB] transition-colors">AIO AI</span>
+      <span class="font-black text-white text-base tracking-tight transition-opacity duration-150 truncate opacity-0 group-hover/sidebar:opacity-100 sidebar-label">
+        AIO AI
+      </span>
     </a>
 
-    <!-- Desktop Close / Collapse Button -->
+    <!-- Pin Toggle Button (Desktop) -->
     <button
       type="button"
-      id="closeDesktopSidebarBtn"
-      onclick="window.closeSidebar && window.closeSidebar()"
-      class="p-1.5 rounded-lg text-slate-400 hover:text-[#09090B] hover:bg-slate-100 transition-colors cursor-pointer"
-      title="Collapse navigation (Esc)"
-      aria-label="Collapse navigation"
+      id="pinSidebarToggleBtn"
+      class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0 opacity-0 group-hover/sidebar:opacity-100 sidebar-label"
+      title="Pin sidebar open"
+      aria-label="Pin sidebar"
     >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+      <svg id="pinIcon" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
       </svg>
     </button>
   </div>
 
   <!-- Navigation Groups -->
-  <div class="flex-1 overflow-y-auto px-3 py-4 space-y-5">
+  <div class="flex-1 overflow-y-auto px-2 py-4 space-y-5 scrollbar-thin scrollbar-thumb-slate-700">
     {navGroups.map((group) => (
       <div>
-        <div class="px-2.5 mb-1.5 text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+        <div class="px-2.5 mb-1.5 text-[10px] font-mono uppercase tracking-wider text-indigo-300/60 font-bold opacity-0 group-hover/sidebar:opacity-100 sidebar-label transition-opacity duration-150 truncate">
           {group.title}
         </div>
         <nav class="space-y-0.5">
           {group.items.map((item) => {
-            const isParentActive = isItemActive(item.href, currentPath);
-            const hasActiveChild = item.children?.some(c => isItemActive(c.href, currentPath));
-            const isExpanded = isParentActive || hasActiveChild;
-
-            if (item.children && item.children.length > 0) {
-              return (
-                <details class="group/tree select-none mb-1" open={isExpanded}>
-                  <summary class={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs list-none cursor-pointer transition-all ${
-                    isParentActive
-                      ? 'bg-[#EFF6FF] text-[#2563EB] font-bold border-l-4 border-[#2563EB]'
-                      : 'text-slate-600 hover:text-[#09090B] hover:bg-white font-medium'
-                  }`}>
-                    <a href={item.href} class="flex items-center gap-2.5 min-w-0 flex-1 py-0.5">
-                      {item.icon === 'grid' && (
-                        <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V15.75ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H18a2.25 2.25 0 0 1-2.25-2.25V15.75Z" />
-                        </svg>
-                      )}
-                      {item.icon === 'code' && (
-                        <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
-                        </svg>
-                      )}
-                      {item.icon === 'zap' && (
-                        <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
-                        </svg>
-                      )}
-                      {item.icon === 'calculator' && (
-                        <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-3-2.25V18m-3-2.25V18m3-6.75V12m-3-2.25V12m6 0V12m-9 9h12a2.25 2.25 0 0 0 2.25-2.25V5.25A2.25 2.25 0 0 0 19.5 3h-12A2.25 2.25 0 0 0 5.25 5.25v13.5A2.25 2.25 0 0 0 7.5 21Z" />
-                        </svg>
-                      )}
-                      <span class="truncate">{item.label}</span>
-                      {item.badge && (
-                        <span class={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ml-1 ${
-                          item.badgeColor === 'blue'
-                            ? 'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]'
-                            : item.badgeColor === 'emerald'
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            : 'bg-slate-200 text-slate-800'
-                        }`}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </a>
-                    <span class="p-1 text-slate-400 group-open/tree:rotate-90 transition-transform shrink-0" title="Toggle sub-pages">
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                      </svg>
-                    </span>
-                  </summary>
-
-                  <div class="border-l-2 border-slate-200 ml-5 pl-2 space-y-0.5 mt-1">
-                    {item.children.map((child) => {
-                      const isChildActive = isItemActive(child.href, currentPath);
-                      return (
-                        <a
-                          href={child.href}
-                          class={`flex items-center justify-between px-2 py-1.5 rounded-lg text-xs transition-colors ${
-                            isChildActive
-                              ? 'bg-[#EFF6FF] text-[#2563EB] font-bold border-l-2 border-[#2563EB]'
-                              : 'text-slate-500 hover:text-[#09090B] hover:bg-white font-medium'
-                          }`}
-                        >
-                          <span class="truncate">↳ {child.label}</span>
-                          {child.badge && (
-                            <span class={`text-[9px] font-mono px-1.5 py-0.2 rounded-full font-bold ml-1 ${
-                              child.badgeColor === 'emerald'
-                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                                : 'bg-blue-50 text-[#2563EB] border border-blue-200'
-                            }`}>
-                              {child.badge}
-                            </span>
-                          )}
-                        </a>
-                      );
-                    })}
-                  </div>
-                </details>
-              );
-            }
-
+            const isActive = isItemActive(item.href, currentPath);
             return (
               <a
                 href={item.href}
-                class={`flex items-center justify-between px-2.5 py-2 rounded-xl text-xs transition-all ${
-                  isParentActive
-                    ? 'bg-[#EFF6FF] text-[#2563EB] font-bold border-l-4 border-[#2563EB] shadow-2xs'
-                    : 'text-slate-600 hover:text-[#09090B] hover:bg-white font-medium hover:shadow-2xs'
+                class={`flex items-center gap-3 px-2.5 py-2 rounded-xl text-xs transition-all duration-150 group/link relative ${
+                  isActive
+                    ? 'bg-indigo-600/30 text-indigo-300 font-bold border-l-2 border-indigo-400 shadow-inner shadow-indigo-950/40'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5 font-medium'
                 }`}
+                title={item.label}
               >
-                <div class="flex items-center gap-2.5 min-w-0">
+                <!-- Centered Crisp Section Icon -->
+                <div class="w-5 h-5 flex items-center justify-center shrink-0">
                   {item.icon === 'home' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                     </svg>
                   )}
                   {item.icon === 'bar-chart-2' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
                     </svg>
                   )}
                   {item.icon === 'layers' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
                     </svg>
                   )}
+                  {item.icon === 'grid' && (
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V15.75ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H18a2.25 2.25 0 0 1-2.25-2.25V15.75Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'tag' && (
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'globe' && (
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+                    </svg>
+                  )}
+                  {item.icon === 'columns' && (
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 4.5v15m6-15v15m-10.875 0h17.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125Z" />
+                    </svg>
+                  )}
                   {item.icon === 'sparkles' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
                     </svg>
                   )}
+                  {item.icon === 'code' && (
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
+                    </svg>
+                  )}
+                  {item.icon === 'zap' && (
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'cpu' && (
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'tool' && (
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.32l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.32 4.486c.091.737.388 1.442.85 2.023l-3.277 3.277" />
+                    </svg>
+                  )}
+                  {item.icon === 'calculator' && (
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-3-2.25V18m-3-2.25V18m3-6.75V12m-3-2.25V12m6 0V12m-9 9h12a2.25 2.25 0 0 0 2.25-2.25V5.25A2.25 2.25 0 0 0 19.5 3h-12A2.25 2.25 0 0 0 5.25 5.25v13.5A2.25 2.25 0 0 0 7.5 21Z" />
+                    </svg>
+                  )}
                   {item.icon === 'newspaper' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" />
                     </svg>
                   )}
                   {item.icon === 'video' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
                     </svg>
                   )}
-                  {item.icon === 'chat' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.502 49.188 49.188 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                  {item.icon === 'users' && (
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.999-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
                     </svg>
                   )}
-                  <span class="truncate">{item.label}</span>
                 </div>
 
-                {item.badge && (
-                  <span
-                    class={`text-[10px] font-mono px-1.5 py-0.5 rounded-full font-bold shrink-0 ml-1.5 ${
-                      item.badgeColor === 'blue'
-                        ? 'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]'
-                        : item.badgeColor === 'emerald'
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                        : 'bg-slate-200 text-slate-800'
-                    }`}
-                  >
-                    {item.badge}
-                  </span>
-                )}
+                <!-- Expanded Label (Zero badges, Zero sub-arrows) -->
+                <span class="truncate opacity-0 group-hover/sidebar:opacity-100 sidebar-label transition-opacity duration-150">
+                  {item.label}
+                </span>
               </a>
             );
           })}
@@ -319,58 +234,64 @@ function isItemActive(href: string, current: string): boolean {
       </div>
     ))}
 
-    <!-- Hidden Admin Link (Only revealed if cryptographically verified) -->
-    <div id="sidebarAdminGroup" class="hidden">
-      <div class="px-2.5 mb-1.5 text-[10px] font-mono uppercase tracking-wider text-purple-600 font-bold">
-        Admin Security
-      </div>
+    <!-- Admin Link (Only for verified admin) -->
+    <div id="desktopAdminGroup" class="hidden pt-2 border-t border-indigo-500/20">
       <a
         href="/admin"
-        class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 transition-colors"
+        class="flex items-center gap-3 px-2.5 py-2 rounded-xl text-xs font-bold text-purple-300 hover:text-white bg-purple-900/30 hover:bg-purple-900/50 border border-purple-500/30 transition-all"
+        title="Admin Console"
       >
-        <svg class="w-4 h-4 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-        </svg>
-        <span>Admin Console</span>
+        <div class="w-5 h-5 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+          </svg>
+        </div>
+        <span class="truncate opacity-0 group-hover/sidebar:opacity-100 sidebar-label transition-opacity duration-150">
+          Admin Console
+        </span>
       </a>
     </div>
   </div>
 
-  <!-- Platform Quick Strip (Pinned above user profile) -->
-  <div class="px-3 py-2 border-t border-[#E2E8F0] bg-white shrink-0">
-    <div class="flex items-center justify-between px-2 py-1.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] text-[11px] font-semibold text-slate-600">
-      <a href="/pricing" class="hover:text-[#2563EB] transition-colors flex items-center gap-1">
-        <span>Pricing</span>
-        <span class="text-[9px] font-mono px-1 rounded bg-blue-50 text-[#2563EB] font-bold">PRO</span>
+  <!-- Pinned Clean Bottom Strip (Pricing • Documentation • Launch / Submit) -->
+  <div class="px-2 py-2 border-t border-indigo-500/20 bg-slate-900/80 shrink-0">
+    <div class="flex items-center justify-center group-hover/sidebar:justify-between px-2 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[11px] font-medium text-slate-300">
+      <a href="/pricing" class="hover:text-indigo-400 transition-colors shrink-0" title="Pricing & Plans">
+        <span class="hidden group-hover/sidebar:inline sidebar-label">Pricing</span>
+        <span class="group-hover/sidebar:hidden">💰</span>
       </a>
-      <span class="text-slate-300">•</span>
-      <a href="/docs" class="hover:text-[#2563EB] transition-colors">Docs</a>
-      <span class="text-slate-300">•</span>
-      <a href="/submit" class="hover:text-[#2563EB] transition-colors">Submit</a>
+      <span class="text-slate-600 hidden group-hover/sidebar:inline sidebar-label">•</span>
+      <a href="/docs" class="hover:text-indigo-400 transition-colors shrink-0 hidden group-hover/sidebar:inline sidebar-label" title="Platform Docs">
+        Documentation
+      </a>
+      <span class="text-slate-600 hidden group-hover/sidebar:inline sidebar-label">•</span>
+      <a href="/submit" class="hover:text-indigo-400 transition-colors shrink-0 hidden group-hover/sidebar:inline sidebar-label" title="Launch & Submit">
+        Launch / Submit
+      </a>
     </div>
   </div>
 
   <!-- Bottom Workspace User Badge & Auth State -->
-  <div class="p-3 border-t border-[#E2E8F0] bg-white shrink-0" id="sidebarUserFooter">
-    <div class="flex items-center justify-between p-2 rounded-xl hover:bg-[#F8FAFF] transition-colors group">
+  <div class="p-2 border-t border-indigo-500/20 bg-slate-900/90 shrink-0" id="sidebarUserFooter">
+    <div class="flex items-center justify-between p-1.5 rounded-xl hover:bg-white/5 transition-colors group">
       <a href="/profile" class="flex items-center gap-2.5 min-w-0 flex-1">
-        <div class="w-8 h-8 rounded-full overflow-hidden bg-[#2563EB] text-white flex items-center justify-center font-bold text-xs shrink-0" id="sidebarAvatarContainer">
+        <div class="w-8 h-8 rounded-full overflow-hidden bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0 ring-1 ring-white/20" id="sidebarAvatarContainer">
           <span id="sidebarAvatar">U</span>
           <img id="sidebarAvatarImg" class="w-full h-full object-cover hidden" alt="User avatar" />
         </div>
-        <div class="min-w-0 flex-1">
-          <div class="text-xs font-bold text-[#09090B] truncate" id="sidebarUserEmail">Guest Builder</div>
-          <div class="text-[10px] font-mono text-slate-500 font-semibold truncate" id="sidebarUserTier">Free Tier • Sign In</div>
+        <div class="min-w-0 flex-1 opacity-0 group-hover/sidebar:opacity-100 sidebar-label transition-opacity duration-150">
+          <div class="text-xs font-bold text-white truncate" id="sidebarUserEmail">Guest Builder</div>
+          <div class="text-[10px] font-mono text-indigo-300 font-medium truncate" id="sidebarUserTier">Builder Mode</div>
         </div>
       </a>
       
-      <!-- Sign Out Button (Visible when logged in) -->
+      <!-- Sign Out Button -->
       <button
         type="button"
         id="sidebarSignOutBtn"
         onclick="window.handleSignOut && window.handleSignOut()"
-        class="hidden p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer shrink-0"
-        title="Sign Out of Workspace"
+        class="hidden p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer shrink-0 opacity-0 group-hover/sidebar:opacity-100 sidebar-label"
+        title="Sign Out"
         aria-label="Sign Out"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -378,35 +299,35 @@ function isItemActive(href: string, current: string): boolean {
         </svg>
       </button>
 
-      <a href="/login" id="sidebarSignInBtn" class="text-xs text-[#2563EB] font-bold hover:underline shrink-0">
+      <a href="/login" id="sidebarSignInBtn" class="text-xs text-indigo-400 font-bold hover:underline shrink-0 opacity-0 group-hover/sidebar:opacity-100 sidebar-label">
         Sign In
       </a>
     </div>
   </div>
 </aside>
 
-<!-- Mobile Drawer Sidebar (Flyout with Backdrop) -->
+<!-- Mobile Slide-Over Drawer Sidebar (<1024px) -->
 <div id="mobileSidebarDrawer" class="fixed inset-0 z-50 hidden lg:hidden">
   <div 
     id="mobileSidebarBackdrop" 
-    class="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+    class="fixed inset-0 bg-black/70 backdrop-blur-xs transition-opacity"
     onclick="window.closeSidebar && window.closeSidebar()"
   ></div>
 
-  <div class="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-white border-r border-[#E2E8F0] flex flex-col shadow-2xl z-10 transition-transform">
-    <div class="h-14 px-4 flex items-center justify-between border-b border-[#E2E8F0] shrink-0">
+  <div class="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-gradient-to-b from-slate-900 via-[#111827] to-[#1E1B4B] text-slate-100 border-r border-indigo-500/20 flex flex-col shadow-2xl z-10 transition-transform">
+    <div class="h-14 px-4 flex items-center justify-between border-b border-indigo-500/20 bg-slate-900/70 shrink-0">
       <a href="/dashboard" class="flex items-center gap-2.5">
-        <div class="w-7 h-7 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-black text-xs tracking-tight">
+        <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-xs tracking-tight shadow-md">
           AI
         </div>
-        <span class="font-black text-[#09090B] text-base tracking-tight">AIO AI</span>
+        <span class="font-black text-white text-base tracking-tight">AIO AI</span>
       </a>
 
       <button
         type="button"
         id="closeMobileSidebarBtn"
         onclick="window.closeSidebar && window.closeSidebar()"
-        class="p-1.5 rounded-lg text-slate-500 hover:text-ink hover:bg-slate-100 transition-colors cursor-pointer"
+        class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
         aria-label="Close navigation"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -415,132 +336,65 @@ function isItemActive(href: string, current: string): boolean {
       </button>
     </div>
 
-    <div class="flex-1 overflow-y-auto px-3 py-4 space-y-5">
+    <div class="flex-1 overflow-y-auto px-3 py-4 space-y-5 scrollbar-thin">
       {navGroups.map((group) => (
         <div>
-          <div class="px-2.5 mb-1.5 text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+          <div class="px-2.5 mb-1.5 text-[10px] font-mono uppercase tracking-wider text-indigo-300/60 font-bold">
             {group.title}
           </div>
           <nav class="space-y-0.5">
             {group.items.map((item) => {
-              const isParentActive = isItemActive(item.href, currentPath);
-              const hasActiveChild = item.children?.some(c => isItemActive(c.href, currentPath));
-              const isExpanded = isParentActive || hasActiveChild;
-
-              if (item.children && item.children.length > 0) {
-                return (
-                  <details class="group/mobile-tree select-none mb-1" open={isExpanded}>
-                    <summary class={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs list-none cursor-pointer transition-all ${
-                      isParentActive
-                        ? 'bg-[#EFF6FF] text-[#2563EB] font-bold border-l-4 border-[#2563EB]'
-                        : 'text-slate-600 hover:text-[#09090B] hover:bg-slate-50 font-medium'
-                    }`}>
-                      <a href={item.href} class="flex items-center gap-2.5 min-w-0 flex-1 py-0.5" onclick="window.closeSidebar && window.closeSidebar()">
-                        <span class="truncate">{item.label}</span>
-                        {item.badge && (
-                          <span class="text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold bg-[#EFF6FF] text-[#2563EB]">
-                            {item.badge}
-                          </span>
-                        )}
-                      </a>
-                      <span class="p-1 text-slate-400 group-open/mobile-tree:rotate-90 transition-transform shrink-0">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                        </svg>
-                      </span>
-                    </summary>
-
-                    <div class="border-l-2 border-slate-200 ml-5 pl-2 space-y-0.5 mt-1">
-                      {item.children.map((child) => {
-                        const isChildActive = isItemActive(child.href, currentPath);
-                        return (
-                          <a
-                            href={child.href}
-                            class={`flex items-center justify-between px-2 py-1.5 rounded-lg text-xs transition-colors ${
-                              isChildActive
-                                ? 'bg-[#EFF6FF] text-[#2563EB] font-bold border-l-2 border-[#2563EB]'
-                                : 'text-slate-500 hover:text-[#09090B] hover:bg-slate-50 font-medium'
-                            }`}
-                            onclick="window.closeSidebar && window.closeSidebar()"
-                          >
-                            <span class="truncate">↳ {child.label}</span>
-                            {child.badge && (
-                              <span class="text-[9px] font-mono px-1.5 py-0.2 rounded-full font-bold bg-[#EFF6FF] text-[#2563EB]">
-                                {child.badge}
-                              </span>
-                            )}
-                          </a>
-                        );
-                      })}
-                    </div>
-                  </details>
-                );
-              }
-
+              const isActive = isItemActive(item.href, currentPath);
               return (
                 <a
                   href={item.href}
-                  class={`flex items-center justify-between px-2.5 py-2 rounded-xl text-xs transition-all ${
-                    isParentActive
-                      ? 'bg-[#EFF6FF] text-[#2563EB] font-bold border-l-4 border-[#2563EB]'
-                      : 'text-slate-600 hover:text-[#09090B] hover:bg-slate-50 font-medium'
+                  class={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs transition-all ${
+                    isActive
+                      ? 'bg-indigo-600/30 text-indigo-300 font-bold border-l-2 border-indigo-400'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5 font-medium'
                   }`}
                   onclick="window.closeSidebar && window.closeSidebar()"
                 >
                   <span class="truncate">{item.label}</span>
-                  {item.badge && (
-                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded-full font-bold bg-[#EFF6FF] text-[#2563EB]">
-                      {item.badge}
-                    </span>
-                  )}
                 </a>
               );
             })}
           </nav>
         </div>
       ))}
+
+      <!-- Mobile Admin Link -->
+      <div id="mobileAdminGroup" class="hidden pt-2 border-t border-indigo-500/20">
+        <a
+          href="/admin"
+          class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-purple-300 bg-purple-900/30 border border-purple-500/30"
+          onclick="window.closeSidebar && window.closeSidebar()"
+        >
+          <span>Admin Console</span>
+        </a>
+      </div>
     </div>
 
     <!-- Mobile Platform Quick Strip -->
-    <div class="px-3 py-2 border-t border-[#E2E8F0] bg-white shrink-0">
-      <div class="flex items-center justify-between px-2 py-1.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] text-[11px] font-semibold text-slate-600">
-        <a href="/pricing" class="hover:text-[#2563EB] transition-colors flex items-center gap-1" onclick="window.closeSidebar && window.closeSidebar()">
-          <span>Pricing</span>
-          <span class="text-[9px] font-mono px-1 rounded bg-blue-50 text-[#2563EB] font-bold">PRO</span>
-        </a>
-        <span class="text-slate-300">•</span>
-        <a href="/docs" class="hover:text-[#2563EB] transition-colors" onclick="window.closeSidebar && window.closeSidebar()">Docs</a>
-        <span class="text-slate-300">•</span>
-        <a href="/submit" class="hover:text-[#2563EB] transition-colors" onclick="window.closeSidebar && window.closeSidebar()">Submit</a>
+    <div class="px-3 py-2.5 border-t border-indigo-500/20 bg-slate-900/80 shrink-0">
+      <div class="flex items-center justify-between px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs font-medium text-slate-300">
+        <a href="/pricing" class="hover:text-indigo-400" onclick="window.closeSidebar && window.closeSidebar()">Pricing</a>
+        <span class="text-slate-600">•</span>
+        <a href="/docs" class="hover:text-indigo-400" onclick="window.closeSidebar && window.closeSidebar()">Documentation</a>
+        <span class="text-slate-600">•</span>
+        <a href="/submit" class="hover:text-indigo-400" onclick="window.closeSidebar && window.closeSidebar()">Launch / Submit</a>
       </div>
-    </div>
-
-    <!-- Hidden Admin Link on Mobile (Only revealed if authorized) -->
-    <div id="mobileAdminGroup" class="hidden px-3 pb-3">
-      <div class="px-2.5 mb-1.5 text-[10px] font-mono uppercase tracking-wider text-purple-600 font-bold">
-        Admin Security
-      </div>
-      <a
-        href="/admin"
-        class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 transition-colors"
-        onclick="window.closeSidebar && window.closeSidebar()"
-      >
-        <svg class="w-4 h-4 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-        </svg>
-        <span>Admin Console</span>
-      </a>
     </div>
 
     <!-- Mobile Drawer Footer -->
-    <div class="p-3 border-t border-[#E2E8F0] bg-[#F8FAFF] shrink-0">
-      <a href="/profile" class="flex items-center gap-2.5 p-2 rounded-xl bg-white border border-[#E2E8F0]">
-        <div class="w-7 h-7 rounded-full bg-[#2563EB] text-white flex items-center justify-center font-bold text-xs" id="mobileAvatar">
+    <div class="p-3 border-t border-indigo-500/20 bg-slate-900/90 shrink-0">
+      <a href="/profile" class="flex items-center gap-2.5 p-2 rounded-xl bg-white/5 border border-white/10">
+        <div class="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs" id="mobileAvatar">
           U
         </div>
         <div class="min-w-0 flex-1">
-          <div class="text-xs font-bold text-[#09090B] truncate" id="mobileUserEmail">Guest Builder</div>
-          <div class="text-[10px] text-slate-500 font-mono">My Workspace &rarr;</div>
+          <div class="text-xs font-bold text-white truncate" id="mobileUserEmail">Guest Builder</div>
+          <div class="text-[10px] text-indigo-300 font-mono">My Workspace &rarr;</div>
         </div>
       </a>
     </div>
@@ -551,57 +405,99 @@ function isItemActive(href: string, current: string): boolean {
   (function() {
     function getDesktopSidebar() { return document.getElementById('desktopSidebar'); }
     function getMobileDrawer() { return document.getElementById('mobileSidebarDrawer'); }
+    function getPinBtn() { return document.getElementById('pinSidebarToggleBtn'); }
+    function getPinIcon() { return document.getElementById('pinIcon'); }
 
-    window.closeSidebar = function() {
-      if (window.innerWidth < 1024) {
-        var mobileDrawer = getMobileDrawer();
-        if (mobileDrawer) mobileDrawer.classList.add('hidden');
-      } else {
-        var desktopSidebar = getDesktopSidebar();
-        if (desktopSidebar) {
-          desktopSidebar.classList.add('hidden');
-          desktopSidebar.classList.remove('lg:flex');
-          localStorage.setItem('aio_sidebar_closed', 'true');
+    var isPinned = localStorage.getItem('aio_sidebar_pinned') === 'true';
+
+    function applyPinnedState(pinned) {
+      var sidebar = getDesktopSidebar();
+      var pinBtn = getPinBtn();
+      var pinIcon = getPinIcon();
+      if (!sidebar) return;
+
+      if (pinned) {
+        sidebar.classList.remove('w-[68px]');
+        sidebar.classList.add('w-[252px]', 'sidebar-pinned');
+        sidebar.setAttribute('data-pinned', 'true');
+        if (pinBtn) {
+          pinBtn.classList.add('text-indigo-400');
+          pinBtn.setAttribute('title', 'Unpin sidebar');
         }
+        if (pinIcon) {
+          pinIcon.classList.add('rotate-45');
+        }
+        // Reveal labels when pinned
+        var labels = sidebar.querySelectorAll('.sidebar-label');
+        labels.forEach(function(el) { el.classList.remove('opacity-0'); });
+      } else {
+        sidebar.classList.remove('w-[252px]', 'sidebar-pinned');
+        sidebar.classList.add('w-[68px]');
+        sidebar.setAttribute('data-pinned', 'false');
+        if (pinBtn) {
+          pinBtn.classList.remove('text-indigo-400');
+          pinBtn.setAttribute('title', 'Pin sidebar open');
+        }
+        if (pinIcon) {
+          pinIcon.classList.remove('rotate-45');
+        }
+        // Hide labels when collapsed
+        var labels = sidebar.querySelectorAll('.sidebar-label');
+        labels.forEach(function(el) { el.classList.add('opacity-0'); });
       }
+    }
+
+    // Toggle Pin state
+    if (getPinBtn()) {
+      getPinBtn().addEventListener('click', function(e) {
+        e.stopPropagation();
+        isPinned = !isPinned;
+        localStorage.setItem('aio_sidebar_pinned', String(isPinned));
+        applyPinnedState(isPinned);
+      });
+    }
+
+    // Desktop hover expansion
+    var sidebar = getDesktopSidebar();
+    if (sidebar) {
+      sidebar.addEventListener('mouseenter', function() {
+        if (!isPinned && window.innerWidth >= 1024) {
+          sidebar.classList.remove('w-[68px]');
+          sidebar.classList.add('w-[252px]');
+          var labels = sidebar.querySelectorAll('.sidebar-label');
+          labels.forEach(function(el) { el.classList.remove('opacity-0'); });
+        }
+      });
+
+      sidebar.addEventListener('mouseleave', function() {
+        if (!isPinned && window.innerWidth >= 1024) {
+          sidebar.classList.remove('w-[252px]');
+          sidebar.classList.add('w-[68px]');
+          var labels = sidebar.querySelectorAll('.sidebar-label');
+          labels.forEach(function(el) { el.classList.add('opacity-0'); });
+        }
+      });
+    }
+
+    // Mobile drawer toggles
+    window.closeSidebar = function() {
+      var mobileDrawer = getMobileDrawer();
+      if (mobileDrawer) mobileDrawer.classList.add('hidden');
     };
 
     window.openSidebar = function() {
-      if (window.innerWidth < 1024) {
-        var mobileDrawer = getMobileDrawer();
-        if (mobileDrawer) mobileDrawer.classList.remove('hidden');
-      } else {
-        var desktopSidebar = getDesktopSidebar();
-        if (desktopSidebar) {
-          desktopSidebar.classList.remove('hidden');
-          desktopSidebar.classList.add('lg:flex');
-          localStorage.setItem('aio_sidebar_closed', 'false');
-        }
-      }
+      var mobileDrawer = getMobileDrawer();
+      if (mobileDrawer) mobileDrawer.classList.remove('hidden');
     };
 
     window.toggleSidebar = function() {
-      if (window.innerWidth < 1024) {
-        var mobileDrawer = getMobileDrawer();
-        if (mobileDrawer) mobileDrawer.classList.toggle('hidden');
-      } else {
-        var desktopSidebar = getDesktopSidebar();
-        if (desktopSidebar) {
-          var isClosed = desktopSidebar.classList.contains('hidden');
-          if (isClosed) window.openSidebar();
-          else window.closeSidebar();
-        }
-      }
+      var mobileDrawer = getMobileDrawer();
+      if (mobileDrawer) mobileDrawer.classList.toggle('hidden');
     };
 
     function initSidebar() {
-      var isClosed = localStorage.getItem('aio_sidebar_closed') === 'true';
-      if (window.innerWidth >= 1024 && isClosed) {
-        var desktopSidebar = getDesktopSidebar();
-        if (desktopSidebar) {
-          desktopSidebar.classList.add('hidden');
-          desktopSidebar.classList.remove('lg:flex');
-        }
+      if (window.innerWidth >= 1024) {
+        applyPinnedState(isPinned);
       }
 
       // Synchronize User in Sidebar Footer
@@ -638,7 +534,8 @@ function isItemActive(href: string, current: string): boolean {
           var signOutBtn = document.getElementById('sidebarSignOutBtn');
           var mobileEmail = document.getElementById('mobileUserEmail');
           var mobileAvatar = document.getElementById('mobileAvatar');
-          var adminGroup = document.getElementById('sidebarAdminGroup');
+          var desktopAdmin = document.getElementById('desktopAdminGroup');
+          var mobileAdmin = document.getElementById('mobileAdminGroup');
 
           var fullName = user.name || (user.email ? user.email.split('@')[0] : 'Harshil Patel');
           if (emailEl) emailEl.textContent = fullName;
@@ -658,20 +555,12 @@ function isItemActive(href: string, current: string): boolean {
           if (signInBtn) signInBtn.classList.add('hidden');
           if (signOutBtn) signOutBtn.classList.remove('hidden');
 
-          // Reveal Admin link ONLY for cryptographically verified admin via Supabase Auth Server (Never raw localStorage)
-          var hasSupabaseToken = false;
-          for (var j = 0; j < localStorage.length; j++) {
-            var key = localStorage.key(j);
-            if (key && (key === 'supabase.auth.token' || (key.indexOf('sb-') === 0 && key.indexOf('-auth-token') !== -1))) {
-              hasSupabaseToken = true;
-              break;
-            }
-          }
-          if (hasSupabaseToken && window.supabase && window.supabase.auth) {
+          // Cryptographic verification check for admin
+          if (window.supabase && window.supabase.auth) {
             window.supabase.auth.getUser().then(function(res) {
               var authUser = res && res.data && res.data.user;
               if (authUser && authUser.email && authUser.email.toLowerCase().trim() === 'harshilpival@gmail.com') {
-                if (adminGroup) adminGroup.classList.remove('hidden');
+                if (desktopAdmin) desktopAdmin.classList.remove('hidden');
                 if (mobileAdmin) mobileAdmin.classList.remove('hidden');
               }
             }).catch(function() {});

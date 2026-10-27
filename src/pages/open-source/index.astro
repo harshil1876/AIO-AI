@@ -6,7 +6,18 @@ import RepoQuickstartDrawer from '../../components/RepoQuickstartDrawer.astro';
 import { OPEN_SOURCE_REPOS } from '../../data/openSourceData';
 import { HARDWARE_PRESETS } from '../../services/githubLiveService';
 
-const categories = ['All', 'LLM Runtimes', 'Agent Frameworks', 'Image & Video Gen', 'RAG & Vector DBs', 'Voice & Audio', 'UI Frontends', 'Coding Agents'];
+const categories = [
+  'All',
+  'Local Inference',
+  'Local LLMs',
+  'Agent Frameworks',
+  'AI Coding',
+  'Voice & Audio',
+  'Image/Video/3D',
+  'RAG & Vector DBs',
+  'Robotics & Embodied AI',
+  'Fine-Tuning & Eval'
+];
 
 // Parse minimum VRAM as numeric GB for hardware matching
 function parseVramGb(vramStr?: string): number {
@@ -17,172 +28,191 @@ function parseVramGb(vramStr?: string): number {
 ---
 
 <Layout 
-  title="Open-Source AI Hub | 20+ Flagship Repositories & Local Setup"
-  description="Explore 20+ flagship self-hostable open-source AI projects. Compare VRAM requirements, Docker quickstart commands, and hardware compatibility."
+  title="Open-Source AI Hub | 88 Verified Flagship Repositories & Local Setup"
+  description="Explore 88 verified self-hostable open-source AI projects. Compare VRAM requirements, Docker quickstart commands, and hardware compatibility."
 >
   <Header currentPath="/open-source" />
 
-  <main class="w-full flex flex-col min-h-screen bg-canvas">
-    <!-- Header -->
-    <section class="border-b border-hairline bg-canvas-elevated px-6 py-10 md:py-14">
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <div class="text-[11px] font-mono text-mute uppercase tracking-wider mb-1">
-            Open-Source AI Telemetry & Hardware Compatibility
+  <main class="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+    
+    <!-- Hero Header -->
+    <section class="rounded-3xl midnight-hero p-8 sm:p-10 text-white relative overflow-hidden shadow-xl border border-slate-800">
+      <div class="absolute -right-20 -top-20 w-96 h-96 bg-emerald-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 text-[11px] font-mono font-bold text-emerald-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>88 VERIFIED REPOSITORIES • LOCAL HARDWARE ENGINE</span>
           </div>
-          <h1 class="text-3xl sm:text-4xl font-semibold text-ink tracking-tight mb-2">
+          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
             Open-Source AI Hub
           </h1>
-          <p class="text-xs sm:text-sm text-body max-w-2xl leading-relaxed">
-            Index of self-hostable AI runtimes, agent frameworks, local diffusion GUIs, and vector engines. Includes real-time hardware compatibility verdicts and instant CLI commands.
+          <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+            Curated registry of self-hostable LLM engines, autonomous agent frameworks, local diffusion GUIs, and vector engines with zero cloud telemetry.
           </p>
         </div>
 
-        <!-- Hardware & PC Selector ("Can My PC Run This?" feature) -->
-        <div class="bg-canvas border border-hairline rounded-lg p-3.5 w-full md:w-80 shadow-xs">
-          <label class="block text-[11px] font-mono uppercase tracking-wider text-mute mb-1.5 font-semibold">
-            Can My PC Run This? (Select Hardware)
+        <!-- Hardware & PC Selector ("Can My PC Run This?") -->
+        <div class="bg-slate-900/80 backdrop-blur-md border border-slate-700/70 rounded-2xl p-4 w-full md:w-80 shadow-md">
+          <label class="block text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-1.5 font-bold">
+            Can My PC Run This? (Select GPU/RAM)
           </label>
           <select 
             id="hardwareSelector" 
-            class="w-full bg-canvas-elevated border border-hairline text-ink text-xs rounded p-2 outline-none hover:border-faint transition-colors font-medium cursor-pointer"
+            class="w-full bg-slate-800 border border-slate-600 text-white text-xs rounded-xl p-2.5 outline-none hover:border-slate-400 transition-colors font-medium cursor-pointer"
           >
             {HARDWARE_PRESETS.map(hw => (
               <option value={hw.id}>{hw.label}</option>
             ))}
           </select>
-          <div class="text-[10px] text-mute font-mono mt-1.5 flex items-center justify-between">
-            <span>Dynamic FP16 / Quantization check</span>
-            <span id="hardwareSummaryBadge" class="text-ink font-semibold">All Presets</span>
+          <div class="text-[10px] text-slate-400 font-mono mt-2 flex items-center justify-between">
+            <span>Dynamic Quantization Verdict</span>
+            <span id="hardwareSummaryBadge" class="text-emerald-400 font-bold">All Presets</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Search & Trust Gate Section -->
-    <section class="border-b border-hairline bg-surface px-6 py-4">
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        <!-- Live Search Input -->
-        <div class="relative w-full md:w-96">
-          <input 
-            type="text" 
-            id="ghLiveSearchInput" 
-            placeholder="Live search GitHub AI repos (e.g. vllm, whisper, qwen)..." 
-            class="w-full pl-9 pr-4 py-2 rounded-lg bg-canvas-elevated border border-hairline text-ink text-xs focus:outline-none focus:border-primary font-sans"
-          />
-          <svg class="w-4 h-4 text-mute absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-          </svg>
-        </div>
+    <!-- Search & Safety Gate Bar -->
+    <section class="card-aurora p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+      <!-- Live Search Input -->
+      <div class="relative w-full md:w-96">
+        <input 
+          type="text" 
+          id="ghLiveSearchInput" 
+          placeholder="Search 88 repos (e.g. vllm, comfyui, whisper, ollama)..." 
+          class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-blue-600 font-sans shadow-xs font-medium"
+        />
+        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+      </div>
 
-        <!-- Safety Guard Banner -->
-        <div class="flex items-center gap-2 text-xs font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-lg w-full md:w-auto">
-          <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-          </svg>
-          <span>Safety Guard Active: Repositories locked to <strong>stars: &ge; 1,000</strong> for verified code integrity</span>
-        </div>
+      <!-- Safety Guard Banner -->
+      <div class="flex items-center gap-2 text-xs font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-xl w-full md:w-auto">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+        <span>Safety Gate: Repositories curated with <strong>&ge; 1,000 GitHub Stars</strong></span>
       </div>
     </section>
 
     <!-- Category Filter Bar -->
-    <section class="border-b border-hairline bg-canvas px-6 py-3">
-      <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 overflow-x-auto pb-1 sm:pb-0">
-        <div class="flex items-center gap-1.5 shrink-0" id="catFilterBar">
-          {categories.map((cat, idx) => (
-            <button 
-              type="button" 
-              class={`cat-pill px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors ${
-                idx === 0 
-                  ? 'bg-ink text-on-primary border border-ink' 
-                  : 'bg-canvas-elevated text-mute hover:text-ink border border-hairline hover:border-faint'
-              }`}
-              data-cat={cat}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        <div class="flex items-center gap-3 shrink-0 text-xs">
-          <a href="/open-source/trending" class="text-mute hover:text-ink font-mono inline-flex items-center gap-1 transition-colors">
-            <span>View Star Velocity Leaderboard</span>
-            <span>&rarr;</span>
-          </a>
-        </div>
+    <section class="flex items-center justify-between gap-4 overflow-x-auto pb-1" id="catFilterBar">
+      <div class="flex items-center gap-2 shrink-0">
+        {categories.map((cat, idx) => (
+          <button 
+            type="button" 
+            class={`cat-pill px-3.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all ${
+              idx === 0 
+                ? 'bg-slate-900 text-white shadow-xs' 
+                : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200 hover:border-slate-300'
+            }`}
+            data-cat={cat}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
     </section>
 
-    <!-- Repos Grid -->
-    <div class="w-full max-w-7xl mx-auto px-6 py-10 flex-1">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="reposGrid">
-        {OPEN_SOURCE_REPOS.map((repo) => {
-          const minVram = parseVramGb(repo.hardwareSpecs?.minVramGb);
-          const [owner, name] = (repo.repo || '').split('/');
-          return (
-            <article 
-              class="repo-card bg-canvas-elevated border border-hairline hover:border-faint rounded-lg p-5 shadow-xs transition-all flex flex-col justify-between"
-              data-category={repo.category}
-              data-vram={minVram}
-              data-owner={owner || ''}
-              data-repo={name || repo.slug}
-            >
-              <div>
-                <div class="flex items-center justify-between text-xs font-mono mb-2.5">
-                  <span class="text-ink font-medium uppercase text-[10px] bg-hairline-soft px-2 py-0.5 rounded border border-hairline">
-                    {repo.category}
-                  </span>
-                  <span class="font-semibold text-ink live-stars">★ {repo.stars}</span>
-                </div>
+    <!-- Pagination Status Header & Page Size Selector -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 font-mono" id="repoPaginationStatusHeader">
+      <div id="repoRangeIndicator">
+        Showing 1–16 of {OPEN_SOURCE_REPOS.length} Verified Open-Source Repositories (Page 1 of {Math.ceil(OPEN_SOURCE_REPOS.length / 16)})
+      </div>
 
-                <h2 class="text-sm font-semibold text-ink mb-1 hover:underline">
-                  <a href={`/open-source/${repo.slug}`}>
-                    {repo.name}
-                  </a>
-                </h2>
-
-                <p class="text-xs text-body line-clamp-3 mb-3 leading-relaxed">
-                  {repo.oneMinuteSummary || repo.description}
-                </p>
-
-                <!-- Hardware Compatibility Verdict Badge ("Can My PC Run This?") -->
-                <div class="hardware-verdict-badge mb-3 p-2 rounded text-[10px] font-mono font-medium flex items-center justify-between border bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20">
-                  <span class="verdict-label">Runs Smoothly (FP16)</span>
-                  <span class="verdict-vram">{repo.hardwareSpecs?.minVramGb}</span>
-                </div>
-
-                <!-- Replaces commercial tool badge -->
-                <div class="p-2 rounded bg-hairline-soft/40 border border-hairline text-[11px] text-body mb-3 truncate">
-                  <span class="text-mute font-mono text-[10px] block">Replaces:</span>
-                  <span class="font-medium text-ink truncate block">{repo.replacesCommercialTool}</span>
-                </div>
-
-                <!-- Quick Command Snippet -->
-                <div class="p-2 rounded bg-canvas border border-hairline font-mono text-[10px] text-body truncate mb-3 flex items-center justify-between">
-                  <span class="truncate">{repo.quickstartCommands?.cli || repo.quickstartCommands?.docker || 'git clone ' + repo.url}</span>
-                </div>
-              </div>
-
-              <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs">
-                <button 
-                  type="button" 
-                  class="quickstart-trigger-btn font-mono text-[11px] font-bold text-[#2563EB] hover:text-[#1D4ED8] bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-md transition-colors cursor-pointer inline-flex items-center gap-1"
-                  data-repo-json={JSON.stringify(repo)}
-                >
-                  <span>&gt;_ Quickstart</span>
-                </button>
-                <a 
-                  href={`/open-source/${repo.slug}`} 
-                  class="font-medium text-ink hover:underline inline-flex items-center gap-0.5"
-                >
-                  Setup Guide &rarr;
-                </a>
-              </div>
-            </article>
-          );
-        })}
+      <div class="flex items-center gap-2 self-start sm:self-auto">
+        <label for="reposPerPageSelect" class="text-slate-500 font-bold">Repos per page:</label>
+        <select id="reposPerPageSelect" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-800 font-bold outline-none cursor-pointer">
+          <option value="16" selected>16</option>
+          <option value="32">32</option>
+          <option value="48">48</option>
+          <option value="all">All (88)</option>
+        </select>
       </div>
     </div>
+
+    <!-- Repos Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5" id="reposGrid">
+      {OPEN_SOURCE_REPOS.map((repo) => {
+        const minVram = parseVramGb(repo.hardwareSpecs?.minVramGb);
+        const [owner, name] = (repo.repo || '').split('/');
+        return (
+          <article 
+            class="repo-card bg-white border border-slate-200 hover:border-blue-500 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+            data-category={repo.category}
+            data-vram={minVram}
+            data-owner={owner || ''}
+            data-repo={name || repo.slug}
+            data-name={repo.name.toLowerCase()}
+            data-desc={(repo.oneMinuteSummary || repo.description || '').toLowerCase()}
+          >
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-2.5">
+                <span class="text-slate-700 font-bold uppercase text-[10px] bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+                  {repo.category}
+                </span>
+                <span class="font-bold text-slate-900 live-stars">★ {repo.stars}</span>
+              </div>
+
+              <h2 class="text-base font-black text-slate-900 mb-1 hover:text-blue-600 transition-colors">
+                <a href={`/open-source/${repo.slug}`}>
+                  {repo.name}
+                </a>
+              </h2>
+
+              <p class="text-xs text-slate-500 line-clamp-3 mb-3 leading-relaxed">
+                {repo.oneMinuteSummary || repo.description}
+              </p>
+
+              <!-- Hardware Compatibility Verdict Badge ("Can My PC Run This?") -->
+              <div class="hardware-verdict-badge mb-3 p-2 rounded-xl text-[10px] font-mono font-bold flex items-center justify-between border bg-emerald-50 text-emerald-800 border-emerald-200">
+                <span class="verdict-label">Runs Smoothly (FP16)</span>
+                <span class="verdict-vram">{repo.hardwareSpecs?.minVramGb || '8GB VRAM'}</span>
+              </div>
+
+              <!-- Replaces commercial tool badge -->
+              <div class="p-2 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 mb-3 truncate">
+                <span class="text-slate-400 font-mono text-[10px] block">Replaces:</span>
+                <span class="font-bold text-slate-900 truncate block">{repo.replacesCommercialTool || repo.commercialReplaces || 'Proprietary Cloud SaaS'}</span>
+              </div>
+
+              <!-- Quick Command Snippet -->
+              <div class="p-2 rounded-xl bg-slate-900 text-slate-200 font-mono text-[10px] truncate mb-3 flex items-center justify-between">
+                <span class="truncate">{repo.quickstartCommands?.cli || repo.quickstartCommands?.docker || 'git clone ' + repo.url}</span>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <button 
+                type="button" 
+                class="quickstart-trigger-btn font-mono text-[11px] font-bold text-blue-700 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg transition-colors cursor-pointer inline-flex items-center gap-1"
+                data-repo-json={JSON.stringify(repo)}
+              >
+                <span>&gt;_ Quickstart</span>
+              </button>
+              <a 
+                href={`/open-source/${repo.slug}`} 
+                class="font-bold text-slate-900 hover:text-blue-600 hover:underline inline-flex items-center gap-0.5"
+              >
+                Setup Guide &rarr;
+              </a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <!-- PAGINATION CONTROLS BAR -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-200" id="repoPaginationFooter">
+      <div class="text-xs font-mono text-slate-500" id="repoPaginationBottomCounter">
+        Page 1 of {Math.ceil(OPEN_SOURCE_REPOS.length / 16)}
+      </div>
+
+      <div class="flex items-center gap-1.5 font-mono text-xs" id="repoPaginationControls">
+        <!-- Buttons injected dynamically by script -->
+      </div>
+    </div>
+
   </main>
 
   <RepoQuickstartDrawer />
@@ -196,83 +226,154 @@ function parseVramGb(vramStr?: string): number {
     const selector = document.getElementById('hardwareSelector') as HTMLSelectElement | null;
     const summaryBadge = document.getElementById('hardwareSummaryBadge');
     const reposGrid = document.getElementById('reposGrid');
-    const repoCards = document.querySelectorAll<HTMLElement>('.repo-card');
+    const repoCards = Array.from(document.querySelectorAll<HTMLElement>('.repo-card'));
     const catPills = document.querySelectorAll<HTMLButtonElement>('.cat-pill');
     const searchInput = document.getElementById('ghLiveSearchInput') as HTMLInputElement | null;
+    const perPageSelect = document.getElementById('reposPerPageSelect') as HTMLSelectElement | null;
+    const paginationControls = document.getElementById('repoPaginationControls');
+    const rangeIndicator = document.getElementById('repoRangeIndicator');
+    const bottomCounter = document.getElementById('repoPaginationBottomCounter');
 
     let activeCat = 'All';
-    let searchDebounceTimer: any = null;
+    let searchQuery = '';
+    let currentPage = 1;
+    let itemsPerPage: number | 'all' = 16;
+    let filteredCards: HTMLElement[] = [...repoCards];
 
-    // Live Search Handling with >= 1000 Stars Safety Guard
-    searchInput?.addEventListener('input', (e: any) => {
-      clearTimeout(searchDebounceTimer);
-      const q = e.target.value.trim();
+    function applyPagination() {
+      // 1. Filter cards by Category & Query
+      filteredCards = repoCards.filter(card => {
+        const cat = card.getAttribute('data-category') || '';
+        const name = card.getAttribute('data-name') || '';
+        const desc = card.getAttribute('data-desc') || '';
 
-      if (!q) {
-        // Restore default curated grid
-        repoCards.forEach(c => c.style.display = '');
-        const dynamicCards = document.querySelectorAll('.dynamic-search-repo');
-        dynamicCards.forEach(d => d.remove());
-        return;
+        const matchesCat = activeCat === 'All' || cat.toLowerCase().includes(activeCat.toLowerCase());
+        const matchesQuery = !searchQuery || name.includes(searchQuery) || desc.includes(searchQuery);
+
+        return matchesCat && matchesQuery;
+      });
+
+      const totalItems = filteredCards.length;
+      const pageSize = itemsPerPage === 'all' ? totalItems : Number(itemsPerPage);
+      const totalPages = Math.max(1, Math.ceil(totalItems / (pageSize || 1)));
+
+      if (currentPage > totalPages) currentPage = 1;
+
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = itemsPerPage === 'all' ? totalItems : Math.min(startIndex + pageSize, totalItems);
+
+      // Hide all cards first
+      repoCards.forEach(c => c.style.display = 'none');
+
+      // Show cards in current slice
+      filteredCards.slice(startIndex, endIndex).forEach(card => {
+        card.style.display = 'flex';
+      });
+
+      // Update counters
+      const displayStart = totalItems === 0 ? 0 : startIndex + 1;
+      const displayEnd = endIndex;
+      if (rangeIndicator) {
+        rangeIndicator.textContent = `Showing ${displayStart}–${displayEnd} of ${totalItems} Verified Repositories (Page ${currentPage} of ${totalPages})`;
+      }
+      if (bottomCounter) {
+        bottomCounter.textContent = `Page ${currentPage} of ${totalPages}`;
       }
 
-      searchDebounceTimer = setTimeout(async () => {
-        // First hide default cards
-        repoCards.forEach(c => c.style.display = 'none');
-        const oldDynamic = document.querySelectorAll('.dynamic-search-repo');
-        oldDynamic.forEach(d => d.remove());
+      // Render Pagination Buttons
+      renderPaginationControls(totalPages);
+    }
 
-        const loadingNotice = document.createElement('div');
-        loadingNotice.className = 'dynamic-search-repo col-span-full p-8 text-center text-xs font-mono text-mute';
-        loadingNotice.textContent = 'Querying live GitHub API with stars:>=1000 safety gate...';
-        reposGrid?.appendChild(loadingNotice);
+    function renderPaginationControls(totalPages: number) {
+      if (!paginationControls) return;
+      paginationControls.innerHTML = '';
 
-        const results = await searchGitHubAIRepos(q, 1000);
-        loadingNotice.remove();
+      if (totalPages <= 1) return;
 
-        if (!results || results.length === 0) {
-          const noResults = document.createElement('div');
-          noResults.className = 'dynamic-search-repo col-span-full p-8 text-center text-xs bg-canvas border border-dashed border-hairline rounded-xl';
-          noResults.innerHTML = `
-            <p class="font-bold text-ink">No Repositories Found</p>
-            <p class="text-mute text-[11px] mt-1">No repositories matching "${q}" with &ge; 1,000 GitHub stars. Try another AI query.</p>
-          `;
-          reposGrid?.appendChild(noResults);
-          return;
+      // Prev Button
+      const prevBtn = document.createElement('button');
+      prevBtn.className = `px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-bold transition-colors cursor-pointer ${
+        currentPage === 1 ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white hover:bg-slate-50 text-slate-800'
+      }`;
+      prevBtn.textContent = '← Prev';
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          applyPagination();
+          scrollToTop();
         }
+      });
+      paginationControls.appendChild(prevBtn);
 
-        results.forEach(item => {
-          const card = document.createElement('article');
-          card.className = 'dynamic-search-repo bg-canvas-elevated border border-primary/40 hover:border-primary rounded-lg p-5 shadow-xs transition-all flex flex-col justify-between';
-          card.innerHTML = `
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-primary border border-blue-200">
-                  ${item.language}
-                </span>
-                <span class="text-xs font-mono font-bold text-ink">★ ${item.formattedStars}</span>
-              </div>
-              <h2 class="text-sm font-semibold text-ink hover:underline mb-1">
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.fullName}</a>
-              </h2>
-              <p class="text-xs text-body line-clamp-3 mb-4 leading-relaxed">${item.description}</p>
-            </div>
-            <div>
-              <div class="mb-3 p-2 rounded text-[10px] font-mono font-medium flex items-center justify-between border bg-emerald-50 text-emerald-700 border-emerald-200">
-                <span>Audit Status</span>
-                <span class="font-bold">Passed (&ge;1,000★)</span>
-              </div>
-              <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs">
-                <span class="font-mono text-[11px] text-mute">${item.updatedAt}</span>
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="font-medium text-primary hover:underline">
-                  GitHub Repo &rarr;
-                </a>
-              </div>
-            </div>
-          `;
-          reposGrid?.appendChild(card);
+      // Numbered Page Buttons
+      for (let p = 1; p <= totalPages; p++) {
+        const pageBtn = document.createElement('button');
+        const isActive = p === currentPage;
+        pageBtn.className = `w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+          isActive 
+            ? 'bg-blue-600 text-white shadow-xs' 
+            : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+        }`;
+        pageBtn.textContent = String(p);
+        pageBtn.addEventListener('click', () => {
+          currentPage = p;
+          applyPagination();
+          scrollToTop();
         });
-      }, 400);
+        paginationControls.appendChild(pageBtn);
+      }
+
+      // Next Button
+      const nextBtn = document.createElement('button');
+      nextBtn.className = `px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-bold transition-colors cursor-pointer ${
+        currentPage === totalPages ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white hover:bg-slate-50 text-slate-800'
+      }`;
+      nextBtn.textContent = 'Next →';
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          applyPagination();
+          scrollToTop();
+        }
+      });
+      paginationControls.appendChild(nextBtn);
+    }
+
+    function scrollToTop() {
+      const topEl = document.getElementById('repoPaginationStatusHeader');
+      if (topEl) {
+        topEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Per Page Select Handler
+    perPageSelect?.addEventListener('change', () => {
+      const val = perPageSelect.value;
+      itemsPerPage = val === 'all' ? 'all' : Number(val);
+      currentPage = 1;
+      applyPagination();
+    });
+
+    // Category Buttons
+    catPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        catPills.forEach(p => {
+          p.className = 'cat-pill px-3.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all bg-white text-slate-600 hover:text-slate-900 border border-slate-200 hover:border-slate-300';
+        });
+        pill.className = 'cat-pill px-3.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all bg-slate-900 text-white shadow-xs';
+        activeCat = pill.getAttribute('data-cat') || 'All';
+        currentPage = 1;
+        applyPagination();
+      });
+    });
+
+    // Search Input Handler
+    searchInput?.addEventListener('input', (e: any) => {
+      searchQuery = e.target.value.toLowerCase().trim();
+      currentPage = 1;
+      applyPagination();
     });
 
     // Hardware Compatibility Evaluator
@@ -288,50 +389,13 @@ function parseVramGb(vramStr?: string): number {
         if (badge && label) {
           const result = checkHardwareCompatibility(minVram, presetId);
           label.textContent = result.label;
-
-          badge.className = `hardware-verdict-badge mb-3 p-2 rounded text-[10px] font-mono font-medium flex items-center justify-between border ${result.badgeClass}`;
+          badge.className = `hardware-verdict-badge mb-3 p-2 rounded-xl text-[10px] font-mono font-bold flex items-center justify-between border ${result.badgeClass}`;
         }
       });
     }
 
     selector?.addEventListener('change', () => {
       updateHardwareVerdicts(selector.value);
-    });
-
-    // Category Filtering
-    catPills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        catPills.forEach(p => {
-          p.className = 'cat-pill px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors bg-canvas-elevated text-mute hover:text-ink border border-hairline hover:border-faint';
-        });
-        pill.className = 'cat-pill px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors bg-ink text-on-primary border border-ink';
-        
-        activeCat = pill.getAttribute('data-cat') || 'All';
-
-        repoCards.forEach(card => {
-          const cardCat = card.getAttribute('data-category') || '';
-          if (activeCat === 'All' || cardCat.toLowerCase().includes(activeCat.toLowerCase())) {
-            card.style.display = '';
-          } else {
-            card.style.display = 'none';
-          }
-        });
-      });
-    });
-
-    // Hydrate Live GitHub Stars
-    repoCards.forEach(async (card) => {
-      const owner = card.getAttribute('data-owner');
-      const repo = card.getAttribute('data-repo');
-      if (owner && repo) {
-        try {
-          const stats = await fetchLiveRepoStats(owner, repo);
-          if (stats?.formattedStars) {
-            const starEl = card.querySelector('.live-stars');
-            if (starEl) starEl.textContent = `★ ${stats.formattedStars}`;
-          }
-        } catch (e) {}
-      }
     });
 
     // Quickstart Drawer click handler
@@ -351,7 +415,8 @@ function parseVramGb(vramStr?: string): number {
       }
     });
 
-    // Initial run
+    // Initialize
     updateHardwareVerdicts(selector?.value || 'all');
+    applyPagination();
   });
 </script>

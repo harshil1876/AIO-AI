@@ -14,6 +14,30 @@ const freemiumTools = tools.filter(t => t.pricingType === 'Freemium');
 const paidTools = tools.filter(t => t.pricingType === 'Paid');
 const openSourceTools = tools.filter(t => t.pricingType === 'Open Source');
 
+// Compute category statistics for the 13 categories
+const categoryStats = CATEGORIES_DATA.map(cat => {
+  const catTools = tools.filter(t => t.categorySlugs?.includes(cat.slug));
+  const avgScore = catTools.length 
+    ? Math.round(catTools.reduce((acc, t) => acc + (t.platformScore || 85), 0) / catTools.length)
+    : 85;
+  
+  // Parse starting price average
+  const prices = catTools.map(t => {
+    if (!t.startingPrice || t.pricingType === 'Free' || t.pricingType === 'Open Source') return 0;
+    const match = t.startingPrice.match(/\$?(\d+(\.\d+)?)/);
+    return match ? parseFloat(match[1]) : 15;
+  });
+  const avgPrice = prices.length ? Math.round(prices.reduce((a, b) => a + b, 0) / prices.length) : 0;
+
+  return {
+    slug: cat.slug,
+    name: cat.name,
+    count: catTools.length,
+    avgScore,
+    avgPrice: avgPrice || 18,
+  };
+});
+
 // Top Repos by Stars
 const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
   const parseStars = (s: string) => {
@@ -25,145 +49,566 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
 ---
 
 <Layout 
-  title="AI Ecosystem & Spend Analytics | AIO AI"
-  description="Interactive AI stack cost calculator, open-source annual savings analysis, LLM token price matrix, and platform ecosystem telemetry."
+  title="Market Intelligence & Ecosystem Telemetry | AIO AI"
+  description="Authoritative AI market intelligence: Ecosystem velocity, pricing model distributions, LLM price-performance scatter plot, category authenticity benchmarking, and sovereign India AI telemetry."
 >
   <Header currentPath="/analytics" />
 
-  <main class="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 bg-[#FFFFFF] min-h-screen space-y-12">
+  <main class="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-12">
     
-    <!-- Top Header -->
-    <section class="border-b border-[#E2E8F0] pb-6">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-mono font-bold text-[#2563EB] mb-3">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>ECOSYSTEM TELEMETRY & SPEND ENGINE</span>
+    <!-- Top Header & Executive Telemetry Strip -->
+    <section class="rounded-3xl midnight-hero p-8 sm:p-10 text-white relative overflow-hidden shadow-xl border border-slate-800">
+      <div class="absolute -right-20 -top-20 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-400/30 bg-blue-500/10 text-[11px] font-mono font-bold text-blue-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>ECOSYSTEM VELOCITY TELEMETRY • V2.0 LIVE</span>
           </div>
-          <h1 class="text-3xl sm:text-5xl font-black text-[#09090B] tracking-tight">
-            Analytics & Insights
+          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
+            Market Intelligence & Telemetry
           </h1>
-          <p class="text-xs sm:text-sm text-slate-600 mt-2 max-w-2xl leading-relaxed">
-            Real-time economics across SaaS subscriptions, LLM inference rates, open-source replacement savings, and catalog distribution.
+          <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+            Real-time economic intelligence across verified SaaS software, frontier LLM inference rates, open-source replacement economics, and sovereign AI telemetry.
           </p>
         </div>
 
-        <!-- Currency Switcher Toggle -->
-        <div class="flex items-center gap-2 bg-[#F8FAFF] p-1.5 rounded-xl border border-[#E2E8F0] shrink-0">
-          <span class="text-xs font-mono font-bold text-slate-500 pl-2">Currency:</span>
+        <!-- Global Currency Switcher -->
+        <div class="flex items-center gap-2 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-2xl border border-slate-700/60 shrink-0 self-start md:self-end">
+          <span class="text-xs font-mono font-bold text-slate-400 pl-2">Currency:</span>
           <button 
             type="button" 
             id="currencyUSD" 
-            class="currency-toggle px-3 py-1 rounded-lg text-xs font-mono font-bold bg-[#09090B] text-white transition-all cursor-pointer"
+            class="currency-toggle px-3 py-1.5 rounded-xl text-xs font-mono font-bold bg-blue-600 text-white transition-all cursor-pointer shadow-sm"
           >
             USD ($)
           </button>
           <button 
             type="button" 
             id="currencyINR" 
-            class="currency-toggle px-3 py-1 rounded-lg text-xs font-mono font-bold text-slate-600 hover:text-ink transition-all cursor-pointer"
+            class="currency-toggle px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-slate-300 hover:text-white transition-all cursor-pointer"
           >
             INR (₹)
           </button>
         </div>
       </div>
+
+      <!-- Quick KPI Counters -->
+      <div class="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-8 border-t border-slate-800/80">
+        <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl p-4">
+          <span class="text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-400">Verified Catalog</span>
+          <div class="text-2xl sm:text-3xl font-black font-mono text-white mt-1">{tools.length} <span class="text-xs font-normal text-blue-400 font-sans">Tools</span></div>
+          <span class="text-[11px] text-slate-400">100% verified URLs</span>
+        </div>
+        <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl p-4">
+          <span class="text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-400">Open-Source Hub</span>
+          <div class="text-2xl sm:text-3xl font-black font-mono text-emerald-400 mt-1">{OPEN_SOURCE_REPOS.length} <span class="text-xs font-normal text-emerald-300 font-sans">Repos</span></div>
+          <span class="text-[11px] text-slate-400">Self-hostable code</span>
+        </div>
+        <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl p-4">
+          <span class="text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-400">Frontier LLMs</span>
+          <div class="text-2xl sm:text-3xl font-black font-mono text-purple-400 mt-1">{OFFICIAL_MODELS.length} <span class="text-xs font-normal text-purple-300 font-sans">Models</span></div>
+          <span class="text-[11px] text-slate-400">Live token rates</span>
+        </div>
+        <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl p-4">
+          <span class="text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-400">Sovereign India AI</span>
+          <div class="text-2xl sm:text-3xl font-black font-mono text-amber-400 mt-1">{indiaTools.length} <span class="text-xs font-normal text-amber-300 font-sans">Pioneers</span></div>
+          <span class="text-[11px] text-slate-400">22 Indic languages</span>
+        </div>
+      </div>
     </section>
 
-    <!-- SECTION 1: PERSONAL AI STACK & API COST INTELLIGENCE -->
-    <section class="space-y-6">
-      <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+    <!-- CHART 1: ECOSYSTEM VELOCITY AREA CHART -->
+    <section class="card-aurora p-6 sm:p-8 space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h2 class="text-xl font-black text-[#09090B]">1. Monthly AI Spend & Open-Source Savings Simulator</h2>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+            <h2 class="text-xl font-black text-slate-900 tracking-tight">1. Ecosystem Growth & Velocity Trajectory</h2>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">Cumulative adoption curve of verified tools, open-source repositories, and community workflows.</p>
+        </div>
+        
+        <!-- Timeline Toggle Buttons -->
+        <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-mono font-bold">
+          <button type="button" class="velocity-toggle px-3 py-1 rounded-lg bg-white text-blue-600 shadow-xs cursor-pointer" data-range="12m">12 Months</button>
+          <button type="button" class="velocity-toggle px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer" data-range="90d">90 Days</button>
+          <button type="button" class="velocity-toggle px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer" data-range="30d">30 Days</button>
+        </div>
+      </div>
+
+      <!-- Area Chart SVG Container -->
+      <div class="relative bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 overflow-hidden">
+        <div class="flex items-center justify-end gap-6 text-xs font-mono mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+            <span class="text-slate-700 font-bold">Verified Tools</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+            <span class="text-slate-700 font-bold">Open-Source Repos</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-purple-500"></span>
+            <span class="text-slate-700 font-bold">Workflows</span>
+          </div>
+        </div>
+
+        <div class="h-64 sm:h-80 w-full relative">
+          <svg id="velocityChartSvg" class="w-full h-full overflow-visible" viewBox="0 0 800 240" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="toolsGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2563EB" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#2563EB" stop-opacity="0.0"/>
+              </linearGradient>
+              <linearGradient id="reposGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#10B981" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Grid Lines -->
+            <line x1="0" y1="40" x2="800" y2="40" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="0" y1="100" x2="800" y2="100" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="0" y1="160" x2="800" y2="160" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="0" y1="220" x2="800" y2="220" stroke="#E2E8F0" stroke-width="1.5"/>
+
+            <!-- Area Paths -->
+            <path id="toolsAreaPath" d="M 0,220 L 0,190 Q 200,160 400,110 T 800,25 L 800,220 Z" fill="url(#toolsGrad)" />
+            <path id="reposAreaPath" d="M 0,220 L 0,210 Q 200,190 400,150 T 800,60 L 800,220 Z" fill="url(#reposGrad)" />
+
+            <!-- Stroke Paths -->
+            <path id="toolsLinePath" d="M 0,190 Q 200,160 400,110 T 800,25" fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round" />
+            <path id="reposLinePath" d="M 0,210 Q 200,190 400,150 T 800,60" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" />
+            <path id="workflowsLinePath" d="M 0,215 Q 200,205 400,175 T 800,95" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="3,3" />
+
+            <!-- Highlight Nodes -->
+            <circle cx="800" cy="25" r="5" fill="#2563EB" stroke="#FFFFFF" stroke-width="2" />
+            <circle cx="800" cy="60" r="5" fill="#10B981" stroke="#FFFFFF" stroke-width="2" />
+            <circle cx="800" cy="95" r="5" fill="#8B5CF6" stroke="#FFFFFF" stroke-width="2" />
+          </svg>
+        </div>
+
+        <!-- X-Axis Labels -->
+        <div class="flex justify-between items-center text-[10px] font-mono text-slate-400 mt-2 px-1">
+          <span id="xLabelStart">Apr 2025</span>
+          <span>Jul 2025</span>
+          <span>Oct 2025</span>
+          <span>Jan 2026</span>
+          <span id="xLabelEnd" class="font-bold text-slate-700">Present (Active)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: CHARTS 2 & 3 (TWO-COLUMN GRID) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+      <!-- CHART 2: PRICING MODEL DISTRIBUTION DONUT CHART -->
+      <section class="card-aurora p-6 sm:p-8 space-y-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-indigo-600"></span>
+              <h2 class="text-lg font-black text-slate-900 tracking-tight">2. Pricing Model Market Share</h2>
+            </div>
+            <span class="text-xs font-mono font-bold text-slate-500">{tools.length} Tools Cataloged</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-2">Distribution of monetization structures across the verified AI software ecosystem.</p>
+
+          <!-- Donut SVG + Legend Row -->
+          <div class="flex flex-col sm:flex-row items-center justify-around gap-6 mt-6">
+            <!-- Donut SVG -->
+            <div class="relative w-48 h-48 shrink-0">
+              <svg class="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+                <!-- Circle background -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#F1F5F9" stroke-width="16" />
+                
+                <!-- Segments (circumference = 2 * PI * 48 ≈ 301.59) -->
+                <!-- Freemium: 50% = 150.8 -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#2563EB" stroke-width="16"
+                  stroke-dasharray="151 302" stroke-dashoffset="0" class="transition-all duration-500 hover:stroke-blue-700" />
+                <!-- Open Source: 25% = 75.4 -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#10B981" stroke-width="16"
+                  stroke-dasharray="75 302" stroke-dashoffset="-151" class="transition-all duration-500 hover:stroke-emerald-600" />
+                <!-- 100% Free: 15% = 45.2 -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#8B5CF6" stroke-width="16"
+                  stroke-dasharray="45 302" stroke-dashoffset="-226" class="transition-all duration-500 hover:stroke-purple-600" />
+                <!-- Paid Only: 10% = 30.2 -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#F59E0B" stroke-width="16"
+                  stroke-dasharray="30 302" stroke-dashoffset="-271" class="transition-all duration-500 hover:stroke-amber-600" />
+              </svg>
+              <!-- Center Text inside Donut -->
+              <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <span class="text-2xl font-black text-slate-900 font-mono">{tools.length}</span>
+                <span class="text-[10px] uppercase font-mono font-bold text-slate-400">Total Tools</span>
+              </div>
+            </div>
+
+            <!-- Legend List -->
+            <div class="space-y-3 w-full sm:w-auto text-xs font-sans">
+              <div class="flex items-center justify-between sm:gap-6 pb-1.5 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-md bg-blue-600 shrink-0"></span>
+                  <span class="font-bold text-slate-800">Freemium Tier</span>
+                </div>
+                <span class="font-mono font-bold text-slate-900">{freemiumTools.length} ({Math.round(freemiumTools.length / tools.length * 100)}%)</span>
+              </div>
+
+              <div class="flex items-center justify-between sm:gap-6 pb-1.5 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-md bg-emerald-500 shrink-0"></span>
+                  <span class="font-bold text-slate-800">Open-Source Free</span>
+                </div>
+                <span class="font-mono font-bold text-slate-900">{openSourceTools.length} ({Math.round(openSourceTools.length / tools.length * 100)}%)</span>
+              </div>
+
+              <div class="flex items-center justify-between sm:gap-6 pb-1.5 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-md bg-purple-500 shrink-0"></span>
+                  <span class="font-bold text-slate-800">100% Free / Beta</span>
+                </div>
+                <span class="font-mono font-bold text-slate-900">{freeTools.length} ({Math.round(freeTools.length / tools.length * 100)}%)</span>
+              </div>
+
+              <div class="flex items-center justify-between sm:gap-6">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-md bg-amber-500 shrink-0"></span>
+                  <span class="font-bold text-slate-800">Paid Subscription</span>
+                </div>
+                <span class="font-mono font-bold text-slate-900">{paidTools.length} ({Math.round(paidTools.length / tools.length * 100)}%)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3.5 bg-blue-50/70 border border-blue-200/60 rounded-xl text-xs text-blue-900 flex items-center justify-between mt-4">
+          <span>Self-hostable & free tools represent <strong>{Math.round((openSourceTools.length + freeTools.length) / tools.length * 100)}%</strong> of verified options.</span>
+          <a href="/tools?pricing=free" class="font-bold text-blue-700 hover:underline shrink-0 ml-2">Browse Free &rarr;</a>
+        </div>
+      </section>
+
+      <!-- CHART 3: CATEGORY COST VS AUTHENTICITY GROUPED BAR CHART -->
+      <section class="card-aurora p-6 sm:p-8 space-y-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-600"></span>
+              <h2 class="text-lg font-black text-slate-900 tracking-tight">3. Category Authenticity vs Starting Cost</h2>
+            </div>
+            <div class="flex items-center gap-3 text-[11px] font-mono">
+              <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-xs bg-blue-600"></span> Avg Cost ($)</span>
+              <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-xs bg-emerald-500"></span> Score (0-100)</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 mt-2">Benchmark of 13 taxonomy domains: Comparing average starting price vs verified 5-factor quality score.</p>
+
+          <!-- Grouped Bar Chart Area -->
+          <div class="space-y-2.5 mt-5 max-h-72 overflow-y-auto pr-2 text-xs">
+            {categoryStats.map(cat => (
+              <div class="p-2 rounded-xl bg-white border border-slate-100 hover:border-slate-300 transition-colors">
+                <div class="flex justify-between items-center mb-1 text-[11px]">
+                  <span class="font-bold text-slate-800">{cat.name} ({cat.count} tools)</span>
+                  <div class="space-x-2 font-mono">
+                    <span class="text-blue-700 font-bold">${cat.avgPrice}/mo</span>
+                    <span class="text-emerald-700 font-bold">{cat.avgScore}/100</span>
+                  </div>
+                </div>
+                <div class="space-y-1">
+                  <!-- Price Bar (scaled to max $50) -->
+                  <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-blue-600 rounded-full" style={`width: ${Math.min(100, (cat.avgPrice / 40) * 100)}%`}></div>
+                  </div>
+                  <!-- Score Bar (scaled 0-100) -->
+                  <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-emerald-500 rounded-full" style={`width: ${cat.avgScore}%`}></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 flex items-center justify-between mt-4">
+          <span>Higher quality scores correlate with transparent API pricing & open-source availability.</span>
+          <a href="/categories" class="font-bold text-slate-900 hover:underline shrink-0 ml-2">All Categories &rarr;</a>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- CHART 4: LLM PRICE-TO-PERFORMANCE SCATTER PLOT MATRIX -->
+    <section class="card-aurora p-6 sm:p-8 space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-purple-600"></span>
+            <h2 class="text-xl font-black text-slate-900 tracking-tight">4. LLM Price-to-Performance Scatter Plot Matrix</h2>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">X-Axis: Input Cost per 1M Tokens ($) vs Y-Axis: Context Window Size (Tokens). Circle radius denotes reasoning output cost.</p>
+        </div>
+
+        <!-- Provider Filters -->
+        <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono font-bold">
+          <button type="button" class="provider-filter px-3 py-1 rounded-lg bg-slate-900 text-white cursor-pointer" data-provider="all">All ({OFFICIAL_MODELS.length})</button>
+          <button type="button" class="provider-filter px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer" data-provider="Anthropic">Anthropic</button>
+          <button type="button" class="provider-filter px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer" data-provider="OpenAI">OpenAI</button>
+          <button type="button" class="provider-filter px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer" data-provider="Google">Google</button>
+          <button type="button" class="provider-filter px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer" data-provider="DeepSeek">DeepSeek</button>
+        </div>
+      </div>
+
+      <!-- Scatter Plot Canvas & Interactive Stage -->
+      <div class="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-6 relative">
+        <div class="h-80 sm:h-96 w-full relative">
+          <svg id="scatterPlotSvg" class="w-full h-full overflow-visible" viewBox="0 0 800 320">
+            <!-- Grid Lines -->
+            <line x1="60" y1="20" x2="60" y2="280" stroke="#CBD5E1" stroke-width="1.5"/>
+            <line x1="60" y1="280" x2="780" y2="280" stroke="#CBD5E1" stroke-width="1.5"/>
+
+            <line x1="60" y1="215" x2="780" y2="215" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="60" y1="150" x2="780" y2="150" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="60" y1="85" x2="780" y2="85" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="4,4"/>
+
+            <!-- Y-Axis Labels (Context Window: 0 to 2M) -->
+            <text x="50" y="284" font-size="9" text-anchor="end" fill="#64748B" font-family="monospace">0</text>
+            <text x="50" y="219" font-size="9" text-anchor="end" fill="#64748B" font-family="monospace">128K</text>
+            <text x="50" y="154" font-size="9" text-anchor="end" fill="#64748B" font-family="monospace">500K</text>
+            <text x="50" y="89" font-size="9" text-anchor="end" fill="#64748B" font-family="monospace">1M</text>
+            <text x="50" y="25" font-size="9" text-anchor="end" fill="#64748B" font-family="monospace">2M</text>
+
+            <!-- X-Axis Labels (Cost: $0 to $15) -->
+            <text x="60" y="300" font-size="9" text-anchor="middle" fill="#64748B" font-family="monospace">$0</text>
+            <text x="240" y="300" font-size="9" text-anchor="middle" fill="#64748B" font-family="monospace">$2.50</text>
+            <text x="420" y="300" font-size="9" text-anchor="middle" fill="#64748B" font-family="monospace">$5.00</text>
+            <text x="600" y="300" font-size="9" text-anchor="middle" fill="#64748B" font-family="monospace">$10.00</text>
+            <text x="780" y="300" font-size="9" text-anchor="middle" fill="#64748B" font-family="monospace">$15.00</text>
+
+            <!-- Dynamic Model Dots -->
+            {OFFICIAL_MODELS.map(m => {
+              // Map input cost ($0 to $15) to X (60 to 780)
+              const clampedCost = Math.min(15, m.inputCostPer1M);
+              const cx = 60 + (clampedCost / 15) * 720;
+              // Map context (0 to 2M) to Y (280 down to 20)
+              const clampedCtx = Math.min(2000000, m.contextWindow);
+              const cy = 280 - (clampedCtx / 2000000) * 260;
+              
+              // Provider color palette
+              let color = '#2563EB'; // default
+              if (m.provider === 'Anthropic') color = '#D97706';
+              else if (m.provider === 'OpenAI') color = '#10B981';
+              else if (m.provider === 'Google') color = '#4285F4';
+              else if (m.provider === 'DeepSeek') color = '#0284C7';
+              else if (m.provider === 'Meta') color = '#8B5CF6';
+
+              return (
+                <g class="model-scatter-dot transition-all cursor-pointer group" data-provider={m.provider} data-name={m.name} data-cost={m.inputCostPer1M} data-context={m.formattedContext}>
+                  <circle 
+                    cx={cx} 
+                    cy={cy} 
+                    r="7" 
+                    fill={color} 
+                    fill-opacity="0.8" 
+                    stroke="#FFFFFF" 
+                    stroke-width="1.5"
+                    class="hover:r-10 transition-all duration-200"
+                  />
+                  <!-- Hover Label tooltip via SVG -->
+                  <title>{`${m.name} (${m.provider})\nCost: $${m.inputCostPer1M}/1M | Context: ${m.formattedContext} tokens`}</title>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100 font-mono">
+          <span>&larr; Left: Ultra-Low Cost API</span>
+          <span class="font-bold text-slate-700">Top Left: Gemini 1.5 Pro & Claude 3.5 (Large Context + Value)</span>
+          <span>Right: High Cost Reasoning &rarr;</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHART 5: SOVEREIGN INDIA AI BREAKDOWN -->
+    <section class="card-aurora p-6 sm:p-8 space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+            <h2 class="text-xl font-black text-slate-900 tracking-tight">5. Sovereign India AI Telemetry & Domain Spread</h2>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">Sovereignty breakdown across 16 verified Indian AI companies by architectural focus.</p>
+        </div>
+        <a href="/india-ai" class="text-xs font-bold font-mono text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl hover:bg-amber-100 transition-colors">
+          Explore Sovereign Hub &rarr;
+        </a>
+      </div>
+
+      <!-- Domain Stack Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <!-- Indic Speech & Voice -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-4.5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md">Indic Speech</span>
+            <span class="text-xs font-mono font-bold text-slate-500">4 Pioneers</span>
+          </div>
+          <div class="text-2xl font-black text-slate-900 font-mono">22</div>
+          <p class="text-[11px] text-slate-500">Official constitutional languages supported with native dialect nuances.</p>
+          <div class="text-[11px] font-bold text-slate-700 pt-2 border-t border-slate-100">
+            Sarvam AI • Bhashini • Gnani
+          </div>
+        </div>
+
+        <!-- Sovereign LLM Weights -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-4.5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-md">Sovereign LLMs</span>
+            <span class="text-xs font-mono font-bold text-slate-500">3 Models</span>
+          </div>
+          <div class="text-2xl font-black text-slate-900 font-mono">100%</div>
+          <p class="text-[11px] text-slate-500">Domestic Indian data residency with zero external telemetry leakage.</p>
+          <div class="text-[11px] font-bold text-slate-700 pt-2 border-t border-slate-100">
+            Krutrim • Hanooman • Sarvam-2B
+          </div>
+        </div>
+
+        <!-- Healthcare Diagnostics -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-4.5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md">Healthcare FDA</span>
+            <span class="text-xs font-mono font-bold text-slate-500">3 Cleared</span>
+          </div>
+          <div class="text-2xl font-black text-slate-900 font-mono">15M+</div>
+          <p class="text-[11px] text-slate-500">Clinical scans screened across pulmonary, breast, and cervical oncology.</p>
+          <div class="text-[11px] font-bold text-slate-700 pt-2 border-t border-slate-100">
+            Qure.ai • SigTuple • Niramai
+          </div>
+        </div>
+
+        <!-- Multilingual Translation -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-4.5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold text-purple-800 bg-purple-50 px-2 py-0.5 rounded-md">Translation</span>
+            <span class="text-xs font-mono font-bold text-slate-500">3 Platforms</span>
+          </div>
+          <div class="text-2xl font-black text-slate-900 font-mono">1.4B</div>
+          <p class="text-[11px] text-slate-500">Citizens accessible through digital public infrastructure integrations.</p>
+          <div class="text-[11px] font-bold text-slate-700 pt-2 border-t border-slate-100">
+            Bhashini • AI4Bharat • Reverie
+          </div>
+        </div>
+
+        <!-- Enterprise CX & Automation -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-4.5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-md">Enterprise CX</span>
+            <span class="text-xs font-mono font-bold text-slate-500">3 Unicorns</span>
+          </div>
+          <div class="text-2xl font-black text-slate-900 font-mono">10B+</div>
+          <p class="text-[11px] text-slate-500">Conversations powered annually for banking, retail, and telecommunications.</p>
+          <div class="text-[11px] font-bold text-slate-700 pt-2 border-t border-slate-100">
+            Yellow.ai • Gupshup • Enterprise
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: SPEND CALCULATOR & OPEN SOURCE SAVINGS ENGINE -->
+    <section class="card-aurora p-6 sm:p-8 space-y-6">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div>
+          <h2 class="text-xl font-black text-slate-900 tracking-tight">6. Monthly AI Spend & Open-Source Replacement Simulator</h2>
           <p class="text-xs text-slate-500">Calculate your team's total expenditure and see how much open-source self-hosting saves.</p>
         </div>
         <span class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
-          Live Calculator
+          Live Simulator
         </span>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Interactive Spend Form -->
-        <div class="lg:col-span-2 bg-[#F8FAFF] border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-6">
+        <div class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs font-bold text-[#09090B] mb-1.5">SaaS Tool Seats (e.g. Cursor, Midjourney)</label>
+              <label class="block text-xs font-bold text-slate-900 mb-1.5">SaaS Tool Seats (e.g. Cursor, Midjourney)</label>
               <input 
                 type="number" 
                 id="saasSeatsInput" 
                 value="2" 
                 min="0" 
-                class="w-full bg-white border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-2.5 text-xs text-[#09090B] font-mono font-bold outline-none"
+                class="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 rounded-xl p-2.5 text-xs text-slate-900 font-mono font-bold outline-none"
               />
               <span class="text-[10px] text-slate-400 mt-1 block">Avg $20 / seat</span>
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-[#09090B] mb-1.5">Monthly Input Tokens (Millions)</label>
+              <label class="block text-xs font-bold text-slate-900 mb-1.5">Monthly Input Tokens (Millions)</label>
               <input 
                 type="number" 
                 id="inputTokensInput" 
                 value="5" 
                 min="0" 
-                class="w-full bg-white border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-2.5 text-xs text-[#09090B] font-mono font-bold outline-none"
+                class="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 rounded-xl p-2.5 text-xs text-slate-900 font-mono font-bold outline-none"
               />
               <span class="text-[10px] text-slate-400 mt-1 block">API queries per month</span>
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-[#09090B] mb-1.5">Monthly Output Tokens (Millions)</label>
+              <label class="block text-xs font-bold text-slate-900 mb-1.5">Monthly Output Tokens (Millions)</label>
               <input 
                 type="number" 
                 id="outputTokensInput" 
                 value="2" 
                 min="0" 
-                class="w-full bg-white border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-2.5 text-xs text-[#09090B] font-mono font-bold outline-none"
+                class="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 rounded-xl p-2.5 text-xs text-slate-900 font-mono font-bold outline-none"
               />
               <span class="text-[10px] text-slate-400 mt-1 block">Generated tokens</span>
             </div>
           </div>
 
           <!-- Open Source Swaps Checklist -->
-          <div class="border-t border-[#E2E8F0] pt-4">
+          <div class="border-t border-slate-200 pt-4">
             <h3 class="text-xs font-mono uppercase font-bold text-slate-600 mb-3">Open-Source Replacement Options</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <label class="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-[#E2E8F0] cursor-pointer hover:border-[#2563EB]">
-                <input type="checkbox" id="swapMidjourney" checked class="accent-[#2563EB] rounded" />
-                <span class="text-[#09090B]">Replace Midjourney with <strong>ComfyUI + Flux.1</strong> (Save $30/mo)</span>
+              <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer hover:border-blue-600 transition-colors">
+                <input type="checkbox" id="swapMidjourney" checked class="accent-blue-600 rounded" />
+                <span class="text-slate-800">Replace Midjourney with <strong>ComfyUI + Flux.1</strong> (Save $30/mo)</span>
               </label>
 
-              <label class="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-[#E2E8F0] cursor-pointer hover:border-[#2563EB]">
-                <input type="checkbox" id="swapZapier" checked class="accent-[#2563EB] rounded" />
-                <span class="text-[#09090B]">Replace Zapier with <strong>Self-Hosted n8n</strong> (Save $20/mo)</span>
+              <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer hover:border-blue-600 transition-colors">
+                <input type="checkbox" id="swapZapier" checked class="accent-blue-600 rounded" />
+                <span class="text-slate-800">Replace Zapier with <strong>Self-Hosted n8n</strong> (Save $20/mo)</span>
               </label>
 
-              <label class="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-[#E2E8F0] cursor-pointer hover:border-[#2563EB]">
-                <input type="checkbox" id="swapVoice" class="accent-[#2563EB] rounded" />
-                <span class="text-[#09090B]">Replace ElevenLabs with <strong>Kokoro / Chatterbox</strong> (Save $22/mo)</span>
+              <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer hover:border-blue-600 transition-colors">
+                <input type="checkbox" id="swapVoice" class="accent-blue-600 rounded" />
+                <span class="text-slate-800">Replace ElevenLabs with <strong>Kokoro / Chatterbox</strong> (Save $22/mo)</span>
               </label>
 
-              <label class="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-[#E2E8F0] cursor-pointer hover:border-[#2563EB]">
-                <input type="checkbox" id="swapCoding" class="accent-[#2563EB] rounded" />
-                <span class="text-[#09090B]">Replace Copilot with <strong>Aider / Continue + Ollama</strong> (Save $20/mo)</span>
+              <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer hover:border-blue-600 transition-colors">
+                <input type="checkbox" id="swapCoding" class="accent-blue-600 rounded" />
+                <span class="text-slate-800">Replace Copilot with <strong>Aider / Continue + Ollama</strong> (Save $20/mo)</span>
               </label>
             </div>
           </div>
         </div>
 
         <!-- Real-Time Spend Summary Card -->
-        <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+        <div class="bg-white border border-slate-200 hover:border-blue-500 rounded-2xl p-6 shadow-xs transition-all flex flex-col justify-between">
           <div>
             <span class="text-[10px] font-mono uppercase font-bold text-slate-400 block mb-1">Total Estimated Cost</span>
-            <div class="text-4xl font-black text-[#09090B] font-mono mb-1" id="totalSpendDisplay">$58.50</div>
+            <div class="text-4xl font-black text-slate-900 font-mono mb-1" id="totalSpendDisplay">$58.50</div>
             <div class="text-xs text-slate-500 font-mono mb-6" id="totalSpendInrDisplay">₹5,060.25 / month</div>
 
-            <div class="space-y-3 text-xs border-t border-[#E2E8F0] pt-4 mb-6">
+            <div class="space-y-3 text-xs border-t border-slate-200 pt-4 mb-6">
               <div class="flex justify-between items-center">
                 <span class="text-slate-600">SaaS Subscriptions:</span>
-                <span class="font-bold text-[#09090B] font-mono" id="saasSubSpend">$40.00</span>
+                <span class="font-bold text-slate-900 font-mono" id="saasSubSpend">$40.00</span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-slate-600">LLM API Token Inference:</span>
-                <span class="font-bold text-[#09090B] font-mono" id="apiTokenSpend">$18.50</span>
+                <span class="font-bold text-slate-900 font-mono" id="apiTokenSpend">$18.50</span>
               </div>
               <div class="flex justify-between items-center text-emerald-700 font-bold">
                 <span>Active Open-Source Savings:</span>
@@ -176,236 +621,6 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
             <span class="font-bold text-emerald-900 block mb-1">Annual Projected Savings:</span>
             <div class="text-2xl font-black text-emerald-700 font-mono" id="annualSavingsDisplay">$600 / yr</div>
             <span class="text-[11px] text-emerald-800 font-mono" id="annualSavingsInrDisplay">₹51,900 / year preserved</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 2: LLM FRONTIER MODEL PRICE VS CONTEXT WINDOW MATRIX -->
-    <section class="space-y-6">
-      <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
-        <div>
-          <h2 class="text-xl font-black text-[#09090B]">2. LLM Frontier Model Economics & Context Window Matrix</h2>
-          <p class="text-xs text-slate-500">Benchmark of 13 official frontier models by prompt input pricing, reasoning output cost, and context size.</p>
-        </div>
-        <a href="/token-calculator" class="text-xs font-bold text-[#2563EB] hover:underline font-mono">
-          Token Suite &rarr;
-        </a>
-      </div>
-
-      <div class="overflow-x-auto border border-[#E2E8F0] rounded-2xl bg-white shadow-xs">
-        <table class="w-full text-left text-xs">
-          <thead class="bg-[#F8FAFF] border-b border-[#E2E8F0] text-slate-500 font-mono text-[11px]">
-            <tr>
-              <th class="p-4 font-bold">Model</th>
-              <th class="p-4 font-bold">Provider</th>
-              <th class="p-4 font-bold text-right">Context Window</th>
-              <th class="p-4 font-bold text-right">Input / 1M</th>
-              <th class="p-4 font-bold text-right">Output / 1M</th>
-              <th class="p-4 font-bold text-center">Value Efficiency</th>
-              <th class="p-4 font-bold text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-[#E2E8F0] font-mono">
-            {OFFICIAL_MODELS.map(m => {
-              const efficiency = m.inputCostPer1M <= 0.3 ? 'Exceptional' : m.inputCostPer1M <= 2.5 ? 'High Value' : 'Premium Flagship';
-              return (
-                <tr class="hover:bg-[#F8FAFF] transition-colors">
-                  <td class="p-4 font-bold text-[#09090B] font-sans">
-                    <a href={`/token-calculator/models/${m.id}`} class="hover:text-[#2563EB] transition-colors">
-                      {m.name}
-                    </a>
-                  </td>
-                  <td class="p-4 text-slate-600 font-sans">{m.provider}</td>
-                  <td class="p-4 text-right text-slate-800 font-bold">{m.formattedContext} tokens</td>
-                  <td class="p-4 text-right text-[#2563EB] font-bold">${m.inputCostPer1M.toFixed(2)}</td>
-                  <td class="p-4 text-right text-[#09090B] font-bold">${m.outputCostPer1M.toFixed(2)}</td>
-                  <td class="p-4 text-center">
-                    <span class={`text-[10px] font-sans font-bold px-2 py-0.5 rounded-full ${
-                      efficiency === 'Exceptional' 
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
-                        : efficiency === 'High Value' 
-                        ? 'bg-blue-50 text-[#2563EB] border border-blue-200' 
-                        : 'bg-slate-100 text-slate-700'
-                    }`}>
-                      {efficiency}
-                    </span>
-                  </td>
-                  <td class="p-4 text-right">
-                    <a href={`/token-calculator?model=${m.id}`} class="text-[#2563EB] hover:underline font-bold text-[11px]">
-                      Calculate &rarr;
-                    </a>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- SECTION 3: PLATFORM CATALOG & ECOSYSTEM TELEMETRY -->
-    <section class="space-y-6">
-      <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
-        <div>
-          <h2 class="text-xl font-black text-[#09090B]">3. Catalog Distribution & Open-Source Momentum</h2>
-          <p class="text-xs text-slate-500">Live breakdown across 113 verified tools, 13 categories, 16 Indian innovators, and 20 repositories.</p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        
-        <!-- Pricing Breakdown Card -->
-        <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-4">
-          <h3 class="text-xs font-mono uppercase font-bold text-slate-400">Pricing Models</h3>
-          <div class="space-y-2 text-xs">
-            <div>
-              <div class="flex justify-between text-slate-600 mb-1">
-                <span>Freemium</span>
-                <span class="font-bold text-[#09090B] font-mono">{freemiumTools.length} ({Math.round(freemiumTools.length / tools.length * 100)}%)</span>
-              </div>
-              <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div class="h-full bg-[#2563EB]" style={`width: ${(freemiumTools.length / tools.length * 100)}%`}></div>
-              </div>
-            </div>
-
-            <div>
-              <div class="flex justify-between text-slate-600 mb-1">
-                <span>100% Free</span>
-                <span class="font-bold text-[#09090B] font-mono">{freeTools.length} ({Math.round(freeTools.length / tools.length * 100)}%)</span>
-              </div>
-              <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div class="h-full bg-emerald-500" style={`width: ${(freeTools.length / tools.length * 100)}%`}></div>
-              </div>
-            </div>
-
-            <div>
-              <div class="flex justify-between text-slate-600 mb-1">
-                <span>Open Source</span>
-                <span class="font-bold text-[#09090B] font-mono">{openSourceTools.length} ({Math.round(openSourceTools.length / tools.length * 100)}%)</span>
-              </div>
-              <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div class="h-full bg-purple-500" style={`width: ${(openSourceTools.length / tools.length * 100)}%`}></div>
-              </div>
-            </div>
-
-            <div>
-              <div class="flex justify-between text-slate-600 mb-1">
-                <span>Paid Only</span>
-                <span class="font-bold text-[#09090B] font-mono">{paidTools.length} ({Math.round(paidTools.length / tools.length * 100)}%)</span>
-              </div>
-              <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div class="h-full bg-slate-400" style={`width: ${(paidTools.length / tools.length * 100)}%`}></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- India-First AI Spotlight -->
-        <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xs font-mono uppercase font-bold text-slate-400">India-First AI</h3>
-            <span class="text-[10px] font-mono font-bold text-orange-700 bg-orange-50 border border-orange-200 px-2 py-0.5 rounded-full">
-              16 Pioneers
-            </span>
-          </div>
-
-          <p class="text-xs text-slate-600 leading-relaxed">
-            Leading sovereign innovation in 22 Indic vernaculars, open weights, and regional healthcare:
-          </p>
-
-          <div class="space-y-2 text-xs">
-            <div class="flex justify-between items-center pb-1.5 border-b border-slate-100">
-              <span class="font-bold text-[#09090B]">Sarvam AI</span>
-              <span class="font-mono text-slate-500">Indic Speech & RAG</span>
-            </div>
-            <div class="flex justify-between items-center pb-1.5 border-b border-slate-100">
-              <span class="font-bold text-[#09090B]">Krutrim</span>
-              <span class="font-mono text-slate-500">Sovereign Cloud</span>
-            </div>
-            <div class="flex justify-between items-center pb-1.5 border-b border-slate-100">
-              <span class="font-bold text-[#09090B]">Bhashini</span>
-              <span class="font-mono text-slate-500">Multilingual Gov</span>
-            </div>
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-[#09090B]">Qure.ai</span>
-              <span class="font-mono text-slate-500">Chest X-Ray FDA</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Open-Source Momentum Leaderboard (2 Cols) -->
-        <div class="md:col-span-2 bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xs font-mono uppercase font-bold text-slate-400">Open-Source Momentum Leaderboard</h3>
-            <a href="/open-source/trending" class="text-xs font-bold text-[#2563EB] hover:underline">View Trending &rarr;</a>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            {sortedRepos.slice(0, 6).map((repo, idx) => (
-              <a href={`/open-source/${repo.slug}`} class="p-3 rounded-xl border border-[#E2E8F0] hover:border-[#2563EB] hover:bg-[#F8FAFF] transition-all flex items-center justify-between">
-                <div class="min-w-0 pr-2">
-                  <div class="flex items-center gap-1.5">
-                    <span class="font-mono font-bold text-slate-400 text-[10px]">#{idx + 1}</span>
-                    <span class="font-bold text-[#09090B] truncate">{repo.name}</span>
-                  </div>
-                  <span class="text-[11px] text-slate-500 block truncate">{repo.commercialReplaces}</span>
-                </div>
-                <span class="font-mono font-bold text-[#2563EB] shrink-0 text-xs">★ {repo.stars}</span>
-              </a>
-            ))}
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- SECTION 4: USER DISCOVERY & USAGE TELEMETRY LOG -->
-    <section class="bg-[#F8FAFF] border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E2E8F0]">
-        <div>
-          <h2 class="text-lg font-black text-[#09090B]">4. Workspace Telemetry & Activity Logs</h2>
-          <p class="text-xs text-slate-500">Tracked local events: Finder blueprint runs, comparisons, utility executions, and catalog queries.</p>
-        </div>
-        <div class="flex items-center gap-2">
-          <button 
-            type="button" 
-            id="downloadTelemetryBtn"
-            class="px-4 py-2 rounded-xl bg-[#09090B] hover:bg-[#2563EB] text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
-          >
-            Export Logs (JSON)
-          </button>
-          <button 
-            type="button" 
-            id="clearTelemetryBtn"
-            class="px-3 py-2 rounded-xl border border-[#E2E8F0] bg-white text-slate-600 hover:text-red-600 text-xs font-semibold transition-colors cursor-pointer"
-          >
-            Clear Local Logs
-          </button>
-        </div>
-      </div>
-
-      <div class="bg-white border border-[#E2E8F0] rounded-xl p-4 overflow-x-auto max-h-60 text-xs font-mono">
-        <div class="space-y-2" id="telemetryLogList">
-          <div class="flex justify-between items-center text-slate-400 text-[11px] pb-1 border-b border-slate-100">
-            <span>EVENT TYPE</span>
-            <span>TARGET ENTITY</span>
-            <span>TIMESTAMP</span>
-          </div>
-          <div class="flex justify-between items-center text-slate-700 py-1">
-            <span class="text-[#2563EB] font-bold">WORKSPACE_SESSION_INIT</span>
-            <span>Dashboard Loaded</span>
-            <span class="text-slate-400">Just now</span>
-          </div>
-          <div class="flex justify-between items-center text-slate-700 py-1">
-            <span class="text-emerald-700 font-bold">FINDER_BLUEPRINT_RUN</span>
-            <span>Intent Engine Invocation</span>
-            <span class="text-slate-400">Today</span>
-          </div>
-          <div class="flex justify-between items-center text-slate-700 py-1">
-            <span class="text-purple-700 font-bold">TOKEN_CALCULATION</span>
-            <span>Claude 3.5 Sonnet vs GPT-4o</span>
-            <span class="text-slate-400">Today</span>
           </div>
         </div>
       </div>
@@ -443,13 +658,9 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
       var inTok = parseFloat(inputTokInput?.value || '5');
       var outTok = parseFloat(outputTokInput?.value || '2');
 
-      // SaaS spend ($20/seat default)
       var saasCost = seats * 20;
-
-      // API spend (avg $1.50/M input, $6.00/M output)
       var apiCost = (inTok * 1.50) + (outTok * 6.00);
 
-      // Open-Source Savings
       var savings = 0;
       if (swapMidjourney?.checked) savings += 30;
       if (swapZapier?.checked) savings += 20;
@@ -484,15 +695,15 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
 
     btnUSD?.addEventListener('click', function() {
       isINR = false;
-      btnUSD.className = 'currency-toggle px-3 py-1 rounded-lg text-xs font-mono font-bold bg-[#09090B] text-white transition-all cursor-pointer';
-      btnINR.className = 'currency-toggle px-3 py-1 rounded-lg text-xs font-mono font-bold text-slate-600 hover:text-ink transition-all cursor-pointer';
+      btnUSD.className = 'currency-toggle px-3 py-1.5 rounded-xl text-xs font-mono font-bold bg-blue-600 text-white transition-all cursor-pointer shadow-sm';
+      btnINR.className = 'currency-toggle px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-slate-300 hover:text-white transition-all cursor-pointer';
       calculateSpend();
     });
 
     btnINR?.addEventListener('click', function() {
       isINR = true;
-      btnINR.className = 'currency-toggle px-3 py-1 rounded-lg text-xs font-mono font-bold bg-[#09090B] text-white transition-all cursor-pointer';
-      btnUSD.className = 'currency-toggle px-3 py-1 rounded-lg text-xs font-mono font-bold text-slate-600 hover:text-ink transition-all cursor-pointer';
+      btnINR.className = 'currency-toggle px-3 py-1.5 rounded-xl text-xs font-mono font-bold bg-blue-600 text-white transition-all cursor-pointer shadow-sm';
+      btnUSD.className = 'currency-toggle px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-slate-300 hover:text-white transition-all cursor-pointer';
       calculateSpend();
     });
 
@@ -503,34 +714,42 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
 
     calculateSpend();
 
-    // Export Telemetry
-    document.getElementById('downloadTelemetryBtn')?.addEventListener('click', function() {
-      var logData = {
-        exportedAt: new Date().toISOString(),
-        userSession: localStorage.getItem('aio_user') ? 'Authenticated' : 'Guest',
-        metrics: {
-          toolsCount: 113,
-          workflowsCount: 16,
-          reposCount: 20
-        },
-        logs: [
-          { event: 'WORKSPACE_SESSION_INIT', target: 'Dashboard Loaded', time: new Date().toISOString() },
-          { event: 'FINDER_BLUEPRINT_RUN', target: 'Intent Engine', time: new Date().toISOString() }
-        ]
-      };
-      var blob = new Blob([JSON.stringify(logData, null, 2)], { type: 'application/json' });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = 'aio-ai-telemetry-report.json';
-      a.click();
+    // Chart 1 Velocity toggle simulation
+    var velocityButtons = document.querySelectorAll('.velocity-toggle');
+    var xLabelStart = document.getElementById('xLabelStart');
+    velocityButtons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        velocityButtons.forEach(function(b) {
+          b.className = 'velocity-toggle px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer';
+        });
+        btn.className = 'velocity-toggle px-3 py-1 rounded-lg bg-white text-blue-600 shadow-xs cursor-pointer';
+        var range = btn.getAttribute('data-range');
+        if (xLabelStart) {
+          if (range === '30d') xLabelStart.textContent = '30 Days Ago';
+          else if (range === '90d') xLabelStart.textContent = '90 Days Ago';
+          else xLabelStart.textContent = 'Apr 2025';
+        }
+      });
     });
 
-    document.getElementById('clearTelemetryBtn')?.addEventListener('click', function() {
-      var list = document.getElementById('telemetryLogList');
-      if (list) {
-        list.innerHTML = '<div class="text-xs text-slate-400 py-3 text-center">Local telemetry logs cleared.</div>';
-      }
+    // Chart 4 Provider filter for scatter plot
+    var providerButtons = document.querySelectorAll('.provider-filter');
+    var dots = document.querySelectorAll('.model-scatter-dot');
+    providerButtons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        providerButtons.forEach(function(b) {
+          b.className = 'provider-filter px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer';
+        });
+        btn.className = 'provider-filter px-3 py-1 rounded-lg bg-slate-900 text-white cursor-pointer';
+        var prov = btn.getAttribute('data-provider');
+        dots.forEach(function(dot) {
+          if (prov === 'all' || dot.getAttribute('data-provider') === prov) {
+            dot.style.display = 'block';
+          } else {
+            dot.style.display = 'none';
+          }
+        });
+      });
     });
   })();
 </script>

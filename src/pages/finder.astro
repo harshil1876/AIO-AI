@@ -2,7 +2,6 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import ToolLogo from '../components/ToolLogo.astro';
 import { getAllTools } from '../services/dataService';
 import { WORKFLOWS_DATA } from '../data/workflowsData';
 import { OPEN_SOURCE_REPOS } from '../data/openSourceData';
@@ -12,534 +11,616 @@ const allTools = await getAllTools();
 
 // 25 High-Demand Engineering & Creator Tasks Directory
 const TOP_25_TASKS = [
-  { rank: 1, task: 'Automated Git PR Review & Security Scan', category: 'Code Assistants', freeTool: 'Ollama + DeepSeek Coder', proTool: 'Cursor Composer', workflowSlug: 'git-pr-review-agent', query: 'Automated git pull request review and security scan' },
-  { rank: 2, task: 'Faceless YouTube Shorts & Reels Automation', category: 'Video Generation', freeTool: 'ComfyUI + FFMPEG', proTool: 'InVideo AI', workflowSlug: 'youtube-shorts-automation', query: 'Faceless YouTube shorts and reels automation from trending topics' },
-  { rank: 3, task: 'Indic Speech Voiceover & Multilingual TTS', category: 'Regional AI', freeTool: 'Bhashini Public API', proTool: 'Sarvam AI', workflowSlug: 'indic-voice-agent', query: 'Indian language text to speech and voiceover in Hindi Tamil Telugu' },
-  { rank: 4, task: 'WhatsApp Autonomous Customer Support Bot', category: 'Autonomous Agents', freeTool: 'n8n + DeepSeek-R1', proTool: 'Yellow.ai / Haptik', workflowSlug: 'whatsapp-customer-support', query: 'Automated WhatsApp customer support bot with memory' },
-  { rank: 5, task: 'Private Offline PDF RAG Document Search', category: 'Research & Analysis', freeTool: 'ChromaDB + Ollama', proTool: 'Perplexity Pro', workflowSlug: 'offline-rag-pipeline', query: 'Private offline RAG document search over company PDFs on local hardware' },
-  { rank: 6, task: 'Full-Stack Web App from UI Wireframe', category: 'Web & App Builders', freeTool: 'v0 by Vercel (Free)', proTool: 'Bolt.new / Lovable', workflowSlug: 'wireframe-to-app', query: 'Generate full stack react web application from wireframe prompt' },
-  { rank: 7, task: 'Photorealistic Image Generation & Inpainting', category: 'Image & Art', freeTool: 'Flux.1 Schnell (Local)', proTool: 'Midjourney v6', workflowSlug: 'flux-creative-pipeline', query: 'Generate photorealistic images and asset artwork locally' },
-  { rank: 8, task: 'Podcast Audio Cleanup & Auto-Transcribe', category: 'Audio & Voice', freeTool: 'Whisper Large v3', proTool: 'ElevenLabs Reader', workflowSlug: 'podcast-transcribe-pipeline', query: 'Podcast audio cleanup and accurate speaker separated transcription' },
-  { rank: 9, task: 'Automated Outbound Email & Lead Enrichment', category: 'Sales & Marketing', freeTool: 'n8n + Firecrawl', proTool: 'Clay.com + Claude', workflowSlug: 'lead-enrichment-flow', query: 'Automated lead enrichment and personalized cold email pipeline' },
-  { rank: 10, task: 'Natural Language to Complex SQL Generator', category: 'Code Assistants', freeTool: 'Vanna.ai (Open Source)', proTool: 'Cursor / Claude Sonnet', workflowSlug: 'nl-to-sql-pipeline', query: 'Generate complex PostgreSQL queries from natural language business questions' },
-  { rank: 11, task: 'Local Model Inference on 8GB-16GB VRAM', category: 'Open Source', freeTool: 'llama.cpp / Ollama', proTool: 'Together.ai / RunPod', workflowSlug: 'local-llm-hosting', query: 'Run DeepSeek-R1 and Llama 3 locally on 8GB to 16GB VRAM' },
-  { rank: 12, task: 'Multi-Agent Competitive Intelligence Radar', category: 'Autonomous Agents', freeTool: 'LangGraph + Ollama', proTool: 'CrewAI Enterprise', workflowSlug: 'competitor-radar-agent', query: 'Autonomous multi-agent research pipeline tracking competitors and pricing' },
-  { rank: 13, task: 'Multilingual Healthcare Clinical Triage', category: 'Healthcare AI', freeTool: 'Qure.ai Sandbox', proTool: 'Qure.ai Commercial', workflowSlug: 'clinical-triage-ai', query: 'Automated chest X-ray and medical scan analysis in clinics' },
-  { rank: 14, task: 'Long-Form SEO Technical Article Drafter', category: 'Writing & Copy', freeTool: 'DeepSeek-V3 API', proTool: 'Writesonic / Claude', workflowSlug: 'seo-article-drafter', query: 'Draft 2000-word technical SEO engineering articles with clean formatting' },
-  { rank: 15, task: 'Real-Time Hacker News & ArXiv AI Digest', category: 'Research & Analysis', freeTool: 'Hugging Face Daily', proTool: 'Perplexity Enterprise', workflowSlug: 'hn-arxiv-digest', query: 'Curate daily breaking AI research papers and hacker news discussions' },
-  { rank: 16, task: 'Figma UI to Clean React Tailwind Component', category: 'Web & App Builders', freeTool: 'v0 free quota', proTool: 'Windsurf Cascade', workflowSlug: 'figma-to-react', query: 'Convert Figma designs into accessible React Tailwind components' },
-  { rank: 17, task: 'Voice Clone & Dubbing for Education', category: 'Audio & Voice', freeTool: 'ChatTTS (Open Source)', proTool: 'ElevenLabs Pro', workflowSlug: 'voice-dubbing-pipeline', query: 'Clone educator voice and dub educational course into 5 languages' },
-  { rank: 18, task: 'E-commerce Product Photo Background Studio', category: 'Image & Art', freeTool: 'ComfyUI BiRefNet', proTool: 'Photoroom Pro', workflowSlug: 'product-photo-studio', query: 'Remove product background and replace with studio lighting scene' },
-  { rank: 19, task: 'Slack / Discord DevOps Incident Summary Bot', category: 'Automation Workflows', freeTool: 'n8n Webhook + Ollama', proTool: 'PagerDuty + OpenAI', workflowSlug: 'devops-incident-bot', query: 'Summarize Datadog alert spikes and post post-mortem directly to Slack' },
-  { rank: 20, task: 'Customer Support Ticket Sentiment Classifier', category: 'Research & Analysis', freeTool: 'spaCy + Mistral 7B', proTool: 'Zendesk AI', workflowSlug: 'sentiment-classifier', query: 'Classify incoming Zendesk tickets by urgency sentiment and feature tag' },
-  { rank: 21, task: 'Indic Farmer Crop Disease Voice Advisory', category: 'AgriTech AI', freeTool: 'KissanAI Dhenu (Free)', proTool: 'Wadhwani AI Agri', workflowSlug: 'farmer-crop-advisory', query: 'Voice assistant in Hindi and Marathi diagnosing crop leaf disease from photos' },
-  { rank: 22, task: 'Automated Meeting Transcript to Action Items', category: 'Business & Productivity', freeTool: 'Whisper.cpp + n8n', proTool: 'Otter.ai / Fireflies', workflowSlug: 'meeting-action-items', query: 'Transcribe Zoom meeting and extract clean action items with owners' },
-  { rank: 23, task: 'LLM Agent Function Calling with OpenAPI', category: 'Autonomous Agents', freeTool: 'LiteLLM Proxy', proTool: 'Anthropic Claude Tool Calling', workflowSlug: 'agent-tool-calling', query: 'Build reliable autonomous tool calling agent using strict OpenAPI schemas' },
-  { rank: 24, task: 'Legacy Codebase Refactoring & Migration', category: 'Code Assistants', freeTool: 'DeepSeek-R1 32B', proTool: 'Cursor Composer Pro', workflowSlug: 'codebase-migration', query: 'Refactor legacy JavaScript codebase into modern TypeScript Astro architecture' },
-  { rank: 25, task: 'LLM Token Spend Analytics & Budget Alerts', category: 'Token Economics', freeTool: 'AIO AI Token Suite', proTool: 'Helicone / Portkey', workflowSlug: 'token-spend-tracker', query: 'Calculate exact token costs across OpenAI Claude and DeepSeek with budget limit' },
+  { rank: 1, task: 'Automated Git PR Review & Security Scan', category: 'Code Assistants', freeTool: 'Ollama + DeepSeek Coder', proTool: 'Cursor Composer', query: 'Automated git pull request review and security scan' },
+  { rank: 2, task: 'Faceless YouTube Shorts & Reels Automation', category: 'Video Generation', freeTool: 'ComfyUI + FFMPEG', proTool: 'InVideo AI', query: 'Faceless YouTube shorts and reels automation from trending topics' },
+  { rank: 3, task: 'Indic Speech Voiceover & Multilingual TTS', category: 'Regional AI', freeTool: 'Bhashini Public API', proTool: 'Sarvam AI', query: 'Indian language text to speech and voiceover in Hindi Tamil Telugu' },
+  { rank: 4, task: 'WhatsApp Autonomous Customer Support Bot', category: 'Autonomous Agents', freeTool: 'n8n + DeepSeek-R1', proTool: 'Yellow.ai / Haptik', query: 'Automated WhatsApp customer support bot with memory' },
+  { rank: 5, task: 'Private Offline PDF RAG Document Search', category: 'Research & Analysis', freeTool: 'ChromaDB + Ollama', proTool: 'Perplexity Pro', query: 'Private offline RAG document search over company PDFs on local hardware' },
+  { rank: 6, task: 'Full-Stack Web App from UI Wireframe', category: 'Web & App Builders', freeTool: 'v0 by Vercel (Free)', proTool: 'Bolt.new / Lovable', query: 'Generate full stack react web application from wireframe prompt' },
+  { rank: 7, task: 'Photorealistic Image Generation & Inpainting', category: 'Image & Art', freeTool: 'Flux.1 Schnell (Local)', proTool: 'Midjourney v6', query: 'Generate photorealistic images and asset artwork locally' },
+  { rank: 8, task: 'Podcast Audio Cleanup & Auto-Transcribe', category: 'Audio & Voice', freeTool: 'Whisper Large v3', proTool: 'ElevenLabs Reader', query: 'Podcast audio cleanup and accurate speaker separated transcription' },
+  { rank: 9, task: 'Automated Outbound Email & Lead Enrichment', category: 'Sales & Marketing', freeTool: 'n8n + Firecrawl', proTool: 'Clay.com + Claude', query: 'Automated lead enrichment and personalized cold email pipeline' },
+  { rank: 10, task: 'Natural Language to Complex SQL Generator', category: 'Code Assistants', freeTool: 'Vanna.ai (Open Source)', proTool: 'Cursor / Claude Sonnet', query: 'Generate complex PostgreSQL queries from natural language business questions' },
+  { rank: 11, task: 'Local Model Inference on 8GB-16GB VRAM', category: 'Open Source', freeTool: 'llama.cpp / Ollama', proTool: 'Together.ai / RunPod', query: 'Run DeepSeek-R1 and Llama 3 locally on 8GB to 16GB VRAM' },
+  { rank: 12, task: 'Multi-Agent Competitive Intelligence Radar', category: 'Autonomous Agents', freeTool: 'LangGraph + Ollama', proTool: 'CrewAI Enterprise', query: 'Autonomous multi-agent research pipeline tracking competitors and pricing' },
+  { rank: 13, task: 'Multilingual Healthcare Clinical Triage', category: 'Healthcare AI', freeTool: 'Qure.ai Sandbox', proTool: 'Qure.ai Commercial', query: 'Automated chest X-ray and medical scan analysis in clinics' },
+  { rank: 14, task: 'Long-Form SEO Technical Article Drafter', category: 'Writing & Copy', freeTool: 'DeepSeek-V3 API', proTool: 'Writesonic / Claude', query: 'Draft 2000-word technical SEO engineering articles with clean formatting' },
+  { rank: 15, task: 'Real-Time Hacker News & ArXiv AI Digest', category: 'Research & Analysis', freeTool: 'Hugging Face Daily', proTool: 'Perplexity Enterprise', query: 'Curate daily breaking AI research papers and hacker news discussions' },
+  { rank: 16, task: 'Figma UI to Clean React Tailwind Component', category: 'Web & App Builders', freeTool: 'v0 free quota', proTool: 'Windsurf Cascade', query: 'Convert Figma designs into accessible React Tailwind components' },
+  { rank: 17, task: 'Voice Clone & Dubbing for Education', category: 'Audio & Voice', freeTool: 'ChatTTS (Open Source)', proTool: 'ElevenLabs Pro', query: 'Clone educator voice and dub educational course into 5 languages' },
+  { rank: 18, task: 'E-commerce Product Photo Background Studio', category: 'Image & Art', freeTool: 'ComfyUI BiRefNet', proTool: 'Photoroom Pro', query: 'Remove product background and replace with studio lighting scene' },
+  { rank: 19, task: 'Slack / Discord DevOps Incident Summary Bot', category: 'Automation Workflows', freeTool: 'n8n Webhook + Ollama', proTool: 'PagerDuty + OpenAI', query: 'Summarize Datadog alert spikes and post post-mortem directly to Slack' },
+  { rank: 20, task: 'Customer Support Ticket Sentiment Classifier', category: 'Research & Analysis', freeTool: 'spaCy + Mistral 7B', proTool: 'Zendesk AI', query: 'Classify incoming Zendesk tickets by urgency sentiment and feature tag' },
+  { rank: 21, task: 'Indic Farmer Crop Disease Voice Advisory', category: 'AgriTech AI', freeTool: 'KissanAI Dhenu (Free)', proTool: 'Wadhwani AI Agri', query: 'Voice assistant in Hindi and Marathi diagnosing crop leaf disease from photos' },
+  { rank: 22, task: 'Automated Meeting Transcript to Action Items', category: 'Business & Productivity', freeTool: 'Whisper.cpp + n8n', proTool: 'Otter.ai / Fireflies', query: 'Transcribe Zoom meeting and extract clean action items with owners' },
+  { rank: 23, task: 'LLM Agent Function Calling with OpenAPI', category: 'Autonomous Agents', freeTool: 'LiteLLM Proxy', proTool: 'Anthropic Claude Tool Calling', query: 'Build reliable autonomous tool calling agent using strict OpenAPI schemas' },
+  { rank: 24, task: 'Legacy Codebase Refactoring & Migration', category: 'Code Assistants', freeTool: 'DeepSeek-R1 32B', proTool: 'Cursor Composer Pro', query: 'Refactor legacy JavaScript codebase into modern TypeScript Astro architecture' },
+  { rank: 25, task: 'LLM Token Spend Analytics & Budget Alerts', category: 'Token Economics', freeTool: 'AIO AI Token Suite', proTool: 'Helicone / Portkey', query: 'Calculate exact token costs across OpenAI Claude and DeepSeek with budget limit' },
 ];
 ---
 
 <Layout 
-  title="AI Intent Finder | 3-Tier Decision Blueprint & Tasks Directory"
-  description="Describe your task or budget goal in natural language. We analyze your requirements and return a 3-tier Connected Decision Blueprint: 100% Free Local Stack, Best-Value Freemium, and Automated Workflow Blueprint."
+  title="Solution Architect & Intent Decision Engine | AIO AI"
+  description="Describe your engineering task, budget, or persona. Our 2-Pane Solution Architect maps your requirement into a 3-Step Connected Pipeline, $0 Open Source Stack, and complete Execution Kit."
 >
   <Header currentPath="/finder" />
 
-  <main class="w-full flex flex-col min-h-screen bg-[#F8FAFF]">
+  <main class="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
     
-    <!-- Hero Header -->
-    <section class="border-b border-[#E2E8F0] bg-white px-4 sm:px-6 py-10 md:py-14 text-center">
-      <div class="max-w-3xl mx-auto">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-xs font-bold text-[#2563EB] mb-3 shadow-2xs font-mono">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
-          </svg>
-          <span>3-Tier Decision Blueprint & Task Recommendation Engine</span>
+    <!-- Hero Banner -->
+    <section class="rounded-3xl midnight-hero p-8 sm:p-10 text-white relative overflow-hidden shadow-xl border border-slate-800">
+      <div class="absolute -right-20 -top-20 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative z-10 max-w-3xl space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-400/30 bg-blue-500/10 text-[11px] font-mono font-bold text-blue-300">
+          <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+          <span>INTENT DECISION ENGINE & SOLUTION ARCHITECT</span>
         </div>
-        <h1 class="text-3xl sm:text-5xl font-black text-[#09090B] tracking-tight mb-3">
-          AI Intent Decision Finder
+        <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
+          Solution Finder & Architect
         </h1>
-        <p class="text-slate-600 text-xs sm:text-base max-w-2xl mx-auto leading-relaxed">
-          Describe what you want to build or automate in plain English. Get 3 structured recommendation tiers side-by-side: <strong class="text-[#09090B]">100% Free Local Stack ($0)</strong>, <strong class="text-[#09090B]">Best-Value Freemium</strong>, and <strong class="text-[#2563EB]">Production Workflow Blueprint</strong>.
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          Select your persona and budget or describe your problem in natural language. We synthesize a verified 3-tier connected pipeline: <strong class="text-emerald-300">$0 Open Source</strong>, <strong class="text-blue-300">Freemium Cloud</strong>, and <strong class="text-purple-300">Enterprise Blueprint</strong>.
         </p>
       </div>
     </section>
 
-    <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 flex-1 space-y-10">
+    <!-- TOP INTENT SELECTOR: PERSONA + BUDGET + 8 TEMPLATES -->
+    <section class="card-aurora p-6 sm:p-8 space-y-6">
       
-      <!-- Active Free Mode Banner -->
-      <div id="activeFreeModeBanner" class="hidden items-center justify-between bg-emerald-50 border border-emerald-200 text-emerald-900 px-4 py-2.5 rounded-xl text-xs font-medium animate-in fade-in duration-150">
-        <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-          <span>⚡ <strong class="font-bold">Free &amp; Open-Source Mode Active</strong> — Prioritizing 100% Free Local Stack solutions and $0 self-hostable blueprints</span>
+      <!-- Persona Filter Chips -->
+      <div>
+        <label class="block text-xs font-mono uppercase font-bold text-slate-500 mb-2.5">
+          1. Select Your Builder Persona:
+        </label>
+        <div class="flex flex-wrap gap-2" id="personaChipGroup">
+          <button type="button" class="persona-chip px-3.5 py-1.5 rounded-xl border border-blue-600 bg-blue-50 text-blue-700 font-bold text-xs cursor-pointer shadow-xs" data-persona="engineer">
+            👨‍💻 Full-Stack Engineer
+          </button>
+          <button type="button" class="persona-chip px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-400 font-medium text-xs cursor-pointer" data-persona="creator">
+            🎬 Content Creator / Media
+          </button>
+          <button type="button" class="persona-chip px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-400 font-medium text-xs cursor-pointer" data-persona="hacker">
+            ⚡ Solo Indie Hacker
+          </button>
+          <button type="button" class="persona-chip px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-400 font-medium text-xs cursor-pointer" data-persona="lead">
+            🏢 Enterprise Tech Lead
+          </button>
+          <button type="button" class="persona-chip px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-400 font-medium text-xs cursor-pointer" data-persona="researcher">
+            🔬 AI Researcher / Indic
+          </button>
         </div>
-        <button type="button" id="dismissFinderFreeModeBtn" class="text-xs font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer ml-3 shrink-0">
-          Show All Tiers &times;
-        </button>
       </div>
 
-      <!-- Interactive Finder Form -->
-      <form id="finderForm" class="bg-white border border-[#E2E8F0] focus-within:border-[#2563EB] focus-within:ring-4 focus-within:ring-[#2563EB]/10 rounded-2xl p-6 md:p-8 shadow-xs hover:shadow-md transition-all">
-        <label for="taskPrompt" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 mb-2">
-          Describe Your Engineering Task, Job-To-Be-Done, or Budget:
+      <!-- Budget Selector Chips -->
+      <div>
+        <label class="block text-xs font-mono uppercase font-bold text-slate-500 mb-2.5">
+          2. Target Monthly Budget:
         </label>
-        
-        <textarea 
-          id="taskPrompt"
-          rows="3"
-          placeholder="e.g. Free AI for YouTube Shorts voiceover and video generation in Indian languages, or automated customer support on WhatsApp on 8GB VRAM." 
-          class="w-full bg-[#F8FAFF] border border-[#E2E8F0] hover:border-[#BFDBFE] focus:border-[#2563EB] rounded-xl p-3.5 text-[#09090B] placeholder-slate-400 resize-none outline-none text-sm leading-relaxed transition-colors mb-4 font-sans font-medium"
-        ></textarea>
-
-        <!-- Quick Intent Preset Chips -->
-        <div class="mb-5">
-          <div class="text-xs text-slate-500 mb-2 font-medium flex items-center gap-1.5">
-            <span>Or launch one of these 1-click practitioner presets:</span>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
-              Free AI for YouTube Shorts & Reels
-            </button>
-            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
-              Automated WhatsApp customer support
-            </button>
-            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
-              Open-source coding assistant & git PR reviews
-            </button>
-            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
-              Indic regional language voice & translation
-            </button>
-            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
-              Private offline RAG over company PDFs
-            </button>
-          </div>
-        </div>
-
-        <!-- Submit Bar -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[#E2E8F0]">
-          <div class="text-xs text-slate-500 flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Real-time matching across 113 tools, 16 workflows, 20 open-source repos & 62 creators</span>
-          </div>
-          <button 
-            type="submit"
-            id="matchBtn"
-            class="w-full sm:w-auto bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs px-6 py-3 rounded-xl shadow-xs hover:shadow-md transition-all cursor-pointer inline-flex items-center justify-center gap-2"
-          >
-            <span>Generate 3-Tier Blueprint</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-            </svg>
+        <div class="flex flex-wrap gap-2" id="budgetChipGroup">
+          <button type="button" class="budget-chip px-3.5 py-1.5 rounded-xl border border-emerald-600 bg-emerald-50 text-emerald-800 font-bold text-xs cursor-pointer shadow-xs" data-budget="free">
+            🟢 $0 (100% Free / Self-Hosted)
+          </button>
+          <button type="button" class="budget-chip px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-400 font-medium text-xs cursor-pointer" data-budget="freemium">
+            🔵 &lt; $20 / mo (Freemium Sandbox)
+          </button>
+          <button type="button" class="budget-chip px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-400 font-medium text-xs cursor-pointer" data-budget="pro">
+            🟣 $50 – $100 / mo (Pro Stack)
+          </button>
+          <button type="button" class="budget-chip px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-400 font-medium text-xs cursor-pointer" data-budget="enterprise">
+            🟡 Enterprise Scale (Custom SLAs)
           </button>
         </div>
-      </form>
+      </div>
 
-      <!-- 3-Column Decision Blueprint Results Section -->
-      <div id="resultsSection" class="hidden flex-col gap-6 scroll-mt-20">
-        
-        <!-- Header Banner -->
-        <div class="p-4 sm:p-5 rounded-2xl bg-white border border-[#BFDBFE] shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div>
-            <div class="text-[11px] font-mono uppercase text-[#2563EB] font-bold tracking-wider">Generated Decision Blueprint</div>
-            <h2 class="text-lg md:text-xl font-black text-[#09090B]">Architecture Recommendation Tiers</h2>
-            <p id="queryEcho" class="text-xs text-slate-600 mt-0.5 font-medium"></p>
-          </div>
+      <!-- Prompt Bar & 8 1-Click Templates -->
+      <div class="space-y-3">
+        <label for="architectPrompt" class="block text-xs font-mono uppercase font-bold text-slate-700">
+          3. Natural Language Requirement or Goal:
+        </label>
+        <div class="relative">
+          <textarea 
+            id="architectPrompt" 
+            rows="2"
+            placeholder="e.g. Free AI for YouTube Shorts voiceover and video generation in Hindi on 12GB VRAM, or automated PR reviews on GitHub..."
+            class="w-full bg-white border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-2xl p-4 text-xs sm:text-sm text-slate-900 placeholder-slate-400 outline-none transition-all resize-none shadow-xs font-medium"
+          >Automated git pull request review and security scan</textarea>
           <button 
             type="button" 
-            id="resetFinderBtn" 
-            class="text-xs font-bold text-slate-600 hover:text-[#09090B] px-3.5 py-1.5 rounded-xl border border-[#E2E8F0] bg-white hover:bg-slate-50 transition-colors cursor-pointer shrink-0"
+            id="runArchitectBtn"
+            class="absolute right-3 bottom-3 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs cursor-pointer shadow-sm transition-all flex items-center gap-1.5"
           >
-            Clear Blueprint
+            <span>Architect Pipeline</span>
+            <span>&rarr;</span>
           </button>
         </div>
 
-        <!-- 3-COLUMN BLUEPRINT GRID -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="blueprintGrid">
-          
-          <!-- Column A: 100% Free / Self-Hosted Open-Source Stack -->
-          <div class="bg-white border-2 border-purple-200 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+        <!-- 8 Quick 1-Click Templates -->
+        <div class="pt-2">
+          <span class="text-[11px] font-mono text-slate-400 uppercase font-semibold block mb-2">Or choose an instant blueprint template:</span>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" class="prompt-preset-btn text-xs bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-blue-300 transition-all cursor-pointer font-medium">
+              Automated Git PR Review & Security Scan
+            </button>
+            <button type="button" class="prompt-preset-btn text-xs bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-blue-300 transition-all cursor-pointer font-medium">
+              Faceless YouTube Shorts & Reels Automation
+            </button>
+            <button type="button" class="prompt-preset-btn text-xs bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-blue-300 transition-all cursor-pointer font-medium">
+              Indic Speech Voiceover & Multilingual TTS
+            </button>
+            <button type="button" class="prompt-preset-btn text-xs bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-blue-300 transition-all cursor-pointer font-medium">
+              WhatsApp Autonomous Customer Support Bot
+            </button>
+            <button type="button" class="prompt-preset-btn text-xs bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-blue-300 transition-all cursor-pointer font-medium">
+              Private Offline PDF RAG Document Search
+            </button>
+            <button type="button" class="prompt-preset-btn text-xs bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-blue-300 transition-all cursor-pointer font-medium">
+              Full-Stack Web App from UI Wireframe
+            </button>
+            <button type="button" class="prompt-preset-btn text-xs bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-blue-300 transition-all cursor-pointer font-medium">
+              Photorealistic Image Generation & Inpainting
+            </button>
+            <button type="button" class="prompt-preset-btn text-xs bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-blue-300 transition-all cursor-pointer font-medium">
+              E-Commerce Product Background Studio
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN 2-PANE WORKSPACE: INTERACTIVE SOLUTION ARCHITECT -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT PANE (7 COLS): 3 TIERS & 3-STEP CONNECTED PIPELINE FLOW -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Tier Selection Switcher Tabs -->
+        <div class="flex items-center gap-2 p-1.5 bg-slate-100 rounded-2xl border border-slate-200 text-xs font-mono font-bold">
+          <button type="button" class="tier-tab-btn flex-1 py-2 px-3 rounded-xl bg-white text-emerald-800 shadow-xs border border-emerald-300 cursor-pointer" data-tier="A">
+            Option A: $0 Open Source
+          </button>
+          <button type="button" class="tier-tab-btn flex-1 py-2 px-3 rounded-xl text-slate-600 hover:text-slate-900 cursor-pointer" data-tier="B">
+            Option B: Freemium Cloud
+          </button>
+          <button type="button" class="tier-tab-btn flex-1 py-2 px-3 rounded-xl text-slate-600 hover:text-slate-900 cursor-pointer" data-tier="C">
+            Option C: Enterprise Flow
+          </button>
+        </div>
+
+        <!-- Tier Card Detail -->
+        <div class="card-aurora p-6 sm:p-8 space-y-6">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
             <div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
-                  Option A • 100% Free / Self-Hosted
-                </span>
-                <span class="font-mono text-sm font-black text-purple-700">₹0 / $0 mo</span>
-              </div>
-              <h3 class="text-lg font-black text-[#09090B] mb-1" id="colATitle">Ollama + DeepSeek-R1</h3>
-              <p class="text-xs text-slate-600 mb-4" id="colADesc">Run weights completely locally with zero cloud subscription fees and complete data sovereignty.</p>
-
-              <div class="space-y-2.5 text-xs mb-4">
-                <div class="p-2.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-                  <span class="text-[10px] font-mono text-slate-400 block font-bold uppercase">Hardware Requirement</span>
-                  <span class="font-bold text-emerald-600 font-mono" id="colAVram">8GB VRAM (Q4_K_M) / Apple Silicon</span>
-                </div>
-                <div class="p-2.5 rounded-xl bg-slate-900 text-slate-100 font-mono text-[11px] overflow-x-auto" id="colACmd">
-                  ollama run deepseek-r1:8b
-                </div>
-              </div>
+              <span id="tierPill" class="text-[10px] font-mono font-bold uppercase px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                100% Free / Self-Hosted Stack
+              </span>
+              <h2 id="tierTitle" class="text-2xl font-black text-slate-900 mt-2">Ollama + DeepSeek Coder</h2>
             </div>
-
-            <div class="pt-3 border-t border-[#E2E8F0] flex items-center justify-between">
-              <span class="text-[11px] text-slate-400 font-mono">Zero Cloud Leakage</span>
-              <a href="/open-source" id="colALink" class="text-xs font-bold text-purple-700 hover:underline">
-                View Setup Guide &rarr;
-              </a>
+            <div class="text-right">
+              <span id="tierCost" class="text-2xl font-black font-mono text-emerald-700">$0 / ₹0</span>
+              <span class="block text-[10px] font-mono text-slate-400">per month</span>
             </div>
           </div>
 
-          <!-- Column B: Best-Value Freemium Stack -->
-          <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs flex flex-col justify-between transition-all">
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#2563EB] border border-blue-200">
-                  Option B • Best-Value Freemium
-                </span>
-                <span class="font-mono text-sm font-black text-[#2563EB]" id="colBCost">$20 / ₹1,650 mo</span>
-              </div>
-              <h3 class="text-lg font-black text-[#09090B] mb-1" id="colBTitle">Cursor Composer Pro</h3>
-              <p class="text-xs text-slate-600 mb-4" id="colBDesc">Generous free tier with fast cloud model inference and automated reasoning context.</p>
+          <p id="tierDescription" class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Run open weights completely on your local workstation or private server with zero cloud API fees and complete code privacy.
+          </p>
 
-              <div class="space-y-2.5 text-xs mb-4">
-                <div class="p-2.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-                  <span class="text-[10px] font-mono text-slate-400 block font-bold uppercase">Free Tier Generosity</span>
-                  <span class="font-bold text-[#09090B]" id="colBFree">14-Day Free Pro Sandbox Trial</span>
+          <!-- 3-STEP CONNECTED PIPELINE VISUAL FLOW -->
+          <div class="space-y-3 pt-2">
+            <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 block">
+              Visual 3-Step Execution Pipeline:
+            </span>
+
+            <div class="space-y-4 relative">
+              <!-- Step 1: Input Trigger -->
+              <div class="bg-white border-2 border-blue-200 rounded-2xl p-4 flex items-start gap-3.5 shadow-xs relative">
+                <span class="w-6 h-6 rounded-full bg-blue-600 text-white font-mono font-bold text-xs flex items-center justify-center shrink-0">1</span>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-900 text-xs">Trigger & Ingestion Node</span>
+                    <span id="step1Tool" class="text-[10px] font-mono font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md">GitHub Webhook / Git CLI</span>
+                  </div>
+                  <p id="step1Desc" class="text-xs text-slate-500 mt-1">Intercepts commits and pull requests, extracting file diffs and commit messages.</p>
                 </div>
-                <div class="p-2.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
-                  <span class="text-[10px] font-mono text-slate-400 block font-bold uppercase">5-Factor Authenticity Score</span>
-                  <span class="font-bold text-emerald-600 font-mono" id="colBScore">94/100 (Verified Leader)</span>
+              </div>
+
+              <!-- Connecting Line Down -->
+              <div class="w-0.5 h-4 bg-blue-300 mx-auto"></div>
+
+              <!-- Step 2: Reasoning Engine -->
+              <div class="bg-white border-2 border-purple-200 rounded-2xl p-4 flex items-start gap-3.5 shadow-xs relative">
+                <span class="w-6 h-6 rounded-full bg-purple-600 text-white font-mono font-bold text-xs flex items-center justify-center shrink-0">2</span>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-900 text-xs">Inference & Reasoning Core</span>
+                    <span id="step2Tool" class="text-[10px] font-mono font-bold bg-purple-50 text-purple-700 px-2 py-0.5 rounded-md">DeepSeek-Coder-V2 16B</span>
+                  </div>
+                  <p id="step2Desc" class="text-xs text-slate-500 mt-1">Performs static security analysis, code style audits, and detects potential regressions.</p>
+                </div>
+              </div>
+
+              <!-- Connecting Line Down -->
+              <div class="w-0.5 h-4 bg-purple-300 mx-auto"></div>
+
+              <!-- Step 3: Synthesis & Action -->
+              <div class="bg-white border-2 border-emerald-200 rounded-2xl p-4 flex items-start gap-3.5 shadow-xs relative">
+                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white font-mono font-bold text-xs flex items-center justify-center shrink-0">3</span>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-900 text-xs">Synthesis & Action Delivery</span>
+                    <span id="step3Tool" class="text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md">n8n / Octokit PR Comment</span>
+                  </div>
+                  <p id="step3Desc" class="text-xs text-slate-500 mt-1">Posts inline code comments, approvals, or Slack alerts directly to the development channel.</p>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div class="pt-3 border-t border-[#E2E8F0] flex items-center justify-between">
-              <a href="/tools" id="colBLink" class="text-xs font-bold text-[#2563EB] hover:underline">
-                Inspect Specs &rarr;
-              </a>
-              <button 
-                type="button" 
-                id="colBStackBtn" 
-                class="px-3 py-1.5 rounded-xl bg-[#09090B] hover:bg-neutral-800 text-white font-bold text-xs transition-colors"
-              >
-                + Add to Stack
+        </div>
+
+      </div>
+
+      <!-- RIGHT PANE (5 COLS): EXECUTION KIT & TELEMETRY -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <div class="card-aurora p-6 sm:p-7 space-y-5">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+            <h3 class="text-base font-black text-slate-900 tracking-tight">Execution Kit & Specifications</h3>
+            <span class="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">Ready to Deploy</span>
+          </div>
+
+          <!-- Specs List -->
+          <div class="space-y-3 text-xs">
+            <div class="flex justify-between items-center p-2.5 rounded-xl bg-white border border-slate-200">
+              <span class="text-slate-500">Hardware / VRAM:</span>
+              <span id="kitHardware" class="font-mono font-bold text-slate-900">8GB – 16GB VRAM</span>
+            </div>
+            <div class="flex justify-between items-center p-2.5 rounded-xl bg-white border border-slate-200">
+              <span class="text-slate-500">Data Sovereignty:</span>
+              <span id="kitSovereignty" class="font-mono font-bold text-emerald-700">100% Local / Zero Leakage</span>
+            </div>
+            <div class="flex justify-between items-center p-2.5 rounded-xl bg-white border border-slate-200">
+              <span class="text-slate-500">Setup Complexity:</span>
+              <span id="kitSetupTime" class="font-mono font-bold text-slate-900">~10 Mins (Docker / CLI)</span>
+            </div>
+          </div>
+
+          <!-- Quick Terminal Command -->
+          <div class="space-y-1.5">
+            <span class="text-[10px] font-mono font-bold text-slate-400 uppercase">One-Click Terminal Command:</span>
+            <div class="p-3 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto flex items-center justify-between group">
+              <code id="kitCliCommand">ollama run deepseek-coder-v2:16b</code>
+              <button type="button" id="copyCliBtn" class="text-[10px] bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded text-slate-300 font-sans cursor-pointer transition-colors ml-2 shrink-0">
+                Copy
               </button>
             </div>
           </div>
 
-          <!-- Column C: Production Automated Workflow Blueprint -->
-          <div class="bg-gradient-to-br from-blue-50 via-white to-indigo-50 border-2 border-[#2563EB] rounded-2xl p-6 shadow-sm flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
-                  Option C • Production Automated Blueprint
-                </span>
-                <span class="text-[11px] font-mono font-bold text-slate-500" id="colCTime">~20 min setup</span>
-              </div>
-              <h3 class="text-lg font-black text-[#09090B] mb-1" id="colCTitle">Automated Multi-Node Recipe</h3>
-              <p class="text-xs text-slate-600 mb-4" id="colCDesc">End-to-end recipe integrating trigger, LLM reasoning, transform, and delivery.</p>
-
-              <!-- Node Pipeline Preview -->
-              <div class="p-3 rounded-xl bg-white border border-blue-200 mb-4 text-xs">
-                <span class="text-[10px] font-mono uppercase font-bold text-[#2563EB] block mb-1">Execution Node Pipeline:</span>
-                <div class="flex items-center gap-1.5 flex-wrap font-mono text-[11px]" id="colCSteps">
-                  <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">Trigger</span>
-                  <span>➔</span>
-                  <span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold">DeepSeek R1</span>
-                  <span>➔</span>
-                  <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">Action</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="pt-3 border-t border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-2">
-              <a href="/stack-builder" id="colCLoadStackBtn" class="w-full sm:w-auto text-center px-3 py-1.5 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#2563EB] text-[#09090B] font-bold text-xs transition-colors">
-                Load in Stack Builder &rarr;
-              </a>
-              <a href="/workflows/builder" id="colCStudioBtn" class="w-full sm:w-auto text-center px-3 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs transition-colors shadow-xs">
-                Customize in Studio ⚡
-              </a>
+          <!-- Recommended System Prompt / Instructions -->
+          <div class="space-y-1.5">
+            <span class="text-[10px] font-mono font-bold text-slate-400 uppercase">Automated Agent Prompt:</span>
+            <div class="p-3 rounded-xl bg-white border border-slate-200 text-slate-700 font-mono text-[11px] h-28 overflow-y-auto leading-relaxed" id="kitPromptText">
+              You are a senior security and performance code review agent. Examine the incoming git patch for SQL injection, authentication bypasses, N+1 query patterns, and type mismatches. Provide markdown diff suggestions with exact line numbers.
             </div>
           </div>
 
+          <!-- Action Buttons -->
+          <div class="space-y-2.5 pt-2">
+            <a 
+              href="/stack-builder" 
+              id="loadStackArchitectBtn" 
+              class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs text-center block shadow-sm transition-all cursor-pointer"
+            >
+              Load into Stack Architect &rarr;
+            </a>
+            <a 
+              href="/workflows/builder" 
+              id="openWorkflowStudioBtn" 
+              class="w-full py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 font-bold text-xs text-center block transition-all cursor-pointer"
+            >
+              Customize in Workflow Studio ⚡
+            </a>
+          </div>
         </div>
 
       </div>
 
-      <!-- TAAFT-INSPIRED TOP 25 TASKS DIRECTORY TABLE -->
-      <section class="bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-xs">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E2E8F0] mb-6">
-          <div>
-            <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-[#2563EB] mb-1">
-              TAAFT-Inspired Jobs-to-be-Done Matrix
-            </div>
-            <h2 class="text-xl font-black text-[#09090B] tracking-tight">
-              Top 25 AI Engineering & Creator Tasks Directory
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">
-              Filter by engineering task to instantly view the top $0 open-source tool, pro alternative, and verified workflow blueprint.
-            </p>
-          </div>
-          <div class="w-full sm:w-64">
-            <input 
-              type="text" 
-              id="taskTableFilter" 
-              placeholder="Filter 25 tasks..." 
-              class="w-full bg-[#F8FAFF] border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl px-3 py-1.5 text-xs text-[#09090B] outline-none font-medium"
-            />
-          </div>
-        </div>
+    </section>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr class="border-b border-[#E2E8F0] font-mono text-[11px] text-slate-400 uppercase">
-                <th class="py-3 pr-3 font-bold w-12">#</th>
-                <th class="py-3 px-3 font-bold">Task / Job-to-be-Done</th>
-                <th class="py-3 px-3 font-bold">Category</th>
-                <th class="py-3 px-3 font-bold text-purple-700">Best Free / $0 Tool</th>
-                <th class="py-3 px-3 font-bold text-[#2563EB]">Best Pro Tool</th>
-                <th class="py-3 pl-3 font-bold text-right">Action</th>
+    <!-- TAAFT-INSPIRED TOP 25 TASKS DIRECTORY TABLE -->
+    <section class="card-aurora p-6 sm:p-8 space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+        <div>
+          <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-600 mb-1">
+            TAAFT-Inspired Jobs-to-be-Done Matrix
+          </div>
+          <h2 class="text-xl font-black text-slate-900 tracking-tight">
+            Top 25 AI Engineering & Creator Tasks Directory
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Filter by engineering task to instantly view the top $0 open-source tool, pro alternative, and verified workflow blueprint.
+          </p>
+        </div>
+        <div class="w-full sm:w-64">
+          <input 
+            type="text" 
+            id="taskTableFilter" 
+            placeholder="Filter 25 tasks..." 
+            class="w-full bg-white border border-slate-200 focus:border-blue-600 rounded-xl px-3 py-2 text-xs text-slate-900 outline-none font-medium"
+          />
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-200 font-mono text-[11px] text-slate-400 uppercase">
+              <th class="py-3 pr-3 font-bold w-12">#</th>
+              <th class="py-3 px-3 font-bold">Task / Job-to-be-Done</th>
+              <th class="py-3 px-3 font-bold">Category</th>
+              <th class="py-3 px-3 font-bold text-emerald-700">Best Free / $0 Tool</th>
+              <th class="py-3 px-3 font-bold text-blue-600">Best Pro Tool</th>
+              <th class="py-3 pl-3 font-bold text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100" id="tasksTableBody">
+            {TOP_25_TASKS.map(item => (
+              <tr class="hover:bg-blue-50/40 transition-colors task-table-row" data-search-term={`${item.task.toLowerCase()} ${item.category.toLowerCase()} ${item.freeTool.toLowerCase()} ${item.proTool.toLowerCase()}`}>
+                <td class="py-3.5 pr-3 font-mono font-bold text-slate-400">{item.rank}</td>
+                <td class="py-3.5 px-3 font-bold text-slate-900">
+                  <span class="block">{item.task}</span>
+                </td>
+                <td class="py-3.5 px-3">
+                  <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono text-[10px]">
+                    {item.category}
+                  </span>
+                </td>
+                <td class="py-3.5 px-3 font-mono text-emerald-700 font-semibold">
+                  {item.freeTool}
+                </td>
+                <td class="py-3.5 px-3 font-mono text-blue-600 font-semibold">
+                  {item.proTool}
+                </td>
+                <td class="py-3.5 pl-3 text-right">
+                  <button 
+                    type="button" 
+                    class="launch-task-btn px-3 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white font-bold transition-all text-[11px] cursor-pointer shadow-2xs"
+                    data-query={item.query}
+                  >
+                    Load Architect ⚡
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100" id="tasksTableBody">
-              {TOP_25_TASKS.map(item => (
-                <tr class="hover:bg-[#F8FAFF] transition-colors task-table-row" data-search-term={`${item.task.toLowerCase()} ${item.category.toLowerCase()} ${item.freeTool.toLowerCase()} ${item.proTool.toLowerCase()}`}>
-                  <td class="py-3.5 pr-3 font-mono font-bold text-slate-400">{item.rank}</td>
-                  <td class="py-3.5 px-3 font-bold text-[#09090B]">
-                    <span class="block">{item.task}</span>
-                  </td>
-                  <td class="py-3.5 px-3">
-                    <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono text-[10px]">
-                      {item.category}
-                    </span>
-                  </td>
-                  <td class="py-3.5 px-3 font-mono text-purple-700 font-semibold">
-                    {item.freeTool}
-                  </td>
-                  <td class="py-3.5 px-3 font-mono text-[#2563EB] font-semibold">
-                    {item.proTool}
-                  </td>
-                  <td class="py-3.5 pl-3 text-right">
-                    <button 
-                      type="button" 
-                      class="launch-task-btn px-3 py-1 rounded-lg bg-blue-50 text-[#2563EB] hover:bg-[#2563EB] hover:text-white font-bold transition-all text-[11px] cursor-pointer shadow-2xs"
-                      data-query={item.query}
-                    >
-                      Launch Blueprint ⚡
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-    </div>
   </main>
 
   <Footer />
 </Layout>
 
-<script is:inline define:vars={{ toolsData: allTools, workflowsData: WORKFLOWS_DATA, reposData: OPEN_SOURCE_REPOS, creatorsData: CREATORS_DATA }}>
-  window.AIO_TOOLS = toolsData || [];
-  window.AIO_WORKFLOWS = workflowsData || [];
-  window.AIO_REPOS = reposData || [];
-  window.AIO_CREATORS = creatorsData || [];
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function() {
+    var promptArea = document.getElementById('architectPrompt');
+    var runBtn = document.getElementById('runArchitectBtn');
+    var tierButtons = document.querySelectorAll('.tier-tab-btn');
+    var personaChips = document.querySelectorAll('.persona-chip');
+    var budgetChips = document.querySelectorAll('.budget-chip');
+    var presetButtons = document.querySelectorAll('.prompt-preset-btn');
+    var launchButtons = document.querySelectorAll('.launch-task-btn');
+    var tableFilter = document.getElementById('taskTableFilter');
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('finderForm');
-    const textarea = document.getElementById('taskPrompt');
-    const resultsSection = document.getElementById('resultsSection');
-    const queryEcho = document.getElementById('queryEcho');
-    const resetBtn = document.getElementById('resetFinderBtn');
-    const tableFilter = document.getElementById('taskTableFilter');
+    var currentTier = 'A';
+    var currentIntent = 'Automated git pull request review and security scan';
 
-    // 1. Table Filtering
-    tableFilter?.addEventListener('input', (e) => {
-      const q = e.target.value.toLowerCase().trim();
-      document.querySelectorAll('.task-table-row').forEach(row => {
-        const text = row.getAttribute('data-search-term') || '';
+    // Blueprint Data Matrix
+    var solutions = {
+      code: {
+        A: {
+          title: 'Ollama + DeepSeek Coder V2',
+          pill: '100% Free / Self-Hosted Stack',
+          cost: '$0 / ₹0',
+          desc: 'Run 16B code reasoning weights completely on your local GPU with zero API subscription cost and 100% data sovereignty.',
+          step1Tool: 'GitHub Webhook / Git CLI',
+          step1Desc: 'Intercepts pull requests and extracts source code diffs.',
+          step2Tool: 'DeepSeek-Coder-V2 (Local 16B)',
+          step2Desc: 'Performs syntax validation, logic bug hunting, and security auditing.',
+          step3Tool: 'Octokit / n8n Local',
+          step3Desc: 'Posts markdown code review summaries directly into GitHub PR comments.',
+          hardware: '8GB – 16GB VRAM / Apple Silicon',
+          sovereignty: '100% Local / Zero Cloud Leakage',
+          setup: '~10 Mins (Docker / CLI)',
+          cli: 'ollama run deepseek-coder-v2:16b',
+          prompt: 'You are a senior security code review agent. Audit the incoming git patch for vulnerabilities, memory leaks, and performance regressions. Format output as GitHub markdown diffs.',
+          stackUrl: '/stack-builder?preset=local-code-review'
+        },
+        B: {
+          title: 'Cursor Composer Pro',
+          pill: 'Best-Value Freemium Cloud',
+          cost: '$20 / ₹1,650',
+          desc: 'Cloud-accelerated multi-file context reasoning with Claude 3.5 Sonnet and 500 fast requests per month.',
+          step1Tool: 'Cursor IDE Workspace',
+          step1Desc: 'Embeds full repository context and file symbols.',
+          step2Tool: 'Claude 3.5 Sonnet Engine',
+          step2Desc: 'Generates refactor proposals and tests across multi-file boundaries.',
+          step3Tool: 'Git Staging Diff',
+          step3Desc: 'Interactive 1-click diff application directly in editor.',
+          hardware: 'Any PC / Cloud Accelerated',
+          sovereignty: 'Encrypted Cloud Ingestion',
+          setup: '~2 Mins (Desktop App)',
+          cli: 'cursor --install-extension aio.ai-toolkit',
+          prompt: 'Review current git diff against project architecture conventions. Propose clean refactors and unit tests.',
+          stackUrl: '/stack-builder?preset=cursor-pro'
+        },
+        C: {
+          title: 'Enterprise Multi-Agent Code QA',
+          pill: 'Enterprise Automated Pipeline',
+          cost: '$150 / ₹12,500',
+          desc: 'End-to-end automated PR review bot with SonarQube integration, OWASP Top 10 auditing, and automated rollback triggers.',
+          step1Tool: 'GitHub Actions CI Runner',
+          step1Desc: 'Triggers on PR open, checkout branch, run test suites.',
+          step2Tool: 'Anthropic Claude Sonnet API',
+          step2Desc: 'Executes architectural compliance and vulnerability heuristics.',
+          step3Tool: 'Slack DevOps Alerts + Supabase Log',
+          step3Desc: 'Stores compliance metrics and alerts engineering team on failures.',
+          hardware: 'Cloud Scaled Runner',
+          sovereignty: 'SOC2 / HIPAA Compliant Gateway',
+          setup: '~30 Mins (CI/CD Pipeline)',
+          cli: 'docker run -e ANTHROPIC_API_KEY=$KEY aio/pr-agent:latest',
+          prompt: 'Execute full enterprise audit: Security, Performance, Documentation, Test Coverage. Block PR if risk score > 4.',
+          stackUrl: '/stack-builder?preset=enterprise-qa'
+        }
+      },
+      video: {
+        A: {
+          title: 'ComfyUI + Flux.1 Schnell + FFMPEG',
+          pill: '100% Free / Self-Hosted Stack',
+          cost: '$0 / ₹0',
+          desc: 'Generate photorealistic scenes locally and assemble vertical video reels with zero recurring cloud subscription fees.',
+          step1Tool: 'Ollama Llama-3 (Scripting)',
+          step1Desc: 'Generates 60-second viral storytelling script with timing cues.',
+          step2Tool: 'ComfyUI + Flux.1 Schnell',
+          step2Desc: 'Renders 9:16 high-resolution image frames in 4 steps.',
+          step3Tool: 'FFMPEG + Piper TTS',
+          step3Desc: 'Stitches voiceover, background music, and video frames into MP4.',
+          hardware: '12GB VRAM (NVIDIA RTX or Mac M-Series)',
+          sovereignty: '100% Local GPU Inference',
+          setup: '~15 Mins (Docker / Python)',
+          cli: 'git clone https://github.com/comfyanonymous/ComfyUI',
+          prompt: 'Write a high-retention 60s script about historical mysteries. Include frame visual descriptions for image generator.',
+          stackUrl: '/stack-builder?preset=comfyui-video'
+        },
+        B: {
+          title: 'InVideo AI Pro Studio',
+          pill: 'Best-Value Freemium Cloud',
+          cost: '$25 / ₹2,050',
+          desc: 'Cloud automated text-to-video studio with automated voice clones, stock footage matching, and auto-subtitles.',
+          step1Tool: 'InVideo AI Web Studio',
+          step1Desc: 'User inputs prompt or article URL for video conversion.',
+          step2Tool: 'iStock + ElevenLabs Engine',
+          step2Desc: 'Assembles stock B-roll, captions, and emotional AI voiceover.',
+          step3Tool: 'YouTube Shorts Exporter',
+          step3Desc: 'Direct multi-channel export in 1080p vertical video format.',
+          hardware: 'Browser Only (0GB VRAM)',
+          sovereignty: 'Cloud Hosted Media',
+          setup: 'Instant (No Install)',
+          cli: 'curl -X POST https://api.invideo.io/v1/generate ...',
+          prompt: 'Create a dynamic 45-second educational short about space exploration with upbeat pacing and subtitles.',
+          stackUrl: '/stack-builder?preset=invideo-studio'
+        },
+        C: {
+          title: 'Headless Creator Media Pipeline',
+          pill: 'Enterprise Automated Pipeline',
+          cost: '$120 / ₹9,900',
+          desc: 'Autonomous daily trend scraper, video synthesis engine, and automatic scheduled publishing to YouTube & Instagram.',
+          step1Tool: 'n8n RSS & Trends Scraper',
+          step1Desc: 'Monitors Reddit and Google Trends for viral breakout topics.',
+          step2Tool: 'HeyGen / Runway API',
+          step2Desc: 'Generates avatar presenter and cinematic B-roll sequences.',
+          step3Tool: 'YouTube Data API v3',
+          step3Desc: 'Uploads video, generates SEO tags, and posts community poll.',
+          hardware: 'Managed Cloud API',
+          sovereignty: 'Creator API Keys Managed',
+          setup: '~45 Mins (Workflow Studio)',
+          cli: 'npx @aio/media-pipeline --publish daily',
+          prompt: 'Synthesize morning tech digest into 60s vertical format with high-contrast subtitles and hook statement.',
+          stackUrl: '/stack-builder?preset=creator-pipeline'
+        }
+      }
+    };
+
+    function updateArchitectView() {
+      var q = currentIntent.toLowerCase();
+      var solKey = (q.includes('video') || q.includes('short') || q.includes('reel') || q.includes('media')) ? 'video' : 'code';
+      var data = solutions[solKey][currentTier] || solutions.code[currentTier];
+
+      // Update Header
+      document.getElementById('tierPill').textContent = data.pill;
+      document.getElementById('tierTitle').textContent = data.title;
+      document.getElementById('tierCost').textContent = data.cost;
+      document.getElementById('tierDescription').textContent = data.desc;
+
+      // Update 3 Steps
+      document.getElementById('step1Tool').textContent = data.step1Tool;
+      document.getElementById('step1Desc').textContent = data.step1Desc;
+      document.getElementById('step2Tool').textContent = data.step2Tool;
+      document.getElementById('step2Desc').textContent = data.step2Desc;
+      document.getElementById('step3Tool').textContent = data.step3Tool;
+      document.getElementById('step3Desc').textContent = data.step3Desc;
+
+      // Update Right Kit
+      document.getElementById('kitHardware').textContent = data.hardware;
+      document.getElementById('kitSovereignty').textContent = data.sovereignty;
+      document.getElementById('kitSetupTime').textContent = data.setup;
+      document.getElementById('kitCliCommand').textContent = data.cli;
+      document.getElementById('kitPromptText').textContent = data.prompt;
+      document.getElementById('loadStackArchitectBtn').setAttribute('href', data.stackUrl);
+    }
+
+    // Tier Switching Tabs
+    tierButtons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        tierButtons.forEach(function(b) {
+          b.className = 'tier-tab-btn flex-1 py-2 px-3 rounded-xl text-slate-600 hover:text-slate-900 cursor-pointer';
+        });
+        btn.className = 'tier-tab-btn flex-1 py-2 px-3 rounded-xl bg-white text-blue-700 shadow-xs border border-blue-300 cursor-pointer font-bold';
+        currentTier = btn.getAttribute('data-tier') || 'A';
+        updateArchitectView();
+      });
+    });
+
+    // Preset Buttons
+    presetButtons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var text = btn.textContent.trim();
+        if (promptArea) promptArea.value = text;
+        currentIntent = text;
+        updateArchitectView();
+      });
+    });
+
+    // Table Launch Buttons
+    launchButtons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var q = btn.getAttribute('data-query') || '';
+        if (promptArea) promptArea.value = q;
+        currentIntent = q;
+        updateArchitectView();
+        window.scrollTo({ top: 300, behavior: 'smooth' });
+      });
+    });
+
+    // Form Run Button
+    runBtn?.addEventListener('click', function() {
+      var val = promptArea?.value?.trim() || '';
+      if (val) {
+        currentIntent = val;
+        updateArchitectView();
+      }
+    });
+
+    // Copy CLI Button
+    document.getElementById('copyCliBtn')?.addEventListener('click', function() {
+      var cmd = document.getElementById('kitCliCommand')?.textContent || '';
+      navigator.clipboard.writeText(cmd);
+      var orig = this.textContent;
+      this.textContent = 'Copied!';
+      var self = this;
+      setTimeout(function() { self.textContent = orig; }, 1800);
+    });
+
+    // Table Search Filter
+    tableFilter?.addEventListener('input', function(e) {
+      var q = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('.task-table-row').forEach(function(row) {
+        var text = row.getAttribute('data-search-term') || '';
         row.style.display = text.includes(q) ? '' : 'none';
       });
     });
 
-    // 2. Launch Task Blueprint Click
-    document.querySelectorAll('.launch-task-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const q = btn.getAttribute('data-query') || '';
-        if (textarea) textarea.value = q;
-        generateBlueprint(q);
-        resultsSection?.scrollIntoView({ behavior: 'smooth' });
-      });
-    });
-
-    // 3. Preset Example Buttons
-    document.querySelectorAll('.example-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const text = btn.textContent.trim();
-        if (textarea) textarea.value = text;
-        generateBlueprint(text);
-      });
-    });
-
-    // 4. Form Submit Handler
-    form?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const val = textarea?.value?.trim() || '';
-      if (!val) return;
-      generateBlueprint(val);
-    });
-
-    resetBtn?.addEventListener('click', () => {
-      if (textarea) textarea.value = '';
-      resultsSection?.classList.add('hidden');
-    });
-
-    // 5. 3-Tier Blueprint Generation Algorithm
-    function generateBlueprint(query) {
-      if (!resultsSection) return;
-      const q = query.toLowerCase();
-
-      if (queryEcho) queryEcho.textContent = `Matched for intent: "${query}"`;
-
-      // Column A: 100% Free / Open Source Match
-      let colA = {
-        title: 'Ollama + DeepSeek-R1',
-        desc: 'Run frontier reasoning models locally with zero cloud subscription fees and complete data sovereignty.',
-        vram: '8GB-16GB VRAM (Q4_K_M)',
-        cmd: 'ollama run deepseek-r1:8b',
-        slug: 'ollama'
-      };
-
-      if (q.includes('video') || q.includes('short') || q.includes('reel') || q.includes('image')) {
-        colA = {
-          title: 'ComfyUI + Flux.1 Schnell',
-          desc: 'High-speed local image and video generation pipeline with modular node graphs and zero monthly cost.',
-          vram: '12GB VRAM / Apple Silicon',
-          cmd: 'docker run -d -p 8188:8188 comfyui/comfyui',
-          slug: 'comfyui'
-        };
-      } else if (q.includes('workflow') || q.includes('support') || q.includes('whatsapp') || q.includes('automat')) {
-        colA = {
-          title: 'n8n Community Edition (Self-Hosted)',
-          desc: 'Self-hostable workflow automation engine with 400+ nodes and native AI agent capabilities.',
-          vram: '4GB RAM / Docker Engine',
-          cmd: 'docker run -it --rm -p 5678:5678 n8nio/n8n',
-          slug: 'n8n'
-        };
-      } else if (q.includes('voice') || q.includes('indic') || q.includes('hindi') || q.includes('speech')) {
-        colA = {
-          title: 'Bhashini Open Infrastructure (MeitY)',
-          desc: '100% Free public digital AI infrastructure supporting 22 Indian languages for ASR, TTS, and NMT.',
-          vram: '0GB Local (REST API)',
-          cmd: 'curl -X POST https://dhruva-api.bhashini.gov.in/...',
-          slug: 'bhashini'
-        };
-      }
-
-      document.getElementById('colATitle').textContent = colA.title;
-      document.getElementById('colADesc').textContent = colA.desc;
-      document.getElementById('colAVram').textContent = colA.vram;
-      document.getElementById('colACmd').textContent = colA.cmd;
-      document.getElementById('colALink').setAttribute('href', `/open-source/${colA.slug}`);
-
-      // Column B: Best-Value Freemium Tool Match
-      let colB = {
-        title: 'Cursor Composer Pro',
-        desc: 'AI coding editor with multi-file diffing, codebase embeddings, and Claude Sonnet integration.',
-        cost: '$20 / ₹1,650 mo',
-        free: 'Generous Free Tier (50 Fast Requests)',
-        score: '96/100',
-        slug: 'cursor'
-      };
-
-      if (q.includes('video') || q.includes('shorts')) {
-        colB = {
-          title: 'InVideo AI (Studio & Web)',
-          desc: 'Text-to-video studio generating complete YouTube Shorts and TikToks with scripts and voiceover.',
-          cost: '$25 / ₹2,050 mo',
-          free: '10 Mins / Week Free',
-          score: '92/100',
-          slug: 'invideo-ai'
-        };
-      } else if (q.includes('voice') || q.includes('indic')) {
-        colB = {
-          title: 'Sarvam AI Indic Platform',
-          desc: 'State-of-the-art multilingual voice generation and translation built specifically for Indian accents.',
-          cost: '₹0.15 / 1K chars',
-          free: '100K API Tokens Free Monthly',
-          score: '94/100',
-          slug: 'sarvam-ai'
-        };
-      }
-
-      document.getElementById('colBTitle').textContent = colB.title;
-      document.getElementById('colBDesc').textContent = colB.desc;
-      document.getElementById('colBCost').textContent = colB.cost;
-      document.getElementById('colBFree').textContent = colB.free;
-      document.getElementById('colBScore').textContent = `${colB.score} (Authentic Leader)`;
-      document.getElementById('colBLink').setAttribute('href', `/tools/${colB.slug}`);
-
-      // Column C: Production Automated Workflow
-      let matchingWf = window.AIO_WORKFLOWS[0];
-      if (q.includes('video') || q.includes('short')) {
-        matchingWf = window.AIO_WORKFLOWS.find(w => w.id === 'faceless-youtube-shorts') || matchingWf;
-      } else if (q.includes('support') || q.includes('whatsapp')) {
-        matchingWf = window.AIO_WORKFLOWS.find(w => w.id === 'whatsapp-customer-support') || matchingWf;
-      } else if (q.includes('code') || q.includes('pr')) {
-        matchingWf = window.AIO_WORKFLOWS.find(w => w.id === 'automated-git-pr-review') || matchingWf;
-      }
-
-      if (matchingWf) {
-        document.getElementById('colCTitle').textContent = matchingWf.title;
-        document.getElementById('colCDesc').textContent = matchingWf.goal;
-        document.getElementById('colCTime').textContent = `~${matchingWf.time || '20 min'} setup`;
-        
-        const stepsContainer = document.getElementById('colCSteps');
-        if (stepsContainer && matchingWf.steps) {
-          stepsContainer.innerHTML = matchingWf.steps.slice(0, 3).map((s, idx) => `
-            <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-900 font-bold">${s.tool}</span>
-            ${idx < 2 ? '<span>➔</span>' : ''}
-          `).join('');
-        }
-
-        document.getElementById('colCLoadStackBtn').setAttribute('href', `/stack-builder?wf=${matchingWf.id}`);
-        document.getElementById('colCStudioBtn').setAttribute('href', `/workflows/builder?template=${matchingWf.id}`);
-      }
-
-      resultsSection.classList.remove('hidden');
-      resultsSection.classList.add('flex');
-    }
-
-    // Free Mode Hydration
-    const banner = document.getElementById('activeFreeModeBanner');
-    const dismissBtn = document.getElementById('dismissFinderFreeModeBtn');
-
-    function updateFinderFreeMode(enabled: boolean) {
-      if (!banner) return;
-      if (enabled) {
-        banner.classList.remove('hidden');
-        banner.classList.add('flex');
-      } else {
-        banner.classList.add('hidden');
-        banner.classList.remove('flex');
-      }
-    }
-
-    const isFree = localStorage.getItem('aio_free_mode') === 'true';
-    updateFinderFreeMode(isFree);
-
-    window.addEventListener('aio:freemode', ((e: CustomEvent) => {
-      updateFinderFreeMode(Boolean(e.detail && e.detail.enabled));
-    }) as EventListener);
-
-    if (dismissBtn) {
-      dismissBtn.addEventListener('click', () => {
-        localStorage.setItem('aio_free_mode', 'false');
-        window.dispatchEvent(new CustomEvent('aio:freemode', { detail: { enabled: false } }));
-        updateFinderFreeMode(false);
-      });
-    }
+    updateArchitectView();
   });
 </script>
