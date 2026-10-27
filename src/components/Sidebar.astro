@@ -18,12 +18,13 @@ interface NavGroup {
   items: NavItem[];
 }
 
-// Consolidate 21-link sidebar into 10 clean, high-signal pillars across 4 groups
+// Complete, categorized platform pillars matching user architecture
 const navGroups: NavGroup[] = [
   {
     title: 'Workspace',
     items: [
       { href: '/dashboard', label: 'Command Center', icon: 'home' },
+      { href: '/analytics', label: 'Analytics & Insights', badge: 'LIVE', badgeColor: 'emerald', icon: 'bar-chart-2' },
       { href: '/stack-builder', label: 'My Stack Builder', badge: 'CUSTOM', badgeColor: 'blue', icon: 'layers' },
     ]
   },
@@ -32,22 +33,36 @@ const navGroups: NavGroup[] = [
     items: [
       { href: '/tools', label: 'AI Tools Directory', badge: '113', badgeColor: 'blue', icon: 'grid' },
       { href: '/finder', label: 'AI Intent Finder', badge: 'PRO', badgeColor: 'emerald', icon: 'sparkles' },
+      { href: '/categories', label: 'Categories Taxonomy', badge: '13', icon: 'tag' },
+      { href: '/compare', label: 'Side-by-Side Compare', icon: 'scale' },
+      { href: '/india-ai', label: 'India-First AI', badge: '16', badgeColor: 'emerald', icon: 'flag' },
       { href: '/open-source', label: 'Open-Source & VRAM', badge: '20+', icon: 'code' },
+      { href: '/open-source/trending', label: 'Trending GitHub', icon: 'trending' },
     ]
   },
   {
     title: 'Build & Automate',
     items: [
-      { href: '/workflows', label: 'Workflows & Skills', badge: '16', badgeColor: 'blue', icon: 'zap' },
-      { href: '/token-calculator', label: 'Token & Dev Utilities', badge: '26', icon: 'calculator' },
+      { href: '/workflows', label: 'AI Workflows', badge: '16', badgeColor: 'blue', icon: 'zap' },
+      { href: '/workflows/builder', label: 'Workflow Studio', badge: 'NEW', badgeColor: 'emerald', icon: 'sparkles' },
+      { href: '/token-calculator', label: 'Token Calculator', badge: '26', icon: 'calculator' },
+      { href: '/utilities', label: 'Creator & Dev Utilities', badge: '9', icon: 'wrench' },
     ]
   },
   {
     title: 'Pulse & Learn',
     items: [
-      { href: '/news', label: 'AI News Gazette', badge: 'LIVE', badgeColor: 'emerald', icon: 'newspaper' },
+      { href: '/news', label: 'AI News Today', badge: 'LIVE', badgeColor: 'emerald', icon: 'newspaper' },
       { href: '/creators', label: 'Creators & Tutorials', badge: '62', icon: 'video' },
-      { href: '/community', label: 'Community & Submit', icon: 'chat' },
+      { href: '/community', label: 'Community Forum', icon: 'chat' },
+    ]
+  },
+  {
+    title: 'Platform & Resources',
+    items: [
+      { href: '/pricing', label: 'Pricing & Plans', badge: 'PRO', badgeColor: 'blue', icon: 'credit-card' },
+      { href: '/docs', label: 'Documentation', icon: 'book' },
+      { href: '/submit', label: 'Submit Resource', icon: 'plus-circle' },
     ]
   }
 ];
@@ -57,13 +72,29 @@ function isItemActive(href: string, current: string): boolean {
   if (href.includes('?')) {
     return current === href.split('?')[0];
   }
-  // Group-level active states for consolidated pillars
-  if (href === '/tools' && (current.startsWith('/tools') || current.startsWith('/categories') || current.startsWith('/compare') || current.startsWith('/india-ai'))) return true;
-  if (href === '/open-source' && current.startsWith('/open-source')) return true;
-  if (href === '/workflows' && current.startsWith('/workflows')) return true;
-  if (href === '/token-calculator' && (current.startsWith('/token-calculator') || current.startsWith('/utilities'))) return true;
-  if (href === '/community' && (current.startsWith('/community') || current.startsWith('/submit') || current.startsWith('/docs') || current.startsWith('/pricing'))) return true;
-  if (href === '/dashboard' && (current === '/dashboard' || current.startsWith('/analytics') || current.startsWith('/profile'))) return true;
+  // Exact match
+  if (current === href) return true;
+
+  // Specificity checks for nested routes
+  if (href === '/open-source/trending') return current.startsWith('/open-source/trending');
+  if (href === '/open-source') return current.startsWith('/open-source') && !current.startsWith('/open-source/trending');
+  if (href === '/workflows/builder') return current.startsWith('/workflows/builder');
+  if (href === '/workflows') return current.startsWith('/workflows') && !current.startsWith('/workflows/builder');
+  if (href === '/token-calculator') return current.startsWith('/token-calculator');
+  if (href === '/utilities') return current.startsWith('/utilities');
+  if (href === '/india-ai') return current.startsWith('/india-ai') || current.includes('category=india-first');
+  if (href === '/tools') return (current.startsWith('/tools') && !current.includes('category=india-first'));
+  if (href === '/categories') return current.startsWith('/categories');
+  if (href === '/compare') return current.startsWith('/compare');
+  if (href === '/pricing') return current.startsWith('/pricing');
+  if (href === '/docs') return current.startsWith('/docs');
+  if (href === '/submit') return current.startsWith('/submit');
+  if (href === '/creators') return current.startsWith('/creators');
+  if (href === '/news') return current.startsWith('/news');
+  if (href === '/community') return current.startsWith('/community');
+  if (href === '/analytics') return current.startsWith('/analytics');
+  if (href === '/stack-builder') return current.startsWith('/stack-builder');
+  if (href === '/dashboard') return current === '/dashboard';
 
   return current === href || current.startsWith(`${href}/`);
 }
@@ -123,6 +154,11 @@ function isItemActive(href: string, current: string): boolean {
                       <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                     </svg>
                   )}
+                  {item.icon === 'bar-chart-2' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                    </svg>
+                  )}
                   {item.icon === 'layers' && (
                     <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
@@ -138,9 +174,30 @@ function isItemActive(href: string, current: string): boolean {
                       <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
                     </svg>
                   )}
+                  {item.icon === 'tag' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'scale' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'flag' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.779V4.5l-3.114.779a9 9 0 0 1-6.086-.71l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5" />
+                    </svg>
+                  )}
                   {item.icon === 'code' && (
                     <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
+                    </svg>
+                  )}
+                  {item.icon === 'trending' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
                     </svg>
                   )}
                   {item.icon === 'zap' && (
@@ -151,6 +208,11 @@ function isItemActive(href: string, current: string): boolean {
                   {item.icon === 'calculator' && (
                     <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-3-2.25V18m-3-2.25V18m3-6.75V12m-3-2.25V12m6 0V12m-9 9h12a2.25 2.25 0 0 0 2.25-2.25V5.25A2.25 2.25 0 0 0 19.5 3h-12A2.25 2.25 0 0 0 5.25 5.25v13.5A2.25 2.25 0 0 0 7.5 21Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'wrench' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.32l-3.276 3.277a1.5 1.5 0 0 1-2.12-2.122l3.276-3.276a4.5 4.5 0 0 0-6.32 4.486c.048.58.024 1.193-.14 1.743" />
                     </svg>
                   )}
                   {item.icon === 'newspaper' && (
@@ -166,6 +228,21 @@ function isItemActive(href: string, current: string): boolean {
                   {item.icon === 'chat' && (
                     <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.502 49.188 49.188 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'credit-card' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15A2.25 2.25 0 0 0 2.25 6.75v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'book' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                    </svg>
+                  )}
+                  {item.icon === 'plus-circle' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
                   )}
                   <span class="truncate">{item.label}</span>
@@ -306,6 +383,23 @@ function isItemActive(href: string, current: string): boolean {
       ))}
     </div>
 
+    <!-- Hidden Admin Link on Mobile (Only revealed if authorized) -->
+    <div id="mobileAdminGroup" class="hidden px-3 pb-3">
+      <div class="px-2.5 mb-1.5 text-[10px] font-mono uppercase tracking-wider text-purple-600 font-bold">
+        Admin Security
+      </div>
+      <a
+        href="/admin"
+        class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 transition-colors"
+        onclick="window.closeSidebar && window.closeSidebar()"
+      >
+        <svg class="w-4 h-4 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+        </svg>
+        <span>Admin Console</span>
+      </a>
+    </div>
+
     <!-- Mobile Drawer Footer -->
     <div class="p-3 border-t border-[#E2E8F0] bg-[#F8FAFF] shrink-0">
       <a href="/profile" class="flex items-center gap-2.5 p-2 rounded-xl bg-white border border-[#E2E8F0]">
@@ -436,6 +530,10 @@ function isItemActive(href: string, current: string): boolean {
           var isAdmin = (user.email === 'harshilpival@gmail.com') || (user.isAdmin === true);
           if (adminGroup && isAdmin) {
             adminGroup.classList.remove('hidden');
+          }
+          var mobileAdmin = document.getElementById('mobileAdminGroup');
+          if (mobileAdmin && isAdmin) {
+            mobileAdmin.classList.remove('hidden');
           }
         }
       } catch (e) {}
