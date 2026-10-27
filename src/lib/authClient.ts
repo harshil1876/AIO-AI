@@ -19,6 +19,26 @@ export function isUserAdmin(email?: string | null): boolean {
   return ADMIN_EMAILS.includes(email.trim().toLowerCase());
 }
 
+/**
+ * Cryptographically verifies current session with Supabase Auth server.
+ * Never trusts raw localStorage strings to prevent client-side spoofing.
+ */
+export async function verifyAdminSession(): Promise<boolean> {
+  if (typeof window === 'undefined') return false;
+  if (!isSupabaseConfigured) return false;
+
+  try {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data?.user || !data.user.email) {
+      return false;
+    }
+    return isUserAdmin(data.user.email);
+  } catch (e) {
+    console.error('Cryptographic admin verification failed:', e);
+    return false;
+  }
+}
+
 export function parseStoredUser(): AuthUserInfo | null {
   if (typeof window === 'undefined') return null;
 
@@ -34,7 +54,7 @@ export function parseStoredUser(): AuthUserInfo | null {
           email: u.email || '',
           avatarUrl: u.avatarUrl || u.avatar_url,
           authProvider: u.authProvider || 'email',
-          isAdmin: isUserAdmin(u.email)
+          isAdmin: false // Never trust localStorage for admin privilege; use verifyAdminSession()
         };
       }
     }

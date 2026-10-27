@@ -258,6 +258,17 @@ function getToolMetadata(tool: ToolData) {
           </div>
         </div>
 
+        <!-- Active Free Mode Banner -->
+        <div id="activeFreeModeBanner" class="hidden items-center justify-between bg-emerald-50 border border-emerald-200 text-emerald-900 px-4 py-2.5 rounded-xl text-xs font-medium mb-4 animate-in fade-in duration-150">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+            <span>⚡ <strong class="font-bold">Free &amp; Open-Source Mode Active</strong> — Showing only zero-cost, generous tier, and self-hostable tools</span>
+          </div>
+          <button type="button" id="dismissFreeModeBtn" class="text-xs font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer ml-3 shrink-0">
+            Show All Tools &times;
+          </button>
+        </div>
+
         <!-- Tool Cards Grid -->
         <div id="toolsGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {tools.map(tool => {
@@ -316,8 +327,15 @@ function getToolMetadata(tool: ToolData) {
     
     // Toggles
     const toggleTop10 = document.getElementById('toggleTop10');
-    const toggleIndiaOnly = document.getElementById('toggleIndiaOnly');
-    const toggleFreeOnly = document.getElementById('toggleFreeOnly');
+    const toggleIndiaOnly = document.getElementById('toggleIndiaOnly') as HTMLInputElement | null;
+    const toggleFreeOnly = document.getElementById('toggleFreeOnly') as HTMLInputElement | null;
+    const activeFreeModeBanner = document.getElementById('activeFreeModeBanner');
+    const dismissFreeModeBtn = document.getElementById('dismissFreeModeBtn');
+
+    // Hydrate Free Mode state from localStorage
+    if (toggleFreeOnly && localStorage.getItem('aio_free_mode') === 'true') {
+      toggleFreeOnly.checked = true;
+    }
 
     // State
     let activeTimeline = 'all';
@@ -426,6 +444,17 @@ function getToolMetadata(tool: ToolData) {
 
       const visibleCount = onlyTop10 ? Math.min(matchedWrappers.length, 10) : matchedWrappers.length;
 
+      // Update banner visibility
+      if (activeFreeModeBanner) {
+        if (onlyFree) {
+          activeFreeModeBanner.classList.remove('hidden');
+          activeFreeModeBanner.classList.add('flex');
+        } else {
+          activeFreeModeBanner.classList.add('hidden');
+          activeFreeModeBanner.classList.remove('flex');
+        }
+      }
+
       // Update counter and empty state
       if (toolCount) toolCount.textContent = visibleCount.toString();
       if (activeFilterPill) {
@@ -451,7 +480,27 @@ function getToolMetadata(tool: ToolData) {
     sortSelect?.addEventListener('change', applyFilters);
     toggleTop10?.addEventListener('change', applyFilters);
     toggleIndiaOnly?.addEventListener('change', applyFilters);
-    toggleFreeOnly?.addEventListener('change', applyFilters);
+    toggleFreeOnly?.addEventListener('change', () => {
+      const isFree = Boolean(toggleFreeOnly.checked);
+      localStorage.setItem('aio_free_mode', String(isFree));
+      window.dispatchEvent(new CustomEvent('aio:freemode', { detail: { enabled: isFree } }));
+      applyFilters();
+    });
+
+    dismissFreeModeBtn?.addEventListener('click', () => {
+      if (toggleFreeOnly) toggleFreeOnly.checked = false;
+      localStorage.setItem('aio_free_mode', 'false');
+      window.dispatchEvent(new CustomEvent('aio:freemode', { detail: { enabled: false } }));
+      applyFilters();
+    });
+
+    window.addEventListener('aio:freemode', ((e: CustomEvent) => {
+      const enabled = Boolean(e.detail && e.detail.enabled);
+      if (toggleFreeOnly && toggleFreeOnly.checked !== enabled) {
+        toggleFreeOnly.checked = enabled;
+        applyFilters();
+      }
+    }) as EventListener);
 
     document.querySelectorAll('.filter-pricing').forEach(radio => {
       radio.addEventListener('change', applyFilters);

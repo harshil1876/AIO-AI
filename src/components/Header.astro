@@ -87,18 +87,20 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
       <!-- Auth State Control & Interactive User Dropdown -->
       <div id="headerAuthNav" class="flex items-center gap-2 border-l border-[#E2E8F0] pl-2 sm:pl-3 relative">
         <!-- Logged Out View -->
-        <a
-          href="/pricing"
-          class="hidden md:inline-block text-xs text-slate-700 hover:text-[#2563EB] font-semibold px-2.5 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-        >
-          Pricing
-        </a>
-        <a
-          href="/docs"
-          class="hidden md:inline-block text-xs text-slate-700 hover:text-[#2563EB] font-semibold px-2.5 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-        >
-          Docs
-        </a>
+        {hideSidebarToggle && (
+          <a
+            href="/pricing"
+            class="hidden md:inline-block text-xs text-slate-700 hover:text-[#2563EB] font-semibold px-2.5 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+          >
+            Pricing
+          </a>
+          <a
+            href="/docs"
+            class="hidden md:inline-block text-xs text-slate-700 hover:text-[#2563EB] font-semibold px-2.5 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+          >
+            Docs
+          </a>
+        )}
         <a
           href={`/login?redirect=${encodeURIComponent(currentPath === '/' ? '/dashboard' : currentPath)}`}
           id="headerLoginLink"
@@ -399,9 +401,15 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
         if (brandLink) brandLink.setAttribute('href', '/');
       }
 
-      // Initialize Free Mode and Currency UI
-      updateFreeModeUI(localStorage.getItem('aio_free_mode') === 'true');
-      updateCurrencyUI(localStorage.getItem('aio_currency') || 'INR');
+      // Initialize Free Mode and Currency UI & broadcast state to page consumers
+      var initFree = localStorage.getItem('aio_free_mode') === 'true';
+      var initCurr = localStorage.getItem('aio_currency') || 'INR';
+      updateFreeModeUI(initFree);
+      updateCurrencyUI(initCurr);
+      try {
+        window.dispatchEvent(new CustomEvent('aio:freemode', { detail: { enabled: initFree } }));
+        window.dispatchEvent(new CustomEvent('aio:currency', { detail: { currency: initCurr } }));
+      } catch (e) {}
     }
 
     if (document.readyState === 'loading') {

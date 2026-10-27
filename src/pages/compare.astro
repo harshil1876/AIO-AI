@@ -322,7 +322,34 @@ const toolBSlug = toolListFromParam[1] || Astro.url.searchParams.get('b') || Ast
       const url = new URL(window.location);
       url.searchParams.set('a', slugA);
       url.searchParams.set('b', slugB);
+      url.searchParams.set('tools', slugA + ',' + slugB);
       window.history.replaceState({}, '', url);
+
+      // Sync active comparison to localStorage
+      try {
+        const compareItems = [
+          toolA ? { slug: toolA.slug, name: toolA.name, websiteUrl: toolA.websiteUrl } : null,
+          toolB ? { slug: toolB.slug, name: toolB.name, websiteUrl: toolB.websiteUrl } : null
+        ].filter(Boolean);
+        localStorage.setItem('aio_compare_tools', JSON.stringify(compareItems));
+        window.dispatchEvent(new CustomEvent('aio:compare-update', { detail: { list: compareItems } }));
+      } catch (e) {}
+    }
+
+    // Hydrate from localStorage if no query params present
+    const urlParams = new URLSearchParams(window.location.search);
+    if (!urlParams.get('tools') && !urlParams.get('a') && !urlParams.get('b')) {
+      try {
+        const savedList = JSON.parse(localStorage.getItem('aio_compare_tools') || '[]');
+        if (savedList.length >= 2) {
+          if (selectA && tools.some(t => t.slug === savedList[0].slug)) {
+            selectA.value = savedList[0].slug;
+          }
+          if (selectB && tools.some(t => t.slug === savedList[1].slug)) {
+            selectB.value = savedList[1].slug;
+          }
+        }
+      } catch (e) {}
     }
 
     selectA?.addEventListener('change', updateComparison);

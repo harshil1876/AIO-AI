@@ -317,40 +317,29 @@ const categories = await getAllCategories();
     const lockAdminBtn = document.getElementById('lockAdminBtn');
     const roleBadge = document.getElementById('adminRoleBadge');
 
-    // Check Admin Authentication (Strictly tied to authorized admin email)
-    function checkAdminAuth() {
+    // Cryptographically verified Admin Authentication via Supabase Auth Server (No localStorage spoofing)
+    async function checkAdminAuth() {
       const ADMIN_EMAILS = ['harshilpival@gmail.com', 'admin@aio-ai.pages.dev'];
+      let isAdminUser = false;
       let userEmail = '';
 
-      const localUserStr = localStorage.getItem('aio_user');
-      if (localUserStr) {
-        try {
-          const user = JSON.parse(localUserStr);
-          userEmail = user.email || '';
-        } catch(e){}
-      }
-
-      if (!userEmail) {
-        for (let i = 0; i < localStorage.length; i++) {
-          const k = localStorage.key(i);
-          if (k && (k === 'supabase.auth.token' || (k.startsWith('sb-') && k.endsWith('-auth-token')))) {
-            try {
-              const parsed = JSON.parse(localStorage.getItem(k) || '{}');
-              const sessionUser = parsed.user || (parsed.currentSession && parsed.currentSession.user);
-              if (sessionUser?.email) userEmail = sessionUser.email;
-            } catch(e){}
-            break;
-          }
+      try {
+        if (roleBadge) roleBadge.textContent = 'Verifying Session with Auth Server...';
+        const { data, error } = await supabase.auth.getUser();
+        const user = data?.user;
+        if (!error && user && user.email) {
+          userEmail = user.email.toLowerCase().trim();
+          isAdminUser = ADMIN_EMAILS.includes(userEmail);
         }
+      } catch (err) {
+        console.warn('Admin cryptographic verification notice:', err);
       }
-
-      const isAdminUser = Boolean(userEmail && ADMIN_EMAILS.includes(userEmail.toLowerCase().trim()));
 
       if (isAdminUser) {
         gateScreen?.classList.add('hidden');
         mainContent?.classList.remove('hidden');
         lockAdminBtn?.classList.remove('hidden');
-        if (roleBadge) roleBadge.textContent = `Admin: ${userEmail} (Verified)`;
+        if (roleBadge) roleBadge.textContent = `Admin: ${userEmail} (Cryptographically Verified)`;
         loadModerationQueue();
       } else {
         gateScreen?.classList.remove('hidden');
@@ -362,8 +351,10 @@ const categories = await getAllCategories();
 
     checkAdminAuth();
 
-    lockAdminBtn?.addEventListener('click', () => {
-      window.location.href = '/dashboard';
+    lockAdminBtn?.addEventListener('click', async () => {
+      try { await supabase.auth.signOut(); } catch(e) {}
+      localStorage.removeItem('aio_user');
+      window.location.href = '/login?redirect=/admin';
     });
 
     // Tab Switching

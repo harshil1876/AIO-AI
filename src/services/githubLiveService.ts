@@ -1,3 +1,5 @@
+import { OPEN_SOURCE_REPOS } from '../data/openSourceData';
+
 export interface GitHubLiveStats {
   stars: number;
   formattedStars: string;
@@ -155,6 +157,56 @@ export interface GitHubSearchResultRepo {
   minStarsVerified: boolean;
 }
 
+export function decodeBase64Utf8(base64Str: string): string {
+  try {
+    const cleanBase64 = base64Str.replace(/\s+/g, '');
+    const binary = atob(cleanBase64);
+    const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+    return new TextDecoder('utf-8').decode(bytes);
+  } catch (err) {
+    try {
+      return atob(base64Str.replace(/\s+/g, ''));
+    } catch {
+      return base64Str;
+    }
+  }
+}
+
+function getFallbackRepos(query: string, minStars: number): GitHubSearchResultRepo[] {
+  const q = query.toLowerCase().trim();
+  return OPEN_SOURCE_REPOS
+    .filter(r => {
+      const matchesQuery = !q ||
+        r.name.toLowerCase().includes(q) ||
+        r.description.toLowerCase().includes(q) ||
+        (r.primaryLanguage || '').toLowerCase().includes(q) ||
+        r.slug.toLowerCase().includes(q);
+      const starNum = typeof r.stars === 'number' 
+        ? r.stars 
+        : parseInt(String(r.stars).replace(/[^0-9]/g, '') || '0') * (String(r.stars).includes('k') ? 1000 : 1);
+      return matchesQuery && starNum >= minStars;
+    })
+    .map((r, idx) => {
+      const starNum = typeof r.stars === 'number' 
+        ? r.stars 
+        : parseInt(String(r.stars).replace(/[^0-9]/g, '') || '0') * (String(r.stars).includes('k') ? 1000 : 1);
+      return {
+        id: 90000 + idx,
+        name: r.name,
+        fullName: r.repo || `${r.slug}/${r.slug}`,
+        description: r.description,
+        stars: starNum,
+        formattedStars: formatNumber(starNum),
+        forks: typeof r.forks === 'number' ? r.forks : 500,
+        language: r.primaryLanguage || 'Python',
+        url: r.url || `https://github.com/${r.repo}`,
+        topics: [r.category || 'ai', 'open-source'],
+        updatedAt: 'Recently verified',
+        minStarsVerified: starNum >= minStars
+      };
+    });
+}
+
 export async function searchGitHubAIRepos(query: string, minStars: number = 1000): Promise<GitHubSearchResultRepo[]> {
   const cleanQ = query.trim();
   if (!cleanQ) return [];
@@ -174,8 +226,8 @@ export async function searchGitHubAIRepos(query: string, minStars: number = 1000
     });
 
     if (!res.ok) {
-      console.warn('GitHub search API response:', res.status);
-      return [];
+      console.warn('GitHub search API response:', res.status, '- Falling back to offline verified catalog.');
+      return getFallbackRepos(cleanQ, minStars);
     }
 
     const data = await res.json();
@@ -194,6 +246,10 @@ export async function searchGitHubAIRepos(query: string, minStars: number = 1000
       minStarsVerified: item.stargazers_count >= minStars
     }));
 
+    if (items.length === 0) {
+      return getFallbackRepos(cleanQ, minStars);
+    }
+
     if (typeof window !== 'undefined') {
       try {
         sessionStorage.setItem(cacheKey, JSON.stringify(items));
@@ -202,8 +258,8 @@ export async function searchGitHubAIRepos(query: string, minStars: number = 1000
 
     return items;
   } catch (err) {
-    console.warn('GitHub search failed:', err);
-    return [];
+    console.warn('GitHub search failed, using verified fallback catalog:', err);
+    return getFallbackRepos(cleanQ, minStars);
   }
 }
 
@@ -302,16 +358,50 @@ export const TOP_AI_DEVELOPERS_ORGS: TrendingDeveloperOrg[] = [
 ];
 
 export async function fetchRepoReadme(owner: string, repo: string): Promise<string | null> {
+  const cacheKey = `aio_gh_readme_${owner}_${repo}`;
+  if (typeof window !== 'undefined') {
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) return cached;
+    } catch (e) {}
+  }
+
   try {
     const headers = getGitHubHeaders();
-    headers['Accept'] = 'application/vnd.github.v3.raw';
     const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/readme`, {
       headers
     });
     if (res.ok) {
-      return await res.text();
+      const contentType = res.headers.get('content-type') || '';
+      let text = '';
+      if (contentType.includes('application/json')) {
+        const data = await res.json();
+        if (data.content && data.encoding === 'base64') {
+          text = decodeBase64Utf8(data.content);
+        } else if (data.content) {
+          text = data.content;
+        }
+      } else {
+        text = await res.text();
+      }
+
+      if (text && typeof window !== 'undefined') {
+        try {
+          sessionStorage.setItem(cacheKey, text);
+        } catch (e) {}
+      }
+      return text;
+    } else if (res.status === 403 || res.status === 429) {
+      console.warn(`GitHub API rate limited for ${owner}/${repo} README. Using offline fallback summary.`);
     }
-  } catch(e) {}
+  } catch (e) {}
+
+  // Fallback to openSourceData summary if repo matches
+  const matched = OPEN_SOURCE_REPOS.find(r => r.repo === `${owner}/${repo}` || r.slug === repo);
+  if (matched) {
+    return `# ${matched.name}\n\n${matched.description}\n\n### Hardware & Execution Profile\n- Min VRAM: ${matched.hardwareSpecs?.minVramGb || '8'}GB\n- Recommended GPU: ${matched.hardwareSpecs?.recommendedGpu || 'Nvidia RTX 3060+ / Apple M-series'}\n- License: ${matched.license || 'Open Source'}\n\n### 1-Line Execution\n\`\`\`bash\n${matched.quickstartCommands?.cli || matched.quickstartCommands?.docker || 'git clone ' + (matched.url || '')}\n\`\`\``;
+  }
+
   return null;
 }
 

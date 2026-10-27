@@ -68,6 +68,17 @@ const TOP_25_TASKS = [
 
     <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 flex-1 space-y-10">
       
+      <!-- Active Free Mode Banner -->
+      <div id="activeFreeModeBanner" class="hidden items-center justify-between bg-emerald-50 border border-emerald-200 text-emerald-900 px-4 py-2.5 rounded-xl text-xs font-medium animate-in fade-in duration-150">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+          <span>⚡ <strong class="font-bold">Free &amp; Open-Source Mode Active</strong> — Prioritizing 100% Free Local Stack solutions and $0 self-hostable blueprints</span>
+        </div>
+        <button type="button" id="dismissFinderFreeModeBtn" class="text-xs font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer ml-3 shrink-0">
+          Show All Tiers &times;
+        </button>
+      </div>
+
       <!-- Interactive Finder Form -->
       <form id="finderForm" class="bg-white border border-[#E2E8F0] focus-within:border-[#2563EB] focus-within:ring-4 focus-within:ring-[#2563EB]/10 rounded-2xl p-6 md:p-8 shadow-xs hover:shadow-md transition-all">
         <label for="taskPrompt" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 mb-2">
@@ -499,6 +510,36 @@ const TOP_25_TASKS = [
 
       resultsSection.classList.remove('hidden');
       resultsSection.classList.add('flex');
+    }
+
+    // Free Mode Hydration
+    const banner = document.getElementById('activeFreeModeBanner');
+    const dismissBtn = document.getElementById('dismissFinderFreeModeBtn');
+
+    function updateFinderFreeMode(enabled: boolean) {
+      if (!banner) return;
+      if (enabled) {
+        banner.classList.remove('hidden');
+        banner.classList.add('flex');
+      } else {
+        banner.classList.add('hidden');
+        banner.classList.remove('flex');
+      }
+    }
+
+    const isFree = localStorage.getItem('aio_free_mode') === 'true';
+    updateFinderFreeMode(isFree);
+
+    window.addEventListener('aio:freemode', ((e: CustomEvent) => {
+      updateFinderFreeMode(Boolean(e.detail && e.detail.enabled));
+    }) as EventListener);
+
+    if (dismissBtn) {
+      dismissBtn.addEventListener('click', () => {
+        localStorage.setItem('aio_free_mode', 'false');
+        window.dispatchEvent(new CustomEvent('aio:freemode', { detail: { enabled: false } }));
+        updateFinderFreeMode(false);
+      });
     }
   });
 </script>

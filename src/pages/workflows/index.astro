@@ -59,6 +59,18 @@ const categories = ['All', 'Content Creation', 'Engineering & DevOps', 'Customer
 
     <!-- Workflows Grid -->
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 flex-1">
+      
+      <!-- Active Free Mode Banner -->
+      <div id="activeFreeModeBanner" class="hidden items-center justify-between bg-emerald-50 border border-emerald-200 text-emerald-900 px-4 py-2.5 rounded-xl text-xs font-medium mb-6 animate-in fade-in duration-150">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+          <span>⚡ <strong class="font-bold">Free &amp; Open-Source Mode Active</strong> — Showing production blueprints executable with 100% free local models &amp; tools ($0/mo)</span>
+        </div>
+        <button type="button" id="dismissWorkflowsFreeModeBtn" class="text-xs font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer ml-3 shrink-0">
+          Show All Blueprints &times;
+        </button>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {WORKFLOWS_DATA.map((workflow) => {
           const timeSaved = workflow.difficulty === 'Beginner' ? 'Saves ~4 hrs/wk' : workflow.difficulty === 'Advanced' ? 'Saves ~12 hrs/wk' : 'Saves ~6 hrs/wk';
@@ -145,6 +157,39 @@ const categories = ['All', 'Content Creation', 'Engineering & DevOps', 'Customer
       </div>
     </div>
   </main>
+
+  <script is:inline>
+    (function() {
+      var banner = document.getElementById('activeFreeModeBanner');
+      var dismissBtn = document.getElementById('dismissWorkflowsFreeModeBtn');
+
+      function updateWorkflowFreeMode(enabled) {
+        if (!banner) return;
+        if (enabled) {
+          banner.classList.remove('hidden');
+          banner.classList.add('flex');
+        } else {
+          banner.classList.add('hidden');
+          banner.classList.remove('flex');
+        }
+      }
+
+      var isFree = localStorage.getItem('aio_free_mode') === 'true';
+      updateWorkflowFreeMode(isFree);
+
+      window.addEventListener('aio:freemode', function(e) {
+        updateWorkflowFreeMode(Boolean(e.detail && e.detail.enabled));
+      });
+
+      if (dismissBtn) {
+        dismissBtn.addEventListener('click', function() {
+          localStorage.setItem('aio_free_mode', 'false');
+          window.dispatchEvent(new CustomEvent('aio:freemode', { detail: { enabled: false } }));
+          updateWorkflowFreeMode(false);
+        });
+      }
+    })();
+  </script>
 
   <Footer />
 </Layout>

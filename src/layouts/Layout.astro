@@ -85,19 +85,11 @@ const defaultJsonLd = jsonLd || {
           return;
         }
 
-        // 2. Normal Route Guard for Unauthenticated Public Visitors
-        var isPublic = path === '' || 
-                       path === '/' || 
-                       path === '/login' || 
-                       path === '/signup' || 
-                       path === '/pricing' || 
-                       path === '/docs' || 
-                       path.indexOf('/docs/') === 0 || 
-                       path === '/privacy' || 
-                       path === '/terms' || 
-                       path === '/guidelines' || 
-                       path === '/disclosure' || 
-                       path === '/404';
+        // 2. Explicit Protected Route Guard (Replaces fragile whitelist)
+        var PROTECTED_PATHS = ['/dashboard', '/profile', '/admin'];
+        var isProtectedRoute = PROTECTED_PATHS.some(function(p) {
+          return path === p || path.indexOf(p + '/') === 0;
+        });
 
         function checkAuth() {
           if (localStorage.getItem('aio_user')) return true;
@@ -111,8 +103,8 @@ const defaultJsonLd = jsonLd || {
           return false;
         }
 
-        // Redirect unauthenticated visitors attempting to access internal features
-        if (!isPublic && !checkAuth()) {
+        // Only explicitly protected workspace routes require login redirection
+        if (isProtectedRoute && !checkAuth()) {
           var target = window.location.pathname + window.location.search;
           window.location.replace('/login?redirect=' + encodeURIComponent(target));
         }

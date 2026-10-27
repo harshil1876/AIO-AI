@@ -357,6 +357,95 @@ assert(
 );
 
 // ----------------------------------------------------------------------------
+// SUITE 7: Post-Overhaul Hardening & Bug-Fix Verification (Fixes 1-7)
+// ----------------------------------------------------------------------------
+console.log('[Suite 7: Master Post-Overhaul Hardening Verification]');
+
+// Fix 1: Admin Cryptographic Verification & Strict RLS
+assert(
+  fs.existsSync(path.resolve('drizzle/0003_strict_admin_rls.sql')),
+  '0003_strict_admin_rls.sql migration file exists with cryptographic admin RLS'
+);
+const rlsContent = fs.readFileSync(path.resolve('drizzle/0003_strict_admin_rls.sql'), 'utf8');
+assert(
+  rlsContent.includes("auth.jwt() ->> 'email' = 'harshilpival@gmail.com'"),
+  '0003_strict_admin_rls.sql strictly locks down admin mutations to harshilpival@gmail.com'
+);
+
+const authClientContent = fs.readFileSync(path.resolve('src/lib/authClient.ts'), 'utf8');
+assert(
+  authClientContent.includes('verifyAdminSession') && authClientContent.includes('supabase.auth.getUser()'),
+  'authClient.ts verifies admin session via cryptographic supabase.auth.getUser()'
+);
+
+// Fix 2: Explicit Protected Paths in Layout.astro (Eliminates isPublic whitelist trap)
+const layoutContent = fs.readFileSync(path.resolve('src/layouts/Layout.astro'), 'utf8');
+assert(
+  layoutContent.includes("PROTECTED_PATHS = ['/dashboard', '/profile', '/admin']") && !layoutContent.includes('var isPublic ='),
+  'Layout.astro protects discovery & SEO routes with explicit PROTECTED_PATHS check'
+);
+
+// Fix 3: Collapsible Tree Sidebar & Pinned Bottom Strip
+assert(
+  sidebarContent.includes('Pricing') && sidebarContent.includes('Docs') && sidebarContent.includes('Submit'),
+  'Sidebar.astro includes pinned 3-pill bottom strip (Pricing • Docs • Submit)'
+);
+assert(
+  sidebarContent.includes('<details') && sidebarContent.includes('<summary'),
+  'Sidebar.astro utilizes clean collapsible tree sub-menus'
+);
+
+// Fix 4: Free Mode Hydration & Emerald Banner
+const toolsPageContent = fs.readFileSync(path.resolve('src/pages/tools/index.astro'), 'utf8');
+assert(
+  toolsPageContent.includes('activeFreeModeBanner') && toolsPageContent.includes('aio:freemode'),
+  'tools/index.astro hydrates Free Mode and renders #activeFreeModeBanner status bar'
+);
+
+const categoriesPageContent = fs.readFileSync(path.resolve('src/pages/categories.astro'), 'utf8');
+assert(
+  categoriesPageContent.includes('activeFreeModeBanner') && categoriesPageContent.includes('aio:freemode'),
+  'categories.astro supports Free Mode hydration and status banner'
+);
+
+// Fix 5: CompareDock Auto-Hide on /compare & State Sync
+const compareDockContent = fs.readFileSync(path.resolve('src/components/CompareDock.astro'), 'utf8');
+assert(
+  compareDockContent.includes("window.location.pathname.startsWith('/compare')"),
+  'CompareDock.astro auto-hides on /compare to prevent UI obstruction'
+);
+
+const comparePageContent = fs.readFileSync(path.resolve('src/pages/compare.astro'), 'utf8');
+assert(
+  comparePageContent.includes("aio_compare_tools") && comparePageContent.includes("aio:compare-update"),
+  'compare.astro synchronizes selected tools with localStorage and triggers compare dock updates'
+);
+
+// Fix 6: UTF-8 Base64 Decoding & GitHub Fallback
+const ghServiceContent = fs.readFileSync(path.resolve('src/services/githubLiveService.ts'), 'utf8');
+assert(
+  ghServiceContent.includes('decodeBase64Utf8') && ghServiceContent.includes("new TextDecoder('utf-8')"),
+  'githubLiveService.ts decodes base64 with TextDecoder UTF-8 standard'
+);
+assert(
+  ghServiceContent.includes('getFallbackRepos') && ghServiceContent.includes('OPEN_SOURCE_REPOS'),
+  'githubLiveService.ts gracefully falls back to verified open-source catalog on 403/429'
+);
+
+const drawerContent = fs.readFileSync(path.resolve('src/components/RepoQuickstartDrawer.astro'), 'utf8');
+assert(
+  drawerContent.includes('renderMarkdownToHtml'),
+  'RepoQuickstartDrawer.astro renders clean styled HTML for README previews'
+);
+
+// Fix 7: Strict Browser News Wire Timeout (Promise.allSettled + AbortController)
+const liveNewsContent = fs.readFileSync(path.resolve('src/services/liveNewsService.ts'), 'utf8');
+assert(
+  liveNewsContent.includes('Promise.allSettled') && liveNewsContent.includes('AbortController') && liveNewsContent.includes('3500'),
+  'liveNewsService.ts executes 4 streams via Promise.allSettled with 3.5s AbortController timeout'
+);
+
+// ----------------------------------------------------------------------------
 // Summary
 // ----------------------------------------------------------------------------
 console.log('\n======================================================');

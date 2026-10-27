@@ -112,6 +112,19 @@ const DOMAINS = [
       </div>
     </section>
 
+    <!-- Active Free Mode Banner -->
+    <div id="activeFreeModeBanner" class="hidden max-w-7xl mx-auto w-full px-4 sm:px-6 pt-6">
+      <div class="items-center justify-between bg-emerald-50 border border-emerald-200 text-emerald-900 px-4 py-2.5 rounded-xl text-xs font-medium w-full flex animate-in fade-in duration-150">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+          <span>⚡ <strong class="font-bold">Free &amp; Open-Source Mode Active</strong> — Highlighting zero-cost and self-hostable category tools</span>
+        </div>
+        <button type="button" id="dismissCategoryFreeModeBtn" class="text-xs font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer ml-3 shrink-0">
+          Show All Tools &times;
+        </button>
+      </div>
+    </div>
+
     <!-- Domains and Category Bento Groups -->
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 flex flex-col gap-10">
       {DOMAINS.map(domain => {
@@ -277,6 +290,37 @@ const DOMAINS = [
 
     </div>
   </main>
+
+  <script is:inline>
+    (function() {
+      var banner = document.getElementById('activeFreeModeBanner');
+      var dismissBtn = document.getElementById('dismissCategoryFreeModeBtn');
+
+      function updateCategoryFreeMode(enabled) {
+        if (!banner) return;
+        if (enabled) {
+          banner.classList.remove('hidden');
+        } else {
+          banner.classList.add('hidden');
+        }
+      }
+
+      var isFree = localStorage.getItem('aio_free_mode') === 'true';
+      updateCategoryFreeMode(isFree);
+
+      window.addEventListener('aio:freemode', function(e) {
+        updateCategoryFreeMode(Boolean(e.detail && e.detail.enabled));
+      });
+
+      if (dismissBtn) {
+        dismissBtn.addEventListener('click', function() {
+          localStorage.setItem('aio_free_mode', 'false');
+          window.dispatchEvent(new CustomEvent('aio:freemode', { detail: { enabled: false } }));
+          updateCategoryFreeMode(false);
+        });
+      }
+    })();
+  </script>
 
   <Footer />
 </Layout>

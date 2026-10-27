@@ -95,7 +95,8 @@
 
       var list = getCompareList();
 
-      if (list.length === 0) {
+      // Auto-hide dock when directly on /compare page or when dock is empty
+      if (window.location.pathname.startsWith('/compare') || list.length === 0) {
         dock.classList.add('hidden');
         return;
       }
@@ -124,9 +125,10 @@
         );
       }).join('');
 
-      // Update any [+ Compare] buttons on page
-      document.querySelectorAll('.tool-compare-btn').forEach(function(btn) {
-        var slug = btn.getAttribute('data-tool-slug');
+      // Update any [+ Compare] buttons on page matching .tool-compare-btn or [data-compare-slug]
+      document.querySelectorAll('.tool-compare-btn, [data-compare-slug]').forEach(function(btn) {
+        var slug = btn.getAttribute('data-compare-slug') || btn.getAttribute('data-tool-slug');
+        if (!slug) return;
         if (list.some(function(item) { return item.slug === slug; })) {
           btn.textContent = '✓ Compared';
           btn.classList.add('bg-blue-600', 'text-white', 'border-blue-600');

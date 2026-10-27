@@ -129,7 +129,7 @@
       </div>
       <div 
         id="drawerReadmeContent" 
-        class="p-4 rounded-lg bg-slate-50 border border-[#E2E8F0] text-xs font-mono text-slate-700 max-h-60 overflow-y-auto whitespace-pre-wrap leading-relaxed"
+        class="p-4 rounded-lg bg-slate-50 border border-[#E2E8F0] text-xs text-slate-700 max-h-72 overflow-y-auto leading-relaxed"
       >
         Loading live documentation from GitHub...
       </div>
@@ -185,6 +185,38 @@
     const drawerExternalGhLink = document.getElementById('drawerExternalGhLink') as HTMLAnchorElement | null;
     const drawerFullGuideLink = document.getElementById('drawerFullGuideLink') as HTMLAnchorElement | null;
 
+    function renderMarkdownToHtml(markdown: string): string {
+      // Escape HTML entities to prevent XSS
+      let html = markdown
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      // Code blocks ```lang\ncode\n```
+      html = html.replace(/```([a-z0-9_\-]*)?\n([\s\S]*?)```/g, (_match, _lang, code) => {
+        return `<pre class="my-2 p-3 rounded-lg bg-[#09090B] text-emerald-400 font-mono text-[11px] overflow-x-auto"><code>${code.trim()}</code></pre>`;
+      });
+
+      // Inline code `code`
+      html = html.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-slate-200 text-slate-900 font-mono text-[11px] font-bold">$1</code>');
+
+      // Headings
+      html = html.replace(/^### (.*$)/gim, '<h4 class="font-bold text-[#09090B] text-xs mt-3 mb-1">$1</h4>');
+      html = html.replace(/^## (.*$)/gim, '<h3 class="font-extrabold text-[#09090B] text-sm mt-3 mb-1">$1</h3>');
+      html = html.replace(/^# (.*$)/gim, '<h2 class="font-black text-[#09090B] text-base mt-3 mb-1.5">$1</h2>');
+
+      // Bold **text**
+      html = html.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-[#09090B]">$1</strong>');
+
+      // Bullet points
+      html = html.replace(/^\- (.*$)/gim, '<li class="ml-4 list-disc text-slate-700 my-0.5">$1</li>');
+
+      // Paragraph breaks
+      html = html.replace(/\n\n+/g, '<br/><br/>');
+
+      return html;
+    }
+
     function openDrawer(repoData: any) {
       if (!panel || !backdrop) return;
 
@@ -224,7 +256,8 @@
           fetchRepoReadme(owner, name).then((readme) => {
             if (drawerReadmeContent) {
               if (readme) {
-                drawerReadmeContent.textContent = readme.slice(0, 1500) + (readme.length > 1500 ? '\n\n... [Truncated. Click "View on GitHub" for full README]' : '');
+                const truncated = readme.slice(0, 1800) + (readme.length > 1800 ? '\n\n... [Truncated. Click "View on GitHub" for full README]' : '');
+                drawerReadmeContent.innerHTML = renderMarkdownToHtml(truncated);
                 if (drawerReadmeStatus) drawerReadmeStatus.textContent = 'Live Markdown';
               } else {
                 drawerReadmeContent.textContent = 'README not directly retrievable via unauthenticated API. View full docs on GitHub.';
