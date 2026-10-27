@@ -1,0 +1,22 @@
+---
+// Canonical alias route for /trending
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="refresh" content="0;url=/trending" />
+  <link rel="canonical" href="https://aio-ai.dev/trending" />
+  <title>Redirecting to GitHub Trending | AIO AI</title>
+</head>
+<body class="bg-slate-900 text-white flex items-center justify-center min-h-screen font-sans">
+  <div class="text-center space-y-3">
+    <div class="w-8 h-8 rounded-xl bg-indigo-600 mx-auto flex items-center justify-center font-black text-xs text-white shadow-md">AI</div>
+    <p class="text-sm text-slate-300">Redirecting to GitHub Trending...</p>
+    <a href="/trending" class="text-xs text-blue-400 underline font-mono">Click here if not redirected</a>
+  </div>
+  <script is:inline>
+    window.location.replace('/trending');
+  </script>
+</body>
+</html>

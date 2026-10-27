@@ -269,6 +269,8 @@ const criticalRoutes = [
   'src/pages/terms.astro',
   'src/pages/guidelines.astro',
   'src/pages/disclosure.astro',
+  'src/pages/trending.astro',
+  'src/pages/github-trending.astro',
   'src/pages/404.astro',
 ];
 
@@ -319,6 +321,11 @@ assert(
 assert(
   sidebarContent.includes('Pricing') && sidebarContent.includes('Documentation'),
   'Sidebar.astro includes pinned quick strip (Pricing • Documentation • Launch / Submit)'
+);
+
+assert(
+  sidebarContent.includes('/trending') && sidebarContent.includes('GitHub Trending'),
+  'Sidebar.astro includes dedicated GitHub Trending navigation link'
 );
 
 // 3. Admin security (zero client-side demo bypass buttons)

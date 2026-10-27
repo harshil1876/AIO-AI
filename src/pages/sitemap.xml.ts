@@ -19,6 +19,7 @@ export const GET: APIRoute = () => {
     '/creators',
     '/open-source',
     '/open-source/trending',
+    '/trending',
     '/token-calculator',
     '/token-calculator/models',
     '/token-calculator/compare',
