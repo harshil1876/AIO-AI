@@ -92,7 +92,7 @@ function isItemActive(href: string, current: string): boolean {
 <!-- Desktop Hover-Expanding & Pinnable Rail (68px -> 252px) -->
 <aside 
   id="desktopSidebar" 
-  class="group/sidebar hidden lg:flex flex-col w-[68px] shrink-0 bg-gradient-to-b from-slate-900 via-[#111827] to-[#1E1B4B] text-slate-100 border-r border-indigo-500/20 min-h-screen sticky top-0 h-screen select-none z-30 transition-all duration-200 ease-out overflow-x-hidden shadow-xl"
+  class="group/sidebar hidden lg:flex flex-col fixed top-0 left-0 h-screen z-50 w-[68px] shrink-0 bg-gradient-to-b from-slate-900 via-[#111827] to-[#1E1B4B] text-slate-100 border-r border-indigo-500/20 select-none transition-all duration-200 ease-out overflow-x-hidden shadow-xl"
   data-pinned="false"
 >
   <!-- Brand Header & Pin Lock Toggle -->
@@ -408,9 +408,26 @@ function isItemActive(href: string, current: string): boolean {
   </div>
 </div>
 
+<style>
+  #desktopSidebar:not(.is-expanded) .sidebar-label {
+    opacity: 0 !important;
+    pointer-events: none;
+    max-width: 0;
+  }
+  #desktopSidebar.is-expanded .sidebar-label {
+    opacity: 1 !important;
+    pointer-events: auto;
+    max-width: 200px;
+  }
+  #desktopSidebar {
+    will-change: width, box-shadow;
+  }
+</style>
+
 <script is:inline>
   (function() {
     function getDesktopSidebar() { return document.getElementById('desktopSidebar'); }
+    function getSidebarSpacer() { return document.getElementById('sidebarSpacer'); }
     function getMobileDrawer() { return document.getElementById('mobileSidebarDrawer'); }
     function getPinBtn() { return document.getElementById('pinSidebarToggleBtn'); }
     function getPinIcon() { return document.getElementById('pinIcon'); }
@@ -419,14 +436,19 @@ function isItemActive(href: string, current: string): boolean {
 
     function applyPinnedState(pinned) {
       var sidebar = getDesktopSidebar();
+      var spacer = getSidebarSpacer();
       var pinBtn = getPinBtn();
       var pinIcon = getPinIcon();
       if (!sidebar) return;
 
       if (pinned) {
         sidebar.classList.remove('w-[68px]');
-        sidebar.classList.add('w-[252px]', 'sidebar-pinned');
+        sidebar.classList.add('w-[252px]', 'sidebar-pinned', 'is-expanded', 'shadow-2xl');
         sidebar.setAttribute('data-pinned', 'true');
+        if (spacer) {
+          spacer.classList.remove('w-[68px]');
+          spacer.classList.add('w-[252px]');
+        }
         if (pinBtn) {
           pinBtn.classList.add('text-indigo-400');
           pinBtn.setAttribute('title', 'Unpin sidebar');
@@ -434,13 +456,14 @@ function isItemActive(href: string, current: string): boolean {
         if (pinIcon) {
           pinIcon.classList.add('rotate-45');
         }
-        // Reveal labels when pinned
-        var labels = sidebar.querySelectorAll('.sidebar-label');
-        labels.forEach(function(el) { el.classList.remove('opacity-0'); });
       } else {
-        sidebar.classList.remove('w-[252px]', 'sidebar-pinned');
+        sidebar.classList.remove('w-[252px]', 'sidebar-pinned', 'is-expanded', 'shadow-2xl');
         sidebar.classList.add('w-[68px]');
         sidebar.setAttribute('data-pinned', 'false');
+        if (spacer) {
+          spacer.classList.remove('w-[252px]');
+          spacer.classList.add('w-[68px]');
+        }
         if (pinBtn) {
           pinBtn.classList.remove('text-indigo-400');
           pinBtn.setAttribute('title', 'Pin sidebar open');
@@ -448,9 +471,6 @@ function isItemActive(href: string, current: string): boolean {
         if (pinIcon) {
           pinIcon.classList.remove('rotate-45');
         }
-        // Hide labels when collapsed
-        var labels = sidebar.querySelectorAll('.sidebar-label');
-        labels.forEach(function(el) { el.classList.add('opacity-0'); });
       }
     }
 
@@ -464,24 +484,22 @@ function isItemActive(href: string, current: string): boolean {
       });
     }
 
-    // Desktop hover expansion
+    // Desktop hover expansion: FLOATING OVERLAY (Zero layout shift on <main>)
     var sidebar = getDesktopSidebar();
     if (sidebar) {
       sidebar.addEventListener('mouseenter', function() {
         if (!isPinned && window.innerWidth >= 1024) {
           sidebar.classList.remove('w-[68px]');
-          sidebar.classList.add('w-[252px]');
-          var labels = sidebar.querySelectorAll('.sidebar-label');
-          labels.forEach(function(el) { el.classList.remove('opacity-0'); });
+          sidebar.classList.add('w-[252px]', 'is-expanded', 'shadow-2xl', 'shadow-slate-950/60');
+          // #sidebarSpacer stays w-[68px] so main content NEVER reflows!
         }
       });
 
       sidebar.addEventListener('mouseleave', function() {
         if (!isPinned && window.innerWidth >= 1024) {
-          sidebar.classList.remove('w-[252px]');
+          sidebar.classList.remove('w-[252px]', 'is-expanded', 'shadow-2xl', 'shadow-slate-950/60');
           sidebar.classList.add('w-[68px]');
-          var labels = sidebar.querySelectorAll('.sidebar-label');
-          labels.forEach(function(el) { el.classList.add('opacity-0'); });
+          // #sidebarSpacer stays w-[68px]
         }
       });
     }

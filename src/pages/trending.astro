@@ -116,6 +116,17 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
     <!-- Main Content Container -->
     <div class="space-y-6">
       
+      <!-- Live Sync Telemetry Status Strip -->
+      <div class="flex items-center justify-between text-xs font-mono text-slate-500 pb-1">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="liveSyncStatus">Live GitHub API Connected • Real-time Telemetry</span>
+        </div>
+        <button type="button" id="refreshTrendingBtn" class="text-blue-600 font-bold hover:underline cursor-pointer flex items-center gap-1">
+          <span>↻ Refresh Live</span>
+        </button>
+      </div>
+
       <!-- VIEW 1: REPOSITORIES LEADERBOARD -->
       <div class="space-y-3.5" id="reposSection">
         {trendingRepos.map((repo, idx) => {
@@ -250,7 +261,11 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
 </Layout>
 
 <script>
-  import { fetchLiveRepoStats } from '../services/githubLiveService';
+  import { 
+    fetchLiveGitHubTrendingRepos, 
+    fetchLiveGitHubTrendingDevelopers, 
+    fetchLiveRepoStats 
+  } from '../services/githubLiveService';
 
   document.addEventListener('DOMContentLoaded', () => {
     const tabRepos = document.getElementById('tabRepos');
@@ -258,7 +273,12 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
     const reposSection = document.getElementById('reposSection');
     const devsSection = document.getElementById('devsSection');
     const languageFilter = document.getElementById('languageFilter') as HTMLSelectElement | null;
-    const cards = document.querySelectorAll<HTMLElement>('.trending-card');
+    const dateRangeFilter = document.getElementById('dateRangeFilter') as HTMLSelectElement | null;
+    const liveSyncStatus = document.getElementById('liveSyncStatus');
+    const refreshBtn = document.getElementById('refreshTrendingBtn');
+
+    let currentRange = dateRangeFilter?.value || 'weekly';
+    let currentLang = languageFilter?.value || 'all';
 
     // Quickstart Drawer click handler
     document.addEventListener('click', (e) => {
@@ -285,41 +305,137 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
       devsSection?.classList.add('hidden');
     });
 
-    tabDevs?.addEventListener('click', () => {
+    tabDevs?.addEventListener('click', async () => {
       tabDevs.className = 'view-mode-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white cursor-pointer shadow-xs transition-all';
       tabRepos!.className = 'view-mode-btn px-4 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 cursor-pointer transition-all';
       devsSection?.classList.remove('hidden');
       reposSection?.classList.add('hidden');
+      try {
+        await fetchLiveGitHubTrendingDevelopers();
+      } catch(e) {}
     });
 
-    // Language Filtering
-    languageFilter?.addEventListener('change', () => {
-      const selectedLang = languageFilter.value.toLowerCase();
-      cards.forEach(card => {
-        const cardLang = card.getAttribute('data-language') || '';
-        if (selectedLang === 'all' || cardLang.includes(selectedLang)) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    });
-
-    // Hydrate Live GitHub Stats
-    cards.forEach(async (card) => {
-      const owner = card.getAttribute('data-owner');
-      const repo = card.getAttribute('data-repo');
-      if (owner && repo) {
+    // Dynamic Live Telemetry Fetcher
+    async function refreshTrendingTelemetry(force = false) {
+      if (force && typeof window !== 'undefined') {
         try {
-          const stats = await fetchLiveRepoStats(owner, repo);
-          if (stats) {
-            const starEl = card.querySelector('.live-stars');
-            const forkEl = card.querySelector('.live-forks');
-            if (starEl && stats.formattedStars) starEl.textContent = `★ ${stats.formattedStars}`;
-            if (forkEl && stats.formattedForks) forkEl.textContent = `${stats.formattedForks} forks`;
-          }
-        } catch (e) {}
+          localStorage.removeItem(`aio_gh_trending_${currentRange}_${currentLang}`);
+          localStorage.removeItem(`aio_gh_trending_time_${currentRange}_${currentLang}`);
+        } catch(e) {}
       }
+
+      if (liveSyncStatus) {
+        liveSyncStatus.textContent = 'Querying Live GitHub Telemetry...';
+      }
+
+      try {
+        const res = await fetchLiveGitHubTrendingRepos(currentRange, currentLang);
+        if (liveSyncStatus) {
+          liveSyncStatus.textContent = res.isLive 
+            ? `Live GitHub API Connected • Synced: ${res.lastSynced}`
+            : `Verified Catalog Telemetry • Updated: ${res.lastSynced}`;
+        }
+
+        // Render dynamically if live items returned
+        if (res.items && res.items.length > 0 && reposSection) {
+          reposSection.innerHTML = res.items.map((repo, idx) => `
+            <article 
+              class="trending-card card-aurora p-5 sm:p-6 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
+              data-owner="${repo.owner}"
+              data-repo="${repo.name}"
+              data-language="${repo.language.toLowerCase()}"
+            >
+              <div class="flex items-start gap-4 min-w-0">
+                <span class="w-8 h-8 rounded-xl bg-slate-100 text-slate-900 font-mono font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 border border-slate-200">
+                  #${idx + 1}
+                </span>
+                <div class="space-y-1.5 min-w-0">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h2 class="text-base font-black text-slate-900 hover:text-blue-600 transition-colors">
+                      <a href="${repo.url}" target="_blank" rel="noopener noreferrer">${repo.name}</a>
+                    </h2>
+                    <span class="text-xs font-mono text-slate-400 font-medium">${repo.fullName}</span>
+                    <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                      ${repo.isLiveApi ? 'GitHub Live' : 'Verified Hub'}
+                    </span>
+                  </div>
+
+                  <p class="text-xs text-slate-600 line-clamp-2 max-w-3xl leading-relaxed">
+                    ${repo.description}
+                  </p>
+
+                  <div class="flex flex-wrap items-center gap-4 text-xs font-mono text-slate-500 pt-1">
+                    <div class="flex items-center gap-1.5 font-bold text-slate-800">
+                      <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                      <span>${repo.language}</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <span>★</span>
+                      <span>${repo.formattedStars}</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <span>⑂</span>
+                      <span>${repo.formattedForks} forks</span>
+                    </div>
+                    <div class="text-slate-400">
+                      Pushed ${repo.updatedAt}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex sm:flex-row md:flex-col items-end justify-between gap-3 shrink-0 border-t md:border-t-0 pt-3 md:pt-0 border-slate-100">
+                <div class="text-right">
+                  <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono text-xs font-bold">
+                    <span>🔥</span>
+                    <span>${repo.velocityStars}</span>
+                  </div>
+                  <div class="text-[10px] text-slate-400 font-mono mt-0.5">${currentRange === 'daily' ? 'past 24h' : currentRange === 'monthly' ? 'this month' : 'this week'}</div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button 
+                    type="button" 
+                    class="quickstart-trigger-btn bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl shadow-xs transition-colors cursor-pointer"
+                    data-repo-json='${JSON.stringify({ name: repo.name, repo: repo.fullName, stars: repo.formattedStars, url: repo.url, description: repo.description, hardwareSpecs: { minVramGb: 8, recommendedGpu: "RTX 3060+ / Apple M-series" }, quickstartCommands: { cli: `git clone ${repo.url}`, docker: `docker run -d ${repo.name}:latest` } })}'
+                  >
+                    Quickstart ⚡
+                  </button>
+                  <a 
+                    href="${repo.url}" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl shadow-xs transition-colors inline-flex items-center gap-1"
+                  >
+                    <span>Repo</span>
+                    <span>↗</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          `).join('');
+        }
+      } catch(err) {
+        console.error('Failed refreshing live trending telemetry:', err);
+      }
+    }
+
+    // Filter Change Listeners
+    languageFilter?.addEventListener('change', () => {
+      currentLang = languageFilter.value.toLowerCase();
+      refreshTrendingTelemetry();
     });
+
+    dateRangeFilter?.addEventListener('change', () => {
+      currentRange = dateRangeFilter.value;
+      refreshTrendingTelemetry();
+    });
+
+    refreshBtn?.addEventListener('click', () => {
+      refreshTrendingTelemetry(true);
+    });
+
+    // Initial Live Hydration
+    refreshTrendingTelemetry();
   });
 </script>

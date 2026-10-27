@@ -311,7 +311,7 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
                 <div class="flex justify-between items-center mb-1 text-[11px]">
                   <span class="font-bold text-slate-800">{cat.name} ({cat.count} tools)</span>
                   <div class="space-x-2 font-mono">
-                    <span class="text-blue-700 font-bold">${cat.avgPrice}/mo</span>
+                    <span class="cat-avg-price text-blue-700 font-bold" data-usd={cat.avgPrice}>${cat.avgPrice}/mo</span>
                     <span class="text-emerald-700 font-bold">{cat.avgScore}/100</span>
                   </div>
                 </div>
@@ -356,6 +356,7 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
           <button type="button" class="provider-filter px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer" data-provider="OpenAI">OpenAI</button>
           <button type="button" class="provider-filter px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer" data-provider="Google">Google</button>
           <button type="button" class="provider-filter px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer" data-provider="DeepSeek">DeepSeek</button>
+          <span id="scatterCountBadge" class="text-xs font-mono text-purple-600 font-bold ml-2">All {OFFICIAL_MODELS.length} Plotted</span>
         </div>
       </div>
 
@@ -689,6 +690,18 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
       }
     }
 
+    // Update Category Prices Currency
+    function updateCategoryCurrency(toInr) {
+      document.querySelectorAll('.cat-avg-price').forEach(function(el) {
+        var baseUsd = parseFloat(el.getAttribute('data-usd') || '15');
+        if (toInr) {
+          el.textContent = '₹' + Math.round(baseUsd * exchangeRate) + '/mo';
+        } else {
+          el.textContent = '$' + baseUsd + '/mo';
+        }
+      });
+    }
+
     // Currency Switcher
     var btnUSD = document.getElementById('currencyUSD');
     var btnINR = document.getElementById('currencyINR');
@@ -698,6 +711,7 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
       btnUSD.className = 'currency-toggle px-3 py-1.5 rounded-xl text-xs font-mono font-bold bg-blue-600 text-white transition-all cursor-pointer shadow-sm';
       btnINR.className = 'currency-toggle px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-slate-300 hover:text-white transition-all cursor-pointer';
       calculateSpend();
+      updateCategoryCurrency(false);
     });
 
     btnINR?.addEventListener('click', function() {
@@ -705,6 +719,7 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
       btnINR.className = 'currency-toggle px-3 py-1.5 rounded-xl text-xs font-mono font-bold bg-blue-600 text-white transition-all cursor-pointer shadow-sm';
       btnUSD.className = 'currency-toggle px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-slate-300 hover:text-white transition-all cursor-pointer';
       calculateSpend();
+      updateCategoryCurrency(true);
     });
 
     [seatsInput, inputTokInput, outputTokInput, swapMidjourney, swapZapier, swapVoice, swapCoding].forEach(function(el) {
@@ -714,9 +729,15 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
 
     calculateSpend();
 
-    // Chart 1 Velocity toggle simulation
+    // Chart 1 Dynamic Velocity Toggle & SVG Curve Recomputation
     var velocityButtons = document.querySelectorAll('.velocity-toggle');
     var xLabelStart = document.getElementById('xLabelStart');
+    var toolsAreaPath = document.getElementById('toolsAreaPath');
+    var reposAreaPath = document.getElementById('reposAreaPath');
+    var toolsLinePath = document.getElementById('toolsLinePath');
+    var reposLinePath = document.getElementById('reposLinePath');
+    var workflowsLinePath = document.getElementById('workflowsLinePath');
+
     velocityButtons.forEach(function(btn) {
       btn.addEventListener('click', function() {
         velocityButtons.forEach(function(b) {
@@ -724,17 +745,36 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
         });
         btn.className = 'velocity-toggle px-3 py-1 rounded-lg bg-white text-blue-600 shadow-xs cursor-pointer';
         var range = btn.getAttribute('data-range');
-        if (xLabelStart) {
-          if (range === '30d') xLabelStart.textContent = '30 Days Ago';
-          else if (range === '90d') xLabelStart.textContent = '90 Days Ago';
-          else xLabelStart.textContent = 'Apr 2025';
+        if (range === '30d') {
+          if (xLabelStart) xLabelStart.textContent = '30 Days Ago';
+          toolsAreaPath?.setAttribute('d', 'M 0,220 L 0,205 Q 200,185 400,130 T 800,20 L 800,220 Z');
+          toolsLinePath?.setAttribute('d', 'M 0,205 Q 200,185 400,130 T 800,20');
+          reposAreaPath?.setAttribute('d', 'M 0,220 L 0,215 Q 200,195 400,160 T 800,50 L 800,220 Z');
+          reposLinePath?.setAttribute('d', 'M 0,215 Q 200,195 400,160 T 800,50');
+          workflowsLinePath?.setAttribute('d', 'M 0,218 Q 200,210 400,180 T 800,85');
+        } else if (range === '90d') {
+          if (xLabelStart) xLabelStart.textContent = '90 Days Ago';
+          toolsAreaPath?.setAttribute('d', 'M 0,220 L 0,195 Q 200,170 400,120 T 800,30 L 800,220 Z');
+          toolsLinePath?.setAttribute('d', 'M 0,195 Q 200,170 400,120 T 800,30');
+          reposAreaPath?.setAttribute('d', 'M 0,220 L 0,210 Q 200,190 400,150 T 800,60 L 800,220 Z');
+          reposLinePath?.setAttribute('d', 'M 0,210 Q 200,190 400,150 T 800,60');
+          workflowsLinePath?.setAttribute('d', 'M 0,215 Q 200,205 400,175 T 800,95');
+        } else {
+          if (xLabelStart) xLabelStart.textContent = 'Apr 2025';
+          toolsAreaPath?.setAttribute('d', 'M 0,220 L 0,190 Q 200,160 400,110 T 800,25 L 800,220 Z');
+          toolsLinePath?.setAttribute('d', 'M 0,190 Q 200,160 400,110 T 800,25');
+          reposAreaPath?.setAttribute('d', 'M 0,220 L 0,210 Q 200,190 400,150 T 800,60 L 800,220 Z');
+          reposLinePath?.setAttribute('d', 'M 0,210 Q 200,190 400,150 T 800,60');
+          workflowsLinePath?.setAttribute('d', 'M 0,215 Q 200,205 400,175 T 800,95');
         }
       });
     });
 
-    // Chart 4 Provider filter for scatter plot
+    // Chart 4 Provider filter for scatter plot with dynamic count
     var providerButtons = document.querySelectorAll('.provider-filter');
     var dots = document.querySelectorAll('.model-scatter-dot');
+    var scatterBadge = document.getElementById('scatterCountBadge');
+
     providerButtons.forEach(function(btn) {
       btn.addEventListener('click', function() {
         providerButtons.forEach(function(b) {
@@ -742,13 +782,18 @@ const sortedRepos = [...OPEN_SOURCE_REPOS].sort((a, b) => {
         });
         btn.className = 'provider-filter px-3 py-1 rounded-lg bg-slate-900 text-white cursor-pointer';
         var prov = btn.getAttribute('data-provider');
+        var count = 0;
         dots.forEach(function(dot) {
           if (prov === 'all' || dot.getAttribute('data-provider') === prov) {
             dot.style.display = 'block';
+            count++;
           } else {
             dot.style.display = 'none';
           }
         });
+        if (scatterBadge) {
+          scatterBadge.textContent = 'Showing ' + count + ' Models';
+        }
       });
     });
   })();

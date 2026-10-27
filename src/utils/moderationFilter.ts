@@ -14,7 +14,7 @@ export interface ModerationResult {
 // Curated comprehensive zero-tolerance blacklist (English + common Hindi/Hinglish abusive terms & slurs)
 const BLOCKED_TERMS: string[] = [
   // Profanity & Vulgarity
-  'fuck', 'fucking', 'fucked', 'fucker', 'motherfucker', 'shit', 'shitty', 'bullshit',
+  'fuck', 'fuk', 'fcking', 'fucking', 'fucked', 'fucker', 'motherfucker', 'shit', 'shitty', 'bullshit',
   'bitch', 'bitches', 'bastard', 'asshole', 'dick', 'pussy', 'cunt', 'cock', 'slut', 'whore',
   
   // Hate Speech & Slurs
@@ -37,8 +37,47 @@ const SUSPICIOUS_LINK_PATTERNS = [
   /t\.me\/(joinchat|[a-zA-Z0-9_+]+)/i,
   /bit\.ly\/[a-zA-Z0-9_]+/i,
   /tinyurl\.com\/[a-zA-Z0-9_]+/i,
+  /javascript:/i,
+  /data:text\/html/i,
   /[a-z0-9-]+\.(xyz|top|work|click|link|buzz|monster|rest)\/.*(crypto|airdrop|claim|free|token)/i
 ];
+
+/**
+ * Normalizes text to defeat obfuscation (leetspeak, spaced letters, repeat repeats, symbol masking).
+ */
+function normalizeForSafety(text: string): { normalized: string; collapsed: string } {
+  let s = text.toLowerCase();
+  
+  // 1. Strip zero-width and invisible unicode characters
+  s = s.replace(/[\u200B-\u200D\uFEFF]/g, '');
+
+  // 2. Leetspeak map: @ -> a, $ -> s, 1/!/| -> i, 0 -> o, 3 -> e, 4 -> a, 5 -> s, 7 -> t, 8 -> b
+  s = s.replace(/[@]/g, 'a')
+       .replace(/[$]/g, 's')
+       .replace(/[!|1]/g, 'i')
+       .replace(/[0]/g, 'o')
+       .replace(/[3]/g, 'e')
+       .replace(/[4]/g, 'a')
+       .replace(/[5]/g, 's')
+       .replace(/[7]/g, 't')
+       .replace(/[8]/g, 'b');
+
+  // 3. Remove asterisks, underscores, hyphens, and dots between letters: e.g. f*ck -> fuck, s_h_i_t -> shit
+  s = s.replace(/([a-z])[\*_\.\-\+]([a-z])/g, '$1$2');
+  s = s.replace(/f\*+ck/gi, 'fuck')
+       .replace(/s\*+it/gi, 'shit')
+       .replace(/b\*+ch/gi, 'bitch')
+       .replace(/ch\*+tiya/gi, 'chutiya');
+
+  // 4. Collapse spaced out single letters: e.g. "f u c k" -> "fuck", "c h u t i y a" -> "chutiya"
+  s = s.replace(/\b([a-z](?:\s+[a-z])+)\b/gi, match => match.replace(/\s+/g, ''));
+  const noSpaces = s.replace(/[^a-z]/g, '');
+
+  // 5. Version with repeated characters collapsed: e.g. "fuuuuck" -> "fuck"
+  const collapsed = s.replace(/([a-z])\1{2,}/g, '$1$1').replace(/([a-z])\1+/g, '$1');
+
+  return { normalized: s, collapsed, noSpaces };
+}
 
 /**
  * Validates text content against zero-tolerance community safety policies.
@@ -49,36 +88,36 @@ export function validateContentSafety(text: string): ModerationResult {
     return { isSafe: true };
   }
 
-  const normalized = text.toLowerCase()
-    .replace(/[0-9]/g, match => {
-      // Common leetspeak substitutes: 0 -> o, 1 -> i/l, 3 -> e, 4 -> a, 5 -> s, 8 -> b
-      const map: Record<string, string> = { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '8': 'b', '$': 's', '@': 'a' };
-      return map[match] || match;
-    })
-    .replace(/[^a-z\s]/g, ' '); // Strip punctuation to catch spaced/masked words
-
-  // 1. Check for blocked abusive terms
-  for (const term of BLOCKED_TERMS) {
-    // Check whole word match or substring for longer slurs
-    const regex = new RegExp(`\\b${term}\\b`, 'i');
-    if (regex.test(normalized) || (term.length >= 6 && normalized.includes(term))) {
-      return {
-        isSafe: false,
-        flaggedWord: term,
-        reason: 'Violation of Community Spaces Zero-Abuse & Professional Conduct Policy.',
-        suggestion: 'Please remove disrespectful or abusive terms before publishing.'
-      };
-    }
-  }
-
-  // 2. Check for suspicious phishing or scam link patterns
+  // Check suspicious URLs first
   for (const pattern of SUSPICIOUS_LINK_PATTERNS) {
     if (pattern.test(text)) {
       return {
         isSafe: false,
-        flaggedWord: 'Suspicious Link',
-        reason: 'Unverified shortlinks or external crypto/airdrop claims are prohibited.',
+        flaggedWord: 'Suspicious Link / Script Scheme',
+        reason: 'Unverified shortlinks, script execution schemes, or external crypto/airdrop claims are prohibited.',
         suggestion: 'Please use official, transparent project URLs (e.g. github.com, yourdomain.com).'
+      };
+    }
+  }
+
+  const { normalized, collapsed, noSpaces } = normalizeForSafety(text);
+
+  // Check blocked abusive terms across normalized, character-collapsed, and no-spaces strings
+  for (const term of BLOCKED_TERMS) {
+    const termClean = term.toLowerCase();
+    const regex = new RegExp(`\\b${termClean}\\b`, 'i');
+    
+    if (
+      regex.test(normalized) || 
+      regex.test(collapsed) || 
+      (termClean.length >= 4 && noSpaces.includes(termClean)) || 
+      (termClean.length >= 5 && (normalized.includes(termClean) || collapsed.includes(termClean)))
+    ) {
+      return {
+        isSafe: false,
+        flaggedWord: term,
+        reason: 'Violation of Community Spaces Zero-Abuse & Professional Conduct Policy.',
+        suggestion: 'Please remove disrespectful, profane, or abusive terms before publishing.'
       };
     }
   }

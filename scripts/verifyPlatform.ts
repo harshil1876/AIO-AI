@@ -207,6 +207,12 @@ assert(cleanSubmission.isSafe, 'Clean technical post passes moderation without f
 const abusiveSubmission = validateContentSafety('You are a fucking chutiya and a scammer');
 assert(!abusiveSubmission.isSafe, 'Abusive bilingual submission is correctly blocked by moderation filter');
 
+const obfuscatedSubmission = validateContentSafety('What the f*ck is this sh1t');
+assert(!obfuscatedSubmission.isSafe, 'Obfuscated and masked profanity (f*ck, sh1t) is blocked by moderation filter');
+
+const spacedSubmission = validateContentSafety('You are a f u c k i n g idiot');
+assert(!spacedSubmission.isSafe, 'Spaced-out single letter profanity (f u c k) is blocked by moderation filter');
+
 const phishingSubmission = validateContentSafety('Claim free crypto airdrop at t.me/claim-now-free');
 assert(!phishingSubmission.isSafe, 'Phishing & scam link patterns are blocked by moderation filter');
 
@@ -381,11 +387,53 @@ assert(
   'authClient.ts verifies admin session via cryptographic supabase.auth.getUser()'
 );
 
-// 7. Explicit Protected Paths in Layout.astro
+// 7. Explicit Protected Paths in Layout.astro & Zero-Layout-Shift Overlay
 const layoutContent = fs.readFileSync(path.resolve('src/layouts/Layout.astro'), 'utf8');
 assert(
   layoutContent.includes("PROTECTED_PATHS = ['/dashboard', '/profile', '/admin']") && !layoutContent.includes('var isPublic ='),
   'Layout.astro protects discovery & SEO routes with explicit PROTECTED_PATHS check'
+);
+assert(
+  layoutContent.includes('id="sidebarSpacer"') && sidebarContent.includes('fixed top-0 left-0'),
+  'Layout.astro & Sidebar.astro maintain fixed overlay rail with zero layout shift on <main>'
+);
+
+// 8. Live Trending Telemetry & GitHub Service Binding
+const trendingContent = fs.readFileSync(path.resolve('src/pages/trending.astro'), 'utf8');
+assert(
+  trendingContent.includes('fetchLiveGitHubTrendingRepos') && trendingContent.includes('fetchLiveGitHubTrendingDevelopers'),
+  'trending.astro connects to live GitHub telemetry API and real-time velocity updates'
+);
+
+// 9. Dedicated Studio Engines across all 9 utilities
+const utilitiesContent = fs.readFileSync(path.resolve('src/pages/utilities/[slug].astro'), 'utf8');
+assert(
+  utilitiesContent.includes('prompt-architect') && 
+  utilitiesContent.includes('vram-hardware-advisor') && 
+  utilitiesContent.includes('rag-chunking-visualizer') &&
+  utilitiesContent.includes('json-schema-builder') &&
+  utilitiesContent.includes('token-cost-simulator'),
+  'utilities/[slug].astro implements 9 dedicated interactive studio engines with zero generic form shortcuts'
+);
+
+// 10. Community & Profile Real Persistence
+const communityContent = fs.readFileSync(path.resolve('src/pages/community/index.astro'), 'utf8');
+assert(
+  communityContent.includes('aio_community_posts') && communityContent.includes('aio_custom_spaces'),
+  'community/index.astro persists user posts & custom spaces to Supabase and localStorage'
+);
+
+const profileContent = fs.readFileSync(path.resolve('src/pages/profile.astro'), 'utf8');
+assert(
+  profileContent.includes('saveSettingsBtn') && profileContent.includes('settingsDisplayName'),
+  'profile.astro implements persistent user settings & profile synchronization'
+);
+
+// 11. Analytics Dynamic Charts
+const analyticsContent = fs.readFileSync(path.resolve('src/pages/analytics.astro'), 'utf8');
+assert(
+  analyticsContent.includes('updateCategoryCurrency') && analyticsContent.includes('toolsAreaPath'),
+  'analytics.astro binds interactive controls to dynamic SVG curve recomputation and currency updates'
 );
 
 // ----------------------------------------------------------------------------

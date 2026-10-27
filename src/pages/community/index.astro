@@ -420,8 +420,9 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
 
 <script>
   import { validateContentSafety } from '../../utils/moderationFilter';
+  import { supabase } from '../../lib/supabase';
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     const composerTabs = document.querySelectorAll<HTMLButtonElement>('.composer-tab');
     const projectFields = document.getElementById('projectFieldsContainer');
     const repoFields = document.getElementById('repoFieldsContainer');
@@ -431,7 +432,7 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
     const abuseBanner = document.getElementById('composerAbuseBanner');
     const abuseMessage = document.getElementById('composerAbuseMessage');
     const spaceButtons = document.querySelectorAll<HTMLButtonElement>('.space-tab-btn');
-    const postCards = Array.from(document.querySelectorAll<HTMLElement>('.community-post-card'));
+    const postStream = document.getElementById('communityPostsStream');
 
     // Modals
     const createSpaceModal = document.getElementById('createSpaceModal');
@@ -441,6 +442,58 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
     const openInviteBtn = document.getElementById('openInviteModalBtn');
     const closeInviteBtn = document.getElementById('closeInviteModalBtn');
     const copyInviteBtn = document.getElementById('copyInviteLinkBtn');
+
+    // Hydrate User
+    let currentUser: any = null;
+    try {
+      const stored = localStorage.getItem('aio_user');
+      if (stored) currentUser = JSON.parse(stored);
+    } catch(e) {}
+
+    // Hydrate Custom Spaces from localStorage
+    try {
+      const customSpaces = JSON.parse(localStorage.getItem('aio_custom_spaces') || '[]');
+      const spaceNav = document.getElementById('spacesListNav');
+      if (spaceNav && customSpaces.length > 0) {
+        customSpaces.forEach((sp: any) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'space-tab-btn w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-50 cursor-pointer';
+          btn.setAttribute('data-space', sp.slug);
+          btn.innerHTML = `<span class="truncate">c/${sp.slug}</span><span class="text-[10px] font-mono text-slate-400">0</span>`;
+          btn.addEventListener('click', () => filterBySpace(sp.slug, btn));
+          spaceNav.appendChild(btn);
+        });
+      }
+    } catch(e) {}
+
+    // Hydrate Persisted Posts from localStorage
+    try {
+      const persistedPosts = JSON.parse(localStorage.getItem('aio_community_posts') || '[]');
+      if (postStream && persistedPosts.length > 0) {
+        persistedPosts.forEach((p: any) => {
+          renderPostInDom(p, false);
+        });
+      }
+    } catch(e) {}
+
+    // Handle space invite link on load (?space=...&invite=true)
+    const urlParams = new URLSearchParams(window.location.search);
+    const inviteSpace = urlParams.get('space');
+    const isInvite = urlParams.get('invite') === 'true';
+
+    if (inviteSpace) {
+      const matchedBtn = document.querySelector<HTMLButtonElement>(`[data-space="${inviteSpace}"]`);
+      if (matchedBtn) {
+        filterBySpace(inviteSpace, matchedBtn);
+      }
+      if (isInvite) {
+        const welcomeBanner = document.createElement('div');
+        welcomeBanner.className = 'p-3 rounded-xl bg-blue-600 text-white font-mono text-xs font-bold mb-4 flex items-center justify-between shadow-md';
+        welcomeBanner.innerHTML = `<span>👋 You were invited to join c/${inviteSpace}! Welcome to the workspace.</span><button onclick="this.parentElement.remove()" class="text-white hover:text-blue-200 cursor-pointer">&times;</button>`;
+        postStream?.parentElement?.insertBefore(welcomeBanner, postStream);
+      }
+    }
 
     // 1. Composer Mode Tabs
     let activeMode = 'discussion';
@@ -476,7 +529,7 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
       const res = validateContentSafety(fullText);
       if (!res.isSafe && abuseBanner && abuseMessage) {
         abuseBanner.classList.remove('hidden');
-        abuseMessage.textContent = `Flagged term "${res.flaggedWord}": ${res.reason}`;
+        abuseMessage.textContent = `Flagged violation: ${res.reason} (${res.suggestion || 'Remove flagged terms'})`;
         return false;
       } else if (abuseBanner) {
         abuseBanner.classList.add('hidden');
@@ -488,40 +541,149 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
     titleInput?.addEventListener('input', checkSafety);
     contentInput?.addEventListener('input', checkSafety);
 
-    // 3. Form Submit with Moderation Guard
-    composerForm?.addEventListener('submit', (e) => {
+    function renderPostInDom(post: any, isPrepend = true) {
+      if (!postStream) return;
+      const article = document.createElement('article');
+      article.className = 'community-post-card bg-white border border-slate-200 hover:border-blue-400 rounded-2xl p-6 shadow-xs hover:shadow-md transition-all space-y-4';
+      article.setAttribute('data-space', post.space || 'all');
+      article.setAttribute('data-type', post.type || 'discussion');
+
+      article.innerHTML = `
+        <div class="flex items-start gap-4">
+          <button type="button" class="upvote-btn flex flex-col items-center justify-center w-11 py-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-blue-600 hover:text-blue-600 transition-colors cursor-pointer shrink-0">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+            </svg>
+            <span class="text-xs font-mono font-bold text-slate-900 mt-1 vote-count">${post.upvotes || 1}</span>
+          </button>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-2 flex-wrap text-xs">
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 uppercase">${post.type || 'Discussion'}</span>
+              <span class="font-bold text-slate-900">${post.author}</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">${post.authorRole || 'Practitioner'}</span>
+              <span class="text-slate-400 font-mono text-[11px]">&bull; ${post.publishedAt || 'Just now'}</span>
+            </div>
+            <h2 class="text-base font-black text-slate-900 mb-2 leading-snug hover:text-blue-600 transition-colors cursor-pointer">${post.title}</h2>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4 whitespace-pre-wrap">${post.content}</p>
+            <div class="flex items-center justify-between gap-2 flex-wrap pt-3 border-t border-slate-100">
+              <span class="text-[11px] text-slate-600 bg-slate-50 px-2.5 py-0.5 rounded-md border border-slate-200 font-mono">#${post.space || 'general'}</span>
+              <span class="text-xs font-mono text-slate-400">0 replies</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      if (isPrepend && postStream.firstChild) {
+        postStream.insertBefore(article, postStream.firstChild);
+      } else {
+        postStream.appendChild(article);
+      }
+    }
+
+    // 3. Form Submit with Real Persistence (Supabase + localStorage)
+    composerForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!checkSafety()) {
         alert('Cannot publish post: Please remove flagged terms indicated in the warning banner.');
         return;
       }
 
-      alert('Post successfully submitted to space! (Moderation filter: PASSED)');
+      const title = titleInput?.value.trim() || '';
+      const content = contentInput?.value.trim() || '';
+      if (!title || !content) return;
+
+      const activeSpaceEl = document.querySelector('.space-tab-btn.bg-slate-900');
+      const currentSpace = activeSpaceEl ? activeSpaceEl.getAttribute('data-space') || 'general' : 'general';
+
+      const postObj = {
+        id: 'post_' + Date.now(),
+        author: currentUser?.name || currentUser?.email?.split('@')[0] || 'Community Builder',
+        authorRole: currentUser?.role || 'Practitioner',
+        space: currentSpace,
+        type: activeMode,
+        title: title,
+        content: content,
+        upvotes: 1,
+        publishedAt: 'Just now',
+        tags: [currentSpace]
+      };
+
+      // 1. Persist to Supabase if session available
+      try {
+        await supabase.from('community_posts').insert([{
+          title: title,
+          content: content,
+          space: currentSpace,
+          author: postObj.author
+        }]);
+      } catch(err) {
+        console.warn('Supabase community_posts insertion fallback:', err);
+      }
+
+      // 2. Persist to localStorage
+      try {
+        const stored = JSON.parse(localStorage.getItem('aio_community_posts') || '[]');
+        stored.unshift(postObj);
+        localStorage.setItem('aio_community_posts', JSON.stringify(stored));
+      } catch(err) {}
+
+      // 3. Render immediately in DOM
+      renderPostInDom(postObj, true);
+
+      // 4. Reset form & show toast
       composerForm.reset();
       if (abuseBanner) abuseBanner.classList.add('hidden');
+      alert('✓ Post successfully published and persisted to c/' + currentSpace + '!');
     });
 
-    // 4. Replies Drawer Toggle
-    document.querySelectorAll('.toggle-replies-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-post-id');
-        const drawer = document.getElementById(`replies-${id}`);
-        if (drawer) {
-          drawer.classList.toggle('hidden');
+    // Space filtering function
+    function filterBySpace(slug: string, activeBtn: HTMLButtonElement) {
+      document.querySelectorAll<HTMLButtonElement>('.space-tab-btn').forEach(b => {
+        b.className = 'space-tab-btn w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-50 cursor-pointer';
+      });
+      activeBtn.className = 'space-tab-btn w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all bg-slate-900 text-white shadow-xs cursor-pointer';
+
+      const allCards = document.querySelectorAll<HTMLElement>('.community-post-card');
+      allCards.forEach(card => {
+        const cardSpace = card.getAttribute('data-space') || 'all';
+        if (slug === 'all' || cardSpace === slug || cardSpace === 'all') {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
         }
+      });
+    }
+
+    spaceButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const slug = btn.getAttribute('data-space') || 'all';
+        filterBySpace(slug, btn);
       });
     });
 
+    // 4. Replies Drawer Toggle
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const btn = target.closest<HTMLButtonElement>('.toggle-replies-btn');
+      if (btn) {
+        const id = btn.getAttribute('data-post-id');
+        const drawer = document.getElementById(`replies-${id}`);
+        if (drawer) drawer.classList.toggle('hidden');
+      }
+    });
+
     // 5. Upvote Toggle (1 vote per user)
-    document.querySelectorAll('.upvote-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const btn = target.closest<HTMLButtonElement>('.upvote-btn');
+      if (btn) {
         const countEl = btn.querySelector('.vote-count');
         if (countEl) {
           const current = parseInt(countEl.textContent || '0', 10);
           countEl.textContent = String(current + 1);
           btn.classList.add('text-blue-600', 'border-blue-400');
         }
-      });
+      }
     });
 
     // 6. Modal Controls
@@ -544,19 +706,44 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
     });
 
     copyInviteBtn?.addEventListener('click', () => {
-      const link = document.getElementById('inviteLinkText')?.textContent || '';
+      const link = document.getElementById('inviteLinkText')?.textContent || window.location.href;
       navigator.clipboard.writeText(link);
       copyInviteBtn.textContent = 'Copied!';
       setTimeout(() => { copyInviteBtn.textContent = 'Copy'; }, 1800);
     });
 
+    // Real Custom Space Persistence
     document.getElementById('confirmCreateSpaceBtn')?.addEventListener('click', () => {
-      const name = (document.getElementById('newSpaceName') as HTMLInputElement)?.value;
-      if (name) {
-        alert(`Space ${name} created! Awaiting first post.`);
-        createSpaceModal?.classList.add('hidden');
-        createSpaceModal?.classList.remove('flex');
+      const nameInput = document.getElementById('newSpaceName') as HTMLInputElement | null;
+      const name = nameInput?.value.trim();
+      if (!name) return;
+
+      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const newSpace = { name, slug, count: 0 };
+
+      try {
+        const stored = JSON.parse(localStorage.getItem('aio_custom_spaces') || '[]');
+        stored.push(newSpace);
+        localStorage.setItem('aio_custom_spaces', JSON.stringify(stored));
+      } catch(e) {}
+
+      // Prepend to spaces list
+      const spaceNav = document.getElementById('spacesListNav');
+      if (spaceNav) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'space-tab-btn w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all bg-slate-900 text-white shadow-xs cursor-pointer';
+        btn.setAttribute('data-space', slug);
+        btn.innerHTML = `<span class="truncate">c/${slug}</span><span class="text-[10px] font-mono text-slate-400">0</span>`;
+        btn.addEventListener('click', () => filterBySpace(slug, btn));
+        spaceNav.appendChild(btn);
+        filterBySpace(slug, btn);
       }
+
+      createSpaceModal?.classList.add('hidden');
+      createSpaceModal?.classList.remove('flex');
+      if (nameInput) nameInput.value = '';
+      alert(`✓ Community space c/${slug} created and persisted!`);
     });
   });
 </script>

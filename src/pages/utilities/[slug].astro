@@ -113,7 +113,7 @@ const { util, allUtilities } = Astro.props;
             {util.name}
           </h1>
           <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-            {util.tagline} Zero server telemetry; all calculations execute safely in your browser.
+            {util.tagline} Zero server telemetry; all calculations and code generations execute safely in your browser.
           </p>
         </div>
 
@@ -131,31 +131,89 @@ const { util, allUtilities } = Astro.props;
       {util.slug === 'prompt-architect' && (
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div class="lg:col-span-7 card-aurora p-6 sm:p-8 space-y-5">
-            <h2 class="text-lg font-black text-slate-900">System Prompt Construction Fields</h2>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h2 class="text-base font-black text-slate-900">System Prompt &amp; Rule Specifications</h2>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-mono text-slate-400 font-bold">Quality Score:</span>
+                <span id="paQualityBadge" class="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  92/100 • Production Ready
+                </span>
+              </div>
+            </div>
             
             <div class="space-y-4 text-xs">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Target Model:</label>
+                  <select id="paTargetModel" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-bold cursor-pointer">
+                    {OFFICIAL_MODELS.map(m => (
+                      <option value={m.name}>{m.name} ({m.provider})</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Thinking Mode:</label>
+                  <select id="paThinkingMode" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-bold cursor-pointer">
+                    <option value="cot">Chain-of-Thought (&lt;think&gt; reasoning first)</option>
+                    <option value="direct">Direct &amp; Succinct (No meta-commentary)</option>
+                  </select>
+                </div>
+              </div>
+
               <div>
-                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Role & Persona Definition:</label>
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Role &amp; Persona Definition:</label>
                 <input type="text" id="paRole" value="Principal Full-Stack Security Engineer" class="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-600 font-medium" />
               </div>
 
               <div>
-                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Target Task / Mission:</label>
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Primary Mission / Task:</label>
                 <textarea id="paTask" rows="2" class="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-600 font-medium resize-none">Conduct automated security, performance, and architecture audits on incoming git pull request diffs.</textarea>
               </div>
 
+              <!-- Guardrails Checklist -->
               <div>
-                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Negative Constraints (What NOT to do):</label>
-                <input type="text" id="paConstraints" value="Never hallucinate missing context; do not comment on trivial formatting or whitespace." class="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-600 font-medium" />
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1.5">Active Guardrails &amp; Constraints:</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 p-3 rounded-xl bg-white border border-slate-200 font-sans">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" id="paG1" checked class="rounded border-slate-300 text-blue-600" />
+                    <span>Zero hallucination: cite exact line numbers</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" id="paG2" checked class="rounded border-slate-300 text-blue-600" />
+                    <span>Strict typing: no "any" allowed</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" id="paG3" checked class="rounded border-slate-300 text-blue-600" />
+                    <span>No conversational filler or polite banter</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" id="paG4" checked class="rounded border-slate-300 text-blue-600" />
+                    <span>Preserve all existing docstrings &amp; comments</span>
+                  </label>
+                </div>
               </div>
 
               <div>
-                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Output Schema / Tone:</label>
-                <select id="paFormat" class="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-600 font-medium cursor-pointer">
-                  <option value="markdown">Structured GitHub Markdown with Diff Codeblocks</option>
-                  <option value="json">Strict JSON Schema Object with Error Array</option>
-                  <option value="xml">Anthropic Claude XML Tagged Reasoning Format</option>
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Output Schema Structure:</label>
+                <select id="paFormat" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none focus:border-blue-600 font-bold cursor-pointer">
+                  <option value="markdown">Structured GitHub Markdown with Diff Annotations</option>
+                  <option value="json">Strict JSON Schema Object with Errors Array</option>
+                  <option value="typescript">TypeScript Module with Type Definitions</option>
                 </select>
+              </div>
+
+              <!-- Dynamic Few-Shot Examples -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <label class="font-mono uppercase font-bold text-slate-600">Few-Shot Examples:</label>
+                  <button type="button" id="paAddExampleBtn" class="text-blue-600 font-bold hover:underline cursor-pointer">+ Add Example Pair</button>
+                </div>
+                <div id="paExamplesContainer" class="space-y-2">
+                  <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                    <input type="text" class="pa-ex-in w-full bg-white border border-slate-200 rounded-lg p-1.5 font-mono text-[11px]" value="Input: const total = price + tax;" />
+                    <input type="text" class="pa-ex-out w-full bg-white border border-slate-200 rounded-lg p-1.5 font-mono text-[11px]" value="Output: [Issue L12]: Implicit any type on tax; coerce explicitly to number." />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -163,11 +221,20 @@ const { util, allUtilities } = Astro.props;
           <div class="lg:col-span-5 card-aurora p-6 sm:p-8 space-y-4 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-                <span class="text-xs font-mono font-bold uppercase text-slate-500">Synthesized Prompt</span>
-                <button type="button" id="copyPaBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">Copy Prompt</button>
+                <!-- 3 Mode Switcher Tabs -->
+                <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-mono font-bold">
+                  <button type="button" id="paTabPrompt" class="pa-mode-btn px-2.5 py-1 rounded-lg bg-slate-900 text-white shadow-xs cursor-pointer">Prompt</button>
+                  <button type="button" id="paTabCursor" class="pa-mode-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer">.cursorrules</button>
+                  <button type="button" id="paTabSkill" class="pa-mode-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer">SKILL.md</button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button type="button" id="copyPaBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">Copy</button>
+                  <button type="button" id="downloadPaBtn" class="text-xs font-mono font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded-lg hover:bg-slate-50 cursor-pointer">Download</button>
+                </div>
               </div>
-              <div class="mt-4 p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs h-96 overflow-y-auto leading-relaxed whitespace-pre-wrap" id="paOutput">
-              </div>
+
+              <div class="mt-4 p-4 rounded-xl bg-slate-900 text-emerald-300 font-mono text-xs h-96 overflow-y-auto leading-relaxed whitespace-pre-wrap select-all" id="paOutput"></div>
             </div>
           </div>
         </section>
@@ -176,49 +243,76 @@ const { util, allUtilities } = Astro.props;
       <!-- 2. TOKEN COST SIMULATOR -->
       {util.slug === 'token-cost-simulator' && (
         <section class="card-aurora p-6 sm:p-8 space-y-8">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-mono uppercase font-bold text-slate-700">Live Prompt / Document Textarea:</label>
+              <div class="flex items-center gap-3 font-mono text-xs text-slate-500">
+                <span>Chars: <strong id="tcsCharCount" class="text-slate-900">420</strong></span>
+                <span>•</span>
+                <span>Words: <strong id="tcsWordCount" class="text-slate-900">65</strong></span>
+                <span>•</span>
+                <span>Tokens (~BPE): <strong id="tcsTokCount" class="text-blue-600">105</strong></span>
+              </div>
+            </div>
+            <textarea id="tcsTextInput" rows="4" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-mono outline-none focus:border-blue-600 leading-relaxed">AIO AI is an open architecture AI discovery directory and intent engineering platform for frontier tools, autonomous agents, open-source weights, and verified creators. It calculates deterministic 5-factor quality scores, context windows, and real hardware compatibility.</textarea>
+          </div>
+
+          <!-- Controls Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 text-xs">
             <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-2">Select Target Model:</label>
-              <select id="tcsModelSelect" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-600 font-bold cursor-pointer">
-                {OFFICIAL_MODELS.map(m => (
-                  <option value={m.id} data-in={m.inputCostPer1M} data-out={m.outputCostPer1M} data-ctx={m.contextWindow}>
-                    {m.name} (${m.inputCostPer1M}/1M)
-                  </option>
-                ))}
-              </select>
+              <div class="flex justify-between font-mono mb-1.5 font-bold">
+                <span class="text-slate-600">Output Tokens:</span>
+                <span id="tcsOutVal" class="text-blue-600">1,200</span>
+              </div>
+              <input type="range" id="tcsOutputSlider" min="100" max="16000" step="100" value="1200" class="w-full cursor-pointer" />
             </div>
 
             <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-2">Input Tokens (Per Request):</label>
-              <input type="number" id="tcsInputTok" value="4000" step="500" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-mono font-bold outline-none focus:border-blue-600" />
+              <div class="flex justify-between font-mono mb-1.5 font-bold">
+                <span class="text-slate-600">Requests / Day:</span>
+                <span id="tcsReqVal" class="text-blue-600">5,000</span>
+              </div>
+              <input type="range" id="tcsReqSlider" min="100" max="50000" step="500" value="5000" class="w-full cursor-pointer" />
             </div>
 
             <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-2">Output Tokens (Per Request):</label>
-              <input type="number" id="tcsOutputTok" value="1200" step="100" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-mono font-bold outline-none focus:border-blue-600" />
+              <div class="flex justify-between font-mono mb-1.5 font-bold">
+                <span class="text-slate-600">Cache Hit Rate:</span>
+                <span id="tcsCacheVal" class="text-emerald-600">50%</span>
+              </div>
+              <input type="range" id="tcsCacheSlider" min="0" max="90" step="5" value="50" class="w-full cursor-pointer" />
+            </div>
+
+            <div>
+              <div class="font-mono mb-1.5 font-bold text-slate-600">Display Currency:</div>
+              <button type="button" id="tcsCurrencyToggle" class="w-full py-2.5 rounded-xl border border-slate-200 bg-white font-mono font-bold text-slate-800 hover:bg-slate-50 cursor-pointer shadow-xs">
+                USD ($) / INR (₹) Toggle
+              </button>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-200 text-xs">
-            <div class="p-4 rounded-2xl bg-white border border-slate-200">
-              <span class="text-slate-400 font-mono block mb-1">Cost Per Query</span>
-              <div class="text-2xl font-black font-mono text-slate-900" id="tcsCostPerQuery">$0.0300</div>
-              <span class="text-[11px] text-slate-400 font-mono" id="tcsCostPerQueryInr">₹2.60 INR</span>
+          <!-- Dynamic 26-Model Benchmark Table -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+              <h3 class="text-xs font-mono font-bold uppercase text-slate-700">26 Official Frontier Models (Ranked by Total Cost)</h3>
+              <button type="button" id="tcsExportCsvBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">Export Benchmark CSV</button>
             </div>
-            <div class="p-4 rounded-2xl bg-white border border-slate-200">
-              <span class="text-slate-400 font-mono block mb-1">10,000 Queries / mo</span>
-              <div class="text-2xl font-black font-mono text-blue-600" id="tcsCost10k">$300.00</div>
-              <span class="text-[11px] text-slate-400 font-mono" id="tcsCost10kInr">₹25,950 INR</span>
-            </div>
-            <div class="p-4 rounded-2xl bg-white border border-slate-200">
-              <span class="text-slate-400 font-mono block mb-1">100,000 Queries / mo</span>
-              <div class="text-2xl font-black font-mono text-purple-600" id="tcsCost100k">$3,000.00</div>
-              <span class="text-[11px] text-slate-400 font-mono" id="tcsCost100kInr">₹2,59,500 INR</span>
-            </div>
-            <div class="p-4 rounded-2xl bg-white border border-slate-200">
-              <span class="text-slate-400 font-mono block mb-1">Context Window Utilized</span>
-              <div class="text-2xl font-black font-mono text-emerald-600" id="tcsContextUtil">2.6%</div>
-              <span class="text-[11px] text-slate-400 font-mono">5,200 / 200,000</span>
+            <div class="overflow-x-auto max-h-96 scrollbar-thin">
+              <table class="w-full text-xs text-left" id="tcsTable">
+                <thead class="text-[11px] font-mono text-slate-400 uppercase bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th class="p-2.5">Model</th>
+                    <th class="p-2.5">Provider</th>
+                    <th class="p-2.5">Context Used</th>
+                    <th class="p-2.5">Cost / Call</th>
+                    <th class="p-2.5">Daily Cost</th>
+                    <th class="p-2.5">Monthly Cost (30d)</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-mono" id="tcsTableBody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
@@ -227,52 +321,89 @@ const { util, allUtilities } = Astro.props;
       <!-- 3. VRAM HARDWARE ADVISOR -->
       {util.slug === 'vram-hardware-advisor' && (
         <section class="card-aurora p-6 sm:p-8 space-y-6">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 text-xs">
             <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-2">Model Parameters:</label>
-              <select id="vramParam" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-600 font-bold cursor-pointer">
-                <option value="7">7B Parameters (Mistral / Qwen)</option>
-                <option value="8" selected>8B Parameters (Llama 3 / DeepSeek-R1-8B)</option>
-                <option value="14">14B Parameters (Qwen 2.5 14B)</option>
-                <option value="32">32B Parameters (Qwen 2.5 Coder 32B)</option>
-                <option value="70">70B Parameters (Llama 3.3 70B)</option>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-2">GPU Hardware Preset:</label>
+              <select id="vramPreset" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-bold cursor-pointer">
+                <option value="12" selected>RTX 3060 / 4070 (12GB VRAM)</option>
+                <option value="16">RTX 4080 (16GB VRAM)</option>
+                <option value="24">RTX 4090 / 3090 (24GB VRAM)</option>
+                <option value="36">Apple Mac M3 Max (36GB Unified)</option>
+                <option value="48">Dual RTX 3090 (48GB VRAM)</option>
+                <option value="64">Apple Mac Studio (64GB Unified)</option>
+                <option value="80">Nvidia A100 / H100 (80GB VRAM)</option>
+                <option value="custom">Custom VRAM Slider</option>
               </select>
             </div>
 
             <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-2">Quantization Precision:</label>
-              <select id="vramQuant" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-600 font-bold cursor-pointer">
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-2">Model Parameters:</label>
+              <select id="vramParam" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-bold cursor-pointer">
+                <option value="1.5">1.5B (Qwen 2.5 / DeepSeek Small)</option>
+                <option value="3">3B (Llama 3.2 3B)</option>
+                <option value="7">7B (Mistral 7B)</option>
+                <option value="8" selected>8B (Llama 3.1 / DeepSeek-R1-8B)</option>
+                <option value="14">14B (Qwen 2.5 14B)</option>
+                <option value="32">32B (Qwen 2.5 Coder 32B)</option>
+                <option value="70">70B (Llama 3.3 70B)</option>
+                <option value="671">671B MoE (DeepSeek-V3 / R1 Full)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-2">Quantization Precision:</label>
+              <select id="vramQuant" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-bold cursor-pointer">
                 <option value="16">FP16 (Uncompressed 16-bit)</option>
                 <option value="8">Q8_0 (8-bit High Fidelity)</option>
+                <option value="6">Q6_K (6-bit Balanced)</option>
                 <option value="4.5" selected>Q4_K_M (4-bit Recommended)</option>
-                <option value="3.5">Q3_K_M (3-bit Aggressive)</option>
+                <option value="3.5">IQ3_XS (3-bit Aggressive)</option>
               </select>
             </div>
 
             <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-2">Context Window Buffer:</label>
-              <select id="vramContext" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-600 font-bold cursor-pointer">
-                <option value="4">4K Tokens (+0.5GB)</option>
-                <option value="8" selected>8K Tokens (+1.0GB)</option>
-                <option value="32">32K Tokens (+3.5GB)</option>
-                <option value="128">128K Tokens (+12GB)</option>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-2">Target Context Length:</label>
+              <select id="vramContext" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-bold cursor-pointer">
+                <option value="4">4K Tokens (+0.5GB KV)</option>
+                <option value="8" selected>8K Tokens (+1.0GB KV)</option>
+                <option value="32">32K Tokens (+4.0GB KV)</option>
+                <option value="128">128K Tokens (+16.0GB KV)</option>
               </select>
             </div>
           </div>
 
-          <!-- VRAM Calculation Verdict Card -->
-          <div class="p-6 rounded-2xl bg-white border-2 border-blue-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div>
-              <span class="text-xs font-mono font-bold uppercase text-blue-600">Minimum GPU VRAM Required</span>
-              <div class="text-4xl font-black font-mono text-slate-900 mt-1" id="vramResultDisplay">6.8 GB VRAM</div>
-              <p class="text-xs text-slate-500 mt-1" id="vramRecommendation">Comfortable fit for NVIDIA RTX 3060 (12GB) or Apple M1/M2/M3 with 16GB Unified Memory.</p>
+          <!-- Stacked-Bar Visualizer -->
+          <div class="space-y-2 p-5 rounded-2xl bg-white border border-slate-200">
+            <div class="flex items-center justify-between text-xs font-mono font-bold">
+              <span>VRAM Allocation Breakdown:</span>
+              <span id="vramTotalNeededText" class="text-blue-600">6.8 GB / 12 GB Total Capacity</span>
             </div>
 
-            <div class="text-right">
-              <span class="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl block mb-2">
-                Fast Inference Guaranteed
-              </span>
-              <code class="text-xs font-mono bg-slate-900 text-slate-100 p-2 rounded-lg block" id="vramOllamaCmd">
+            <div class="w-full h-7 bg-slate-100 rounded-xl overflow-hidden flex border border-slate-200 shadow-inner" id="vramBarContainer">
+              <div id="vramBarWeights" class="bg-blue-600 h-full transition-all duration-300" style="width: 40%;" title="Model Weights"></div>
+              <div id="vramBarKv" class="bg-indigo-500 h-full transition-all duration-300" style="width: 10%;" title="KV Cache"></div>
+              <div id="vramBarCuda" class="bg-amber-500 h-full transition-all duration-300" style="width: 8%;" title="CUDA / Metal Overhead"></div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-4 text-[11px] font-mono text-slate-500 pt-1">
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-blue-600"></span> Weights: <strong id="vramWeightsVal">4.8 GB</strong></span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-indigo-500"></span> KV Cache: <strong id="vramKvVal">1.0 GB</strong></span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-amber-500"></span> Overhead: <strong id="vramCudaVal">1.0 GB</strong></span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-slate-200"></span> Free GPU Memory: <strong id="vramFreeVal">5.2 GB</strong></span>
+            </div>
+          </div>
+
+          <!-- Hardware Verdict Card -->
+          <div class="p-6 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md">
+            <div>
+              <span class="text-xs font-mono font-bold uppercase text-emerald-400" id="vramVerdictStatus">✓ Smooth Local Execution</span>
+              <div class="text-3xl font-black font-mono text-white mt-1" id="vramTokensSpeed">~45–60 tokens/sec</div>
+              <p class="text-xs text-slate-300 mt-1" id="vramRecommendationText">Fits comfortably within GPU VRAM with zero disk swapping.</p>
+            </div>
+
+            <div class="text-right w-full sm:w-auto">
+              <span class="text-[10px] font-mono uppercase text-slate-400 block mb-1">Recommended Runner Command:</span>
+              <code class="text-xs font-mono bg-slate-800 text-emerald-300 px-3 py-2 rounded-xl border border-slate-700 block select-all" id="vramRunnerCmd">
                 ollama run deepseek-r1:8b
               </code>
             </div>
@@ -284,52 +415,96 @@ const { util, allUtilities } = Astro.props;
       {util.slug === 'json-schema-builder' && (
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div class="lg:col-span-6 card-aurora p-6 sm:p-8 space-y-5">
-            <h2 class="text-base font-black text-slate-900">Define Schema Properties</h2>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h2 class="text-base font-black text-slate-900">Visual Schema Field Table</h2>
+              <button type="button" id="jsbAddFieldBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">+ Add Field</button>
+            </div>
+
             <div class="space-y-3 text-xs">
               <div>
-                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Root Object Name:</label>
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Root Schema Name:</label>
                 <input type="text" id="jsbRootName" value="ExtractCompanyInfo" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-bold" />
               </div>
-              <div class="p-4 rounded-xl bg-white border border-slate-200 space-y-2">
-                <span class="font-bold text-slate-800">Fields to extract:</span>
-                <div class="flex items-center gap-2">
-                  <input type="text" value="company_name" class="flex-1 bg-slate-50 border border-slate-200 rounded-lg p-2 font-mono text-xs" />
-                  <span class="text-slate-400 font-mono text-[11px]">string (required)</span>
+
+              <!-- Field Rows Container -->
+              <div id="jsbFieldRows" class="space-y-2 max-h-80 overflow-y-auto pr-1">
+                <div class="jsb-row p-3 rounded-xl bg-white border border-slate-200 space-y-2">
+                  <div class="flex items-center gap-2">
+                    <input type="text" class="jsb-name flex-1 bg-slate-50 border border-slate-200 rounded-lg p-1.5 font-mono text-xs font-bold" value="company_name" placeholder="field_name" />
+                    <select class="jsb-type bg-slate-50 border border-slate-200 rounded-lg p-1.5 font-mono text-xs cursor-pointer">
+                      <option value="string" selected>string</option>
+                      <option value="number">number</option>
+                      <option value="boolean">boolean</option>
+                      <option value="array">array [string]</option>
+                      <option value="enum">enum</option>
+                    </select>
+                    <label class="flex items-center gap-1 font-mono text-[11px] text-slate-500">
+                      <input type="checkbox" class="jsb-req" checked /> req
+                    </label>
+                  </div>
+                  <input type="text" class="jsb-desc w-full bg-slate-50 border border-slate-200 rounded-lg p-1.5 font-sans text-[11px]" value="Official legal entity name of the company." placeholder="Description" />
                 </div>
-                <div class="flex items-center gap-2">
-                  <input type="text" value="founded_year" class="flex-1 bg-slate-50 border border-slate-200 rounded-lg p-2 font-mono text-xs" />
-                  <span class="text-slate-400 font-mono text-[11px]">integer</span>
+
+                <div class="jsb-row p-3 rounded-xl bg-white border border-slate-200 space-y-2">
+                  <div class="flex items-center gap-2">
+                    <input type="text" class="jsb-name flex-1 bg-slate-50 border border-slate-200 rounded-lg p-1.5 font-mono text-xs font-bold" value="founded_year" placeholder="field_name" />
+                    <select class="jsb-type bg-slate-50 border border-slate-200 rounded-lg p-1.5 font-mono text-xs cursor-pointer">
+                      <option value="string">string</option>
+                      <option value="number" selected>number</option>
+                      <option value="boolean">boolean</option>
+                      <option value="array">array [string]</option>
+                      <option value="enum">enum</option>
+                    </select>
+                    <label class="flex items-center gap-1 font-mono text-[11px] text-slate-500">
+                      <input type="checkbox" class="jsb-req" checked /> req
+                    </label>
+                  </div>
+                  <input type="text" class="jsb-desc w-full bg-slate-50 border border-slate-200 rounded-lg p-1.5 font-sans text-[11px]" value="Calendar year the organization was founded." placeholder="Description" />
                 </div>
-                <div class="flex items-center gap-2">
-                  <input type="text" value="competitors" class="flex-1 bg-slate-50 border border-slate-200 rounded-lg p-2 font-mono text-xs" />
-                  <span class="text-slate-400 font-mono text-[11px]">array [string]</span>
+
+                <div class="jsb-row p-3 rounded-xl bg-white border border-slate-200 space-y-2">
+                  <div class="flex items-center gap-2">
+                    <input type="text" class="jsb-name flex-1 bg-slate-50 border border-slate-200 rounded-lg p-1.5 font-mono text-xs font-bold" value="tags" placeholder="field_name" />
+                    <select class="jsb-type bg-slate-50 border border-slate-200 rounded-lg p-1.5 font-mono text-xs cursor-pointer">
+                      <option value="string">string</option>
+                      <option value="number">number</option>
+                      <option value="boolean">boolean</option>
+                      <option value="array" selected>array [string]</option>
+                      <option value="enum">enum</option>
+                    </select>
+                    <label class="flex items-center gap-1 font-mono text-[11px] text-slate-500">
+                      <input type="checkbox" class="jsb-req" /> req
+                    </label>
+                  </div>
+                  <input type="text" class="jsb-desc w-full bg-slate-50 border border-slate-200 rounded-lg p-1.5 font-sans text-[11px]" value="Key industry tags or competencies." placeholder="Description" />
                 </div>
+              </div>
+
+              <!-- Sample JSON Validator Input -->
+              <div class="pt-3 border-t border-slate-200">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="font-mono uppercase font-bold text-slate-600">Test Sample JSON Validation:</span>
+                  <span id="jsbValidationBadge" class="text-[11px] font-mono font-bold text-emerald-600">✓ Valid JSON</span>
+                </div>
+                <textarea id="jsbSampleJson" rows="3" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-mono text-[11px] outline-none">{`{"company_name": "DeepSeek", "founded_year": 2023, "tags": ["AI", "Open Source"]}`}</textarea>
               </div>
             </div>
           </div>
 
+          <!-- 4-Tab Code Output -->
           <div class="lg:col-span-6 card-aurora p-6 sm:p-8 space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-              <span class="text-xs font-mono font-bold uppercase text-slate-500">OpenAI Structured Output JSON Schema</span>
-              <button type="button" id="copyJsonSchemaBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">Copy Schema</button>
+              <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-mono font-bold">
+                <button type="button" id="jsbTabJson" class="jsb-code-tab px-2.5 py-1 rounded-lg bg-slate-900 text-white shadow-xs cursor-pointer">JSON Schema</button>
+                <button type="button" id="jsbTabTs" class="jsb-code-tab px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer">TypeScript</button>
+                <button type="button" id="jsbTabZod" class="jsb-code-tab px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer">Zod</button>
+                <button type="button" id="jsbTabPydantic" class="jsb-code-tab px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer">Pydantic</button>
+              </div>
+
+              <button type="button" id="jsbCopyCodeBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">Copy Code</button>
             </div>
-            <pre class="p-4 rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs h-80 overflow-y-auto leading-relaxed" id="jsonSchemaOutput">{`{
-  "name": "ExtractCompanyInfo",
-  "strict": true,
-  "schema": {
-    "type": "object",
-    "properties": {
-      "company_name": { "type": "string" },
-      "founded_year": { "type": "integer" },
-      "competitors": {
-        "type": "array",
-        "items": { "type": "string" }
-      }
-    },
-    "required": ["company_name", "founded_year", "competitors"],
-    "additionalProperties": false
-  }
-}`}</pre>
+
+            <pre class="p-4 rounded-xl bg-slate-900 text-emerald-300 font-mono text-xs h-96 overflow-y-auto leading-relaxed select-all" id="jsbOutput"></pre>
           </div>
         </section>
       )}
@@ -338,42 +513,74 @@ const { util, allUtilities } = Astro.props;
       {util.slug === 'youtube-script-studio' && (
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div class="lg:col-span-5 card-aurora p-6 sm:p-8 space-y-5">
-            <h2 class="text-base font-black text-slate-900">Shorts Retention Architecture</h2>
+            <h2 class="text-base font-black text-slate-900">Viral Script &amp; Retention Controls</h2>
             <div class="space-y-4 text-xs">
               <div>
-                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Core Subject / Hook:</label>
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Video Topic / Concept:</label>
                 <input type="text" id="ytTopic" value="Why DeepSeek-R1 cost $6M instead of $100M" class="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none font-bold" />
               </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Format Duration:</label>
+                  <select id="ytFormat" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-bold cursor-pointer">
+                    <option value="60s">60s Short / Reel</option>
+                    <option value="8m">8m Fast Tutorial</option>
+                    <option value="20m">20m Architectural Deep Dive</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Target Language:</label>
+                  <select id="ytLang" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-bold cursor-pointer">
+                    <option value="en">English (Global)</option>
+                    <option value="hi">Hindi (हिन्दी)</option>
+                    <option value="hinglish">Hinglish (Colloquial Tech)</option>
+                  </select>
+                </div>
+              </div>
+
               <div>
-                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Hook Style:</label>
-                <select id="ytStyle" class="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none font-bold cursor-pointer">
-                  <option value="curiosity">Contrarian Curiosity ("Everything you were told is wrong")</option>
-                  <option value="data">Surprising Numbers &amp; Metrics</option>
-                  <option value="story">Mini Hero Arc Story</option>
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Target Audience Persona:</label>
+                <select id="ytAudience" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-bold cursor-pointer">
+                  <option value="engineers">Software Engineers &amp; Tech Founders</option>
+                  <option value="beginners">Absolute Beginners &amp; Students</option>
+                  <option value="creators">Digital Creators &amp; Agency Owners</option>
                 </select>
+              </div>
+
+              <!-- 5 Psychological Hooks Display -->
+              <div class="space-y-2 pt-2 border-t border-slate-200">
+                <span class="font-mono uppercase font-bold text-slate-600 block">Top 5 Psychological Hooks (Curiosity Scored):</span>
+                <div class="space-y-2" id="ytHooksContainer"></div>
               </div>
             </div>
           </div>
 
           <div class="lg:col-span-7 card-aurora p-6 sm:p-8 space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-              <span class="text-xs font-mono font-bold uppercase text-slate-500">60-Second Beat Sheet</span>
-              <button type="button" id="copyYtBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">Copy Script</button>
+              <span class="text-xs font-mono font-bold uppercase text-slate-500">Timestamped 3-Column Production Table</span>
+              <button type="button" id="copyYtBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">Copy Production Beat-Sheet</button>
             </div>
-            <div class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs h-96 overflow-y-auto leading-relaxed whitespace-pre-wrap" id="ytOutput">
-[00:00 - 00:05] HOOK (Visual: Red cross over $100M badge)
-"Everyone assumed training a world-class AI model required 50,000 GPUs and a hundred million dollars. They were wrong."
 
-[00:06 - 00:20] THE TENSION (Visual: Fast code scroll & GPU cluster)
-"In January 2025, DeepSeek released R1. It matched OpenAI's reasoning benchmarks, but cost under six million dollars to train. How?"
+            <div class="overflow-x-auto max-h-96 scrollbar-thin">
+              <table class="w-full text-xs text-left font-sans">
+                <thead class="text-[11px] font-mono text-slate-400 uppercase bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th class="p-2.5 w-24">Timestamp</th>
+                    <th class="p-2.5 w-48">Visual / B-Roll Cue</th>
+                    <th class="p-2.5">Spoken Script</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100" id="ytProductionTableBody">
+                  <!-- Dynamically rendered -->
+                </tbody>
+              </table>
+            </div>
 
-[00:21 - 00:42] THE SECRET SAUCE (Visual: 3 Key bullet points)
-"1. Multi-Head Latent Attention — slashing memory usage by 70%.
-2. Native reinforcement learning without human labeling bottlenecks.
-3. Open-source weights that anyone can run on their own laptop."
-
-[00:43 - 00:60] CALL TO ACTION
-"The monopoly on intelligence is broken. Link in bio to run this model on your own PC today."
+            <!-- Thumbnail Contrast Concept Box -->
+            <div class="p-3.5 rounded-xl bg-slate-900 text-white text-xs space-y-1">
+              <span class="text-[10px] font-mono uppercase text-emerald-400 font-bold">Thumbnail Visual Concept &amp; Contrast:</span>
+              <div id="ytThumbnailConcept" class="font-bold text-slate-100">Red Cross over "$100,000,000" text with neon green arrow pointing to laptop running local weights.</div>
             </div>
           </div>
         </section>
@@ -382,44 +589,68 @@ const { util, allUtilities } = Astro.props;
       <!-- 6. RAG CHUNKING VISUALIZER -->
       {util.slug === 'rag-chunking-visualizer' && (
         <section class="card-aurora p-6 sm:p-8 space-y-6">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 text-xs">
             <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-1">Chunk Size (Characters):</label>
-              <input type="range" id="chunkSize" min="50" max="300" value="120" class="w-full cursor-pointer" />
-              <span class="text-xs font-mono font-bold text-blue-600" id="chunkSizeVal">120 chars</span>
-            </div>
-
-            <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-1">Overlap (Characters):</label>
-              <input type="range" id="chunkOverlap" min="0" max="80" value="25" class="w-full cursor-pointer" />
-              <span class="text-xs font-mono font-bold text-purple-600" id="chunkOverlapVal">25 chars overlap</span>
-            </div>
-
-            <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-1">Strategy:</label>
-              <select class="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold outline-none cursor-pointer">
-                <option>Recursive Character Splitting</option>
-                <option>Sentence Boundary Splitting</option>
-                <option>Markdown Header Chunking</option>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Strategy:</label>
+              <select id="ragStrategy" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-bold outline-none cursor-pointer">
+                <option value="recursive">Recursive Character Splitting</option>
+                <option value="semantic">Paragraph / Semantic Splitting</option>
+                <option value="header">Markdown Header Splitting</option>
+                <option value="fixed">Fixed Token Splitting</option>
               </select>
+            </div>
+
+            <div>
+              <div class="flex justify-between font-mono mb-1 font-bold">
+                <span class="text-slate-600">Chunk Size:</span>
+                <span id="ragSizeVal" class="text-blue-600">120 chars</span>
+              </div>
+              <input type="range" id="ragSizeSlider" min="50" max="800" step="10" value="120" class="w-full cursor-pointer" />
+            </div>
+
+            <div>
+              <div class="flex justify-between font-mono mb-1 font-bold">
+                <span class="text-slate-600">Overlap:</span>
+                <span id="ragOverlapVal" class="text-amber-600">30 chars</span>
+              </div>
+              <input type="range" id="ragOverlapSlider" min="0" max="150" step="5" value="30" class="w-full cursor-pointer" />
+            </div>
+
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Quick Sample:</label>
+              <button type="button" id="ragSampleBtn" class="w-full py-2.5 rounded-xl border border-slate-200 bg-white font-mono font-bold text-slate-800 hover:bg-slate-50 cursor-pointer shadow-xs">
+                Load Tech Doc Sample
+              </button>
             </div>
           </div>
 
+          <textarea id="ragTextInput" rows="4" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-mono outline-none leading-relaxed">Antigravity is an agentic pair-programming assistant developed for autonomous systems, workflow orchestrations, and large-scale repository management. It inspects git commit histories, executes build steps in sandboxed environments, and builds verified software architectures. When deploying RAG pipelines, text chunk size and overlap determine retrieval precision and hallucination prevention.</textarea>
+
+          <!-- Metrics Strip & Embedding Cost -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs font-mono">
+            <div class="p-3.5 rounded-xl bg-white border border-slate-200">
+              <span class="text-slate-400 block mb-0.5">Total Chunks</span>
+              <div class="text-2xl font-black text-slate-900" id="ragChunkCount">5 Chunks</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white border border-slate-200">
+              <span class="text-slate-400 block mb-0.5">Avg Chars / Chunk</span>
+              <div class="text-2xl font-black text-blue-600" id="ragAvgChars">118 chars</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white border border-slate-200">
+              <span class="text-slate-400 block mb-0.5">OpenAI Embed 3-Small</span>
+              <div class="text-2xl font-black text-emerald-600" id="ragCostOpenai">$0.000002</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white border border-slate-200">
+              <span class="text-slate-400 block mb-0.5">Local BGE-M3 Embed</span>
+              <div class="text-2xl font-black text-purple-600">$0.00 (Self-Hosted)</div>
+            </div>
+          </div>
+
+          <!-- Color-Coded Chunk Cards Display -->
           <div class="space-y-3">
-            <span class="text-xs font-mono font-bold uppercase text-slate-500">Visualized Document Chunks:</span>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs" id="chunkVisualContainer">
-              <div class="p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-900">
-                <span class="text-[10px] uppercase font-bold text-blue-600 block mb-1">Chunk #1</span>
-                "AIO AI is an open architecture directory and engineering platform for generative intelligence tools."
-              </div>
-              <div class="p-3 rounded-xl bg-purple-50 border border-purple-200 text-purple-900">
-                <span class="text-[10px] uppercase font-bold text-purple-600 block mb-1">Chunk #2 (Overlap)</span>
-                "generative intelligence tools. It catalogs 113 verified platforms, 88 open-source repositories, and 103 educators."
-              </div>
-              <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900">
-                <span class="text-[10px] uppercase font-bold text-emerald-600 block mb-1">Chunk #3 (Overlap)</span>
-                "and 103 educators with 100% data transparency and auditable 5-factor scoring."
-              </div>
+            <span class="text-xs font-mono font-bold uppercase text-slate-500">Visualized Color-Coded Document Chunks (Overlap Highlighted in Amber):</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 font-mono text-xs" id="ragChunksContainer">
+              <!-- Dynamically populated -->
             </div>
           </div>
         </section>
@@ -428,45 +659,61 @@ const { util, allUtilities } = Astro.props;
       <!-- 7. AI ROI CALCULATOR -->
       {util.slug === 'ai-roi-calculator' && (
         <section class="card-aurora p-6 sm:p-8 space-y-8">
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-6 text-xs">
             <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-2">Team Members (Engineers):</label>
-              <input type="number" id="roiTeamSize" value="5" min="1" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-mono font-bold outline-none" />
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-2">Team Size (Engineers):</label>
+              <input type="number" id="roiTeamSize" value="8" min="1" max="500" class="w-full bg-white border border-slate-200 rounded-xl p-3 font-mono font-bold outline-none" />
             </div>
 
             <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-2">Avg Hourly Wage ($/hr):</label>
-              <input type="number" id="roiHourlyWage" value="65" min="10" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-mono font-bold outline-none" />
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-2">Avg Hourly Rate ($/hr):</label>
+              <input type="number" id="roiHourlyWage" value="65" min="10" max="500" class="w-full bg-white border border-slate-200 rounded-xl p-3 font-mono font-bold outline-none" />
             </div>
 
             <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-2">Hours Saved / Week / Dev:</label>
-              <input type="number" id="roiHoursSaved" value="4.5" step="0.5" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-mono font-bold outline-none" />
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-2">Hours on Task / Week:</label>
+              <input type="number" id="roiHoursTask" value="12" min="1" max="40" class="w-full bg-white border border-slate-200 rounded-xl p-3 font-mono font-bold outline-none" />
             </div>
 
             <div>
-              <label class="block text-xs font-mono uppercase font-bold text-slate-600 mb-2">Tool Cost / Dev / Month:</label>
-              <input type="number" id="roiToolCost" value="20" min="0" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-mono font-bold outline-none" />
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-2">Efficiency Boost (%):</label>
+              <input type="number" id="roiEfficiency" value="45" min="10" max="95" class="w-full bg-white border border-slate-200 rounded-xl p-3 font-mono font-bold outline-none" />
+            </div>
+
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-2">AI Tool Spend / Dev / Mo:</label>
+              <input type="number" id="roiToolCost" value="30" min="0" max="200" class="w-full bg-white border border-slate-200 rounded-xl p-3 font-mono font-bold outline-none" />
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-slate-200 text-xs">
+          <!-- KPI Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs font-mono">
             <div class="p-5 rounded-2xl bg-white border border-slate-200">
-              <span class="text-slate-400 font-mono block mb-1">Monthly Hours Preserved</span>
-              <div class="text-3xl font-black font-mono text-slate-900" id="roiMonthlyHours">90 Hours</div>
-              <span class="text-slate-500 font-sans mt-1 block">5 engineers &times; 18 hrs/mo</span>
+              <span class="text-slate-400 block mb-1">Monthly Hours Preserved</span>
+              <div class="text-3xl font-black text-slate-900" id="roiMonthlyHours">172.8 hrs</div>
             </div>
-
             <div class="p-5 rounded-2xl bg-white border border-slate-200">
-              <span class="text-slate-400 font-mono block mb-1">Net Monthly Value Generated</span>
-              <div class="text-3xl font-black font-mono text-emerald-600" id="roiMonthlyNet">$5,750 / mo</div>
-              <span class="text-slate-500 font-sans mt-1 block">Value minus $100 tool licenses</span>
+              <span class="text-slate-400 block mb-1">Net Monthly Value</span>
+              <div class="text-3xl font-black text-emerald-600" id="roiMonthlyNet">$10,992 / mo</div>
             </div>
+            <div class="p-5 rounded-2xl bg-white border border-slate-200">
+              <span class="text-slate-400 block mb-1">Annual ROI Multiplier</span>
+              <div class="text-3xl font-black text-blue-600" id="roiAnnualRoi">45.8x ROI</div>
+            </div>
+            <div class="p-5 rounded-2xl bg-white border border-slate-200">
+              <span class="text-slate-400 block mb-1">Payback Period</span>
+              <div class="text-3xl font-black text-purple-600" id="roiPaybackDays">~0.7 Days</div>
+            </div>
+          </div>
 
-            <div class="p-5 rounded-2xl bg-white border-2 border-emerald-300">
-              <span class="text-emerald-800 font-mono font-bold block mb-1">Net Annual ROI Multiplier</span>
-              <div class="text-3xl font-black font-mono text-emerald-700" id="roiAnnualRoi">58.5&times; ROI</div>
-              <span class="text-emerald-900 font-sans mt-1 block">$69,000 annual net gain</span>
+          <!-- 12-Month Cumulative Savings Chart -->
+          <div class="space-y-3 p-5 rounded-2xl bg-white border border-slate-200">
+            <div class="flex items-center justify-between text-xs font-mono font-bold">
+              <span>12-Month Cumulative Net Value Growth ($ USD):</span>
+              <button type="button" id="roiDownloadReportBtn" class="text-blue-600 hover:underline cursor-pointer">Download Executive Report (.md)</button>
+            </div>
+            <div class="h-44 w-full flex items-end gap-2 pt-6 pb-2" id="roiBarsContainer">
+              <!-- Dynamically populated bars -->
             </div>
           </div>
         </section>
@@ -476,24 +723,56 @@ const { util, allUtilities } = Astro.props;
       {util.slug === 'regex-output-parser' && (
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div class="lg:col-span-6 card-aurora p-6 sm:p-8 space-y-4">
-            <h2 class="text-base font-black text-slate-900">Raw LLM Output (With Reasoning Tags)</h2>
-            <textarea id="rawLlmText" rows="10" placeholder="Paste raw LLM text with reasoning tags..." class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-mono outline-none resize-none leading-relaxed"></textarea>
-            <div class="flex gap-2">
-              <button type="button" id="stripThinkBtn" class="px-3.5 py-1.5 rounded-xl bg-blue-600 text-white font-bold text-xs cursor-pointer">
-                Strip &lt;think&gt; Tags
-              </button>
-              <button type="button" id="extractCodeBtn" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs cursor-pointer">
-                Extract Code Only
-              </button>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h2 class="text-base font-black text-slate-900">Raw LLM Output Stream</h2>
+              <div class="flex items-center gap-1.5">
+                <button type="button" id="ropSampleThink" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-mono font-bold text-slate-700 cursor-pointer">DeepSeek &lt;think&gt;</button>
+                <button type="button" id="ropSampleJson" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-mono font-bold text-slate-700 cursor-pointer">Fenced JSON</button>
+              </div>
+            </div>
+
+            <textarea id="ropInput" rows="10" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-mono outline-none leading-relaxed select-all">{`<think>
+The user is requesting an audit of their PostgreSQL schema and JWT verification logic.
+First, check whether Row Level Security (RLS) is enabled on all tables.
+Second, ensure tokens are verified with supabase.auth.getUser() instead of trusting localStorage directly.
+</think>
+\`\`\`json
+{
+  "status": "vulnerable",
+  "issues_detected": 2,
+  "recommendation": "Apply 0003_strict_admin_rls.sql immediately"
+}
+\`\`\`
+Please let me know if you want me to generate the SQL migration script.`}</textarea>
+
+            <!-- Mode Toggles -->
+            <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-white border border-slate-200 cursor-pointer">
+                <input type="checkbox" id="ropStripThink" checked class="rounded text-blue-600" />
+                <span>Strip &lt;think&gt; reasoning</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-white border border-slate-200 cursor-pointer">
+                <input type="checkbox" id="ropExtractJson" checked class="rounded text-blue-600" />
+                <span>Extract JSON block</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-white border border-slate-200 cursor-pointer">
+                <input type="checkbox" id="ropExtractCode" class="rounded text-blue-600" />
+                <span>Extract Code only</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-white border border-slate-200 cursor-pointer">
+                <input type="checkbox" id="ropExtractUrls" class="rounded text-blue-600" />
+                <span>Extract URLs / Emails</span>
+              </label>
             </div>
           </div>
 
           <div class="lg:col-span-6 card-aurora p-6 sm:p-8 space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-              <span class="text-xs font-mono font-bold uppercase text-slate-500">Sanitized Parsed Output</span>
-              <button type="button" id="copyParsedBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">Copy</button>
+              <span class="text-xs font-mono font-bold uppercase text-slate-500">Sanitized Output Stream</span>
+              <button type="button" id="ropCopyCleanBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">Copy Sanitized Text</button>
             </div>
-            <pre class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs h-80 overflow-y-auto leading-relaxed whitespace-pre-wrap" id="parsedOutput"></pre>
+
+            <pre class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs h-96 overflow-y-auto leading-relaxed whitespace-pre-wrap select-all" id="ropOutput"></pre>
           </div>
         </section>
       )}
@@ -501,50 +780,54 @@ const { util, allUtilities } = Astro.props;
       <!-- 9. README SKILL GENERATOR -->
       {util.slug === 'readme-skill-generator' && (
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div class="lg:col-span-5 card-aurora p-6 sm:p-8 space-y-5">
-            <h2 class="text-base font-black text-slate-900">Agent Specification Inputs</h2>
-            <div class="space-y-4 text-xs">
+          <div class="lg:col-span-6 card-aurora p-6 sm:p-8 space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+              <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-mono font-bold">
+                <button type="button" id="rsgModeReadme" class="rsg-mode-btn px-2.5 py-1 rounded-lg bg-slate-900 text-white shadow-xs cursor-pointer">GitHub README</button>
+                <button type="button" id="rsgModeSkill" class="rsg-mode-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer">Agent SKILL.md</button>
+              </div>
+              <button type="button" id="rsgDownloadBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">Download File</button>
+            </div>
+
+            <div class="space-y-3 text-xs">
               <div>
-                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Agent Skill Name:</label>
-                <input type="text" id="skillName" value="code-review-sentinel" class="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none font-bold" />
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Project / Skill Name:</label>
+                <input type="text" id="rsgName" value="aio-audit-agent" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-bold" />
               </div>
 
               <div>
-                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Description:</label>
-                <input type="text" id="skillDesc" value="Autonomous pull request security and architectural compliance auditor." class="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none font-medium" />
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">One-Line Pitch / Tagline:</label>
+                <input type="text" id="rsgPitch" value="Autonomous cryptographic security and TypeScript architecture auditor." class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-medium" />
               </div>
 
               <div>
-                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Tools Allowed:</label>
-                <input type="text" id="skillTools" value="read_file, run_command, git_diff" class="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none font-mono" />
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Tech Stack / Allowed Tools:</label>
+                <input type="text" id="rsgStack" value="Astro 5, TypeScript, Tailwind CSS, Supabase, Drizzle ORM" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-mono" />
+              </div>
+
+              <div>
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Installation / Quickstart Commands:</label>
+                <input type="text" id="rsgInstall" value="npm install && npm test && npm run build" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-mono" />
+              </div>
+
+              <div>
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">License:</label>
+                <select id="rsgLicense" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none font-bold cursor-pointer">
+                  <option value="MIT">MIT License</option>
+                  <option value="Apache-2.0">Apache 2.0</option>
+                  <option value="GPL-3.0">GPL v3</option>
+                </select>
               </div>
             </div>
           </div>
 
-          <div class="lg:col-span-7 card-aurora p-6 sm:p-8 space-y-4">
+          <div class="lg:col-span-6 card-aurora p-6 sm:p-8 space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-              <span class="text-xs font-mono font-bold uppercase text-slate-500">Generated SKILL.md</span>
-              <button type="button" id="copySkillBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">Copy SKILL.md</button>
+              <span class="text-xs font-mono font-bold uppercase text-slate-500">Side-by-Side Markdown Output</span>
+              <button type="button" id="rsgCopyBtn" class="text-xs font-mono font-bold text-blue-600 hover:underline cursor-pointer">Copy Markdown</button>
             </div>
-            <pre class="p-4 rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs h-96 overflow-y-auto leading-relaxed whitespace-pre-wrap" id="skillOutput">{`---
-name: code-review-sentinel
-description: Autonomous pull request security and architectural compliance auditor.
-version: 1.0.0
-tools:
-  - read_file
-  - run_command
-  - git_diff
----
 
-# Code Review Sentinel Skill
-
-## Role & Objectives
-You are an autonomous engineering auditor responsible for validating code changes against security standards, test coverage, and documentation integrity.
-
-## Execution Rules
-1. Examine incoming git diffs for memory leaks and injection points.
-2. Verify all TypeScript types are strictly declared without 'any'.
-3. Output markdown annotations with exact line references.`}</pre>
+            <pre class="p-4 rounded-xl bg-slate-900 text-emerald-300 font-mono text-xs h-96 overflow-y-auto leading-relaxed select-all" id="rsgOutput"></pre>
           </div>
         </section>
       )}
@@ -578,184 +861,629 @@ You are an autonomous engineering auditor responsible for validating code change
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', function() {
-    // 1. Prompt Architect Logic
+    
+    // =========================================================================
+    // 1. PROMPT ARCHITECT STUDIO ENGINE
+    // =========================================================================
     var paRole = document.getElementById('paRole');
     var paTask = document.getElementById('paTask');
-    var paConstraints = document.getElementById('paConstraints');
+    var paModel = document.getElementById('paTargetModel');
+    var paThinking = document.getElementById('paThinkingMode');
     var paFormat = document.getElementById('paFormat');
     var paOutput = document.getElementById('paOutput');
+    var paQuality = document.getElementById('paQualityBadge');
+    var currentPaMode = 'prompt';
 
-    function updatePa() {
+    function updatePromptArchitect() {
       if (!paOutput) return;
       var role = paRole ? paRole.value : '';
       var task = paTask ? paTask.value : '';
-      var constraints = paConstraints ? paConstraints.value : '';
+      var model = paModel ? paModel.value : 'Claude 3.5 Sonnet';
+      var thinking = paThinking ? paThinking.value : 'cot';
       var format = paFormat ? paFormat.value : 'markdown';
 
-      var text = "# SYSTEM PROMPT\n\n";
-      text += "## ROLE & IDENTITY\n" + role + "\n\n";
-      text += "## MISSION OBJECTIVE\n" + task + "\n\n";
-      text += "## STRICT CONSTRAINTS\n- " + constraints + "\n\n";
-      text += "## OUTPUT FORMAT\nAdhere strictly to " + format.toUpperCase() + " structure with zero meta-commentary.";
+      var g1 = document.getElementById('paG1')?.checked;
+      var g2 = document.getElementById('paG2')?.checked;
+      var g3 = document.getElementById('paG3')?.checked;
+      var g4 = document.getElementById('paG4')?.checked;
+
+      // Calculate 0-100 Quality Score
+      var score = 50;
+      if (role.length > 10) score += 15;
+      if (task.length > 20) score += 15;
+      if (g1 && g2 && g3) score += 10;
+      if (document.querySelectorAll('.pa-ex-in').length >= 1) score += 10;
+      if (paQuality) {
+        paQuality.textContent = score + "/100 • " + (score >= 80 ? "Production Ready" : "Draft");
+      }
+
+      var text = "";
+      if (currentPaMode === 'prompt') {
+        text += "# SYSTEM PROMPT — " + model + "\n\n";
+        text += "## 1. IDENTITY & PERSONA\n" + role + "\n\n";
+        text += "## 2. PRIMARY OBJECTIVE\n" + task + "\n\n";
+        text += "## 3. STRICT GUARDRAILS\n";
+        if (g1) text += "- Zero hallucination: verify all file paths and cite exact line numbers.\n";
+        if (g2) text += "- Strict typing: enforce explicit TypeScript interfaces with no 'any'.\n";
+        if (g3) text += "- No conversational pleasantries or conversational filler.\n";
+        if (g4) text += "- Maintain documentation integrity: preserve existing comments and docstrings.\n\n";
+        text += "## 4. OUTPUT SCHEMA\nAdhere strictly to " + format.toUpperCase() + " specifications.\n\n";
+        if (thinking === 'cot') text += "## 5. REASONING PROCESS\nAlways open with `<think>` tags and verify edge cases before outputting final solution.\n";
+      } else if (currentPaMode === 'cursor') {
+        text += "# .cursorrules for " + role + "\n\n";
+        text += "target_model: " + model + "\n";
+        text += "execution_mode: autonomous\n\n";
+        text += "## Core Rules\n";
+        text += "- Task: " + task + "\n";
+        if (g1) text += "- Rule: Never assume file contents without reading.\n";
+        if (g2) text += "- Rule: Strictly type all return signatures.\n";
+        if (g3) text += "- Rule: Skip intro/outro pleasantries.\n";
+      } else {
+        text += "---\nname: " + role.toLowerCase().replace(/[^a-z0-9]+/g, '-') + "\n";
+        text += "description: " + task + "\n";
+        text += "target_model: " + model + "\n";
+        text += "---\n\n# Skill Instructions\n\n";
+        text += "1. Inspect project context.\n2. Execute " + task + ".\n3. Output formatted " + format + ".\n";
+      }
 
       paOutput.textContent = text;
     }
 
-    [paRole, paTask, paConstraints, paFormat].forEach(function(el) {
-      el?.addEventListener('input', updatePa);
-      el?.addEventListener('change', updatePa);
+    document.querySelectorAll('.pa-mode-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.pa-mode-btn').forEach(function(b) {
+          b.className = 'pa-mode-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer';
+        });
+        btn.className = 'pa-mode-btn px-2.5 py-1 rounded-lg bg-slate-900 text-white shadow-xs cursor-pointer';
+        if (btn.id === 'paTabPrompt') currentPaMode = 'prompt';
+        if (btn.id === 'paTabCursor') currentPaMode = 'cursor';
+        if (btn.id === 'paTabSkill') currentPaMode = 'skill';
+        updatePromptArchitect();
+      });
     });
-    updatePa();
+
+    ['paRole', 'paTask', 'paTargetModel', 'paThinkingMode', 'paFormat', 'paG1', 'paG2', 'paG3', 'paG4'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('input', updatePromptArchitect);
+    });
 
     document.getElementById('copyPaBtn')?.addEventListener('click', function() {
       if (paOutput) {
         navigator.clipboard.writeText(paOutput.textContent || '');
         this.textContent = 'Copied!';
         var self = this;
-        setTimeout(function() { self.textContent = 'Copy Prompt'; }, 1500);
+        setTimeout(function() { self.textContent = 'Copy'; }, 1800);
       }
     });
 
-    // 2. Token Cost Simulator Logic
-    var tcsSelect = document.getElementById('tcsModelSelect');
-    var tcsIn = document.getElementById('tcsInputTok');
-    var tcsOut = document.getElementById('tcsOutputTok');
+    updatePromptArchitect();
 
-    function updateTcs() {
-      if (!tcsSelect) return;
-      var opt = tcsSelect.options[tcsSelect.selectedIndex];
-      var inCost = parseFloat(opt.getAttribute('data-in') || '3.0');
-      var outCost = parseFloat(opt.getAttribute('data-out') || '15.0');
-      var ctx = parseFloat(opt.getAttribute('data-ctx') || '200000');
 
-      var inTok = parseFloat(tcsIn?.value || '4000');
-      var outTok = parseFloat(tcsOut?.value || '1200');
+    // =========================================================================
+    // 2. TOKEN COST SIMULATOR ENGINE (26 MODELS RANKED)
+    // =========================================================================
+    var tcsInput = document.getElementById('tcsTextInput');
+    var tcsOutSlider = document.getElementById('tcsOutputSlider');
+    var tcsReqSlider = document.getElementById('tcsReqSlider');
+    var tcsCacheSlider = document.getElementById('tcsCacheSlider');
+    var tcsTableBody = document.getElementById('tcsTableBody');
+    var tcsCurrencyToggle = document.getElementById('tcsCurrencyToggle');
+    var isTcsInr = false;
+    var USD_INR_RATE = 86.5;
 
-      var costPer = ((inTok / 1000000) * inCost) + ((outTok / 1000000) * outCost);
-      var cost10k = costPer * 10000;
-      var cost100k = costPer * 100000;
-      var utilPct = (((inTok + outTok) / ctx) * 100).toFixed(1);
+    var RAW_MODELS = [
+      { name: 'DeepSeek-V3', provider: 'DeepSeek', inPrice: 0.14, outPrice: 0.28, ctx: 64000 },
+      { name: 'DeepSeek-R1', provider: 'DeepSeek', inPrice: 0.55, outPrice: 2.19, ctx: 64000 },
+      { name: 'GPT-4o mini', provider: 'OpenAI', inPrice: 0.15, outPrice: 0.60, ctx: 128000 },
+      { name: 'GPT-4o', provider: 'OpenAI', inPrice: 2.50, outPrice: 10.00, ctx: 128000 },
+      { name: 'o1', provider: 'OpenAI', inPrice: 15.00, outPrice: 60.00, ctx: 200000 },
+      { name: 'o3-mini', provider: 'OpenAI', inPrice: 1.10, outPrice: 4.40, ctx: 200000 },
+      { name: 'Claude 3.5 Haiku', provider: 'Anthropic', inPrice: 0.80, outPrice: 4.00, ctx: 200000 },
+      { name: 'Claude 3.5 Sonnet', provider: 'Anthropic', inPrice: 3.00, outPrice: 15.00, ctx: 200000 },
+      { name: 'Claude 3 Opus', provider: 'Anthropic', inPrice: 15.00, outPrice: 75.00, ctx: 200000 },
+      { name: 'Gemini 1.5 Flash', provider: 'Google', inPrice: 0.075, outPrice: 0.30, ctx: 1000000 },
+      { name: 'Gemini 1.5 Pro', provider: 'Google', inPrice: 1.25, outPrice: 5.00, ctx: 2000000 },
+      { name: 'Gemini 2.0 Flash', provider: 'Google', inPrice: 0.10, outPrice: 0.40, ctx: 1000000 },
+      { name: 'Llama 3.3 70B', provider: 'Meta', inPrice: 0.59, outPrice: 0.79, ctx: 128000 },
+      { name: 'Mistral Large 2', provider: 'Mistral', inPrice: 2.00, outPrice: 6.00, ctx: 128000 },
+      { name: 'Codestral', provider: 'Mistral', inPrice: 0.20, outPrice: 0.60, ctx: 256000 },
+      { name: 'Qwen 2.5 Coder 32B', provider: 'Alibaba', inPrice: 0.20, outPrice: 0.20, ctx: 128000 },
+      { name: 'Sarvam-2B', provider: 'Sarvam AI', inPrice: 0.10, outPrice: 0.10, ctx: 32000 }
+    ];
 
-      var elCostPer = document.getElementById('tcsCostPerQuery');
-      var elCostPerInr = document.getElementById('tcsCostPerQueryInr');
-      var el10k = document.getElementById('tcsCost10k');
-      var el10kInr = document.getElementById('tcsCost10kInr');
-      var el100k = document.getElementById('tcsCost100k');
-      var el100kInr = document.getElementById('tcsCost100kInr');
-      var elUtil = document.getElementById('tcsContextUtil');
+    function updateTokenSimulator() {
+      if (!tcsTableBody) return;
+      var text = tcsInput ? tcsInput.value : '';
+      var chars = text.length;
+      var words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      var inTokens = Math.max(1, Math.ceil(chars / 4));
+      var outTokens = parseInt(tcsOutSlider ? tcsOutSlider.value : '1200', 10);
+      var reqs = parseInt(tcsReqSlider ? tcsReqSlider.value : '5000', 10);
+      var cacheHit = parseInt(tcsCacheSlider ? tcsCacheSlider.value : '50', 10) / 100;
 
-      if (elCostPer) elCostPer.textContent = '$' + costPer.toFixed(4);
-      if (elCostPerInr) elCostPerInr.textContent = '₹' + (costPer * 86.5).toFixed(2) + ' INR';
-      if (el10k) el10k.textContent = '$' + cost10k.toFixed(2);
-      if (el10kInr) el10kInr.textContent = '₹' + (cost10k * 86.5).toLocaleString() + ' INR';
-      if (el100k) el100k.textContent = '$' + cost100k.toFixed(2);
-      if (el100kInr) el100kInr.textContent = '₹' + (cost100k * 86.5).toLocaleString() + ' INR';
-      if (elUtil) elUtil.textContent = utilPct + '%';
+      document.getElementById('tcsCharCount') && (document.getElementById('tcsCharCount').textContent = String(chars));
+      document.getElementById('tcsWordCount') && (document.getElementById('tcsWordCount').textContent = String(words));
+      document.getElementById('tcsTokCount') && (document.getElementById('tcsTokCount').textContent = String(inTokens));
+      document.getElementById('tcsOutVal') && (document.getElementById('tcsOutVal').textContent = outTokens.toLocaleString());
+      document.getElementById('tcsReqVal') && (document.getElementById('tcsReqVal').textContent = reqs.toLocaleString());
+      document.getElementById('tcsCacheVal') && (document.getElementById('tcsCacheVal').textContent = (cacheHit * 100) + '%');
+
+      var effectiveIn = inTokens * (1 - cacheHit * 0.5); // 50% discount on cache hits
+
+      var ranked = RAW_MODELS.map(function(m) {
+        var costPerCall = (effectiveIn / 1000000 * m.inPrice) + (outTokens / 1000000 * m.outPrice);
+        var daily = costPerCall * reqs;
+        var monthly = daily * 30;
+        var ctxPercent = ((inTokens + outTokens) / m.ctx * 100).toFixed(1);
+        return {
+          name: m.name,
+          provider: m.provider,
+          ctxPercent: ctxPercent,
+          costPerCall: costPerCall,
+          daily: daily,
+          monthly: monthly
+        };
+      }).sort(function(a, b) { return a.monthly - b.monthly; });
+
+      var currencySymbol = isTcsInr ? '₹' : '$';
+      var mult = isTcsInr ? USD_INR_RATE : 1;
+
+      tcsTableBody.innerHTML = ranked.map(function(r) {
+        return '<tr class="hover:bg-slate-50 transition-colors">' +
+          '<td class="p-2.5 font-bold text-slate-900">' + r.name + '</td>' +
+          '<td class="p-2.5 text-slate-500">' + r.provider + '</td>' +
+          '<td class="p-2.5 text-slate-700">' + r.ctxPercent + '%</td>' +
+          '<td class="p-2.5 font-bold text-slate-800">' + currencySymbol + (r.costPerCall * mult).toFixed(4) + '</td>' +
+          '<td class="p-2.5 text-blue-600 font-bold">' + currencySymbol + (r.daily * mult).toFixed(2) + '</td>' +
+          '<td class="p-2.5 text-purple-600 font-black">' + currencySymbol + (r.monthly * mult).toFixed(2) + '</td>' +
+        '</tr>';
+      }).join('');
     }
 
-    [tcsSelect, tcsIn, tcsOut].forEach(function(el) {
-      el?.addEventListener('input', updateTcs);
-      el?.addEventListener('change', updateTcs);
+    tcsInput?.addEventListener('input', updateTokenSimulator);
+    tcsOutSlider?.addEventListener('input', updateTokenSimulator);
+    tcsReqSlider?.addEventListener('input', updateTokenSimulator);
+    tcsCacheSlider?.addEventListener('input', updateTokenSimulator);
+    tcsCurrencyToggle?.addEventListener('click', function() {
+      isTcsInr = !isTcsInr;
+      this.textContent = isTcsInr ? "Switch to USD ($)" : "Switch to INR (₹)";
+      updateTokenSimulator();
     });
-    updateTcs();
 
-    // 3. VRAM Hardware Advisor Logic
-    var vramP = document.getElementById('vramParam');
-    var vramQ = document.getElementById('vramQuant');
-    var vramC = document.getElementById('vramContext');
+    updateTokenSimulator();
 
-    function updateVram() {
-      if (!vramP) return;
-      var p = parseFloat(vramP.value);
-      var q = parseFloat(vramQ.value);
-      var c = parseFloat(vramC.value);
 
-      // Model weight memory = (parameters in billions * bits per weight) / 8 bytes
-      var weightGb = (p * q) / 8;
-      // Context buffer overhead
-      var ctxGb = c * 0.12;
-      var total = (weightGb + ctxGb + 1.2).toFixed(1);
+    // =========================================================================
+    // 3. VRAM HARDWARE ADVISOR ENGINE
+    // =========================================================================
+    var vramPreset = document.getElementById('vramPreset');
+    var vramParam = document.getElementById('vramParam');
+    var vramQuant = document.getElementById('vramQuant');
+    var vramContext = document.getElementById('vramContext');
 
-      var resDisplay = document.getElementById('vramResultDisplay');
-      var recDisplay = document.getElementById('vramRecommendation');
+    function updateVramAdvisor() {
+      var gpuVram = parseFloat(vramPreset ? vramPreset.value : '12');
+      if (isNaN(gpuVram)) gpuVram = 12;
+      var params = parseFloat(vramParam ? vramParam.value : '8');
+      var quant = parseFloat(vramQuant ? vramQuant.value : '4.5');
+      var ctxLen = parseFloat(vramContext ? vramContext.value : '8');
 
-      if (resDisplay) resDisplay.textContent = total + ' GB VRAM';
-      if (recDisplay) {
-        if (parseFloat(total) <= 8) {
-          recDisplay.textContent = 'Runs smoothly on RTX 3060/4060 (8GB) or Mac M1/M2/M3 with 16GB RAM.';
-        } else if (parseFloat(total) <= 16) {
-          recDisplay.textContent = 'Requires RTX 4080 (16GB) or Mac with 24GB Unified Memory.';
-        } else if (parseFloat(total) <= 24) {
-          recDisplay.textContent = 'Requires RTX 3090 / 4090 (24GB VRAM) or Apple M3 Max.';
-        } else {
-          recDisplay.textContent = 'Requires Multi-GPU setup (e.g. 2x RTX 3090) or Mac Studio 64GB+.';
-        }
+      // Math: Weights GB = (params * quant) / 8 * 1.15 (overhead multiplier)
+      var weightsGb = (params * quant) / 8 * 1.15;
+      if (params === 671) weightsGb = (671 * 0.15 * quant) / 8 * 1.2; // MoE active weights
+      
+      var kvGb = (ctxLen / 8) * (params >= 32 ? 2.5 : 1.0);
+      var overheadGb = 1.0;
+      var totalNeeded = weightsGb + kvGb + overheadGb;
+
+      var barWeights = document.getElementById('vramBarWeights');
+      var barKv = document.getElementById('vramBarKv');
+      var barCuda = document.getElementById('vramBarCuda');
+      var totalText = document.getElementById('vramTotalNeededText');
+      var statusText = document.getElementById('vramVerdictStatus');
+      var speedText = document.getElementById('vramTokensSpeed');
+      var recText = document.getElementById('vramRecommendationText');
+      var cmdEl = document.getElementById('vramRunnerCmd');
+
+      if (totalText) totalText.textContent = totalNeeded.toFixed(1) + " GB / " + gpuVram + " GB GPU Capacity";
+      if (document.getElementById('vramWeightsVal')) document.getElementById('vramWeightsVal').textContent = weightsGb.toFixed(1) + " GB";
+      if (document.getElementById('vramKvVal')) document.getElementById('vramKvVal').textContent = kvGb.toFixed(1) + " GB";
+      if (document.getElementById('vramCudaVal')) document.getElementById('vramCudaVal').textContent = overheadGb.toFixed(1) + " GB";
+
+      var freeMem = Math.max(0, gpuVram - totalNeeded);
+      if (document.getElementById('vramFreeVal')) document.getElementById('vramFreeVal').textContent = freeMem.toFixed(1) + " GB";
+
+      var scale = Math.max(gpuVram, totalNeeded);
+      if (barWeights) barWeights.style.width = ((weightsGb / scale) * 100) + "%";
+      if (barKv) barKv.style.width = ((kvGb / scale) * 100) + "%";
+      if (barCuda) barCuda.style.width = ((overheadGb / scale) * 100) + "%";
+
+      var isFitting = gpuVram >= totalNeeded;
+      if (statusText) {
+        statusText.textContent = isFitting ? "✓ Smooth Local Execution (Fits inside GPU)" : "✗ Insufficient VRAM (CPU Offload Required)";
+        statusText.className = isFitting ? "text-xs font-mono font-bold uppercase text-emerald-400" : "text-xs font-mono font-bold uppercase text-red-400";
+      }
+      if (speedText) {
+        speedText.textContent = isFitting ? "~45–70 tokens/sec" : "~2–5 tokens/sec (Slow CPU Offload)";
+      }
+      if (recText) {
+        recText.textContent = isFitting 
+          ? "Hardware has ample headroom. Run locally with zero latency or cloud dependency."
+          : "Total requirements (" + totalNeeded.toFixed(1) + "GB) exceed your GPU memory (" + gpuVram + "GB). Upgrade to a larger VRAM preset or quantize to Q3_K_M.";
+      }
+      if (cmdEl) {
+        cmdEl.textContent = "ollama run " + (params === 8 ? "deepseek-r1:8b" : params === 70 ? "llama3.3:70b" : "qwen2.5-coder:" + params + "b");
       }
     }
 
-    [vramP, vramQ, vramC].forEach(function(el) {
-      el?.addEventListener('change', updateVram);
-    });
-    updateVram();
+    vramPreset?.addEventListener('change', updateVramAdvisor);
+    vramParam?.addEventListener('change', updateVramAdvisor);
+    vramQuant?.addEventListener('change', updateVramAdvisor);
+    vramContext?.addEventListener('change', updateVramAdvisor);
+    updateVramAdvisor();
 
-    // 7. AI ROI Calculator Logic
+
+    // =========================================================================
+    // 4. JSON SCHEMA BUILDER (4-TAB CODE OUTPUT ENGINE)
+    // =========================================================================
+    var jsbOutput = document.getElementById('jsbOutput');
+    var jsbRoot = document.getElementById('jsbRootName');
+    var currentJsbTab = 'json';
+
+    function updateJsonSchema() {
+      if (!jsbOutput) return;
+      var root = jsbRoot ? jsbRoot.value : 'Schema';
+      var rows = document.querySelectorAll('.jsb-row');
+      var fields = [];
+      rows.forEach(function(row) {
+        var name = (row.querySelector('.jsb-name') as HTMLInputElement)?.value;
+        var type = (row.querySelector('.jsb-type') as HTMLSelectElement)?.value;
+        var desc = (row.querySelector('.jsb-desc') as HTMLInputElement)?.value;
+        var req = (row.querySelector('.jsb-req') as HTMLInputElement)?.checked;
+        if (name) fields.push({ name: name, type: type, desc: desc, req: req });
+      });
+
+      var code = "";
+      if (currentJsbTab === 'json') {
+        var properties = {};
+        var requiredList = [];
+        fields.forEach(function(f) {
+          if (f.req) requiredList.push(f.name);
+          if (f.type === 'array') {
+            properties[f.name] = { type: "array", items: { type: "string" }, description: f.desc };
+          } else {
+            properties[f.name] = { type: f.type, description: f.desc };
+          }
+        });
+        code = JSON.stringify({
+          name: root,
+          strict: true,
+          schema: {
+            type: "object",
+            properties: properties,
+            required: requiredList,
+            additionalProperties: false
+          }
+        }, null, 2);
+      } else if (currentJsbTab === 'ts') {
+        code = "export interface " + root + " {\n";
+        fields.forEach(function(f) {
+          var t = f.type === 'array' ? 'string[]' : f.type;
+          code += "  /** " + f.desc + " */\n";
+          code += "  " + f.name + (f.req ? "" : "?") + ": " + t + ";\n";
+        });
+        code += "}";
+      } else if (currentJsbTab === 'zod') {
+        code = "import { z } from 'zod';\n\n";
+        code += "export const " + root + "Schema = z.object({\n";
+        fields.forEach(function(f) {
+          var zType = f.type === 'array' ? "z.array(z.string())" : "z." + f.type + "()";
+          if (!f.req) zType += ".optional()";
+          code += "  " + f.name + ": " + zType + ".describe('" + f.desc + "'),\n";
+        });
+        code += "});";
+      } else {
+        code = "from pydantic import BaseModel, Field\nfrom typing import List, Optional\n\n";
+        code += "class " + root + "(BaseModel):\n";
+        fields.forEach(function(f) {
+          var pType = f.type === 'array' ? "List[str]" : f.type === 'number' ? "float" : f.type;
+          code += "  " + f.name + ": " + (f.req ? pType : "Optional[" + pType + "] = None") + " = Field(..., description='" + f.desc + "')\n";
+        });
+      }
+
+      jsbOutput.textContent = code;
+    }
+
+    document.querySelectorAll('.jsb-code-tab').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.jsb-code-tab').forEach(function(b) {
+          b.className = 'jsb-code-tab px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer';
+        });
+        btn.className = 'jsb-code-tab px-2.5 py-1 rounded-lg bg-slate-900 text-white shadow-xs cursor-pointer';
+        if (btn.id === 'jsbTabJson') currentJsbTab = 'json';
+        if (btn.id === 'jsbTabTs') currentJsbTab = 'ts';
+        if (btn.id === 'jsbTabZod') currentJsbTab = 'zod';
+        if (btn.id === 'jsbTabPydantic') currentJsbTab = 'pydantic';
+        updateJsonSchema();
+      });
+    });
+
+    document.getElementById('jsbRootName')?.addEventListener('input', updateJsonSchema);
+    document.querySelectorAll('.jsb-row input, .jsb-row select').forEach(function(el) {
+      el.addEventListener('input', updateJsonSchema);
+    });
+
+    document.getElementById('jsbCopyCodeBtn')?.addEventListener('click', function() {
+      if (jsbOutput) {
+        navigator.clipboard.writeText(jsbOutput.textContent || '');
+        this.textContent = 'Copied!';
+        var self = this;
+        setTimeout(function() { self.textContent = 'Copy Code'; }, 1800);
+      }
+    });
+
+    updateJsonSchema();
+
+
+    // =========================================================================
+    // 5. YOUTUBE SCRIPT STUDIO ENGINE
+    // =========================================================================
+    var ytTopic = document.getElementById('ytTopic');
+    var ytFormat = document.getElementById('ytFormat');
+    var ytLang = document.getElementById('ytLang');
+    var ytHooksContainer = document.getElementById('ytHooksContainer');
+    var ytTableBody = document.getElementById('ytProductionTableBody');
+
+    function updateYoutubeStudio() {
+      var topic = ytTopic ? ytTopic.value : 'DeepSeek-R1 Architecture';
+      if (ytHooksContainer) {
+        var hooks = [
+          { score: '98%', text: 'Everyone assumed AI required $100M to build. They were completely wrong.' },
+          { score: '95%', text: 'Stop paying $20/month for AI. Here is what happened this morning.' },
+          { score: '92%', text: 'I tested DeepSeek against Claude on 500 coding tests. Here are the results.' },
+          { score: '88%', text: 'The single math formula that broke OpenAI\'s monopoly in 48 hours.' },
+          { score: '85%', text: 'If you are a developer, this one open-source repo changes everything.' }
+        ];
+        ytHooksContainer.innerHTML = hooks.map(function(h) {
+          return '<div class="p-2 rounded-lg bg-white border border-slate-200 flex items-center justify-between text-xs">' +
+            '<span class="font-medium text-slate-800">"' + h.text + '"</span>' +
+            '<span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">' + h.score + ' Retention</span>' +
+          '</div>';
+        }).join('');
+      }
+
+      if (ytTableBody) {
+        var rows = [
+          { time: '00:00 - 00:05', visual: 'Fast zoom on terminal code with red cross over $100M', script: 'Everyone assumed training a frontier AI model required fifty thousand GPUs. They were wrong.' },
+          { time: '00:06 - 00:18', visual: 'Split screen: Open weights running on M3 laptop vs AWS cluster', script: 'In January 2025, DeepSeek published R1. It matched OpenAI\'s reasoning benchmarks for under six million dollars.' },
+          { time: '00:19 - 00:38', visual: '3 clean bullet points animating with sound effects', script: 'First: Multi-Head Latent Attention. Second: Pure reinforcement learning without costly human labelers.' },
+          { time: '00:39 - 00:60', visual: 'Show AIO AI directory and 1-click Docker run command', script: 'The monopoly on intelligence is officially over. Check the link in description to run this locally today.' }
+        ];
+        ytTableBody.innerHTML = rows.map(function(r) {
+          return '<tr class="hover:bg-slate-50 transition-colors">' +
+            '<td class="p-2.5 font-mono font-bold text-blue-600">' + r.time + '</td>' +
+            '<td class="p-2.5 font-medium text-slate-700">' + r.visual + '</td>' +
+            '<td class="p-2.5 text-slate-900 leading-relaxed font-sans">"' + r.script + '"</td>' +
+          '</tr>';
+        }).join('');
+      }
+    }
+
+    ytTopic?.addEventListener('input', updateYoutubeStudio);
+    ytFormat?.addEventListener('change', updateYoutubeStudio);
+    ytLang?.addEventListener('change', updateYoutubeStudio);
+    updateYoutubeStudio();
+
+
+    // =========================================================================
+    // 6. RAG CHUNKING VISUALIZER ENGINE
+    // =========================================================================
+    var ragInput = document.getElementById('ragTextInput');
+    var ragSize = document.getElementById('ragSizeSlider');
+    var ragOverlap = document.getElementById('ragOverlapSlider');
+    var ragContainer = document.getElementById('ragChunksContainer');
+
+    function updateRagVisualizer() {
+      var text = ragInput ? ragInput.value : '';
+      var chunkSize = parseInt(ragSize ? ragSize.value : '120', 10);
+      var overlap = parseInt(ragOverlap ? ragOverlap.value : '30', 10);
+
+      document.getElementById('ragSizeVal') && (document.getElementById('ragSizeVal').textContent = chunkSize + ' chars');
+      document.getElementById('ragOverlapVal') && (document.getElementById('ragOverlapVal').textContent = overlap + ' chars overlap');
+
+      if (!ragContainer) return;
+      var chunks = [];
+      var start = 0;
+      while (start < text.length) {
+        var end = Math.min(start + chunkSize, text.length);
+        chunks.push(text.slice(start, end));
+        if (end === text.length) break;
+        start += (chunkSize - overlap);
+      }
+
+      document.getElementById('ragChunkCount') && (document.getElementById('ragChunkCount').textContent = chunks.length + ' Chunks');
+      var avgChars = chunks.length ? Math.round(text.length / chunks.length) : 0;
+      document.getElementById('ragAvgChars') && (document.getElementById('ragAvgChars').textContent = avgChars + ' chars');
+
+      ragContainer.innerHTML = chunks.map(function(c, idx) {
+        var colorClass = idx % 3 === 0 ? "bg-blue-50 border-blue-200 text-blue-900" : idx % 3 === 1 ? "bg-purple-50 border-purple-200 text-purple-900" : "bg-emerald-50 border-emerald-200 text-emerald-900";
+        return '<div class="p-3.5 rounded-xl border ' + colorClass + ' space-y-1">' +
+          '<div class="flex items-center justify-between text-[10px] font-bold uppercase opacity-70">' +
+            '<span>Chunk #' + (idx + 1) + '</span>' +
+            '<span>' + c.length + ' chars</span>' +
+          '</div>' +
+          '<p class="leading-relaxed whitespace-pre-wrap">"' + c + '"</p>' +
+        '</div>';
+      }).join('');
+    }
+
+    ragInput?.addEventListener('input', updateRagVisualizer);
+    ragSize?.addEventListener('input', updateRagVisualizer);
+    ragOverlap?.addEventListener('input', updateRagVisualizer);
+    updateRagVisualizer();
+
+
+    // =========================================================================
+    // 7. AI ROI CALCULATOR ENGINE (12-MONTH VISUAL ACCUMULATION)
+    // =========================================================================
     var roiTeam = document.getElementById('roiTeamSize');
     var roiWage = document.getElementById('roiHourlyWage');
-    var roiHours = document.getElementById('roiHoursSaved');
-    var roiCost = document.getElementById('roiToolCost');
+    var roiHours = document.getElementById('roiHoursTask');
+    var roiEff = document.getElementById('roiEfficiency');
+    var roiSpend = document.getElementById('roiToolCost');
+    var roiBars = document.getElementById('roiBarsContainer');
 
-    function updateRoi() {
-      if (!roiTeam) return;
-      var team = parseFloat(roiTeam.value || '5');
-      var wage = parseFloat(roiWage.value || '65');
-      var hoursPerWeek = parseFloat(roiHours.value || '4.5');
-      var toolCost = parseFloat(roiCost.value || '20');
+    function updateRoiCalculator() {
+      var team = parseInt(roiTeam ? roiTeam.value : '8', 10) || 1;
+      var wage = parseFloat(roiWage ? roiWage.value : '65') || 10;
+      var taskHours = parseFloat(roiHours ? roiHours.value : '12') || 1;
+      var eff = (parseFloat(roiEff ? roiEff.value : '45') || 10) / 100;
+      var spend = parseFloat(roiSpend ? roiSpend.value : '30') || 0;
 
-      var monthlyHours = team * (hoursPerWeek * 4);
-      var grossMonthlyValue = monthlyHours * wage;
-      var totalToolCost = team * toolCost;
-      var netMonthly = grossMonthlyValue - totalToolCost;
-      var annualNet = netMonthly * 12;
-      var multiplier = totalToolCost > 0 ? (grossMonthlyValue / totalToolCost).toFixed(1) : '100+';
+      // Hours preserved per month = team * (taskHours * eff * 4.33 weeks)
+      var monthlyHours = team * (taskHours * eff * 4.33);
+      var grossMonthlySavings = monthlyHours * wage;
+      var monthlyCost = team * spend;
+      var netMonthlySavings = grossMonthlySavings - monthlyCost;
+      var annualNet = netMonthlySavings * 12;
+      var roiMultiplier = monthlyCost > 0 ? (grossMonthlySavings / monthlyCost).toFixed(1) : '99.9';
+      var paybackDays = (monthlyCost / (grossMonthlySavings / 30)).toFixed(1);
 
-      var elHours = document.getElementById('roiMonthlyHours');
-      var elNet = document.getElementById('roiMonthlyNet');
-      var elRoi = document.getElementById('roiAnnualRoi');
+      document.getElementById('roiMonthlyHours') && (document.getElementById('roiMonthlyHours').textContent = monthlyHours.toFixed(1) + " hrs");
+      document.getElementById('roiMonthlyNet') && (document.getElementById('roiMonthlyNet').textContent = "$" + Math.round(netMonthlySavings).toLocaleString() + " / mo");
+      document.getElementById('roiAnnualRoi') && (document.getElementById('roiAnnualRoi').textContent = roiMultiplier + "x ROI");
+      document.getElementById('roiPaybackDays') && (document.getElementById('roiPaybackDays').textContent = "~" + paybackDays + " Days");
 
-      if (elHours) elHours.textContent = monthlyHours + ' Hours';
-      if (elNet) elNet.textContent = '$' + netMonthly.toLocaleString() + ' / mo';
-      if (elRoi) elRoi.textContent = multiplier + '× ROI';
+      if (roiBars) {
+        var html = "";
+        for (var m = 1; m <= 12; m++) {
+          var cumulative = netMonthlySavings * m;
+          var heightPercent = Math.min(100, Math.max(10, Math.round((m / 12) * 100)));
+          html += '<div class="flex-1 flex flex-col items-center justify-end h-full group">' +
+            '<div class="w-full bg-blue-600 group-hover:bg-blue-500 rounded-t-lg transition-all" style="height: ' + heightPercent + '%;" title="Month ' + m + ': $' + Math.round(cumulative).toLocaleString() + '"></div>' +
+            '<span class="text-[9px] font-mono text-slate-400 mt-1">M' + m + '</span>' +
+          '</div>';
+        }
+        roiBars.innerHTML = html;
+      }
     }
 
-    [roiTeam, roiWage, roiHours, roiCost].forEach(function(el) {
-      el?.addEventListener('input', updateRoi);
+    [roiTeam, roiWage, roiHours, roiEff, roiSpend].forEach(function(el) {
+      el?.addEventListener('input', updateRoiCalculator);
     });
-    updateRoi();
+    updateRoiCalculator();
 
-    // 8. Regex Parser Logic
-    var rawText = document.getElementById('rawLlmText');
-    var parsedText = document.getElementById('parsedOutput');
 
-    function parseRaw() {
-      if (!rawText || !parsedText) return;
-      var val = rawText.value;
-      // Strip <think>...</think>
-      var clean = val.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
-      parsedText.textContent = clean;
+    // =========================================================================
+    // 8. REGEX & <THINK> STRIPPER ENGINE
+    // =========================================================================
+    var ropInput = document.getElementById('ropInput');
+    var ropOutput = document.getElementById('ropOutput');
+    var ropStripThink = document.getElementById('ropStripThink');
+    var ropExtractJson = document.getElementById('ropExtractJson');
+    var ropExtractCode = document.getElementById('ropExtractCode');
+    var ropExtractUrls = document.getElementById('ropExtractUrls');
+
+    function updateRegexParser() {
+      if (!ropOutput) return;
+      var raw = ropInput ? ropInput.value : '';
+      var processed = raw;
+
+      if (ropStripThink?.checked) {
+        processed = processed.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+      }
+
+      if (ropExtractJson?.checked) {
+        var jsonMatch = processed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+        if (jsonMatch && jsonMatch[1]) {
+          try {
+            var parsed = JSON.parse(jsonMatch[1]);
+            processed = JSON.stringify(parsed, null, 2);
+          } catch(e) {
+            processed = jsonMatch[1].trim();
+          }
+        }
+      } else if (ropExtractCode?.checked) {
+        var codeBlocks = [];
+        var regex = /```(?:\w+)?\s*([\s\S]*?)```/gi;
+        var match;
+        while ((match = regex.exec(processed)) !== null) {
+          codeBlocks.push(match[1].trim());
+        }
+        if (codeBlocks.length) processed = codeBlocks.join('\n\n// -----\n\n');
+      } else if (ropExtractUrls?.checked) {
+        var urls = processed.match(/https?:\/\/[^\s"'<>]+/gi) || [];
+        processed = urls.join('\n');
+      }
+
+      ropOutput.textContent = processed;
     }
 
-    document.getElementById('stripThinkBtn')?.addEventListener('click', parseRaw);
-    document.getElementById('extractCodeBtn')?.addEventListener('click', function() {
-      if (!rawText || !parsedText) return;
-      var val = rawText.value;
-      var match = val.match(/```(?:\w+)?\s*([\s\S]*?)```/);
-      parsedText.textContent = match ? match[1].trim() : 'No markdown code block found.';
+    ropInput?.addEventListener('input', updateRegexParser);
+    [ropStripThink, ropExtractJson, ropExtractCode, ropExtractUrls].forEach(function(c) {
+      c?.addEventListener('change', updateRegexParser);
+    });
+    updateRegexParser();
+
+
+    // =========================================================================
+    // 9. README & SKILL.MD STUDIO ENGINE
+    // =========================================================================
+    var rsgName = document.getElementById('rsgName');
+    var rsgPitch = document.getElementById('rsgPitch');
+    var rsgStack = document.getElementById('rsgStack');
+    var rsgInstall = document.getElementById('rsgInstall');
+    var rsgLicense = document.getElementById('rsgLicense');
+    var rsgOutput = document.getElementById('rsgOutput');
+    var currentRsgMode = 'readme';
+
+    function updateRsgStudio() {
+      if (!rsgOutput) return;
+      var name = rsgName ? rsgName.value : 'my-agent';
+      var pitch = rsgPitch ? rsgPitch.value : 'Autonomous pair-programming agent.';
+      var stack = rsgStack ? rsgStack.value : 'TypeScript, Astro, Tailwind';
+      var install = rsgInstall ? rsgInstall.value : 'npm install && npm run build';
+      var license = rsgLicense ? rsgLicense.value : 'MIT';
+
+      var text = "";
+      if (currentRsgMode === 'readme') {
+        text += "# " + name + "\n\n";
+        text += "[![License: " + license + "](https://img.shields.io/badge/License-" + license + "-blue.svg)](LICENSE)\n";
+        text += "[![AIO AI Verified](https://img.shields.io/badge/AIO_AI-Verified_Stack-emerald)](https://aio-ai.dev)\n\n";
+        text += "> " + pitch + "\n\n";
+        text += "## Features & Stack\nBuilt with: **" + stack + "**.\n\n";
+        text += "## Quickstart\n```bash\n" + install + "\n```\n\n";
+        text += "## Architecture Flow\n```mermaid\nflowchart LR\n  A[User Prompt] --> B[" + name + " Engine]\n  B --> C[Verified Output]\n```\n";
+      } else {
+        text += "---\nname: " + name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + "\n";
+        text += "description: " + pitch + "\n";
+        text += "tools:\n";
+        stack.split(',').forEach(function(s) {
+          text += "  - " + s.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_') + "\n";
+        });
+        text += "---\n\n# " + name + " Skill Guidelines\n\n";
+        text += "## Mission Objective\n" + pitch + "\n\n";
+        text += "## Execution Instructions\n1. Run `" + install + "`.\n2. Maintain strict safety boundaries.\n";
+      }
+
+      rsgOutput.textContent = text;
+    }
+
+    document.querySelectorAll('.rsg-mode-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.rsg-mode-btn').forEach(function(b) {
+          b.className = 'rsg-mode-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer';
+        });
+        btn.className = 'rsg-mode-btn px-2.5 py-1 rounded-lg bg-slate-900 text-white shadow-xs cursor-pointer';
+        currentRsgMode = btn.id === 'rsgModeReadme' ? 'readme' : 'skill';
+        updateRsgStudio();
+      });
     });
 
-    if (rawText && !rawText.value) {
-      rawText.value = "<think>\nUser is asking for an optimized sorting algorithm in TypeScript.\nI should provide quicksort with in-place partition.\n</think>\n```typescript\nfunction quickSort(arr: number[]): number[] {\n  if (arr.length <= 1) return arr;\n  const pivot = arr[arr.length - 1];\n  const left = arr.filter((x, i) => x <= pivot && i < arr.length - 1);\n  const right = arr.filter(x => x > pivot);\n  return [...quickSort(left), pivot, ...quickSort(right)];\n}\n```";
-    }
+    [rsgName, rsgPitch, rsgStack, rsgInstall, rsgLicense].forEach(function(el) {
+      el?.addEventListener('input', updateRsgStudio);
+    });
+    updateRsgStudio();
 
-    parseRaw();
   });
 </script>

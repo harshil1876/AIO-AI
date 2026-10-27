@@ -362,6 +362,7 @@ function getToolMetadata(tool: ToolData) {
     // Pagination State
     let currentPage = 1;
     let itemsPerPage = 20;
+    let currentTotalPages = 1;
 
     const toolRangeStart = document.getElementById('toolRangeStart');
     const toolRangeEnd = document.getElementById('toolRangeEnd');
@@ -477,6 +478,7 @@ function getToolMetadata(tool: ToolData) {
       const activeList = onlyTop10 ? matchedWrappers.slice(0, 10) : matchedWrappers;
       const totalCount = activeList.length;
       const totalPages = Math.max(1, Math.ceil(totalCount / itemsPerPage));
+      currentTotalPages = totalPages;
 
       if (resetPage) {
         currentPage = 1;
@@ -513,23 +515,18 @@ function getToolMetadata(tool: ToolData) {
       if (toolRangeEnd) toolRangeEnd.textContent = String(endIdx);
       if (pageIndicatorText) pageIndicatorText.textContent = `Page ${currentPage} of ${totalPages}`;
 
-      // Render Page Numbers
+      // Render Page Numbers with data-page attributes
       if (paginationNumbers) {
-        paginationNumbers.innerHTML = '';
+        let html = '';
         for (let p = 1; p <= totalPages; p++) {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.textContent = String(p);
-          btn.className = (p === currentPage)
-            ? 'w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold text-xs shadow-xs'
-            : 'w-8 h-8 rounded-lg bg-white border border-[#CBD5E1] text-slate-700 hover:bg-slate-50 font-medium text-xs transition-colors';
-          btn.addEventListener('click', () => {
-            currentPage = p;
-            applyFilters(false);
-            if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          });
-          paginationNumbers.appendChild(btn);
+          const isActive = p === currentPage;
+          html += `<button type="button" data-page="${p}" class="${
+            isActive
+              ? 'w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold text-xs shadow-xs cursor-default'
+              : 'w-8 h-8 rounded-lg bg-white border border-[#CBD5E1] text-slate-700 hover:bg-slate-50 font-medium text-xs transition-colors cursor-pointer'
+          }">${p}</button>`;
         }
+        paginationNumbers.innerHTML = html;
       }
 
       // Update Prev / Next button states
@@ -566,6 +563,20 @@ function getToolMetadata(tool: ToolData) {
       }
     }
 
+    // Delegated click handler on pagination container
+    paginationNumbers?.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const btn = target.closest<HTMLButtonElement>('[data-page]');
+      if (btn) {
+        const pageNum = parseInt(btn.getAttribute('data-page') || '1', 10);
+        if (pageNum && pageNum !== currentPage) {
+          currentPage = pageNum;
+          applyFilters(false);
+          if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+
     prevPageBtn?.addEventListener('click', () => {
       if (currentPage > 1) {
         currentPage--;
@@ -575,9 +586,11 @@ function getToolMetadata(tool: ToolData) {
     });
 
     nextPageBtn?.addEventListener('click', () => {
-      currentPage++;
-      applyFilters(false);
-      if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (currentPage < currentTotalPages) {
+        currentPage++;
+        applyFilters(false);
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
 
     itemsPerPageSelect?.addEventListener('change', () => {

@@ -379,36 +379,67 @@ import Footer from '../components/Footer.astro';
       <!-- TAB 6: SETTINGS & BILLING -->
       <div class="tab-panel hidden space-y-6" id="panel-settings">
         <div class="card-aurora p-6 sm:p-8 space-y-5">
-          <h2 class="text-base font-black text-slate-900 pb-3 border-b border-slate-200">
-            Workspace Preferences &amp; Invoices
-          </h2>
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+            <h2 class="text-base font-black text-slate-900">
+              Workspace Profile &amp; Preferences
+            </h2>
+            <button 
+              type="button" 
+              id="saveSettingsBtn" 
+              class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs cursor-pointer shadow-xs transition-colors"
+            >
+              Save Profile Settings &rarr;
+            </button>
+          </div>
 
-          <div class="space-y-4 text-xs max-w-xl">
-            <div class="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200">
-              <div>
-                <span class="font-bold text-slate-900 block">Current Plan</span>
-                <span class="text-slate-500 text-[11px]">Builder Pro Subscription (Annual)</span>
-              </div>
-              <a href="/pricing" class="font-bold text-blue-600 hover:underline">Change Plan &rarr;</a>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Display Name:</label>
+              <input type="text" id="settingsDisplayName" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-bold outline-none focus:border-blue-600" value="Harshil Patel" />
             </div>
 
-            <div class="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200">
-              <div>
-                <span class="font-bold text-slate-900 block">Default Currency</span>
-                <span class="text-slate-500 text-[11px]">USD ($) / INR (₹) switcher</span>
-              </div>
-              <span class="font-mono font-bold text-slate-700">Dynamic</span>
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Builder Handle (@username):</label>
+              <input type="text" id="settingsHandle" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-mono text-slate-800 outline-none focus:border-blue-600" value="harshil1876" />
             </div>
 
-            <div class="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200">
-              <div>
-                <span class="font-bold text-slate-900 block">Session Management</span>
-                <span class="text-slate-500 text-[11px]">Connected via Supabase Auth JWT</span>
-              </div>
-              <button type="button" id="settingsSignOutBtn" class="text-red-600 font-bold hover:underline cursor-pointer">
-                Sign Out Everywhere
-              </button>
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Professional Role / Headline:</label>
+              <input type="text" id="settingsRole" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-medium outline-none focus:border-blue-600" value="Full-Stack AI Architect" />
             </div>
+
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">GitHub Username:</label>
+              <input type="text" id="settingsGithub" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-mono text-slate-800 outline-none focus:border-blue-600" value="harshil1876" />
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Bio / Mission Statement:</label>
+              <textarea id="settingsBio" rows="2" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-medium outline-none focus:border-blue-600 resize-none">Architecting intent-driven generative platforms, autonomous agent ecosystems, and verifiable LLM pipelines.</textarea>
+            </div>
+
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Default Platform Currency:</label>
+              <select id="settingsCurrency" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-mono font-bold outline-none cursor-pointer">
+                <option value="USD" selected>USD ($) — Global Standard</option>
+                <option value="INR">INR (₹) — Domestic India</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Current Membership Tier:</label>
+              <div class="p-2.5 rounded-xl bg-slate-100 border border-slate-200 font-mono font-bold text-slate-700 flex items-center justify-between">
+                <span>Builder Pro (Annual)</span>
+                <a href="/pricing" class="text-blue-600 hover:underline text-[11px]">Upgrade &rarr;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-200 flex items-center justify-between text-xs">
+            <span class="text-slate-500 font-mono">Connected via Supabase Auth JWT Session</span>
+            <button type="button" id="settingsSignOutBtn" class="text-red-600 font-bold hover:underline cursor-pointer">
+              Sign Out Everywhere
+            </button>
           </div>
         </div>
       </div>
@@ -509,7 +540,55 @@ import Footer from '../components/Footer.astro';
       setTimeout(() => { copyPersonalInviteBtn.textContent = 'Copy Link'; }, 1800);
     });
 
-    // 5. Logout
+    // 5. Save Settings Handler (Real Supabase + localStorage Persistence)
+    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+    saveSettingsBtn?.addEventListener('click', async () => {
+      const name = (document.getElementById('settingsDisplayName') as HTMLInputElement)?.value.trim();
+      const handle = (document.getElementById('settingsHandle') as HTMLInputElement)?.value.trim();
+      const role = (document.getElementById('settingsRole') as HTMLInputElement)?.value.trim();
+      const github = (document.getElementById('settingsGithub') as HTMLInputElement)?.value.trim();
+      const bio = (document.getElementById('settingsBio') as HTMLTextAreaElement)?.value.trim();
+      const currency = (document.getElementById('settingsCurrency') as HTMLSelectElement)?.value;
+
+      const updatedUser = {
+        ...activeUser,
+        name: name || activeUser.name,
+        handle: handle || activeUser.handle,
+        role: role || activeUser.role,
+        github: github || activeUser.github,
+        bio: bio || activeUser.bio,
+        currency: currency || 'USD'
+      };
+
+      // 1. Persist to Supabase profiles
+      try {
+        if (activeUser?.id) {
+          await supabase.from('profiles').upsert({
+            id: activeUser.id,
+            full_name: name,
+            username: handle,
+            bio: bio,
+            website: github ? `https://github.com/${github}` : undefined
+          });
+        }
+      } catch(err) {
+        console.warn('Supabase profile upsert fallback:', err);
+      }
+
+      // 2. Persist to localStorage
+      localStorage.setItem('aio_user', JSON.stringify(updatedUser));
+
+      // 3. Increment Contribution Heatmap
+      if (heatmapGrid && heatmapGrid.lastElementChild) {
+        (heatmapGrid.lastElementChild as HTMLElement).className = 'w-2.5 h-2.5 rounded-xs bg-emerald-600 transition-colors hover:ring-1 hover:ring-slate-900 cursor-pointer';
+      }
+
+      saveSettingsBtn.textContent = 'Saved ✓';
+      setTimeout(() => { saveSettingsBtn.textContent = 'Save Profile Settings →'; }, 1800);
+      alert('✓ Profile settings saved and synchronized across your workspace!');
+    });
+
+    // 6. Logout
     const doLogout = async () => {
       try { await supabase.auth.signOut(); } catch(e) {}
       localStorage.removeItem('aio_user');

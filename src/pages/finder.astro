@@ -415,12 +415,14 @@ const TOP_25_TASKS = [
 
     var currentTier = 'A';
     var currentIntent = 'Automated git pull request review and security scan';
+    var currentPersona = 'engineer';
+    var currentBudget = 'free';
 
-    // Blueprint Data Matrix
+    // Multi-Domain Blueprint Solutions Matrix
     var solutions = {
       code: {
         A: {
-          title: 'Ollama + DeepSeek Coder V2',
+          title: 'Ollama + DeepSeek Coder V2 + Git Hook',
           pill: '100% Free / Self-Hosted Stack',
           cost: '$0 / ₹0',
           desc: 'Run 16B code reasoning weights completely on your local GPU with zero API subscription cost and 100% data sovereignty.',
@@ -435,10 +437,10 @@ const TOP_25_TASKS = [
           setup: '~10 Mins (Docker / CLI)',
           cli: 'ollama run deepseek-coder-v2:16b',
           prompt: 'You are a senior security code review agent. Audit the incoming git patch for vulnerabilities, memory leaks, and performance regressions. Format output as GitHub markdown diffs.',
-          stackUrl: '/stack-builder?preset=local-code-review'
+          stackUrl: '/stack-builder?name=Local+Code+Review&l1=Git+CLI&l2=DeepSeek-Coder-V2&l3=Octokit'
         },
         B: {
-          title: 'Cursor Composer Pro',
+          title: 'Cursor Composer Pro + Claude 3.5 Sonnet',
           pill: 'Best-Value Freemium Cloud',
           cost: '$20 / ₹1,650',
           desc: 'Cloud-accelerated multi-file context reasoning with Claude 3.5 Sonnet and 500 fast requests per month.',
@@ -453,10 +455,10 @@ const TOP_25_TASKS = [
           setup: '~2 Mins (Desktop App)',
           cli: 'cursor --install-extension aio.ai-toolkit',
           prompt: 'Review current git diff against project architecture conventions. Propose clean refactors and unit tests.',
-          stackUrl: '/stack-builder?preset=cursor-pro'
+          stackUrl: '/stack-builder?name=Cursor+Cloud+Architect&l1=Cursor+IDE&l2=Claude+Sonnet&l3=Git+Staging'
         },
         C: {
-          title: 'Enterprise Multi-Agent Code QA',
+          title: 'Enterprise Multi-Agent Code QA & Compliance',
           pill: 'Enterprise Automated Pipeline',
           cost: '$150 / ₹12,500',
           desc: 'End-to-end automated PR review bot with SonarQube integration, OWASP Top 10 auditing, and automated rollback triggers.',
@@ -471,7 +473,7 @@ const TOP_25_TASKS = [
           setup: '~30 Mins (CI/CD Pipeline)',
           cli: 'docker run -e ANTHROPIC_API_KEY=$KEY aio/pr-agent:latest',
           prompt: 'Execute full enterprise audit: Security, Performance, Documentation, Test Coverage. Block PR if risk score > 4.',
-          stackUrl: '/stack-builder?preset=enterprise-qa'
+          stackUrl: '/stack-builder?name=Enterprise+Code+QA&l1=GitHub+Actions&l2=Claude+API&l3=Slack+Alerts'
         }
       },
       video: {
@@ -491,7 +493,7 @@ const TOP_25_TASKS = [
           setup: '~15 Mins (Docker / Python)',
           cli: 'git clone https://github.com/comfyanonymous/ComfyUI',
           prompt: 'Write a high-retention 60s script about historical mysteries. Include frame visual descriptions for image generator.',
-          stackUrl: '/stack-builder?preset=comfyui-video'
+          stackUrl: '/stack-builder?name=Local+Shorts+Studio&l1=Ollama+Script&l2=ComfyUI+Flux&l3=FFMPEG'
         },
         B: {
           title: 'InVideo AI Pro Studio',
@@ -509,7 +511,7 @@ const TOP_25_TASKS = [
           setup: 'Instant (No Install)',
           cli: 'curl -X POST https://api.invideo.io/v1/generate ...',
           prompt: 'Create a dynamic 45-second educational short about space exploration with upbeat pacing and subtitles.',
-          stackUrl: '/stack-builder?preset=invideo-studio'
+          stackUrl: '/stack-builder?name=InVideo+Cloud+Studio&l1=InVideo+AI&l2=ElevenLabs&l3=YouTube+Exporter'
         },
         C: {
           title: 'Headless Creator Media Pipeline',
@@ -527,15 +529,136 @@ const TOP_25_TASKS = [
           setup: '~45 Mins (Workflow Studio)',
           cli: 'npx @aio/media-pipeline --publish daily',
           prompt: 'Synthesize morning tech digest into 60s vertical format with high-contrast subtitles and hook statement.',
-          stackUrl: '/stack-builder?preset=creator-pipeline'
+          stackUrl: '/stack-builder?name=Automated+Media+Engine&l1=n8n+Scraper&l2=HeyGen+API&l3=YouTube+API'
+        }
+      },
+      indic: {
+        A: {
+          title: 'Bhashini Open Indic Speech & Translation',
+          pill: '100% Free / Sovereign Stack',
+          cost: '$0 / ₹0',
+          desc: 'Indian public digital infrastructure APIs powering 22 scheduled languages with zero foreign server transit.',
+          step1Tool: 'Bhashini ASR Model',
+          step1Desc: 'Transcribes regional dialects (Hindi, Tamil, Telugu, Marathi).',
+          step2Tool: 'AI4Bharat IndicTrans2',
+          step2Desc: 'Translates colloquial conversational phrases into English.',
+          step3Tool: 'Bhashini IndicTTS',
+          step3Desc: 'Synthesizes natural expressive speech in local vernacular.',
+          hardware: 'Cloud DPI or Local ONNX Model',
+          sovereignty: '100% Indian Sovereign Data Residency',
+          setup: '~10 Mins (API Integration)',
+          cli: 'curl -X POST https://dhruva-api.bhashini.gov.in/services/inference ...',
+          prompt: 'Transcribe customer voice note in Marathi and respond in fluent spoken Marathi with courteous banking guidance.',
+          stackUrl: '/stack-builder?name=Sovereign+Indic+Speech&l1=Bhashini+ASR&l2=IndicTrans2&l3=IndicTTS'
+        },
+        B: {
+          title: 'Sarvam AI Multi-Language Suite',
+          pill: 'Best-Value Freemium Cloud',
+          cost: '$15 / ₹1,250',
+          desc: 'Commercial Indic voice and LLM foundation models optimized specifically for Indian enterprise context and accents.',
+          step1Tool: 'Sarvam Saarika Voice ASR',
+          step1Desc: 'State-of-the-art recognition of Indian accents and code-switching.',
+          step2Tool: 'Sarvam-2B Sovereign LLM',
+          step2Desc: '2B parameter model pre-trained on diverse Indian vernacular corpora.',
+          step3Tool: 'Sarvam Bulbul TTS',
+          step3Desc: 'Expressive synthetic voice in 10 major Indian languages.',
+          hardware: 'Cloud REST API',
+          sovereignty: 'Domestic Indian Cloud Residency',
+          setup: '~5 Mins (Python SDK)',
+          cli: 'pip install sarvam-ai && sarvam chat --model sarvam-2b',
+          prompt: 'Process Hinglish customer query regarding UPI transaction failure and formulate clear step-by-step resolution.',
+          stackUrl: '/stack-builder?name=Sarvam+Voice+Suite&l1=Saarika+ASR&l2=Sarvam-2B&l3=Bulbul+TTS'
+        },
+        C: {
+          title: 'Yellow.ai / Haptik Sovereign Enterprise CX',
+          pill: 'Enterprise Automated Pipeline',
+          cost: '$200 / ₹16,800',
+          desc: 'Full-scale omnichannel conversational AI platform with banking-grade compliance and WhatsApp CRM integrations.',
+          step1Tool: 'WhatsApp Business API Gateway',
+          step1Desc: 'Direct integration with WhatsApp, SMS, and IVR telephony.',
+          step2Tool: 'Yellow.ai DynamicNLP',
+          step2Desc: 'Zero-shot intent recognition across 35 Indian dialects.',
+          step3Tool: 'Core Banking API Integration',
+          step3Desc: 'Executes KYC lookups, balance checks, and support ticket escalations.',
+          hardware: 'Enterprise Managed Cloud',
+          sovereignty: 'RBI & DPDP Act Compliant',
+          setup: '~2 Weeks (Enterprise Onboarding)',
+          cli: 'yellow-cli deploy --environment production --region in-central-1',
+          prompt: 'Handle customer loan eligibility inquiry with Aadhaar KYC verification workflow and generate approval letter.',
+          stackUrl: '/stack-builder?name=Omnichannel+Indic+CX&l1=WhatsApp+Gateway&l2=Yellow+NLP&l3=Banking+Core'
+        }
+      },
+      rag: {
+        A: {
+          title: 'Ollama + ChromaDB + DeepSeek-R1 (Private)',
+          pill: '100% Free / Self-Hosted Stack',
+          cost: '$0 / ₹0',
+          desc: 'Self-hosted vector retrieval over confidential PDF documents and corporate manuals with zero cloud exposure.',
+          step1Tool: 'pypdf / LangChain Document Loader',
+          step1Desc: 'Extracts clean text and metadata from internal PDF files.',
+          step2Tool: 'Local ChromaDB Vector Database',
+          step2Desc: 'Stores dense embeddings generated by local BGE-M3 model.',
+          step3Tool: 'Ollama DeepSeek-R1 8B',
+          step3Desc: 'Synthesizes reasoning answers with exact source citation citations.',
+          hardware: '12GB VRAM / 16GB RAM',
+          sovereignty: 'Air-Gapped / Zero Network Telemetry',
+          setup: '~10 Mins (Docker Compose)',
+          cli: 'docker run -p 8000:8000 chromadb/chroma',
+          prompt: 'Answer the user question based strictly on the retrieved document context chunks. Cite file name and page number.',
+          stackUrl: '/stack-builder?name=Private+Offline+RAG&l1=ChromaDB&l2=BGE-M3&l3=DeepSeek-R1'
+        },
+        B: {
+          title: 'Pinecone + OpenAI Text-Embedding-3 + Claude',
+          pill: 'Best-Value Freemium Cloud',
+          cost: '$25 / ₹2,100',
+          desc: 'Managed serverless vector search with high-precision embeddings and long-context synthesis.',
+          step1Tool: 'Pinecone Serverless Index',
+          step1Desc: 'Instant indexing with zero infrastructure provisioning.',
+          step2Tool: 'OpenAI text-embedding-3-small',
+          step2Desc: 'Cost-effective 1536-dimension embeddings ($0.02/1M).',
+          step3Tool: 'Claude 3.5 Sonnet (200k Context)',
+          step3Desc: 'Reranks retrieved candidate chunks and generates detailed technical brief.',
+          hardware: 'Cloud Hosted (0GB VRAM)',
+          sovereignty: 'Zero Retention Enterprise Agreement',
+          setup: '~15 Mins (Python / TypeScript)',
+          cli: 'pip install pinecone-client openai anthropic',
+          prompt: 'Synthesize research findings across 10 technical reports into an executive comparison matrix.',
+          stackUrl: '/stack-builder?name=Serverless+Cloud+RAG&l1=Pinecone&l2=Embed-3&l3=Claude+Sonnet'
+        },
+        C: {
+          title: 'Enterprise Qdrant Cluster + Cohere Rerank',
+          pill: 'Enterprise Automated Pipeline',
+          cost: '$180 / ₹15,000',
+          desc: 'High-throughput hybrid search (dense + sparse BM25) with cross-encoder reranking and RBAC document security.',
+          step1Tool: 'Qdrant Distributed Cluster',
+          step1Desc: 'Payload filtering with role-based document access controls.',
+          step2Tool: 'Cohere Rerank v3 API',
+          step2Desc: 'Optimizes top-10 chunk precision before context ingestion.',
+          step3Tool: 'GPT-4o Enterprise Gateway',
+          step3Desc: 'Generates compliant audit-logged responses with source diffs.',
+          hardware: 'Dedicated Kubernetes Cluster',
+          sovereignty: 'SOC2 Type II / HIPAA Certified',
+          setup: '~1 Day (Helm Chart)',
+          cli: 'helm install qdrant qdrant/qdrant -f enterprise-values.yaml',
+          prompt: 'Execute multi-hop reasoning across compliance archives. Highlight regulatory discrepancies in red annotations.',
+          stackUrl: '/stack-builder?name=Enterprise+Hybrid+RAG&l1=Qdrant&l2=Cohere+Rerank&l3=GPT-4o'
         }
       }
     };
 
     function updateArchitectView() {
       var q = currentIntent.toLowerCase();
-      var solKey = (q.includes('video') || q.includes('short') || q.includes('reel') || q.includes('media')) ? 'video' : 'code';
-      var data = solutions[solKey][currentTier] || solutions.code[currentTier];
+      var solKey = 'code';
+      if (q.includes('video') || q.includes('short') || q.includes('reel') || q.includes('media') || q.includes('youtube')) {
+        solKey = 'video';
+      } else if (q.includes('indic') || q.includes('hindi') || q.includes('regional') || q.includes('bhashini') || q.includes('sarvam') || q.includes('voiceover')) {
+        solKey = 'indic';
+      } else if (q.includes('rag') || q.includes('pdf') || q.includes('document') || q.includes('vector') || q.includes('search') || q.includes('private')) {
+        solKey = 'rag';
+      }
+
+      var domainSolutions = solutions[solKey] || solutions.code;
+      var data = domainSolutions[currentTier] || domainSolutions.A;
 
       // Update Header
       document.getElementById('tierPill').textContent = data.pill;
@@ -559,6 +682,43 @@ const TOP_25_TASKS = [
       document.getElementById('kitPromptText').textContent = data.prompt;
       document.getElementById('loadStackArchitectBtn').setAttribute('href', data.stackUrl);
     }
+
+    // Persona Chips
+    personaChips.forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        personaChips.forEach(function(c) {
+          c.className = 'persona-chip px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-400 font-medium text-xs cursor-pointer';
+        });
+        chip.className = 'persona-chip px-3.5 py-1.5 rounded-xl border border-blue-600 bg-blue-50 text-blue-700 font-bold text-xs cursor-pointer shadow-xs';
+        currentPersona = chip.getAttribute('data-persona') || 'engineer';
+        if (currentPersona === 'creator') currentIntent = 'Faceless YouTube Shorts & Reels Automation';
+        else if (currentPersona === 'researcher') currentIntent = 'Indic Speech Voiceover & Multilingual TTS';
+        else if (currentPersona === 'lead') currentIntent = 'Enterprise Multi-Agent Code QA & Compliance';
+        else currentIntent = 'Automated git pull request review and security scan';
+        if (promptArea) promptArea.value = currentIntent;
+        updateArchitectView();
+      });
+    });
+
+    // Budget Chips
+    budgetChips.forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        budgetChips.forEach(function(c) {
+          c.className = 'budget-chip px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-400 font-medium text-xs cursor-pointer';
+        });
+        chip.className = 'budget-chip px-3.5 py-1.5 rounded-xl border border-emerald-600 bg-emerald-50 text-emerald-800 font-bold text-xs cursor-pointer shadow-xs';
+        currentBudget = chip.getAttribute('data-budget') || 'free';
+        currentTier = currentBudget === 'free' ? 'A' : currentBudget === 'under50' ? 'B' : 'C';
+        tierButtons.forEach(function(b) {
+          if (b.getAttribute('data-tier') === currentTier) {
+            b.className = 'tier-tab-btn flex-1 py-2 px-3 rounded-xl bg-white text-blue-700 shadow-xs border border-blue-300 cursor-pointer font-bold';
+          } else {
+            b.className = 'tier-tab-btn flex-1 py-2 px-3 rounded-xl text-slate-600 hover:text-slate-900 cursor-pointer';
+          }
+        });
+        updateArchitectView();
+      });
+    });
 
     // Tier Switching Tabs
     tierButtons.forEach(function(btn) {
