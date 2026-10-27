@@ -2,75 +2,104 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ToolLogo from '../components/ToolLogo.astro';
 import { getAllTools } from '../services/dataService';
 import { WORKFLOWS_DATA } from '../data/workflowsData';
 import { OPEN_SOURCE_REPOS } from '../data/openSourceData';
 import { CREATORS_DATA } from '../data/creatorsData';
 
 const allTools = await getAllTools();
+
+// 25 High-Demand Engineering & Creator Tasks Directory
+const TOP_25_TASKS = [
+  { rank: 1, task: 'Automated Git PR Review & Security Scan', category: 'Code Assistants', freeTool: 'Ollama + DeepSeek Coder', proTool: 'Cursor Composer', workflowSlug: 'git-pr-review-agent', query: 'Automated git pull request review and security scan' },
+  { rank: 2, task: 'Faceless YouTube Shorts & Reels Automation', category: 'Video Generation', freeTool: 'ComfyUI + FFMPEG', proTool: 'InVideo AI', workflowSlug: 'youtube-shorts-automation', query: 'Faceless YouTube shorts and reels automation from trending topics' },
+  { rank: 3, task: 'Indic Speech Voiceover & Multilingual TTS', category: 'Regional AI', freeTool: 'Bhashini Public API', proTool: 'Sarvam AI', workflowSlug: 'indic-voice-agent', query: 'Indian language text to speech and voiceover in Hindi Tamil Telugu' },
+  { rank: 4, task: 'WhatsApp Autonomous Customer Support Bot', category: 'Autonomous Agents', freeTool: 'n8n + DeepSeek-R1', proTool: 'Yellow.ai / Haptik', workflowSlug: 'whatsapp-customer-support', query: 'Automated WhatsApp customer support bot with memory' },
+  { rank: 5, task: 'Private Offline PDF RAG Document Search', category: 'Research & Analysis', freeTool: 'ChromaDB + Ollama', proTool: 'Perplexity Pro', workflowSlug: 'offline-rag-pipeline', query: 'Private offline RAG document search over company PDFs on local hardware' },
+  { rank: 6, task: 'Full-Stack Web App from UI Wireframe', category: 'Web & App Builders', freeTool: 'v0 by Vercel (Free)', proTool: 'Bolt.new / Lovable', workflowSlug: 'wireframe-to-app', query: 'Generate full stack react web application from wireframe prompt' },
+  { rank: 7, task: 'Photorealistic Image Generation & Inpainting', category: 'Image & Art', freeTool: 'Flux.1 Schnell (Local)', proTool: 'Midjourney v6', workflowSlug: 'flux-creative-pipeline', query: 'Generate photorealistic images and asset artwork locally' },
+  { rank: 8, task: 'Podcast Audio Cleanup & Auto-Transcribe', category: 'Audio & Voice', freeTool: 'Whisper Large v3', proTool: 'ElevenLabs Reader', workflowSlug: 'podcast-transcribe-pipeline', query: 'Podcast audio cleanup and accurate speaker separated transcription' },
+  { rank: 9, task: 'Automated Outbound Email & Lead Enrichment', category: 'Sales & Marketing', freeTool: 'n8n + Firecrawl', proTool: 'Clay.com + Claude', workflowSlug: 'lead-enrichment-flow', query: 'Automated lead enrichment and personalized cold email pipeline' },
+  { rank: 10, task: 'Natural Language to Complex SQL Generator', category: 'Code Assistants', freeTool: 'Vanna.ai (Open Source)', proTool: 'Cursor / Claude Sonnet', workflowSlug: 'nl-to-sql-pipeline', query: 'Generate complex PostgreSQL queries from natural language business questions' },
+  { rank: 11, task: 'Local Model Inference on 8GB-16GB VRAM', category: 'Open Source', freeTool: 'llama.cpp / Ollama', proTool: 'Together.ai / RunPod', workflowSlug: 'local-llm-hosting', query: 'Run DeepSeek-R1 and Llama 3 locally on 8GB to 16GB VRAM' },
+  { rank: 12, task: 'Multi-Agent Competitive Intelligence Radar', category: 'Autonomous Agents', freeTool: 'LangGraph + Ollama', proTool: 'CrewAI Enterprise', workflowSlug: 'competitor-radar-agent', query: 'Autonomous multi-agent research pipeline tracking competitors and pricing' },
+  { rank: 13, task: 'Multilingual Healthcare Clinical Triage', category: 'Healthcare AI', freeTool: 'Qure.ai Sandbox', proTool: 'Qure.ai Commercial', workflowSlug: 'clinical-triage-ai', query: 'Automated chest X-ray and medical scan analysis in clinics' },
+  { rank: 14, task: 'Long-Form SEO Technical Article Drafter', category: 'Writing & Copy', freeTool: 'DeepSeek-V3 API', proTool: 'Writesonic / Claude', workflowSlug: 'seo-article-drafter', query: 'Draft 2000-word technical SEO engineering articles with clean formatting' },
+  { rank: 15, task: 'Real-Time Hacker News & ArXiv AI Digest', category: 'Research & Analysis', freeTool: 'Hugging Face Daily', proTool: 'Perplexity Enterprise', workflowSlug: 'hn-arxiv-digest', query: 'Curate daily breaking AI research papers and hacker news discussions' },
+  { rank: 16, task: 'Figma UI to Clean React Tailwind Component', category: 'Web & App Builders', freeTool: 'v0 free quota', proTool: 'Windsurf Cascade', workflowSlug: 'figma-to-react', query: 'Convert Figma designs into accessible React Tailwind components' },
+  { rank: 17, task: 'Voice Clone & Dubbing for Education', category: 'Audio & Voice', freeTool: 'ChatTTS (Open Source)', proTool: 'ElevenLabs Pro', workflowSlug: 'voice-dubbing-pipeline', query: 'Clone educator voice and dub educational course into 5 languages' },
+  { rank: 18, task: 'E-commerce Product Photo Background Studio', category: 'Image & Art', freeTool: 'ComfyUI BiRefNet', proTool: 'Photoroom Pro', workflowSlug: 'product-photo-studio', query: 'Remove product background and replace with studio lighting scene' },
+  { rank: 19, task: 'Slack / Discord DevOps Incident Summary Bot', category: 'Automation Workflows', freeTool: 'n8n Webhook + Ollama', proTool: 'PagerDuty + OpenAI', workflowSlug: 'devops-incident-bot', query: 'Summarize Datadog alert spikes and post post-mortem directly to Slack' },
+  { rank: 20, task: 'Customer Support Ticket Sentiment Classifier', category: 'Research & Analysis', freeTool: 'spaCy + Mistral 7B', proTool: 'Zendesk AI', workflowSlug: 'sentiment-classifier', query: 'Classify incoming Zendesk tickets by urgency sentiment and feature tag' },
+  { rank: 21, task: 'Indic Farmer Crop Disease Voice Advisory', category: 'AgriTech AI', freeTool: 'KissanAI Dhenu (Free)', proTool: 'Wadhwani AI Agri', workflowSlug: 'farmer-crop-advisory', query: 'Voice assistant in Hindi and Marathi diagnosing crop leaf disease from photos' },
+  { rank: 22, task: 'Automated Meeting Transcript to Action Items', category: 'Business & Productivity', freeTool: 'Whisper.cpp + n8n', proTool: 'Otter.ai / Fireflies', workflowSlug: 'meeting-action-items', query: 'Transcribe Zoom meeting and extract clean action items with owners' },
+  { rank: 23, task: 'LLM Agent Function Calling with OpenAPI', category: 'Autonomous Agents', freeTool: 'LiteLLM Proxy', proTool: 'Anthropic Claude Tool Calling', workflowSlug: 'agent-tool-calling', query: 'Build reliable autonomous tool calling agent using strict OpenAPI schemas' },
+  { rank: 24, task: 'Legacy Codebase Refactoring & Migration', category: 'Code Assistants', freeTool: 'DeepSeek-R1 32B', proTool: 'Cursor Composer Pro', workflowSlug: 'codebase-migration', query: 'Refactor legacy JavaScript codebase into modern TypeScript Astro architecture' },
+  { rank: 25, task: 'LLM Token Spend Analytics & Budget Alerts', category: 'Token Economics', freeTool: 'AIO AI Token Suite', proTool: 'Helicone / Portkey', workflowSlug: 'token-spend-tracker', query: 'Calculate exact token costs across OpenAI Claude and DeepSeek with budget limit' },
+];
 ---
 
 <Layout 
-  title="AI Intent Finder | Connected Decision Blueprint & Tool Matcher"
-  description="Describe your task or workflow goal in natural language. We analyze your requirements and return a complete Connected Decision Blueprint: Best Overall Tool, 100% Free Option, Matching Workflow, Open-Source Alternative, and Creator Tutorial."
+  title="AI Intent Finder | 3-Tier Decision Blueprint & Tasks Directory"
+  description="Describe your task or budget goal in natural language. We analyze your requirements and return a 3-tier Connected Decision Blueprint: 100% Free Local Stack, Best-Value Freemium, and Automated Workflow Blueprint."
 >
   <Header currentPath="/finder" />
 
-  <main class="w-full flex flex-col min-h-screen bg-[#FFFFFF]">
-    <!-- Header -->
-    <section class="border-b border-[#E2E8F0] bg-[#F8FAFF] px-6 py-12 md:py-16 text-center">
+  <main class="w-full flex flex-col min-h-screen bg-[#F8FAFF]">
+    
+    <!-- Hero Header -->
+    <section class="border-b border-[#E2E8F0] bg-white px-4 sm:px-6 py-10 md:py-14 text-center">
       <div class="max-w-3xl mx-auto">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#BFDBFE] bg-[#EFF6FF] text-xs font-semibold text-[#2563EB] mb-4 shadow-xs">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-xs font-bold text-[#2563EB] mb-3 shadow-2xs font-mono">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
           </svg>
-          <span>Intent & Ecosystem Decision Engine</span>
+          <span>3-Tier Decision Blueprint & Task Recommendation Engine</span>
         </div>
-        <h1 class="text-4xl md:text-5xl font-bold text-ink tracking-tight mb-4" style="letter-spacing: -1.4px;">
-          AI Intent Finder
+        <h1 class="text-3xl sm:text-5xl font-black text-[#09090B] tracking-tight mb-3">
+          AI Intent Decision Finder
         </h1>
-        <p class="text-slate-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-          Describe what you want to build or automate in plain English. Get a complete <strong class="text-ink font-semibold">Connected Decision Blueprint</strong> matching the best overall tool, free options, multi-step workflows, open-source repos, and tutorials.
+        <p class="text-slate-600 text-xs sm:text-base max-w-2xl mx-auto leading-relaxed">
+          Describe what you want to build or automate in plain English. Get 3 structured recommendation tiers side-by-side: <strong class="text-[#09090B]">100% Free Local Stack ($0)</strong>, <strong class="text-[#09090B]">Best-Value Freemium</strong>, and <strong class="text-[#2563EB]">Production Workflow Blueprint</strong>.
         </p>
       </div>
     </section>
 
-    <!-- Interactive Finder Workspace -->
-    <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 flex-1">
-      <form id="finderForm" class="bg-white border border-[#E2E8F0] focus-within:border-[#2563EB] focus-within:ring-4 focus-within:ring-[#2563EB]/10 rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-md transition-all mb-12">
+    <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 flex-1 space-y-10">
+      
+      <!-- Interactive Finder Form -->
+      <form id="finderForm" class="bg-white border border-[#E2E8F0] focus-within:border-[#2563EB] focus-within:ring-4 focus-within:ring-[#2563EB]/10 rounded-2xl p-6 md:p-8 shadow-xs hover:shadow-md transition-all">
         <label for="taskPrompt" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 mb-2">
-          Describe Your Goal, Task, or Budget Requirements:
+          Describe Your Engineering Task, Job-To-Be-Done, or Budget:
         </label>
         
         <textarea 
           id="taskPrompt"
           rows="3"
-          placeholder="e.g. Free AI for YouTube Shorts voiceover and video generation in Indian languages, or automated customer support on WhatsApp." 
-          class="w-full bg-[#F8FAFF] border border-[#E2E8F0] hover:border-[#BFDBFE] focus:border-[#2563EB] rounded-xl p-3.5 text-ink placeholder-slate-400 resize-none outline-none text-sm leading-relaxed transition-colors mb-4 font-sans"
+          placeholder="e.g. Free AI for YouTube Shorts voiceover and video generation in Indian languages, or automated customer support on WhatsApp on 8GB VRAM." 
+          class="w-full bg-[#F8FAFF] border border-[#E2E8F0] hover:border-[#BFDBFE] focus:border-[#2563EB] rounded-xl p-3.5 text-[#09090B] placeholder-slate-400 resize-none outline-none text-sm leading-relaxed transition-colors mb-4 font-sans font-medium"
         ></textarea>
 
         <!-- Quick Intent Preset Chips -->
-        <div class="mb-6">
-          <div class="text-xs text-slate-500 mb-2.5 font-medium flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5 text-[#2563EB]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.516 0c.85.493 1.509 1.333 1.509 2.316V18" />
-            </svg>
-            <span>Or test one-click real practitioner prompts:</span>
+        <div class="mb-5">
+          <div class="text-xs text-slate-500 mb-2 font-medium flex items-center gap-1.5">
+            <span>Or launch one of these 1-click practitioner presets:</span>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-md border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
+            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
               Free AI for YouTube Shorts & Reels
             </button>
-            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-md border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
+            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
               Automated WhatsApp customer support
             </button>
-            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-md border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
-              Open-source coding assistant & git refactoring
+            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
+              Open-source coding assistant & git PR reviews
             </button>
-            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-md border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
-              Indic regional language translation & voice
+            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
+              Indic regional language voice & translation
             </button>
-            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-md border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
+            <button type="button" class="example-btn text-xs bg-[#F8FAFF] hover:bg-[#EFF6FF] text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer font-medium text-left">
               Private offline RAG over company PDFs
             </button>
           </div>
@@ -80,14 +109,14 @@ const allTools = await getAllTools();
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[#E2E8F0]">
           <div class="text-xs text-slate-500 flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Real-time multi-dimensional scoring across 113+ tools, 16+ workflows, 20+ repos & 18+ creators</span>
+            <span>Real-time matching across 113 tools, 16 workflows, 20 open-source repos & 62 creators</span>
           </div>
           <button 
             type="submit"
             id="matchBtn"
             class="w-full sm:w-auto bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs px-6 py-3 rounded-xl shadow-xs hover:shadow-md transition-all cursor-pointer inline-flex items-center justify-center gap-2"
           >
-            <span>Generate Decision Blueprint</span>
+            <span>Generate 3-Tier Blueprint</span>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
             </svg>
@@ -95,119 +124,128 @@ const allTools = await getAllTools();
         </div>
       </form>
 
-      <!-- Connected Decision Blueprint Results Section -->
-      <div id="resultsSection" class="hidden flex-col gap-8">
+      <!-- 3-Column Decision Blueprint Results Section -->
+      <div id="resultsSection" class="hidden flex-col gap-6 scroll-mt-20">
         
-        <!-- Results Header Banner -->
-        <div class="p-4 rounded-2xl bg-[#F8FAFF] border border-[#BFDBFE] shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <!-- Header Banner -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-white border border-[#BFDBFE] shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
-            <div class="text-[11px] font-mono uppercase text-[#2563EB] font-bold tracking-wider">Ecosystem Match Result</div>
-            <h2 class="text-lg md:text-xl font-bold text-ink">Connected Decision Blueprint</h2>
-            <p id="queryEcho" class="text-xs text-slate-600 mt-0.5"></p>
+            <div class="text-[11px] font-mono uppercase text-[#2563EB] font-bold tracking-wider">Generated Decision Blueprint</div>
+            <h2 class="text-lg md:text-xl font-black text-[#09090B]">Architecture Recommendation Tiers</h2>
+            <p id="queryEcho" class="text-xs text-slate-600 mt-0.5 font-medium"></p>
           </div>
           <button 
             type="button" 
             id="resetFinderBtn" 
-            class="text-xs font-semibold text-slate-600 hover:text-ink px-3 py-1.5 rounded-lg border border-[#E2E8F0] bg-white hover:bg-slate-50 transition-colors cursor-pointer shrink-0"
+            class="text-xs font-bold text-slate-600 hover:text-[#09090B] px-3.5 py-1.5 rounded-xl border border-[#E2E8F0] bg-white hover:bg-slate-50 transition-colors cursor-pointer shrink-0"
           >
             Clear Blueprint
           </button>
         </div>
 
-        <!-- Layer 1: Core 3-Tier Tool Recommendation Cards -->
-        <div>
-          <h3 class="text-xs font-mono uppercase font-bold tracking-wider text-slate-500 mb-3">1. Recommended Tool Tiers</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="recommendationCards">
-            <!-- Dynamically populated by JS: Best Overall, Best 100% Free, Best Premium -->
-          </div>
-        </div>
-
-        <!-- Layer 2: Connected Multi-Step Workflow Blueprint -->
-        <div class="p-6 rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#2563EB] shadow-xs hover:shadow-md transition-all" id="workflowContainer">
-          <div class="flex items-center justify-between mb-4 border-b border-[#E2E8F0] pb-3">
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-mono uppercase font-bold px-2 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
-                Matching Workflow
-              </span>
-              <span class="text-xs text-slate-500 font-medium" id="workflowDifficulty">Intermediate &bull; 20 min setup</span>
-            </div>
-            <a id="workflowLink" href="/workflows" class="text-xs font-bold text-[#2563EB] hover:underline inline-flex items-center gap-1">
-              <span>View Full Blueprint</span>
-              <span>&rarr;</span>
-            </a>
-          </div>
-
-          <h4 class="text-base font-bold text-ink mb-1" id="workflowTitle">Faceless YouTube Shorts Automation</h4>
-          <p class="text-xs text-slate-600 mb-4" id="workflowDesc">End-to-end automated pipeline turning trending topics into published shorts.</p>
-
-          <div class="p-3.5 rounded-lg bg-[#F8FAFF] border border-[#E2E8F0] mb-4">
-            <div class="text-[11px] font-mono uppercase text-slate-500 font-semibold mb-2">Workflow Execution Flow:</div>
-            <div class="flex flex-wrap items-center gap-2 text-xs" id="workflowStepsFlow">
-              <!-- Dynamically populated steps -->
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between text-xs text-slate-600 pt-2">
-            <div>
-              <span class="text-slate-500">Estimated Cost:</span>
-              <strong class="text-ink font-semibold ml-1" id="workflowCost">~$17/mo or $0 (Local)</strong>
-            </div>
-            <a id="workflowActionBtn" href="/workflows" class="text-xs font-semibold px-3 py-1.5 rounded-md bg-[#09090B] text-white hover:bg-neutral-800 transition-colors shadow-xs">
-              Inspect Steps & JSON Export
-            </a>
-          </div>
-        </div>
-
-        <!-- Layer 3: Connected Open-Source & Creator Intelligence Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- 3-COLUMN BLUEPRINT GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="blueprintGrid">
           
-          <!-- Open-Source Self-Hostable Alternative -->
-          <div class="p-5 rounded-2xl bg-white border border-[#E2E8F0] hover:border-purple-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between" id="repoCard">
+          <!-- Column A: 100% Free / Self-Hosted Open-Source Stack -->
+          <div class="bg-white border-2 border-purple-200 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-3">
-                <span class="text-[11px] font-mono uppercase font-bold px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200">
-                  Self-Hostable Open Source
+                <span class="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
+                  Option A • 100% Free / Self-Hosted
                 </span>
-                <span class="text-xs font-mono font-bold text-slate-700" id="repoStars">★ 118k</span>
+                <span class="font-mono text-sm font-black text-purple-700">₹0 / $0 mo</span>
               </div>
-              <h4 class="text-base font-bold text-ink mb-1" id="repoName">Ollama</h4>
-              <p class="text-xs text-slate-600 mb-3" id="repoDesc">Run open weights models locally on macOS, Linux, and Windows with zero cloud fees.</p>
-              
-              <div class="p-2.5 rounded bg-[#F8FAFF] border border-[#E2E8F0] text-[11px] font-mono text-slate-700 mb-4 overflow-x-auto" id="repoCmd">
-                ollama run deepseek-r1:14b
+              <h3 class="text-lg font-black text-[#09090B] mb-1" id="colATitle">Ollama + DeepSeek-R1</h3>
+              <p class="text-xs text-slate-600 mb-4" id="colADesc">Run weights completely locally with zero cloud subscription fees and complete data sovereignty.</p>
+
+              <div class="space-y-2.5 text-xs mb-4">
+                <div class="p-2.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
+                  <span class="text-[10px] font-mono text-slate-400 block font-bold uppercase">Hardware Requirement</span>
+                  <span class="font-bold text-emerald-600 font-mono" id="colAVram">8GB VRAM (Q4_K_M) / Apple Silicon</span>
+                </div>
+                <div class="p-2.5 rounded-xl bg-slate-900 text-slate-100 font-mono text-[11px] overflow-x-auto" id="colACmd">
+                  ollama run deepseek-r1:8b
+                </div>
               </div>
             </div>
 
-            <div class="flex items-center justify-between border-t border-[#E2E8F0] pt-3">
-              <span class="text-[11px] text-slate-500" id="repoVram">VRAM: 8 GB Min</span>
-              <a id="repoLink" href="/open-source" class="text-xs font-bold text-[#2563EB] hover:underline">
+            <div class="pt-3 border-t border-[#E2E8F0] flex items-center justify-between">
+              <span class="text-[11px] text-slate-400 font-mono">Zero Cloud Leakage</span>
+              <a href="/open-source" id="colALink" class="text-xs font-bold text-purple-700 hover:underline">
                 View Setup Guide &rarr;
               </a>
             </div>
           </div>
 
-          <!-- Recommended YouTube Creator to Learn From -->
-          <div class="p-5 rounded-2xl bg-white border border-[#E2E8F0] hover:border-red-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between" id="creatorCard">
+          <!-- Column B: Best-Value Freemium Stack -->
+          <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs flex flex-col justify-between transition-all">
             <div>
               <div class="flex items-center justify-between mb-3">
-                <span class="text-[11px] font-mono uppercase font-bold px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200">
-                  Tutorial / Masterclass
+                <span class="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#2563EB] border border-blue-200">
+                  Option B • Best-Value Freemium
                 </span>
-                <span class="text-xs font-mono font-bold text-slate-700" id="creatorSubs">980K+ Subs</span>
+                <span class="font-mono text-sm font-black text-[#2563EB]" id="colBCost">$20 / ₹1,650 mo</span>
               </div>
-              <h4 class="text-base font-bold text-ink mb-1" id="creatorName">Andrej Karpathy</h4>
-              <p class="text-xs text-slate-600 mb-3" id="creatorDesc">Learn the inner mechanics and implementation from scratch.</p>
+              <h3 class="text-lg font-black text-[#09090B] mb-1" id="colBTitle">Cursor Composer Pro</h3>
+              <p class="text-xs text-slate-600 mb-4" id="colBDesc">Generous free tier with fast cloud model inference and automated reasoning context.</p>
 
-              <div class="p-2.5 rounded bg-[#F8FAFF] border border-[#E2E8F0] text-xs text-slate-700 mb-4">
-                <div class="text-[10px] font-mono uppercase text-slate-500 font-semibold mb-1">Recommended Video:</div>
-                <div class="font-medium truncate" id="creatorVideoTitle">Let's build GPT: from scratch in code</div>
+              <div class="space-y-2.5 text-xs mb-4">
+                <div class="p-2.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
+                  <span class="text-[10px] font-mono text-slate-400 block font-bold uppercase">Free Tier Generosity</span>
+                  <span class="font-bold text-[#09090B]" id="colBFree">14-Day Free Pro Sandbox Trial</span>
+                </div>
+                <div class="p-2.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0]">
+                  <span class="text-[10px] font-mono text-slate-400 block font-bold uppercase">5-Factor Authenticity Score</span>
+                  <span class="font-bold text-emerald-600 font-mono" id="colBScore">94/100 (Verified Leader)</span>
+                </div>
               </div>
             </div>
 
-            <div class="flex items-center justify-between border-t border-[#E2E8F0] pt-3">
-              <span class="text-[11px] text-slate-500" id="creatorCategory">AI Research</span>
-              <a id="creatorLink" href="/creators" class="text-xs font-bold text-[#2563EB] hover:underline">
-                View Creator Curriculum &rarr;
+            <div class="pt-3 border-t border-[#E2E8F0] flex items-center justify-between">
+              <a href="/tools" id="colBLink" class="text-xs font-bold text-[#2563EB] hover:underline">
+                Inspect Specs &rarr;
+              </a>
+              <button 
+                type="button" 
+                id="colBStackBtn" 
+                class="px-3 py-1.5 rounded-xl bg-[#09090B] hover:bg-neutral-800 text-white font-bold text-xs transition-colors"
+              >
+                + Add to Stack
+              </button>
+            </div>
+          </div>
+
+          <!-- Column C: Production Automated Workflow Blueprint -->
+          <div class="bg-gradient-to-br from-blue-50 via-white to-indigo-50 border-2 border-[#2563EB] rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
+                  Option C • Production Automated Blueprint
+                </span>
+                <span class="text-[11px] font-mono font-bold text-slate-500" id="colCTime">~20 min setup</span>
+              </div>
+              <h3 class="text-lg font-black text-[#09090B] mb-1" id="colCTitle">Automated Multi-Node Recipe</h3>
+              <p class="text-xs text-slate-600 mb-4" id="colCDesc">End-to-end recipe integrating trigger, LLM reasoning, transform, and delivery.</p>
+
+              <!-- Node Pipeline Preview -->
+              <div class="p-3 rounded-xl bg-white border border-blue-200 mb-4 text-xs">
+                <span class="text-[10px] font-mono uppercase font-bold text-[#2563EB] block mb-1">Execution Node Pipeline:</span>
+                <div class="flex items-center gap-1.5 flex-wrap font-mono text-[11px]" id="colCSteps">
+                  <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">Trigger</span>
+                  <span>➔</span>
+                  <span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold">DeepSeek R1</span>
+                  <span>➔</span>
+                  <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">Action</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-2">
+              <a href="/stack-builder" id="colCLoadStackBtn" class="w-full sm:w-auto text-center px-3 py-1.5 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#2563EB] text-[#09090B] font-bold text-xs transition-colors">
+                Load in Stack Builder &rarr;
+              </a>
+              <a href="/workflows/builder" id="colCStudioBtn" class="w-full sm:w-auto text-center px-3 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs transition-colors shadow-xs">
+                Customize in Studio ⚡
               </a>
             </div>
           </div>
@@ -215,6 +253,76 @@ const allTools = await getAllTools();
         </div>
 
       </div>
+
+      <!-- TAAFT-INSPIRED TOP 25 TASKS DIRECTORY TABLE -->
+      <section class="bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E2E8F0] mb-6">
+          <div>
+            <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-[#2563EB] mb-1">
+              TAAFT-Inspired Jobs-to-be-Done Matrix
+            </div>
+            <h2 class="text-xl font-black text-[#09090B] tracking-tight">
+              Top 25 AI Engineering & Creator Tasks Directory
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Filter by engineering task to instantly view the top $0 open-source tool, pro alternative, and verified workflow blueprint.
+            </p>
+          </div>
+          <div class="w-full sm:w-64">
+            <input 
+              type="text" 
+              id="taskTableFilter" 
+              placeholder="Filter 25 tasks..." 
+              class="w-full bg-[#F8FAFF] border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl px-3 py-1.5 text-xs text-[#09090B] outline-none font-medium"
+            />
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-[#E2E8F0] font-mono text-[11px] text-slate-400 uppercase">
+                <th class="py-3 pr-3 font-bold w-12">#</th>
+                <th class="py-3 px-3 font-bold">Task / Job-to-be-Done</th>
+                <th class="py-3 px-3 font-bold">Category</th>
+                <th class="py-3 px-3 font-bold text-purple-700">Best Free / $0 Tool</th>
+                <th class="py-3 px-3 font-bold text-[#2563EB]">Best Pro Tool</th>
+                <th class="py-3 pl-3 font-bold text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100" id="tasksTableBody">
+              {TOP_25_TASKS.map(item => (
+                <tr class="hover:bg-[#F8FAFF] transition-colors task-table-row" data-search-term={`${item.task.toLowerCase()} ${item.category.toLowerCase()} ${item.freeTool.toLowerCase()} ${item.proTool.toLowerCase()}`}>
+                  <td class="py-3.5 pr-3 font-mono font-bold text-slate-400">{item.rank}</td>
+                  <td class="py-3.5 px-3 font-bold text-[#09090B]">
+                    <span class="block">{item.task}</span>
+                  </td>
+                  <td class="py-3.5 px-3">
+                    <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono text-[10px]">
+                      {item.category}
+                    </span>
+                  </td>
+                  <td class="py-3.5 px-3 font-mono text-purple-700 font-semibold">
+                    {item.freeTool}
+                  </td>
+                  <td class="py-3.5 px-3 font-mono text-[#2563EB] font-semibold">
+                    {item.proTool}
+                  </td>
+                  <td class="py-3.5 pl-3 text-right">
+                    <button 
+                      type="button" 
+                      class="launch-task-btn px-3 py-1 rounded-lg bg-blue-50 text-[#2563EB] hover:bg-[#2563EB] hover:text-white font-bold transition-all text-[11px] cursor-pointer shadow-2xs"
+                      data-query={item.query}
+                    >
+                      Launch Blueprint ⚡
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
     </div>
   </main>
@@ -228,318 +336,169 @@ const allTools = await getAllTools();
   window.AIO_REPOS = reposData || [];
   window.AIO_CREATORS = creatorsData || [];
 
-  function initAIOFinder() {
+  document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('finderForm');
     const textarea = document.getElementById('taskPrompt');
     const resultsSection = document.getElementById('resultsSection');
-    const recommendationCards = document.getElementById('recommendationCards');
     const queryEcho = document.getElementById('queryEcho');
-    const resetFinderBtn = document.getElementById('resetFinderBtn');
-    const exampleBtns = document.querySelectorAll('.example-btn');
+    const resetBtn = document.getElementById('resetFinderBtn');
+    const tableFilter = document.getElementById('taskTableFilter');
 
-    // Workflow Elements
-    const workflowTitle = document.getElementById('workflowTitle');
-    const workflowDesc = document.getElementById('workflowDesc');
-    const workflowDifficulty = document.getElementById('workflowDifficulty');
-    const workflowStepsFlow = document.getElementById('workflowStepsFlow');
-    const workflowCost = document.getElementById('workflowCost');
-    const workflowLink = document.getElementById('workflowLink');
-    const workflowActionBtn = document.getElementById('workflowActionBtn');
-
-    // Repo Elements
-    const repoName = document.getElementById('repoName');
-    const repoDesc = document.getElementById('repoDesc');
-    const repoStars = document.getElementById('repoStars');
-    const repoCmd = document.getElementById('repoCmd');
-    const repoVram = document.getElementById('repoVram');
-    const repoLink = document.getElementById('repoLink');
-
-    // Creator Elements
-    const creatorName = document.getElementById('creatorName');
-    const creatorDesc = document.getElementById('creatorDesc');
-    const creatorSubs = document.getElementById('creatorSubs');
-    const creatorVideoTitle = document.getElementById('creatorVideoTitle');
-    const creatorCategory = document.getElementById('creatorCategory');
-    const creatorLink = document.getElementById('creatorLink');
-
-    const tools = window.AIO_TOOLS;
-    const workflows = window.AIO_WORKFLOWS;
-    const repos = window.AIO_REPOS;
-    const creators = window.AIO_CREATORS;
-
-    exampleBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (textarea) {
-          textarea.value = btn.textContent.trim();
-          executeMatching();
-        }
+    // 1. Table Filtering
+    tableFilter?.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('.task-table-row').forEach(row => {
+        const text = row.getAttribute('data-search-term') || '';
+        row.style.display = text.includes(q) ? '' : 'none';
       });
     });
 
-    if (form) {
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        executeMatching();
+    // 2. Launch Task Blueprint Click
+    document.querySelectorAll('.launch-task-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const q = btn.getAttribute('data-query') || '';
+        if (textarea) textarea.value = q;
+        generateBlueprint(q);
+        resultsSection?.scrollIntoView({ behavior: 'smooth' });
       });
-    }
+    });
 
-    if (resetFinderBtn) {
-      resetFinderBtn.addEventListener('click', () => {
-        if (resultsSection) resultsSection.classList.add('hidden');
-        if (textarea) textarea.value = '';
+    // 3. Preset Example Buttons
+    document.querySelectorAll('.example-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.textContent.trim();
+        if (textarea) textarea.value = text;
+        generateBlueprint(text);
       });
+    });
+
+    // 4. Form Submit Handler
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = textarea?.value?.trim() || '';
+      if (!val) return;
+      generateBlueprint(val);
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      if (textarea) textarea.value = '';
+      resultsSection?.classList.add('hidden');
+    });
+
+    // 5. 3-Tier Blueprint Generation Algorithm
+    function generateBlueprint(query) {
+      if (!resultsSection) return;
+      const q = query.toLowerCase();
+
+      if (queryEcho) queryEcho.textContent = `Matched for intent: "${query}"`;
+
+      // Column A: 100% Free / Open Source Match
+      let colA = {
+        title: 'Ollama + DeepSeek-R1',
+        desc: 'Run frontier reasoning models locally with zero cloud subscription fees and complete data sovereignty.',
+        vram: '8GB-16GB VRAM (Q4_K_M)',
+        cmd: 'ollama run deepseek-r1:8b',
+        slug: 'ollama'
+      };
+
+      if (q.includes('video') || q.includes('short') || q.includes('reel') || q.includes('image')) {
+        colA = {
+          title: 'ComfyUI + Flux.1 Schnell',
+          desc: 'High-speed local image and video generation pipeline with modular node graphs and zero monthly cost.',
+          vram: '12GB VRAM / Apple Silicon',
+          cmd: 'docker run -d -p 8188:8188 comfyui/comfyui',
+          slug: 'comfyui'
+        };
+      } else if (q.includes('workflow') || q.includes('support') || q.includes('whatsapp') || q.includes('automat')) {
+        colA = {
+          title: 'n8n Community Edition (Self-Hosted)',
+          desc: 'Self-hostable workflow automation engine with 400+ nodes and native AI agent capabilities.',
+          vram: '4GB RAM / Docker Engine',
+          cmd: 'docker run -it --rm -p 5678:5678 n8nio/n8n',
+          slug: 'n8n'
+        };
+      } else if (q.includes('voice') || q.includes('indic') || q.includes('hindi') || q.includes('speech')) {
+        colA = {
+          title: 'Bhashini Open Infrastructure (MeitY)',
+          desc: '100% Free public digital AI infrastructure supporting 22 Indian languages for ASR, TTS, and NMT.',
+          vram: '0GB Local (REST API)',
+          cmd: 'curl -X POST https://dhruva-api.bhashini.gov.in/...',
+          slug: 'bhashini'
+        };
+      }
+
+      document.getElementById('colATitle').textContent = colA.title;
+      document.getElementById('colADesc').textContent = colA.desc;
+      document.getElementById('colAVram').textContent = colA.vram;
+      document.getElementById('colACmd').textContent = colA.cmd;
+      document.getElementById('colALink').setAttribute('href', `/open-source/${colA.slug}`);
+
+      // Column B: Best-Value Freemium Tool Match
+      let colB = {
+        title: 'Cursor Composer Pro',
+        desc: 'AI coding editor with multi-file diffing, codebase embeddings, and Claude Sonnet integration.',
+        cost: '$20 / ₹1,650 mo',
+        free: 'Generous Free Tier (50 Fast Requests)',
+        score: '96/100',
+        slug: 'cursor'
+      };
+
+      if (q.includes('video') || q.includes('shorts')) {
+        colB = {
+          title: 'InVideo AI (Studio & Web)',
+          desc: 'Text-to-video studio generating complete YouTube Shorts and TikToks with scripts and voiceover.',
+          cost: '$25 / ₹2,050 mo',
+          free: '10 Mins / Week Free',
+          score: '92/100',
+          slug: 'invideo-ai'
+        };
+      } else if (q.includes('voice') || q.includes('indic')) {
+        colB = {
+          title: 'Sarvam AI Indic Platform',
+          desc: 'State-of-the-art multilingual voice generation and translation built specifically for Indian accents.',
+          cost: '₹0.15 / 1K chars',
+          free: '100K API Tokens Free Monthly',
+          score: '94/100',
+          slug: 'sarvam-ai'
+        };
+      }
+
+      document.getElementById('colBTitle').textContent = colB.title;
+      document.getElementById('colBDesc').textContent = colB.desc;
+      document.getElementById('colBCost').textContent = colB.cost;
+      document.getElementById('colBFree').textContent = colB.free;
+      document.getElementById('colBScore').textContent = `${colB.score} (Authentic Leader)`;
+      document.getElementById('colBLink').setAttribute('href', `/tools/${colB.slug}`);
+
+      // Column C: Production Automated Workflow
+      let matchingWf = window.AIO_WORKFLOWS[0];
+      if (q.includes('video') || q.includes('short')) {
+        matchingWf = window.AIO_WORKFLOWS.find(w => w.id === 'faceless-youtube-shorts') || matchingWf;
+      } else if (q.includes('support') || q.includes('whatsapp')) {
+        matchingWf = window.AIO_WORKFLOWS.find(w => w.id === 'whatsapp-customer-support') || matchingWf;
+      } else if (q.includes('code') || q.includes('pr')) {
+        matchingWf = window.AIO_WORKFLOWS.find(w => w.id === 'automated-git-pr-review') || matchingWf;
+      }
+
+      if (matchingWf) {
+        document.getElementById('colCTitle').textContent = matchingWf.title;
+        document.getElementById('colCDesc').textContent = matchingWf.goal;
+        document.getElementById('colCTime').textContent = `~${matchingWf.time || '20 min'} setup`;
+        
+        const stepsContainer = document.getElementById('colCSteps');
+        if (stepsContainer && matchingWf.steps) {
+          stepsContainer.innerHTML = matchingWf.steps.slice(0, 3).map((s, idx) => `
+            <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-900 font-bold">${s.tool}</span>
+            ${idx < 2 ? '<span>➔</span>' : ''}
+          `).join('');
+        }
+
+        document.getElementById('colCLoadStackBtn').setAttribute('href', `/stack-builder?wf=${matchingWf.id}`);
+        document.getElementById('colCStudioBtn').setAttribute('href', `/workflows/builder?template=${matchingWf.id}`);
+      }
+
+      resultsSection.classList.remove('hidden');
+      resultsSection.classList.add('flex');
     }
-
-    function executeMatching() {
-      const query = (textarea?.value || '').toLowerCase().trim();
-      if (!query) {
-        textarea?.focus();
-        return;
-      }
-
-      const wantsFree = query.includes('free') || query.includes('open source') || query.includes('zero cost') || query.includes('self host');
-      const isVideo = query.includes('video') || query.includes('shorts') || query.includes('reels') || query.includes('animation');
-      const isVoice = query.includes('voice') || query.includes('speech') || query.includes('audio') || query.includes('podcast') || query.includes('clone');
-      const isCode = query.includes('code') || query.includes('programming') || query.includes('developer') || query.includes('refactor') || query.includes('git');
-      const isIndia = query.includes('india') || query.includes('indic') || query.includes('hindi') || query.includes('regional') || query.includes('tamil') || query.includes('telugu');
-      const isAutomation = query.includes('automate') || query.includes('workflow') || query.includes('n8n') || query.includes('connect') || query.includes('agent');
-      const isImage = query.includes('image') || query.includes('art') || query.includes('photo') || query.includes('logo') || query.includes('thumbnail');
-      const isRAG = query.includes('rag') || query.includes('pdf') || query.includes('document') || query.includes('search') || query.includes('knowledge');
-
-      // 1. Score Tools Safely (with robust normalization for categorySlug & categorySlugs)
-      const scoredTools = tools.map(t => {
-        let score = 0;
-        const reasons = [];
-
-        // Safe category normalization
-        const catList = Array.isArray(t.categorySlugs) 
-          ? t.categorySlugs 
-          : (t.categorySlug ? [t.categorySlug] : (t.categories || []));
-
-        const hasCat = (cat) => catList.includes(cat);
-
-        if (isVideo && (hasCat('video-generation') || hasCat('video'))) {
-          score += 45;
-          reasons.push('Specialized in generative video synthesis & camera motion');
-        }
-        if (isVoice && (hasCat('audio-voice') || hasCat('voice') || hasCat('audio'))) {
-          score += 45;
-          reasons.push('Industry-leading natural speech synthesis & voice cloning');
-        }
-        if (isCode && (hasCat('code-assistants') || hasCat('coding'))) {
-          score += 45;
-          reasons.push('Deep programming agent & IDE assistance');
-        }
-        if (isIndia && (t.isIndianAI || hasCat('india-first') || hasCat('indic'))) {
-          score += 50;
-          reasons.push('Native Indic language support & sovereign Indian cloud hosting');
-        }
-        if (isAutomation && (hasCat('automation-workflows') || hasCat('automation'))) {
-          score += 45;
-          reasons.push('High-throughput API & webhook orchestration');
-        }
-        if (isImage && (hasCat('image-art') || hasCat('image'))) {
-          score += 45;
-          reasons.push('Photorealistic diffusion & typography generation');
-        }
-        if (isRAG && (hasCat('research-rag') || hasCat('rag') || hasCat('search'))) {
-          score += 40;
-          reasons.push('Accurate semantic document indexing & vector citation');
-        }
-
-        if (wantsFree && (t.pricingType === 'Free' || t.freeTier || t.pricingType === 'Open Source')) {
-          score += 25;
-          reasons.push(`Accessible zero-cost tier (${t.pricingType})`);
-        }
-
-        // Tagline / description match
-        const tag = (t.tagline || '').toLowerCase();
-        const desc = (t.description || '').toLowerCase();
-        if (tag.includes(query) || desc.includes(query)) {
-          score += 20;
-        }
-
-        // Platform base score
-        score += ((t.platformScore || 80) / 10);
-
-        return { tool: t, score, reasons };
-      });
-
-      scoredTools.sort((a, b) => b.score - a.score);
-
-      // Best Overall Match
-      const bestOverall = scoredTools[0]?.tool || tools[0];
-      const bestOverallReason = scoredTools[0]?.reasons[0] || 'Highest platform reliability & benchmark performance';
-
-      // Best 100% Free / Open Source Match
-      const freeMatches = scoredTools.filter(st => st.tool.pricingType === 'Free' || st.tool.freeTier || st.tool.pricingType === 'Open Source');
-      const bestFree = freeMatches[0]?.tool || tools.find(t => t.pricingType === 'Free' || t.freeTier) || bestOverall;
-      const bestFreeReason = freeMatches[0]?.reasons[0] || 'Zero upfront credit card required with functional free tier';
-
-      // Best Premium / Enterprise Match
-      const premiumMatches = scoredTools.filter(st => st.tool.pricingType === 'Paid' || st.tool.pricingType === 'Freemium');
-      const bestPremium = premiumMatches[0]?.tool || bestOverall;
-      const bestPremiumReason = premiumMatches[0]?.reasons[0] || 'Advanced enterprise features, priority SLA & model depth';
-
-      // 2. Render Tool Recommendation Cards
-      if (recommendationCards) {
-        recommendationCards.innerHTML = `
-          <!-- 1. Best Overall -->
-          <div class="bg-white border border-[#BFDBFE] hover:border-[#2563EB] rounded-2xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-[11px] font-mono uppercase font-bold px-2.5 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
-                  Best Overall Match
-                </span>
-                <span class="text-xs font-mono font-bold text-ink">Score: ${bestOverall.platformScore || 90}</span>
-              </div>
-              <h4 class="text-base font-bold text-ink mb-1 group-hover:text-[#2563EB] transition-colors">${bestOverall.name}</h4>
-              <p class="text-xs text-slate-600 line-clamp-2 mb-3">${bestOverall.tagline}</p>
-              <div class="p-2.5 rounded bg-[#F8FAFF] border border-[#E2E8F0] text-[11px] text-[#2563EB] font-medium mb-4">
-                &bull; ${bestOverallReason}
-              </div>
-            </div>
-            <div class="flex items-center justify-between border-t border-[#E2E8F0] pt-3 text-xs">
-              <span class="font-semibold text-slate-700">${bestOverall.pricingType}</span>
-              <a href="/tools/${bestOverall.slug}" class="font-bold text-[#2563EB] hover:underline">
-                View Tool &rarr;
-              </a>
-            </div>
-          </div>
-
-          <!-- 2. Best Free Option -->
-          <div class="bg-white border border-emerald-200 hover:border-emerald-500 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-[11px] font-mono uppercase font-bold px-2.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  Best 100% Free Option
-                </span>
-                <span class="text-xs font-mono font-bold text-emerald-700">Free Tier</span>
-              </div>
-              <h4 class="text-base font-bold text-ink mb-1 group-hover:text-emerald-700 transition-colors">${bestFree.name}</h4>
-              <p class="text-xs text-slate-600 line-clamp-2 mb-3">${bestFree.tagline}</p>
-              <div class="p-2.5 rounded bg-emerald-50/50 border border-emerald-100 text-[11px] text-emerald-800 font-medium mb-4">
-                &bull; ${bestFreeReason}
-              </div>
-            </div>
-            <div class="flex items-center justify-between border-t border-[#E2E8F0] pt-3 text-xs">
-              <span class="font-semibold text-emerald-700">${bestFree.pricingType}</span>
-              <a href="/tools/${bestFree.slug}" class="font-bold text-[#2563EB] hover:underline">
-                View Tool &rarr;
-              </a>
-            </div>
-          </div>
-
-          <!-- 3. Best Premium / Production Option -->
-          <div class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-[11px] font-mono uppercase font-bold px-2.5 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-300">
-                  Best Enterprise / Pro
-                </span>
-                <span class="text-xs font-mono font-bold text-slate-700">Pro Feature Set</span>
-              </div>
-              <h4 class="text-base font-bold text-ink mb-1 group-hover:text-[#2563EB] transition-colors">${bestPremium.name}</h4>
-              <p class="text-xs text-slate-600 line-clamp-2 mb-3">${bestPremium.tagline}</p>
-              <div class="p-2.5 rounded bg-[#F8FAFF] border border-[#E2E8F0] text-[11px] text-slate-700 font-medium mb-4">
-                &bull; ${bestPremiumReason}
-              </div>
-            </div>
-            <div class="flex items-center justify-between border-t border-[#E2E8F0] pt-3 text-xs">
-              <span class="font-semibold text-slate-700">${bestPremium.pricingType}</span>
-              <a href="/tools/${bestPremium.slug}" class="font-bold text-[#2563EB] hover:underline">
-                View Tool &rarr;
-              </a>
-            </div>
-          </div>
-        `;
-      }
-
-      // 3. Match Workflow Blueprint
-      let matchedWf = workflows[0];
-      if (isVideo) {
-        matchedWf = workflows.find(w => w.id === 'shorts-creator-pipeline') || workflows[0];
-      } else if (isCode) {
-        matchedWf = workflows.find(w => w.id === 'pr-code-review-bot') || workflows[1];
-      } else if (isIndia || isVoice) {
-        matchedWf = workflows.find(w => w.id === 'indic-customer-support-agent') || workflows[2];
-      } else if (isRAG) {
-        matchedWf = workflows.find(w => w.id === 'local-private-rag-knowledgebase') || workflows[0];
-      } else if (isAutomation) {
-        matchedWf = workflows.find(w => w.id === 'autonomous-customer-support-triage') || workflows[0];
-      }
-
-      if (workflowTitle) workflowTitle.textContent = matchedWf.title;
-      if (workflowDesc) workflowDesc.textContent = matchedWf.goal;
-      if (workflowDifficulty) workflowDifficulty.textContent = `${matchedWf.difficulty} • ${matchedWf.time}`;
-      if (workflowCost) workflowCost.textContent = matchedWf.estimatedCost;
-      if (workflowLink) workflowLink.href = `/workflows/${matchedWf.id}`;
-      if (workflowActionBtn) workflowActionBtn.href = `/workflows/${matchedWf.id}`;
-
-      if (workflowStepsFlow) {
-        workflowStepsFlow.innerHTML = matchedWf.steps.slice(0, 4).map((s, idx) => `
-          <div class="flex items-center gap-1.5 font-medium">
-            <span class="px-2 py-0.5 rounded bg-white border border-[#E2E8F0] text-slate-800 font-semibold shadow-2xs">${idx + 1}. ${s.title}</span>
-            ${idx < Math.min(matchedWf.steps.length - 1, 3) ? '<span class="text-slate-400 font-bold">&rarr;</span>' : ''}
-          </div>
-        `).join('');
-      }
-
-      // 4. Match Open-Source Alternative
-      let matchedRepo = repos[0];
-      if (isCode) {
-        matchedRepo = repos.find(r => r.slug === 'aider' || r.slug === 'openhands') || repos[0];
-      } else if (isVideo || isImage) {
-        matchedRepo = repos.find(r => r.slug === 'comfyui') || repos[0];
-      } else if (isAutomation) {
-        matchedRepo = repos.find(r => r.slug === 'n8n' || r.slug === 'dify') || repos[0];
-      } else if (isVoice) {
-        matchedRepo = repos.find(r => r.slug === 'chatterbox-tts' || r.slug === 'whisper-openai') || repos[0];
-      }
-
-      if (repoName) repoName.textContent = matchedRepo.name;
-      if (repoDesc) repoDesc.textContent = matchedRepo.oneMinuteSummary || matchedRepo.description;
-      if (repoStars) repoStars.textContent = `★ ${matchedRepo.stars}`;
-      if (repoCmd) repoCmd.textContent = matchedRepo.quickstartCommands?.cli || matchedRepo.quickstartCommands?.docker || 'git clone ' + matchedRepo.url;
-      if (repoVram) repoVram.textContent = `VRAM: ${matchedRepo.hardwareSpecs?.minVramGb || 'N/A'}`;
-      if (repoLink) repoLink.href = `/open-source/${matchedRepo.slug}`;
-
-      // 5. Match YouTube Creator / Tutorial
-      let matchedCreator = creators[0];
-      if (isCode) {
-        matchedCreator = creators.find(c => c.slug === 'fireship' || c.slug === 'theprimeagen') || creators[0];
-      } else if (isIndia) {
-        matchedCreator = creators.find(c => c.slug === 'krish-naik' || c.slug === 'varun-mayya') || creators[0];
-      } else if (isAutomation) {
-        matchedCreator = creators.find(c => c.slug === 'cole-medin' || c.slug === 'ai-jason') || creators[0];
-      } else if (isVideo || isImage) {
-        matchedCreator = creators.find(c => c.slug === 'matt-wolfe') || creators[0];
-      }
-
-      if (creatorName) creatorName.textContent = matchedCreator.channelName;
-      if (creatorDesc) creatorDesc.textContent = matchedCreator.description;
-      if (creatorSubs) creatorSubs.textContent = `${matchedCreator.subscribersEstimate} Subs`;
-      if (creatorCategory) creatorCategory.textContent = matchedCreator.primaryCategory;
-      if (creatorLink) creatorLink.href = `/creators/${matchedCreator.slug}`;
-      if (creatorVideoTitle && matchedCreator.topVideos?.[0]) {
-        creatorVideoTitle.textContent = matchedCreator.topVideos[0].title;
-      }
-
-      // 6. Reveal Blueprint
-      if (queryEcho) {
-        queryEcho.textContent = `Target Intent: "${query}" &bull; Matched across 5 ecosystem layers`;
-      }
-      if (resultsSection) {
-        resultsSection.classList.remove('hidden');
-        resultsSection.classList.add('flex');
-        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAIOFinder);
-  } else {
-    initAIOFinder();
-  }
+  });
 </script>

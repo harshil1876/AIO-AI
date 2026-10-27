@@ -8,104 +8,140 @@ const categories = ['All', 'Content Creation', 'Engineering & DevOps', 'Customer
 ---
 
 <Layout 
-  title="AI Workflows & Production Automation Blueprints | AIO AI"
-  description="16+ proven step-by-step blueprints connecting AI models, APIs, and automation tools to solve real-world problems. Includes node flows and Free vs Paid budget comparisons."
+  title="16 Production AI Workflows & Automation Blueprints | AIO AI"
+  description="16 proven step-by-step blueprints connecting AI models, APIs, and automation tools. Includes n8n node flows, downloadable SKILL.md files, and Free vs Paid budget comparisons."
 >
   <Header currentPath="/workflows" />
 
-  <main class="w-full flex flex-col min-h-screen bg-[#FFFFFF]">
-    <!-- Header -->
-    <section class="border-b border-[#E2E8F0] bg-[#F8FAFF] px-4 sm:px-6 py-12 md:py-16">
+  <!-- Top Secondary Sub-Navigation Tabs -->
+  <div class="bg-white border-b border-[#E2E8F0] px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto flex items-center gap-1 overflow-x-auto text-xs py-2 scrollbar-none">
+      <a href="/workflows" class="px-3 py-1.5 rounded-lg bg-[#EFF6FF] text-[#2563EB] font-bold shrink-0">
+        16 Production Blueprints
+      </a>
+      <a href="/workflows/builder" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-[#09090B] hover:bg-slate-50 font-medium shrink-0 flex items-center gap-1">
+        <span>Interactive Workflow Studio</span>
+        <span class="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-emerald-50 text-emerald-700 font-bold">STUDIO</span>
+      </a>
+    </div>
+  </div>
+
+  <main class="w-full flex flex-col min-h-screen bg-[#F8FAFF]">
+    
+    <!-- Hero Header -->
+    <section class="border-b border-[#E2E8F0] bg-white px-4 sm:px-6 py-8 sm:py-12">
       <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#BFDBFE] bg-[#EFF6FF] text-xs font-semibold text-[#2563EB] mb-4 shadow-xs font-mono">
-            <span>16+ PRODUCTION AUTOMATION BLUEPRINTS</span>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-xs font-bold text-[#2563EB] mb-2 shadow-2xs font-mono">
+            <span>16 VERIFIED PRODUCTION BLUEPRINTS &bull; n8n + CURSOR SKILL EXPORTS</span>
           </div>
-          <h1 class="text-3xl sm:text-5xl font-black text-ink tracking-tight mb-3">
+          <h1 class="text-3xl sm:text-5xl font-black text-[#09090B] tracking-tight mb-2">
             AI Workflow Blueprints
           </h1>
-          <p class="text-slate-600 text-sm sm:text-base max-w-2xl leading-relaxed">
-            Step-by-step implementation pipelines chaining frontier models, APIs, and webhooks together. Every workflow compares 100% Free vs Freemium vs Paid SaaS operational costs.
+          <p class="text-slate-600 text-xs sm:text-base max-w-2xl leading-relaxed">
+            Production recipes chaining frontier models, APIs, and webhooks together. Every workflow includes copyable prompts, REST API payload schemas, valid n8n JSON exports, and downloadable `SKILL.md` files.
           </p>
         </div>
 
         <div class="flex items-center gap-3 shrink-0">
           <a 
             href="/workflows/builder" 
-            class="px-5 py-2.5 rounded-xl bg-ink text-white font-semibold text-xs hover:bg-neutral-800 transition-colors shadow-xs inline-flex items-center gap-2"
+            class="px-5 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs transition-colors shadow-xs inline-flex items-center gap-2"
           >
-            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
             </svg>
-            <span>Custom Workflow Studio</span>
+            <span>Open Workflow Studio ⚡</span>
           </a>
         </div>
       </div>
     </section>
 
     <!-- Workflows Grid -->
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 flex-1">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 flex-1">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {WORKFLOWS_DATA.map((workflow) => (
-          <article class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
-            <div>
-              <!-- Top Row Badges -->
-              <div class="flex items-center justify-between text-xs font-mono mb-3">
-                <span class="bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] font-semibold px-2.5 py-0.5 rounded-full text-[10px] uppercase">
-                  {workflow.category}
-                </span>
-                <span class="text-slate-500 font-semibold">{workflow.difficulty} &bull; {workflow.time}</span>
-              </div>
+        {WORKFLOWS_DATA.map((workflow) => {
+          const timeSaved = workflow.difficulty === 'Beginner' ? 'Saves ~4 hrs/wk' : workflow.difficulty === 'Advanced' ? 'Saves ~12 hrs/wk' : 'Saves ~6 hrs/wk';
+          return (
+            <article class="bg-white border border-[#E2E8F0] hover:border-[#2563EB] rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between group">
+              <div>
+                <!-- Top Row Badges -->
+                <div class="flex items-center justify-between text-xs font-mono mb-3">
+                  <span class="bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase">
+                    {workflow.category}
+                  </span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full text-[10px] font-bold border border-emerald-200">
+                      {timeSaved}
+                    </span>
+                    <span class="text-slate-400 text-[11px] font-semibold">{workflow.time}</span>
+                  </div>
+                </div>
 
-              <!-- Title & Goal -->
-              <h2 class="text-lg font-bold text-ink leading-snug mb-2 hover:text-[#2563EB] transition-colors">
-                <a href={`/workflows/${workflow.id}`}>
-                  {workflow.title}
-                </a>
-              </h2>
+                <!-- Title & Goal -->
+                <h2 class="text-lg font-bold text-[#09090B] leading-snug mb-2 group-hover:text-[#2563EB] transition-colors">
+                  <a href={`/workflows/${workflow.id}`}>
+                    {workflow.title}
+                  </a>
+                </h2>
 
-              <p class="text-xs text-slate-600 leading-relaxed mb-4 line-clamp-2">
-                {workflow.goal}
-              </p>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4 line-clamp-2">
+                  {workflow.goal}
+                </p>
 
-              <!-- Node Pipeline Preview -->
-              <div class="p-3 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] mb-4 space-y-1.5 text-[11px]">
-                <div class="text-[10px] font-mono uppercase text-slate-500 font-bold">Execution Chain:</div>
-                <div class="truncate text-slate-700">1. {workflow.steps[0]?.title}</div>
-                <div class="truncate text-slate-700">2. {workflow.steps[1]?.title}</div>
-                {workflow.steps[2] && <div class="truncate text-slate-700">3. {workflow.steps[2]?.title}</div>}
-              </div>
+                <!-- n8n-Style Visual Node Pipeline Preview -->
+                <div class="p-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] mb-4 space-y-2">
+                  <div class="text-[10px] font-mono uppercase text-slate-400 font-bold flex items-center justify-between">
+                    <span>Visual Node Pipeline</span>
+                    <span class="text-[#2563EB] font-bold">{workflow.steps.length} Nodes</span>
+                  </div>
+                  
+                  <div class="flex items-center gap-1.5 flex-wrap font-mono text-[11px]">
+                    {workflow.steps.slice(0, 3).map((step, idx) => (
+                      <span class="inline-flex items-center gap-1">
+                        <span class="px-2 py-0.5 rounded-md bg-white border border-[#E2E8F0] text-slate-800 font-bold shadow-2xs">
+                          {step.toolName || step.type || 'Node'}
+                        </span>
+                        {idx < 2 && <span class="text-slate-300">➔</span>}
+                      </span>
+                    ))}
+                    {workflow.steps.length > 3 && (
+                      <span class="text-[10px] font-bold text-[#2563EB] bg-blue-50 px-1.5 py-0.2 rounded">
+                        +{workflow.steps.length - 3}
+                      </span>
+                    )}
+                  </div>
+                </div>
 
-              <!-- Required Tools Chips -->
-              <div class="mb-4">
-                <span class="text-[10px] font-mono uppercase text-slate-500 font-bold block mb-1.5">Tools Used:</span>
-                <div class="flex flex-wrap gap-1.5">
-                  {workflow.toolsUsed.map(t => (
-                    <a 
-                      href={`/tools/${t.slug}`} 
-                      class="px-2.5 py-0.5 rounded-lg bg-[#F8FAFF] hover:bg-[#EFF6FF] border border-[#E2E8F0] hover:border-[#BFDBFE] text-slate-800 text-[11px] font-medium transition-colors"
-                    >
-                      {t.name}
-                    </a>
-                  ))}
+                <!-- Cost Comparison Pill -->
+                <div class="grid grid-cols-2 gap-2 mb-4 text-[10px] font-mono">
+                  <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-center">
+                    Self-Hosted: ₹0 / $0
+                  </div>
+                  <div class="p-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-center truncate">
+                    Cloud: {workflow.estimatedCost}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Card Bottom Bar -->
-            <div class="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
-              <span class="text-[11px] font-mono text-slate-500 truncate max-w-[150px]">
-                {workflow.estimatedCost}
-              </span>
-              <a 
-                href={`/workflows/${workflow.id}`} 
-                class="font-semibold text-[#2563EB] hover:text-[#1D4ED8] hover:underline inline-flex items-center gap-1"
-              >
-                Inspect Blueprint &rarr;
-              </a>
-            </div>
-          </article>
-        ))}
+              <!-- Card Bottom Actions -->
+              <div class="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs gap-2">
+                <a 
+                  href={`/workflows/builder?template=${workflow.id}`}
+                  class="text-xs font-bold text-[#2563EB] hover:text-[#1D4ED8] hover:underline inline-flex items-center gap-1"
+                >
+                  <span>Open in Studio ⚡</span>
+                </a>
+                <a 
+                  href={`/workflows/${workflow.id}`} 
+                  class="px-3 py-1.5 rounded-lg bg-[#09090B] hover:bg-neutral-800 text-white font-bold text-[11px] transition-colors shadow-2xs"
+                >
+                  Blueprint &rarr;
+                </a>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </div>
   </main>

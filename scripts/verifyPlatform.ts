@@ -247,7 +247,7 @@ assert(
 // ----------------------------------------------------------------------------
 // SUITE 7: Essential Routes & Pages Completeness
 // ----------------------------------------------------------------------------
-console.log('\n[Suite 6: Critical Routes & Artifact Completeness]');
+console.log('\n[Suite 7: Critical Routes & Artifact Completeness]');
 
 const criticalRoutes = [
   'src/pages/index.astro',
@@ -289,6 +289,72 @@ for (const route of criticalRoutes) {
     `Route template exists: ${route}`
   );
 }
+
+// ----------------------------------------------------------------------------
+// SUITE 8: Production Overhaul, Security & Self-Updating APIs
+// ----------------------------------------------------------------------------
+console.log('\n[Suite 8: Production Overhaul, Security & Live APIs]');
+
+// 1. Dashboard string hygiene (no stale hardcoded counts)
+const dashboardContent = fs.readFileSync(path.resolve('src/pages/dashboard.astro'), 'utf8');
+assert(
+  !dashboardContent.includes('"13 Models"') && !dashboardContent.includes('All 18 &rarr;'),
+  'dashboard.astro contains zero stale strings ("13 Models", "All 18")',
+  'Found stale hardcoded count strings in dashboard.astro'
+);
+assert(
+  dashboardContent.includes('modelsCount') && dashboardContent.includes('creatorsCount'),
+  'dashboard.astro dynamically references {modelsCount} and {creatorsCount}'
+);
+
+// 2. Shell & logo deduplication (no duplicate desktop logo)
+const headerContent = fs.readFileSync(path.resolve('src/components/Header.astro'), 'utf8');
+assert(
+  headerContent.includes('lg:hidden') && headerContent.includes('⚡ Free Mode'),
+  'Header.astro hides duplicate desktop logo on large screens & has ⚡ Free Mode toggle'
+);
+
+const sidebarContent = fs.readFileSync(path.resolve('src/components/Sidebar.astro'), 'utf8');
+assert(
+  !sidebarContent.includes('v2.0') && sidebarContent.includes('harshilpival@gmail.com'),
+  'Sidebar.astro has zero v2.0 badges and restricts admin link to authorized email'
+);
+
+// 3. Admin security (zero client-side demo bypass buttons)
+const adminContent = fs.readFileSync(path.resolve('src/pages/admin.astro'), 'utf8');
+assert(
+  !adminContent.includes('unlockAdminDemoBtn') && !adminContent.includes('aio_admin_unlocked'),
+  'admin.astro has zero demo unlock bypass buttons; gated strictly to authorized admin'
+);
+
+// 4. Live API services existence
+assert(
+  fs.existsSync(path.resolve('src/services/youtubeLiveService.ts')),
+  'youtubeLiveService.ts exists and powers YouTube Data API v3 integration'
+);
+assert(
+  fs.existsSync(path.resolve('src/services/githubLiveService.ts')),
+  'githubLiveService.ts exists and powers live GitHub repository telemetry'
+);
+assert(
+  fs.existsSync(path.resolve('src/services/liveNewsService.ts')),
+  'liveNewsService.ts exists and powers 4-stream live news wire'
+);
+
+// 5. Workflows builder & Quickstart Drawer components
+const builderContent = fs.readFileSync(path.resolve('src/pages/workflows/builder.astro'), 'utf8');
+assert(
+  builderContent.includes('downloadSkillBtn') && builderContent.includes('loadTemplate'),
+  'workflows/builder.astro includes SKILL.md export and URL template auto-loading'
+);
+assert(
+  fs.existsSync(path.resolve('src/components/RepoQuickstartDrawer.astro')),
+  'RepoQuickstartDrawer.astro exists for open-source 1-click execution'
+);
+assert(
+  fs.existsSync(path.resolve('src/components/CompareDock.astro')),
+  'CompareDock.astro exists for sticky multi-tool comparison tray'
+);
 
 // ----------------------------------------------------------------------------
 // Summary

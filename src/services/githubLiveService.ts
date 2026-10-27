@@ -66,6 +66,18 @@ export function checkHardwareCompatibility(minVramGb: number, userHardwareId: st
   }
 }
 
+function getGitHubHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Accept': 'application/vnd.github.v3+json'
+  };
+  const token = (typeof import.meta !== 'undefined' && import.meta.env?.PUBLIC_GITHUB_TOKEN) || 
+                (typeof process !== 'undefined' ? process.env?.PUBLIC_GITHUB_TOKEN : undefined);
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
 export async function fetchLiveRepoStats(owner: string, repo: string): Promise<GitHubLiveStats | null> {
   const cacheKey = `aio_gh_live_${owner}_${repo}`;
   const cacheTimeKey = `aio_gh_time_${owner}_${repo}`;
@@ -83,7 +95,7 @@ export async function fetchLiveRepoStats(owner: string, repo: string): Promise<G
 
   try {
     const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
-      headers: { 'Accept': 'application/vnd.github.v3+json' }
+      headers: getGitHubHeaders()
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -92,7 +104,9 @@ export async function fetchLiveRepoStats(owner: string, repo: string): Promise<G
     let releaseTag: string | undefined;
     let releaseName: string | undefined;
     try {
-      const relRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases/latest`);
+      const relRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases/latest`, {
+        headers: getGitHubHeaders()
+      });
       if (relRes.ok) {
         const relData = await relRes.json();
         releaseTag = relData.tag_name;
@@ -156,7 +170,7 @@ export async function searchGitHubAIRepos(query: string, minStars: number = 1000
   try {
     const qParam = encodeURIComponent(`${cleanQ} stars:>=${minStars}`);
     const res = await fetch(`https://api.github.com/search/repositories?q=${qParam}&sort=stars&order=desc&per_page=20`, {
-      headers: { 'Accept': 'application/vnd.github.v3+json' }
+      headers: getGitHubHeaders()
     });
 
     if (!res.ok) {
@@ -289,8 +303,10 @@ export const TOP_AI_DEVELOPERS_ORGS: TrendingDeveloperOrg[] = [
 
 export async function fetchRepoReadme(owner: string, repo: string): Promise<string | null> {
   try {
+    const headers = getGitHubHeaders();
+    headers['Accept'] = 'application/vnd.github.v3.raw';
     const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/readme`, {
-      headers: { 'Accept': 'application/vnd.github.v3.raw' }
+      headers
     });
     if (res.ok) {
       return await res.text();

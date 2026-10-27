@@ -2,29 +2,129 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+
+// 6 Curated Role Stacks (Futurepedia Pattern)
+const CURATED_ROLE_STACKS = [
+  {
+    id: 'zero-cost-local',
+    name: 'Zero-Cost Local AI Dev Stack',
+    costUsd: 0,
+    costInr: 0,
+    badge: '100% Free / Self-Hosted',
+    badgeColor: 'emerald',
+    description: 'Frontier code generation, local model inference, and vector retrieval with 0 cloud API fees.',
+    layers: {
+      l1: { slug: 'deepseek-v3', name: 'DeepSeek-V3', logo: 'https://www.google.com/s2/favicons?domain=deepseek.com&sz=128' },
+      l2: { slug: 'n8n-selfhosted', name: 'n8n Self-Hosted', logo: 'https://www.google.com/s2/favicons?domain=n8n.io&sz=128' },
+      l3: { slug: 'chroma', name: 'Chroma DB', logo: 'https://www.google.com/s2/favicons?domain=trychroma.com&sz=128' },
+      l4: { slug: 'aider', name: 'Aider CLI', logo: 'https://www.google.com/s2/favicons?domain=aider.chat&sz=128' },
+      l5: { slug: 'ollama', name: 'Ollama Local', logo: 'https://www.google.com/s2/favicons?domain=ollama.com&sz=128' }
+    }
+  },
+  {
+    id: 'astro-supabase-saas',
+    name: 'Full-Stack Astro + Supabase AI SaaS Stack',
+    costUsd: 65,
+    costInr: 5460,
+    badge: 'Production Standard',
+    badgeColor: 'blue',
+    description: 'Fast static edge delivery with relational PostgreSQL vectors, Claude reasoning, and Cursor IDE.',
+    layers: {
+      l1: { slug: 'claude-3-5', name: 'Claude 3.5 Sonnet', logo: 'https://www.google.com/s2/favicons?domain=anthropic.com&sz=128' },
+      l2: { slug: 'langchain', name: 'LangGraph', logo: 'https://www.google.com/s2/favicons?domain=langchain.com&sz=128' },
+      l3: { slug: 'supabase-pgvector', name: 'Supabase pgvector', logo: 'https://www.google.com/s2/favicons?domain=supabase.com&sz=128' },
+      l4: { slug: 'cursor', name: 'Cursor IDE Pro', logo: 'https://www.google.com/s2/favicons?domain=cursor.com&sz=128' },
+      l5: { slug: 'vllm', name: 'vLLM Engine', logo: 'https://www.google.com/s2/favicons?domain=vllm.ai&sz=128' }
+    }
+  },
+  {
+    id: 'indic-whatsapp-support',
+    name: 'Indic Voice & WhatsApp Support Agent Stack',
+    costUsd: 45,
+    costInr: 3780,
+    badge: 'India Enterprise',
+    badgeColor: 'emerald',
+    description: 'Autonomous customer support in 11 Indian languages connecting Sarvam AI speech and n8n webhooks.',
+    layers: {
+      l1: { slug: 'claude-3-5', name: 'Sarvam AI Speech', logo: 'https://www.google.com/s2/favicons?domain=sarvam.ai&sz=128' },
+      l2: { slug: 'n8n-cloud', name: 'n8n Cloud', logo: 'https://www.google.com/s2/favicons?domain=n8n.io&sz=128' },
+      l3: { slug: 'supabase-pgvector', name: 'Supabase DB', logo: 'https://www.google.com/s2/favicons?domain=supabase.com&sz=128' },
+      l4: { slug: 'cursor', name: 'Cursor IDE', logo: 'https://www.google.com/s2/favicons?domain=cursor.com&sz=128' },
+      l5: { slug: 'modal', name: 'Modal Containers', logo: 'https://www.google.com/s2/favicons?domain=modal.com&sz=128' }
+    }
+  },
+  {
+    id: 'faceless-youtube-reels',
+    name: 'Faceless YouTube & Reels Automation Stack',
+    costUsd: 56,
+    costInr: 4700,
+    badge: 'Creator Automated',
+    badgeColor: 'blue',
+    description: 'Auto-scripting, ElevenLabs voice cloning, and text-to-video assembly pipeline.',
+    layers: {
+      l1: { slug: 'gpt-4o', name: 'GPT-4o Scripting', logo: 'https://www.google.com/s2/favicons?domain=openai.com&sz=128' },
+      l2: { slug: 'make', name: 'Make.com Core', logo: 'https://www.google.com/s2/favicons?domain=make.com&sz=128' },
+      l3: { slug: 'qdrant-local', name: 'Qdrant Embeds', logo: 'https://www.google.com/s2/favicons?domain=qdrant.tech&sz=128' },
+      l4: { slug: 'v0', name: 'v0.dev Generator', logo: 'https://www.google.com/s2/favicons?domain=v0.dev&sz=128' },
+      l5: { slug: 'ollama', name: 'Ollama Offline', logo: 'https://www.google.com/s2/favicons?domain=ollama.com&sz=128' }
+    }
+  },
+  {
+    id: 'private-local-rag',
+    name: 'Private Local RAG & Document Intelligence Stack',
+    costUsd: 0,
+    costInr: 0,
+    badge: 'Zero Cloud Leakage',
+    badgeColor: 'emerald',
+    description: 'Complete data privacy running embeddings and generation on local Mac or Nvidia hardware.',
+    layers: {
+      l1: { slug: 'llama-3-3', name: 'Llama 3.3 70B', logo: 'https://www.google.com/s2/favicons?domain=meta.com&sz=128' },
+      l2: { slug: 'litellm', name: 'LiteLLM Proxy', logo: 'https://www.google.com/s2/favicons?domain=litellm.ai&sz=128' },
+      l3: { slug: 'chroma', name: 'Chroma DB', logo: 'https://www.google.com/s2/favicons?domain=trychroma.com&sz=128' },
+      l4: { slug: 'continue', name: 'Continue.dev', logo: 'https://www.google.com/s2/favicons?domain=continue.dev&sz=128' },
+      l5: { slug: 'ollama', name: 'Ollama Runner', logo: 'https://www.google.com/s2/favicons?domain=ollama.com&sz=128' }
+    }
+  },
+  {
+    id: 'solo-founder-rapid-mvp',
+    name: 'Solo Founder Rapid MVP Stack',
+    costUsd: 40,
+    costInr: 3360,
+    badge: 'High Velocity',
+    badgeColor: 'blue',
+    description: 'Rapid product prototyping with automated UI builders and managed vector indexing.',
+    layers: {
+      l1: { slug: 'claude-3-5', name: 'Claude 3.5 Sonnet', logo: 'https://www.google.com/s2/favicons?domain=anthropic.com&sz=128' },
+      l2: { slug: 'n8n-selfhosted', name: 'n8n Self-Hosted', logo: 'https://www.google.com/s2/favicons?domain=n8n.io&sz=128' },
+      l3: { slug: 'supabase-pgvector', name: 'Supabase Vector', logo: 'https://www.google.com/s2/favicons?domain=supabase.com&sz=128' },
+      l4: { slug: 'cursor', name: 'Cursor IDE', logo: 'https://www.google.com/s2/favicons?domain=cursor.com&sz=128' },
+      l5: { slug: 'ollama', name: 'Ollama Dev', logo: 'https://www.google.com/s2/favicons?domain=ollama.com&sz=128' }
+    }
+  }
+];
 ---
 
 <Layout 
-  title="Custom AI Stack Builder & Cost Calculator | AIO AI"
-  description="Build and name your custom 5-layer AI stack from scratch. Calculate monthly costs in USD and INR, 1-click swap to 100% free open-source components, and save to your workspace."
+  title="Custom AI Stack Builder & Cost Engine | AIO AI"
+  description="Build and name your custom 5-layer AI stack from scratch. Explore 6 curated role stacks, calculate monthly costs in USD and INR, 1-click swap to 100% free open-source components, and save to your workspace."
 >
   <Header currentPath="/stack-builder" />
 
-  <main class="w-full flex flex-col min-h-screen bg-canvas">
+  <main class="w-full flex flex-col min-h-screen bg-[#F8FAFF]">
     
     <!-- Hero Header -->
-    <section class="border-b border-hairline bg-canvas-elevated px-4 sm:px-6 py-10 md:py-14">
+    <section class="border-b border-[#E2E8F0] bg-white px-4 sm:px-6 py-8 sm:py-12">
       <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-mono font-bold text-[#2563EB] mb-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-mono font-bold text-[#2563EB] mb-2 shadow-2xs">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>CUSTOM ARCHITECTURE &amp; COST ENGINE</span>
           </div>
-          <h1 class="text-3xl sm:text-5xl font-black text-ink tracking-tight mb-2">
+          <h1 class="text-3xl sm:text-5xl font-black text-[#09090B] tracking-tight mb-2">
             Build &amp; Name Your AI Stack
           </h1>
-          <p class="text-xs sm:text-sm text-mute max-w-2xl leading-relaxed">
-            Configure your modular 5-layer production architecture across models, orchestration, memory, coding UX, and runtimes. Calculate exact monthly expenditure with 1-click open-source swaps.
+          <p class="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
+            Configure your modular 5-layer production architecture across models, orchestration, memory, IDEs, and runtimes. Calculate exact monthly expenditure with 1-click open-source swaps.
           </p>
         </div>
 
@@ -32,7 +132,7 @@ import Footer from '../components/Footer.astro';
           <button 
             type="button" 
             id="oneClickOpenSourceBtn" 
-            class="px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs transition-colors cursor-pointer shadow-xs inline-flex items-center gap-1.5"
+            class="px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs transition-colors cursor-pointer shadow-xs inline-flex items-center gap-2"
           >
             <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -43,28 +143,151 @@ import Footer from '../components/Footer.astro';
       </div>
     </section>
 
-    <!-- Main Builder Grid: Left 5 Slots / Right Live Summary & Share -->
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-10 flex flex-col lg:flex-row gap-8 flex-1">
+    <!-- SECTION 1: 6 CURATED ROLE STACKS QUICK-LOADER BAR (Futurepedia Pattern) -->
+    <section class="border-b border-[#E2E8F0] bg-white px-4 sm:px-6 py-6">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-xs font-mono uppercase font-bold text-slate-500 tracking-wider">
+              Curated Role Stacks (1-Click Load into Builder)
+            </h2>
+            <p class="text-xs text-slate-600 mt-0.5">Select any pre-built architecture below to populate and customize your 5 layers.</p>
+          </div>
+          <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">6 Battle-Tested Stacks</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {CURATED_ROLE_STACKS.map(stack => (
+            <div class="p-4 rounded-2xl border border-[#E2E8F0] hover:border-[#2563EB] bg-[#F8FAFF] hover:bg-white transition-all flex flex-col justify-between shadow-2xs group">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
+                    stack.badgeColor === 'emerald' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-blue-50 text-[#2563EB] border-blue-200'
+                  }`}>
+                    {stack.badge}
+                  </span>
+                  <span class="font-mono text-xs font-black text-[#09090B]">
+                    {stack.costUsd === 0 ? '$0 / ₹0 mo' : `$${stack.costUsd} / ₹${stack.costInr} mo`}
+                  </span>
+                </div>
+
+                <h3 class="text-sm font-bold text-[#09090B] group-hover:text-[#2563EB] transition-colors mb-1">
+                  {stack.name}
+                </h3>
+                <p class="text-[11px] text-slate-600 leading-relaxed mb-3 line-clamp-2">
+                  {stack.description}
+                </p>
+
+                <!-- Overlapping Tool Logos -->
+                <div class="flex items-center mb-4">
+                  <div class="flex -space-x-2 overflow-hidden py-1">
+                    {Object.values(stack.layers).map(l => (
+                      <div class="inline-block w-7 h-7 rounded-full bg-white ring-2 ring-white border border-[#E2E8F0] overflow-hidden p-0.5 shrink-0" title={l.name}>
+                        <img src={l.logo} alt={l.name} class="w-full h-full object-contain" onerror="this.style.display='none';" />
+                      </div>
+                    ))}
+                  </div>
+                  <span class="text-[10px] font-mono text-slate-400 ml-3">5 Layers</span>
+                </div>
+              </div>
+
+              <button 
+                type="button"
+                class="load-preset-btn w-full py-2 px-3 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#2563EB] hover:bg-[#EFF6FF] text-[#09090B] hover:text-[#2563EB] font-bold text-xs transition-colors cursor-pointer text-center shadow-2xs flex items-center justify-center gap-1.5"
+                data-preset-id={stack.id}
+                data-preset-name={stack.name}
+                data-l1={stack.layers.l1.slug}
+                data-l2={stack.layers.l2.slug}
+                data-l3={stack.layers.l3.slug}
+                data-l4={stack.layers.l4.slug}
+                data-l5={stack.layers.l5.slug}
+              >
+                <span>⚡ Load into My Builder</span>
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: LIVE CONNECTED SVG ARCHITECTURE FLOW DIAGRAM -->
+    <section class="max-w-7xl w-full mx-auto px-4 sm:px-6 pt-8 pb-2">
+      <div class="bg-gradient-to-r from-[#09090B] via-slate-900 to-[#1E293B] text-white rounded-2xl p-6 shadow-md border border-slate-800">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <h2 class="text-xs font-mono uppercase font-bold tracking-wider text-slate-300">
+              Live Connected SVG Architecture Pipeline
+            </h2>
+          </div>
+          <div class="flex items-center gap-2 text-xs font-mono">
+            <span class="text-slate-400">Total Pipeline Cost:</span>
+            <span class="font-bold text-emerald-400 text-sm" id="diagramCostText">$85/mo (₹7,097/mo)</span>
+          </div>
+        </div>
+
+        <!-- Visual Flow Nodes -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 items-center text-center">
+          <!-- Node 1 -->
+          <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 flex flex-col items-center">
+            <span class="text-[9px] font-mono uppercase text-blue-400 font-bold mb-1">1. Model</span>
+            <div class="font-bold text-xs truncate max-w-[120px]" id="diagNodeL1">Claude 3.5 Sonnet</div>
+            <span class="text-[10px] font-mono text-slate-400 mt-0.5" id="diagCostL1">$20/mo</span>
+          </div>
+
+          <!-- Node 2 -->
+          <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 flex flex-col items-center">
+            <span class="text-[9px] font-mono uppercase text-purple-400 font-bold mb-1">2. Orchestrator</span>
+            <div class="font-bold text-xs truncate max-w-[120px]" id="diagNodeL2">n8n Cloud</div>
+            <span class="text-[10px] font-mono text-slate-400 mt-0.5" id="diagCostL2">$20/mo</span>
+          </div>
+
+          <!-- Node 3 -->
+          <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 flex flex-col items-center">
+            <span class="text-[9px] font-mono uppercase text-emerald-400 font-bold mb-1">3. Vector DB</span>
+            <div class="font-bold text-xs truncate max-w-[120px]" id="diagNodeL3">Pinecone</div>
+            <span class="text-[10px] font-mono text-slate-400 mt-0.5" id="diagCostL3">$25/mo</span>
+          </div>
+
+          <!-- Node 4 -->
+          <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 flex flex-col items-center">
+            <span class="text-[9px] font-mono uppercase text-amber-400 font-bold mb-1">4. AI IDE</span>
+            <div class="font-bold text-xs truncate max-w-[120px]" id="diagNodeL4">Cursor IDE Pro</div>
+            <span class="text-[10px] font-mono text-slate-400 mt-0.5" id="diagCostL4">$20/mo</span>
+          </div>
+
+          <!-- Node 5 -->
+          <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 flex flex-col items-center col-span-2 sm:col-span-1">
+            <span class="text-[9px] font-mono uppercase text-cyan-400 font-bold mb-1">5. Runtime</span>
+            <div class="font-bold text-xs truncate max-w-[120px]" id="diagNodeL5">Ollama Local</div>
+            <span class="text-[10px] font-mono text-slate-400 mt-0.5" id="diagCostL5">$0/mo</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Main Builder Grid (Left 5 Layer Selectors / Right Cost Telemetry) -->
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col lg:flex-row gap-8 flex-1">
       
       <!-- LEFT COLUMN: Custom Stack Metadata & 5 Layer Slots -->
       <div class="flex-1 min-w-0 space-y-6">
         
         <!-- Stack Name & Metadata -->
-        <div class="bg-surface border border-hairline rounded-2xl p-6 shadow-xs space-y-4">
+        <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="sm:col-span-2">
-              <label class="block text-xs font-mono uppercase font-bold text-mute mb-1">Custom Stack Name *</label>
+              <label class="block text-xs font-mono uppercase font-bold text-slate-500 mb-1">Custom Stack Name *</label>
               <input 
                 type="text" 
                 id="customStackName" 
                 value="My Production AI Architecture" 
                 placeholder="e.g. Agentic SaaS Stack 2026" 
-                class="w-full bg-canvas border border-hairline rounded-xl p-3 text-xs sm:text-sm text-ink font-bold outline-none focus:border-primary font-sans"
+                class="w-full bg-[#F8FAFF] border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-3 text-xs sm:text-sm text-[#09090B] font-bold outline-none font-sans"
               />
             </div>
             <div>
-              <label class="block text-xs font-mono uppercase font-bold text-mute mb-1">Target Archetype</label>
-              <select id="stackArchetype" class="w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink font-semibold outline-none cursor-pointer">
+              <label class="block text-xs font-mono uppercase font-bold text-slate-500 mb-1">Target Archetype</label>
+              <select id="stackArchetype" class="w-full bg-[#F8FAFF] border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-3 text-xs text-[#09090B] font-bold outline-none cursor-pointer">
                 <option value="SaaS & Web Apps">SaaS &amp; Web Apps</option>
                 <option value="Autonomous Agents">Autonomous Agents</option>
                 <option value="Local / Private AI">Local / Private AI</option>
@@ -75,31 +298,31 @@ import Footer from '../components/Footer.astro';
           </div>
 
           <div>
-            <label class="block text-xs font-mono uppercase font-bold text-mute mb-1">Purpose / Core Mission</label>
+            <label class="block text-xs font-mono uppercase font-bold text-slate-500 mb-1">Purpose / Core Mission</label>
             <input 
               type="text" 
               id="stackPurpose" 
               value="Scalable multi-agent microservice architecture with low-latency local retrieval and cloud reasoning." 
               placeholder="What does this stack build or automate?" 
-              class="w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink outline-none focus:border-primary font-sans"
+              class="w-full bg-[#F8FAFF] border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-3 text-xs text-[#09090B] outline-none font-sans font-medium"
             />
           </div>
         </div>
 
         <!-- The 5 Production Layer Slots -->
         <div class="space-y-4">
-          <h2 class="text-xs font-mono uppercase font-bold tracking-wider text-mute flex items-center justify-between">
-            <span>5-Layer Modular Slots</span>
-            <span class="text-primary font-bold">100% Configurable</span>
+          <h2 class="text-xs font-mono uppercase font-bold tracking-wider text-slate-500 flex items-center justify-between">
+            <span>5 Modular Architectural Slots</span>
+            <span class="text-[#2563EB] font-bold">100% Configurable</span>
           </h2>
 
           <!-- Layer 1: Foundation Model -->
-          <div class="bg-surface border border-hairline rounded-2xl p-5 shadow-xs space-y-2">
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-2">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-mono font-bold text-primary uppercase">Layer 1: Foundation LLM / Reasoning Engine</span>
-              <span class="layer-cost-badge text-xs font-mono font-bold text-ink" id="costL1">$20/mo</span>
+              <span class="text-xs font-mono font-bold text-[#2563EB] uppercase">Layer 1: Foundation LLM / Reasoning Engine</span>
+              <span class="layer-cost-badge text-xs font-mono font-bold text-[#09090B]" id="costL1">$20/mo</span>
             </div>
-            <select id="selectL1" class="layer-select w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink font-medium outline-none cursor-pointer">
+            <select id="selectL1" class="layer-select w-full bg-[#F8FAFF] border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-3 text-xs text-[#09090B] font-medium outline-none cursor-pointer">
               <option value="claude-3-5" data-cost="20" data-name="Claude 3.5 Sonnet" data-free="false">Claude 3.5 Sonnet ($20/mo) - Frontier Code & Nuance</option>
               <option value="gpt-4o" data-cost="20" data-name="OpenAI GPT-4o" data-free="false">OpenAI GPT-4o ($20/mo) - Multimodal Omni Model</option>
               <option value="deepseek-v3" data-cost="0" data-name="DeepSeek-V3 (Open Weights)" data-free="true">DeepSeek-V3 ($0/mo) - Frontier Open Weights MoE</option>
@@ -109,12 +332,12 @@ import Footer from '../components/Footer.astro';
           </div>
 
           <!-- Layer 2: Orchestration -->
-          <div class="bg-surface border border-hairline rounded-2xl p-5 shadow-xs space-y-2">
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-2">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-mono font-bold text-primary uppercase">Layer 2: Orchestration &amp; Agent Framework</span>
-              <span class="layer-cost-badge text-xs font-mono font-bold text-ink" id="costL2">$20/mo</span>
+              <span class="text-xs font-mono font-bold text-purple-600 uppercase">Layer 2: Orchestration &amp; Agent Framework</span>
+              <span class="layer-cost-badge text-xs font-mono font-bold text-[#09090B]" id="costL2">$20/mo</span>
             </div>
-            <select id="selectL2" class="layer-select w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink font-medium outline-none cursor-pointer">
+            <select id="selectL2" class="layer-select w-full bg-[#F8FAFF] border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-3 text-xs text-[#09090B] font-medium outline-none cursor-pointer">
               <option value="n8n-cloud" data-cost="20" data-name="n8n Cloud Starter" data-free="false">n8n Cloud ($20/mo) - Visual Workflow Engine</option>
               <option value="n8n-selfhosted" data-cost="0" data-name="n8n Self-Hosted" data-free="true">n8n Self-Hosted ($0/mo) - Docker Deployable</option>
               <option value="make" data-cost="16" data-name="Make.com Core" data-free="false">Make.com Core ($16/mo) - Cloud Webhook Integration</option>
@@ -124,12 +347,12 @@ import Footer from '../components/Footer.astro';
           </div>
 
           <!-- Layer 3: Vector DB & Retrieval -->
-          <div class="bg-surface border border-hairline rounded-2xl p-5 shadow-xs space-y-2">
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-2">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-mono font-bold text-primary uppercase">Layer 3: Vector DB &amp; Retrieval Memory</span>
-              <span class="layer-cost-badge text-xs font-mono font-bold text-ink" id="costL3">$25/mo</span>
+              <span class="text-xs font-mono font-bold text-emerald-600 uppercase">Layer 3: Vector DB &amp; Retrieval Memory</span>
+              <span class="layer-cost-badge text-xs font-mono font-bold text-[#09090B]" id="costL3">$25/mo</span>
             </div>
-            <select id="selectL3" class="layer-select w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink font-medium outline-none cursor-pointer">
+            <select id="selectL3" class="layer-select w-full bg-[#F8FAFF] border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-3 text-xs text-[#09090B] font-medium outline-none cursor-pointer">
               <option value="pinecone" data-cost="25" data-name="Pinecone Serverless" data-free="false">Pinecone Serverless ($25/mo) - Managed Cloud Index</option>
               <option value="supabase-pgvector" data-cost="25" data-name="Supabase pgvector" data-free="false">Supabase pgvector ($25/mo) - Relational DB + Vectors</option>
               <option value="qdrant-local" data-cost="0" data-name="Qdrant Local" data-free="true">Qdrant Local ($0/mo) - Fast Rust Vector Engine</option>
@@ -138,12 +361,12 @@ import Footer from '../components/Footer.astro';
           </div>
 
           <!-- Layer 4: Frontend / IDE -->
-          <div class="bg-surface border border-hairline rounded-2xl p-5 shadow-xs space-y-2">
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-2">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-mono font-bold text-primary uppercase">Layer 4: Developer IDE &amp; Frontend Builder</span>
-              <span class="layer-cost-badge text-xs font-mono font-bold text-ink" id="costL4">$20/mo</span>
+              <span class="text-xs font-mono font-bold text-amber-600 uppercase">Layer 4: Developer IDE &amp; Frontend Builder</span>
+              <span class="layer-cost-badge text-xs font-mono font-bold text-[#09090B]" id="costL4">$20/mo</span>
             </div>
-            <select id="selectL4" class="layer-select w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink font-medium outline-none cursor-pointer">
+            <select id="selectL4" class="layer-select w-full bg-[#F8FAFF] border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-3 text-xs text-[#09090B] font-medium outline-none cursor-pointer">
               <option value="cursor" data-cost="20" data-name="Cursor IDE Pro" data-free="false">Cursor IDE Pro ($20/mo) - AI Native Code Editor</option>
               <option value="github-copilot" data-cost="10" data-name="GitHub Copilot" data-free="false">GitHub Copilot ($10/mo) - Inline IDE Autocomplete</option>
               <option value="v0" data-cost="20" data-name="v0.dev Premium" data-free="false">v0.dev Premium ($20/mo) - AI UI Component Generator</option>
@@ -153,12 +376,12 @@ import Footer from '../components/Footer.astro';
           </div>
 
           <!-- Layer 5: Deployment & Runtime -->
-          <div class="bg-surface border border-hairline rounded-2xl p-5 shadow-xs space-y-2">
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-2">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-mono font-bold text-primary uppercase">Layer 5: Local / Cloud Deployment Runtime</span>
-              <span class="layer-cost-badge text-xs font-mono font-bold text-ink" id="costL5">$0/mo</span>
+              <span class="text-xs font-mono font-bold text-cyan-600 uppercase">Layer 5: Local / Cloud Deployment Runtime</span>
+              <span class="layer-cost-badge text-xs font-mono font-bold text-[#09090B]" id="costL5">$0/mo</span>
             </div>
-            <select id="selectL5" class="layer-select w-full bg-canvas border border-hairline rounded-xl p-3 text-xs text-ink font-medium outline-none cursor-pointer">
+            <select id="selectL5" class="layer-select w-full bg-[#F8FAFF] border border-[#E2E8F0] focus:border-[#2563EB] rounded-xl p-3 text-xs text-[#09090B] font-medium outline-none cursor-pointer">
               <option value="ollama" data-cost="0" data-name="Ollama Local Runtime" data-free="true" selected>Ollama Local ($0/mo) - On-Premise GPU & CPU</option>
               <option value="vllm" data-cost="0" data-name="vLLM Inference Engine" data-free="true">vLLM Engine ($0/mo) - High-Throughput Cluster</option>
               <option value="modal" data-cost="30" data-name="Modal Cloud Serverless" data-free="false">Modal Cloud GPU ($30/mo) - Serverless Containers</option>
@@ -173,28 +396,28 @@ import Footer from '../components/Footer.astro';
       <aside class="w-full lg:w-96 shrink-0 space-y-6">
         
         <!-- Live Cost Assessment Card -->
-        <div class="bg-surface border border-hairline rounded-2xl p-6 shadow-xs space-y-6">
-          <div class="flex items-center justify-between border-b border-hairline pb-3">
-            <h3 class="text-xs font-mono uppercase font-bold text-ink tracking-wider">
+        <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-6">
+          <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+            <h3 class="text-xs font-mono uppercase font-bold text-[#09090B] tracking-wider">
               Monthly Cost Telemetry
             </h3>
-            <span class="text-[10px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold">
+            <span class="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold">
               Real Calculation
             </span>
           </div>
 
           <div class="space-y-4">
             <div class="flex justify-between items-baseline">
-              <span class="text-xs text-mute font-medium">Selected Stack Monthly:</span>
+              <span class="text-xs text-slate-500 font-medium">Selected Stack Monthly:</span>
               <div class="text-right">
-                <span id="totalMonthlyUsd" class="font-mono font-black text-2xl text-ink">$85 / mo</span>
-                <span id="totalMonthlyInr" class="block text-[11px] font-mono text-mute">≈ ₹7,097 INR / mo</span>
+                <span id="totalMonthlyUsd" class="font-mono font-black text-2xl text-[#09090B]">$85 / mo</span>
+                <span id="totalMonthlyInr" class="block text-[11px] font-mono text-slate-500">≈ ₹7,097 INR / mo</span>
               </div>
             </div>
 
             <div class="flex justify-between items-center text-xs">
-              <span class="text-mute">Annual Projected:</span>
-              <span id="totalAnnualUsd" class="font-mono font-bold text-ink">$1,020 / yr</span>
+              <span class="text-slate-500">Annual Projected:</span>
+              <span id="totalAnnualUsd" class="font-mono font-bold text-[#09090B]">$1,020 / yr</span>
             </div>
 
             <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs">
@@ -208,11 +431,11 @@ import Footer from '../components/Footer.astro';
             </div>
           </div>
 
-          <div class="space-y-2.5 pt-2 border-t border-hairline">
+          <div class="space-y-2.5 pt-2 border-t border-[#E2E8F0]">
             <button 
               type="button" 
               id="saveNamedStackBtn" 
-              class="w-full py-3 rounded-xl bg-ink hover:bg-neutral-800 text-white font-bold text-xs transition-colors cursor-pointer shadow-xs inline-flex items-center justify-center gap-2"
+              class="w-full py-3 rounded-xl bg-[#09090B] hover:bg-neutral-800 text-white font-bold text-xs transition-colors cursor-pointer shadow-xs inline-flex items-center justify-center gap-2"
             >
               <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
@@ -223,250 +446,189 @@ import Footer from '../components/Footer.astro';
             <button 
               type="button" 
               id="copyShareLinkBtn" 
-              class="w-full py-2.5 rounded-xl bg-canvas border border-hairline hover:bg-hairline-soft text-ink font-semibold text-xs transition-colors cursor-pointer shadow-xs inline-flex items-center justify-center gap-2"
+              class="w-full py-2.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] hover:bg-white text-slate-700 hover:text-[#09090B] font-bold text-xs transition-colors cursor-pointer shadow-xs inline-flex items-center justify-center gap-2"
             >
-              <svg class="w-4 h-4 text-mute" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
               </svg>
               <span>Copy Shareable Stack URL</span>
             </button>
           </div>
 
-          <div id="stackActionNotice" class="hidden p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-primary font-mono break-all"></div>
+          <div id="stackActionNotice" class="hidden p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-[#2563EB] font-mono break-all"></div>
         </div>
 
       </aside>
 
     </div>
-
-    <!-- STARTER ARCHETYPES DRAWER (Bottom Section) -->
-    <section class="border-t border-hairline bg-surface px-4 sm:px-6 py-12">
-      <div class="max-w-7xl mx-auto space-y-6">
-        <div>
-          <h3 class="text-sm font-mono uppercase font-bold text-ink tracking-wider">
-            Or Explore Pre-Built Role Archetypes
-          </h3>
-          <p class="text-xs text-mute mt-1">One-click presets tailored for specific creator and engineering workflows.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="p-4 rounded-xl bg-canvas border border-hairline hover:border-primary transition-colors cursor-pointer starter-preset-card" data-preset="creator">
-            <div class="font-bold text-xs text-ink mb-1">Content Creator Stack</div>
-            <p class="text-[11px] text-mute mb-3">GPT-4o + ElevenLabs + Midjourney + n8n</p>
-            <span class="text-primary font-mono text-xs font-bold">Load Archetype &rarr;</span>
-          </div>
-
-          <div class="p-4 rounded-xl bg-canvas border border-hairline hover:border-primary transition-colors cursor-pointer starter-preset-card" data-preset="engineer">
-            <div class="font-bold text-xs text-ink mb-1">DevOps &amp; Engineering</div>
-            <p class="text-[11px] text-mute mb-3">Claude 3.5 + Copilot + LangChain + Ollama</p>
-            <span class="text-primary font-mono text-xs font-bold">Load Archetype &rarr;</span>
-          </div>
-
-          <div class="p-4 rounded-xl bg-canvas border border-hairline hover:border-primary transition-colors cursor-pointer starter-preset-card" data-preset="local">
-            <div class="font-bold text-xs text-ink mb-1">100% Free Sovereign Stack</div>
-            <p class="text-[11px] text-mute mb-3">DeepSeek-V3 + n8n + Qdrant + Aider + Ollama</p>
-            <span class="text-emerald-600 font-mono text-xs font-bold">$0/mo Presets &rarr;</span>
-          </div>
-
-          <div class="p-4 rounded-xl bg-canvas border border-hairline hover:border-primary transition-colors cursor-pointer starter-preset-card" data-preset="india">
-            <div class="font-bold text-xs text-ink mb-1">India Sovereign Enterprise</div>
-            <p class="text-[11px] text-mute mb-3">Llama 3.3 + LiteLLM + Chroma + Continue + vLLM</p>
-            <span class="text-primary font-mono text-xs font-bold">Load Archetype &rarr;</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
   </main>
 
   <Footer />
 </Layout>
 
-<script>
-  import { supabase } from '../lib/supabase';
-
+<script is:inline>
   document.addEventListener('DOMContentLoaded', () => {
-    const customStackName = document.getElementById('customStackName') as HTMLInputElement | null;
-    const stackPurpose = document.getElementById('stackPurpose') as HTMLInputElement | null;
-    const stackArchetype = document.getElementById('stackArchetype') as HTMLSelectElement | null;
+    const selects = [
+      document.getElementById('selectL1'),
+      document.getElementById('selectL2'),
+      document.getElementById('selectL3'),
+      document.getElementById('selectL4'),
+      document.getElementById('selectL5')
+    ];
 
-    const selectL1 = document.getElementById('selectL1') as HTMLSelectElement | null;
-    const selectL2 = document.getElementById('selectL2') as HTMLSelectElement | null;
-    const selectL3 = document.getElementById('selectL3') as HTMLSelectElement | null;
-    const selectL4 = document.getElementById('selectL4') as HTMLSelectElement | null;
-    const selectL5 = document.getElementById('selectL5') as HTMLSelectElement | null;
+    const diagNodes = [
+      document.getElementById('diagNodeL1'),
+      document.getElementById('diagNodeL2'),
+      document.getElementById('diagNodeL3'),
+      document.getElementById('diagNodeL4'),
+      document.getElementById('diagNodeL5')
+    ];
 
-    const totalMonthlyUsd = document.getElementById('totalMonthlyUsd');
-    const totalMonthlyInr = document.getElementById('totalMonthlyInr');
-    const totalAnnualUsd = document.getElementById('totalAnnualUsd');
-    const swapSavingsText = document.getElementById('swapSavingsText');
+    const diagCosts = [
+      document.getElementById('diagCostL1'),
+      document.getElementById('diagCostL2'),
+      document.getElementById('diagCostL3'),
+      document.getElementById('diagCostL4'),
+      document.getElementById('diagCostL5')
+    ];
 
-    const oneClickOpenSourceBtn = document.getElementById('oneClickOpenSourceBtn');
-    const saveNamedStackBtn = document.getElementById('saveNamedStackBtn');
-    const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
-    const stackActionNotice = document.getElementById('stackActionNotice');
+    const costBadges = [
+      document.getElementById('costL1'),
+      document.getElementById('costL2'),
+      document.getElementById('costL3'),
+      document.getElementById('costL4'),
+      document.getElementById('costL5')
+    ];
 
-    const presets = document.querySelectorAll('.starter-preset-card');
+    const totalUsdEl = document.getElementById('totalMonthlyUsd');
+    const totalInrEl = document.getElementById('totalMonthlyInr');
+    const totalAnnualEl = document.getElementById('totalAnnualUsd');
+    const savingsEl = document.getElementById('swapSavingsText');
+    const diagramCostEl = document.getElementById('diagramCostText');
+    const freeSwapBtn = document.getElementById('oneClickOpenSourceBtn');
+    const saveStackBtn = document.getElementById('saveNamedStackBtn');
+    const copyLinkBtn = document.getElementById('copyShareLinkBtn');
+    const noticeEl = document.getElementById('stackActionNotice');
+    const customNameInput = document.getElementById('customStackName');
+    const archetypeInput = document.getElementById('stackArchetype');
+    const purposeInput = document.getElementById('stackPurpose');
 
-    function calculateCosts() {
-      const selects = [selectL1, selectL2, selectL3, selectL4, selectL5];
-      let totalUsd = 0;
-
-      selects.forEach((sel, i) => {
+    function calculateEconomics() {
+      let total = 0;
+      selects.forEach((sel, idx) => {
         if (!sel) return;
         const opt = sel.options[sel.selectedIndex];
-        const cost = Number(opt?.getAttribute('data-cost')) || 0;
-        totalUsd += cost;
+        const cost = parseInt(opt.getAttribute('data-cost') || '0', 10);
+        const name = opt.getAttribute('data-name') || opt.text.split('(')[0].trim();
+        total += cost;
 
-        const badge = document.getElementById(`costL${i + 1}`);
-        if (badge) badge.textContent = `$${cost}/mo`;
+        if (costBadges[idx]) costBadges[idx].textContent = `$${cost}/mo`;
+        if (diagNodes[idx]) diagNodes[idx].textContent = name;
+        if (diagCosts[idx]) diagCosts[idx].textContent = `$${cost}/mo`;
       });
 
-      const totalInr = totalUsd * 83.5;
-      const annualUsd = totalUsd * 12;
+      const inrRate = 83.5;
+      const inrTotal = Math.round(total * inrRate);
+      const annualTotal = total * 12;
 
-      if (totalMonthlyUsd) totalMonthlyUsd.textContent = `$${totalUsd} / mo`;
-      if (totalMonthlyInr) totalMonthlyInr.textContent = `≈ ₹${totalInr.toLocaleString('en-IN')} INR / mo`;
-      if (totalAnnualUsd) totalAnnualUsd.textContent = `$${annualUsd.toLocaleString()} / yr`;
-      if (swapSavingsText) swapSavingsText.textContent = `$${totalUsd} / mo`;
+      if (totalUsdEl) totalUsdEl.textContent = `$${total} / mo`;
+      if (totalInrEl) totalInrEl.textContent = `≈ ₹${inrTotal.toLocaleString('en-IN')} INR / mo`;
+      if (totalAnnualEl) totalAnnualEl.textContent = `$${annualTotal.toLocaleString()} / yr`;
+      if (savingsEl) savingsEl.textContent = `$${total} / mo`;
+      if (diagramCostEl) diagramCostEl.textContent = `$${total}/mo (₹${inrTotal.toLocaleString('en-IN')}/mo)`;
     }
 
-    [selectL1, selectL2, selectL3, selectL4, selectL5].forEach(sel => {
-      sel?.addEventListener('change', calculateCosts);
-    });
+    selects.forEach(sel => sel?.addEventListener('change', calculateEconomics));
 
-    // 1-Click Free / Open Source Swap
-    oneClickOpenSourceBtn?.addEventListener('click', () => {
-      if (selectL1) selectL1.value = 'deepseek-v3';
-      if (selectL2) selectL2.value = 'n8n-selfhosted';
-      if (selectL3) selectL3.value = 'qdrant-local';
-      if (selectL4) selectL4.value = 'aider';
-      if (selectL5) selectL5.value = 'ollama';
+    // Preset Loader Buttons
+    document.querySelectorAll('.load-preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.getAttribute('data-preset-name');
+        const l1 = btn.getAttribute('data-l1');
+        const l2 = btn.getAttribute('data-l2');
+        const l3 = btn.getAttribute('data-l3');
+        const l4 = btn.getAttribute('data-l4');
+        const l5 = btn.getAttribute('data-l5');
 
-      calculateCosts();
-      if (stackActionNotice) {
-        stackActionNotice.classList.remove('hidden');
-        stackActionNotice.textContent = 'Swapped all 5 layers to 100% Free Open-Source components! Monthly subscription cost is now $0 / mo.';
-      }
-    });
+        if (customNameInput && name) customNameInput.value = name;
+        if (selects[0] && l1) selects[0].value = l1;
+        if (selects[1] && l2) selects[1].value = l2;
+        if (selects[2] && l3) selects[2].value = l3;
+        if (selects[3] && l4) selects[3].value = l4;
+        if (selects[4] && l5) selects[4].value = l5;
 
-    // Preset loaders
-    presets.forEach(p => {
-      p.addEventListener('click', () => {
-        const type = p.getAttribute('data-preset');
-        if (type === 'creator') {
-          if (customStackName) customStackName.value = 'Content Creator Production Stack';
-          if (selectL1) selectL1.value = 'gpt-4o';
-          if (selectL2) selectL2.value = 'n8n-cloud';
-          if (selectL3) selectL3.value = 'pinecone';
-          if (selectL4) selectL4.value = 'v0';
-          if (selectL5) selectL5.value = 'ollama';
-        } else if (type === 'engineer') {
-          if (customStackName) customStackName.value = 'Software Engineer DevOps Stack';
-          if (selectL1) selectL1.value = 'claude-3-5';
-          if (selectL2) selectL2.value = 'langchain';
-          if (selectL3) selectL3.value = 'supabase-pgvector';
-          if (selectL4) selectL4.value = 'cursor';
-          if (selectL5) selectL5.value = 'ollama';
-        } else if (type === 'local') {
-          if (customStackName) customStackName.value = '100% Sovereign Open-Source Stack';
-          if (selectL1) selectL1.value = 'deepseek-v3';
-          if (selectL2) selectL2.value = 'n8n-selfhosted';
-          if (selectL3) selectL3.value = 'qdrant-local';
-          if (selectL4) selectL4.value = 'aider';
-          if (selectL5) selectL5.value = 'ollama';
-        } else if (type === 'india') {
-          if (customStackName) customStackName.value = 'India Enterprise Sovereign Stack';
-          if (selectL1) selectL1.value = 'llama-3-3';
-          if (selectL2) selectL2.value = 'litellm';
-          if (selectL3) selectL3.value = 'chroma';
-          if (selectL4) selectL4.value = 'continue';
-          if (selectL5) selectL5.value = 'vllm';
-        }
-        calculateCosts();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        calculateEconomics();
+        document.getElementById('customStackName')?.focus();
       });
     });
 
-    // Save Named Stack to History (localStorage + Supabase)
-    saveNamedStackBtn?.addEventListener('click', async () => {
-      const stackName = customStackName?.value.trim() || 'My Custom AI Stack';
-      const purpose = stackPurpose?.value.trim() || '';
-      const category = stackArchetype?.value || 'General';
+    // 1-Click Free Swap
+    freeSwapBtn?.addEventListener('click', () => {
+      selects.forEach(sel => {
+        if (!sel) return;
+        for (let i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].getAttribute('data-free') === 'true') {
+            sel.selectedIndex = i;
+            break;
+          }
+        }
+      });
+      calculateEconomics();
+      if (customNameInput) customNameInput.value = (customNameInput.value || 'My Stack') + ' (100% Free Open Source)';
+    });
 
-      const stackData = {
-        id: `stack-${Date.now()}`,
-        name: stackName,
-        purpose,
-        category,
-        layers: {
-          foundation: selectL1?.options[selectL1.selectedIndex]?.text || '',
-          orchestration: selectL2?.options[selectL2.selectedIndex]?.text || '',
-          memory: selectL3?.options[selectL3.selectedIndex]?.text || '',
-          developer: selectL4?.options[selectL4.selectedIndex]?.text || '',
-          runtime: selectL5?.options[selectL5.selectedIndex]?.text || ''
-        },
-        savedAt: new Date().toLocaleDateString()
+    // Save Named Stack
+    saveStackBtn?.addEventListener('click', () => {
+      const stack = {
+        id: 'stack-' + Date.now(),
+        name: customNameInput?.value || 'Untitled AI Stack',
+        archetype: archetypeInput?.value || 'SaaS & Web Apps',
+        purpose: purposeInput?.value || '',
+        layers: selects.map(s => s?.value),
+        monthlyUsd: parseInt(totalUsdEl?.textContent?.replace(/[^0-9]/g, '') || '0', 10),
+        savedAt: new Date().toISOString()
       };
 
-      try {
-        const existingStr = localStorage.getItem('aio_user_stacks');
-        const existing = existingStr ? JSON.parse(existingStr) : [];
-        existing.unshift(stackData);
-        localStorage.setItem('aio_user_stacks', JSON.stringify(existing));
+      const existing = JSON.parse(localStorage.getItem('aio_custom_stacks') || '[]');
+      existing.unshift(stack);
+      localStorage.setItem('aio_custom_stacks', JSON.stringify(existing));
 
-        // Attempt Supabase insert if logged in
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          await supabase.from('stacks').insert({
-            name: stackName,
-            description: purpose,
-            category: category,
-            author_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Builder',
-            tools: [selectL1?.value, selectL2?.value, selectL3?.value, selectL4?.value, selectL5?.value].filter(Boolean)
-          });
-        }
-
-        if (stackActionNotice) {
-          stackActionNotice.classList.remove('hidden');
-          stackActionNotice.textContent = `"${stackName}" saved to your personal history! Access it anytime in Profile > My Stacks.`;
-        }
-      } catch (e) {
-        if (stackActionNotice) {
-          stackActionNotice.classList.remove('hidden');
-          stackActionNotice.textContent = `Saved to current session!`;
-        }
+      if (noticeEl) {
+        noticeEl.textContent = `✓ Saved "${stack.name}" to your workspace history! View it on your Profile.`;
+        noticeEl.classList.remove('hidden');
+        setTimeout(() => noticeEl.classList.add('hidden'), 4000);
       }
     });
 
-    // Copy Shareable Link
-    copyShareLinkBtn?.addEventListener('click', () => {
-      const url = new URL(window.location.href);
-      url.searchParams.set('name', encodeURIComponent(customStackName?.value || 'My Stack'));
-      url.searchParams.set('l1', selectL1?.value || '');
-      url.searchParams.set('l2', selectL2?.value || '');
-      url.searchParams.set('l3', selectL3?.value || '');
-      url.searchParams.set('l4', selectL4?.value || '');
-      url.searchParams.set('l5', selectL5?.value || '');
-
-      navigator.clipboard.writeText(url.toString());
-      if (stackActionNotice) {
-        stackActionNotice.classList.remove('hidden');
-        stackActionNotice.textContent = `Shareable link copied: ${url.toString()}`;
-      }
+    // Shareable Link
+    copyLinkBtn?.addEventListener('click', () => {
+      const params = new URLSearchParams({
+        name: customNameInput?.value || 'Stack',
+        l1: selects[0]?.value || '',
+        l2: selects[1]?.value || '',
+        l3: selects[2]?.value || '',
+        l4: selects[3]?.value || '',
+        l5: selects[4]?.value || ''
+      });
+      const url = `${window.location.origin}/stack-builder?${params.toString()}`;
+      navigator.clipboard.writeText(url).then(() => {
+        if (noticeEl) {
+          noticeEl.textContent = `✓ Copied shareable link: ${url}`;
+          noticeEl.classList.remove('hidden');
+          setTimeout(() => noticeEl.classList.add('hidden'), 5000);
+        }
+      });
     });
 
-    // Check incoming query params
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('name') && customStackName) {
-      customStackName.value = decodeURIComponent(params.get('name')!);
-    }
-    if (params.get('l1') && selectL1) selectL1.value = params.get('l1')!;
-    if (params.get('l2') && selectL2) selectL2.value = params.get('l2')!;
-    if (params.get('l3') && selectL3) selectL3.value = params.get('l3')!;
-    if (params.get('l4') && selectL4) selectL4.value = params.get('l4')!;
-    if (params.get('l5') && selectL5) selectL5.value = params.get('l5')!;
+    // URL Param Pre-loader
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('l1') && selects[0]) selects[0].value = urlParams.get('l1');
+    if (urlParams.get('l2') && selects[1]) selects[1].value = urlParams.get('l2');
+    if (urlParams.get('l3') && selects[2]) selects[2].value = urlParams.get('l3');
+    if (urlParams.get('l4') && selects[3]) selects[3].value = urlParams.get('l4');
+    if (urlParams.get('l5') && selects[4]) selects[4].value = urlParams.get('l5');
+    if (urlParams.get('name') && customNameInput) customNameInput.value = urlParams.get('name');
 
-    calculateCosts();
+    calculateEconomics();
   });
 </script>

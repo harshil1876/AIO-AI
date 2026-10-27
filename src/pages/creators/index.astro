@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { CREATORS_DATA } from '../../data/creatorsData';
+import { getCreatorAvatar } from '../../services/youtubeLiveService';
 
 const categories = ['All', 'AI Coding', 'AI Tutorials', 'AI News', 'AI Agents', 'AI Research', 'Indian AI', 'No-Code & Workflows'];
 
@@ -213,14 +214,18 @@ const learningTracks = [
                       </span>
                     )}
                   </div>
-                  <span class="text-mute font-medium">{creator.subscribersEstimate}</span>
+                  <span class="text-mute font-medium live-subs" data-handle={creator.handle}>{creator.subscribersEstimate}</span>
                 </div>
 
                 <!-- Channel Info -->
                 <div class="flex items-start gap-3.5 mb-3">
-                  <div class="w-10 h-10 rounded-md bg-canvas border border-hairline text-ink flex items-center justify-center font-bold text-sm shrink-0 font-mono">
-                    {creator.channelName.substring(0, 2).toUpperCase()}
-                  </div>
+                  <img 
+                    src={getCreatorAvatar(creator.handle, creator.avatarUrl)} 
+                    alt={creator.channelName} 
+                    class="w-10 h-10 rounded-lg border border-hairline bg-surface object-cover shrink-0 shadow-2xs" 
+                    loading="lazy" 
+                    onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent(this.alt) + '&background=2563EB&color=fff&size=128';"
+                  />
                   <div>
                     <h2 class="text-sm font-semibold text-ink hover:underline leading-snug">
                       <a href={`/creators/${creator.slug}`}>
@@ -240,25 +245,33 @@ const learningTracks = [
                   <span class="text-[10px] font-mono uppercase text-mute font-semibold block mb-1">Tools &amp; Models Taught:</span>
                   <div class="flex flex-wrap gap-1">
                     {creator.toolsTaught?.slice(0, 4).map(tool => (
-                      <span class="px-2 py-0.5 rounded bg-canvas border border-hairline text-body text-[11px] font-mono">
+                      <a 
+                        href={`/tools/${tool}`} 
+                        class="px-2 py-0.5 rounded bg-canvas hover:bg-hairline-soft border border-hairline text-body text-[11px] font-mono transition-colors"
+                      >
                         #{tool}
-                      </span>
+                      </a>
                     ))}
                   </div>
                 </div>
 
-                <!-- Top Must-Watch Tutorial Preview -->
+                <!-- Top Must-Watch Tutorial Preview (Interactive Modal / Link) -->
                 {creator.topVideos?.[0] && (
-                  <div class="p-3 rounded bg-canvas border border-hairline mb-3 text-xs space-y-1">
+                  <a 
+                    href={creator.topVideos[0].url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="block p-3 rounded-lg bg-canvas hover:bg-slate-50 border border-hairline hover:border-faint mb-3 text-xs space-y-1 transition-colors group cursor-pointer"
+                  >
                     <div class="flex items-center justify-between text-[10px] font-mono">
-                      <span class="text-mute uppercase font-semibold">Top Must-Watch:</span>
+                      <span class="text-mute uppercase font-semibold group-hover:text-primary">Top Must-Watch:</span>
                       <span class="px-1.5 py-0.5 rounded bg-blue-50 text-primary font-semibold border border-blue-200">
-                        {creator.topVideos[0].viewsEstimate || 'Verified'} views
+                        {creator.topVideos[0].viewsEstimate || 'Verified'} views ↗
                       </span>
                     </div>
-                    <div class="font-medium text-ink truncate text-xs">{creator.topVideos[0].title}</div>
+                    <div class="font-medium text-ink truncate text-xs group-hover:text-primary transition-colors">{creator.topVideos[0].title}</div>
                     <div class="text-[11px] text-mute font-mono">{creator.topVideos[0].duration} &bull; {creator.language}</div>
-                  </div>
+                  </a>
                 )}
               </div>
 
@@ -285,6 +298,8 @@ const learningTracks = [
 </Layout>
 
 <script>
+  import { batchRefreshCreatorStats } from '../../services/youtubeLiveService';
+
   document.addEventListener('DOMContentLoaded', () => {
     const buttons = document.querySelectorAll<HTMLButtonElement>('.creator-cat-btn');
     const cards = document.querySelectorAll<HTMLElement>('.creator-card');
@@ -294,6 +309,23 @@ const learningTracks = [
     const langFilter = document.getElementById('langFilter') as HTMLSelectElement | null;
 
     let activeCat = 'All';
+
+    // Hydrate live YouTube stats if API key or cache available
+    const handlesToFetch = Array.from(document.querySelectorAll<HTMLElement>('.live-subs'))
+      .map(el => el.getAttribute('data-handle') || '')
+      .filter(Boolean);
+
+    if (handlesToFetch.length > 0) {
+      batchRefreshCreatorStats(handlesToFetch).then(statsMap => {
+        document.querySelectorAll<HTMLElement>('.live-subs').forEach(el => {
+          const rawHandle = el.getAttribute('data-handle') || '';
+          const clean = rawHandle.replace(/^@/, '');
+          if (statsMap[clean]?.formattedSubscribers) {
+            el.textContent = `${statsMap[clean].formattedSubscribers} Subs`;
+          }
+        });
+      }).catch(() => {});
+    }
 
     function applyFilters() {
       const q = (searchInput?.value || '').toLowerCase().trim();

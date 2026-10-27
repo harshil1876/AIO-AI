@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import RepoQuickstartDrawer from '../../components/RepoQuickstartDrawer.astro';
 import { OPEN_SOURCE_REPOS } from '../../data/openSourceData';
 import { HARDWARE_PRESETS } from '../../services/githubLiveService';
 
@@ -163,9 +164,13 @@ function parseVramGb(vramStr?: string): number {
               </div>
 
               <div class="pt-3 border-t border-hairline flex items-center justify-between text-xs">
-                <span class="text-[10px] font-mono text-mute">
-                  Min: {repo.hardwareSpecs?.minVramGb}
-                </span>
+                <button 
+                  type="button" 
+                  class="quickstart-trigger-btn font-mono text-[11px] font-bold text-[#2563EB] hover:text-[#1D4ED8] bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-md transition-colors cursor-pointer inline-flex items-center gap-1"
+                  data-repo-json={JSON.stringify(repo)}
+                >
+                  <span>&gt;_ Quickstart</span>
+                </button>
                 <a 
                   href={`/open-source/${repo.slug}`} 
                   class="font-medium text-ink hover:underline inline-flex items-center gap-0.5"
@@ -180,6 +185,7 @@ function parseVramGb(vramStr?: string): number {
     </div>
   </main>
 
+  <RepoQuickstartDrawer />
   <Footer />
 </Layout>
 
@@ -325,6 +331,23 @@ function parseVramGb(vramStr?: string): number {
             if (starEl) starEl.textContent = `★ ${stats.formattedStars}`;
           }
         } catch (e) {}
+      }
+    });
+
+    // Quickstart Drawer click handler
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement | null;
+      const btn = target?.closest('.quickstart-trigger-btn');
+      if (btn) {
+        const raw = btn.getAttribute('data-repo-json');
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if ((window as any).aioOpenQuickstartDrawer) {
+              (window as any).aioOpenQuickstartDrawer(parsed);
+            }
+          } catch(err) {}
+        }
       }
     });
 

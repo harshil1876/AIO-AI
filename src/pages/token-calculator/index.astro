@@ -81,6 +81,25 @@ const initialModelId = Astro.url.searchParams.get('model') || 'gpt-4o';
               </div>
             </div>
 
+            <!-- Presets Bar -->
+            <div class="mb-3">
+              <span class="block text-[10px] font-mono text-mute uppercase font-bold mb-1.5">Load Benchmark Prompt Preset:</span>
+              <div class="flex flex-wrap gap-1.5" id="presetButtons">
+                <button type="button" class="preset-btn px-2.5 py-1 rounded bg-canvas border border-hairline hover:border-primary hover:text-primary text-[11px] font-mono transition-colors cursor-pointer" data-preset="rag">
+                  📄 RAG 10 Docs (~4.2k tk)
+                </button>
+                <button type="button" class="preset-btn px-2.5 py-1 rounded bg-canvas border border-hairline hover:border-primary hover:text-primary text-[11px] font-mono transition-colors cursor-pointer" data-preset="diff">
+                  🐙 Git PR Diff (~8.5k tk)
+                </button>
+                <button type="button" class="preset-btn px-2.5 py-1 rounded bg-canvas border border-hairline hover:border-primary hover:text-primary text-[11px] font-mono transition-colors cursor-pointer" data-preset="agent">
+                  🤖 Agent Prompt (~1.8k tk)
+                </button>
+                <button type="button" class="preset-btn px-2.5 py-1 rounded bg-canvas border border-hairline hover:border-primary hover:text-primary text-[11px] font-mono transition-colors cursor-pointer" data-preset="json">
+                  📋 JSON Schema (~650 tk)
+                </button>
+              </div>
+            </div>
+
             <!-- Textarea -->
             <label for="calcInputText" class="block text-xs font-medium text-body mb-2">Input Text</label>
             <textarea 
@@ -315,6 +334,23 @@ const initialModelId = Astro.url.searchParams.get('model') || 'gpt-4o';
         `).join('');
       }
       update();
+    });
+
+    const PRESET_TEXTS = {
+      rag: `[CONTEXT RETRIEVAL CHUNK 1/10 - ID: doc-9481]\nTitle: Distributed Vector Indexes at Scale\nVector search indexing with HNSW and DiskANN requires quantization... [Simulated corporate knowledgebase chunks for multi-turn RAG retrieval and citation validation across 10 internal documents]\n\n` + 'Enterprise SLA guarantee: Multi-region failover, latency under 200ms, and automatic token budget throttling.\n'.repeat(55),
+      diff: `diff --git a/src/services/inference.ts b/src/services/inference.ts\nindex 8b9f1a2..4e1c2d3 100644\n--- a/src/services/inference.ts\n+++ b/src/services/inference.ts\n@@ -124,18 +124,35 @@ export async function runMultiModelInference(payload: Payload) {\n+ // Add dynamic retry and fallback routing across providers\n+ const client = new LiteLLMGateway({ timeout: 15000 });\n` + `+ const validatedResult = await sanitizeOutputSchema(response);\n`.repeat(110),
+      agent: `You are an elite autonomous agent specializing in multi-tier software architecture, automated verification, and cloud deployments.\n\nGUARDRAILS:\n1. Never invent non-existent APIs or shell flags.\n2. Validate inputs against strict JSON schema definitions.\n3. Output exclusively valid RFC 8259 JSON.\n\nAVAILABLE TOOLS:\n- bash_executor(command: string): Runs sandboxed commands.\n- db_upsert(table: string, data: object): Persists validated state.\n- slack_alert(channel: string, message: string): Sends broadcast notification.\n` + `Task Instruction: Analyze current error telemetry, trace stack, and produce self-healing patch.\n`.repeat(20),
+      json: `{\n  "$schema": "http://json-schema.org/draft-07/schema#",\n  "title": "AIExtractedLead",\n  "type": "object",\n  "properties": {\n    "companyName": { "type": "string" },\n    "domain": { "type": "string", "format": "hostname" },\n    "decisionMakers": {\n      "type": "array",\n      "items": {\n        "name": { "type": "string" },\n        "role": { "type": "string" },\n        "verifiedEmail": { "type": "string", "format": "email" }\n      }\n    },\n    "budgetEstimateUsd": { "type": "number", "minimum": 1000 },\n    "intentScore": { "type": "number", "minimum": 0, "maximum": 1 }\n  },\n  "required": ["companyName", "domain", "intentScore"]\n}`
+    };
+
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pKey = btn.getAttribute('data-preset');
+        if (pKey && PRESET_TEXTS[pKey] && textarea) {
+          textarea.value = PRESET_TEXTS[pKey];
+          update();
+        }
+      });
     });
 
     clearBtn?.addEventListener('click', () => {

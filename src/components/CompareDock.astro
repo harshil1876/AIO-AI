@@ -1,0 +1,150 @@
+---
+// Bottom-floating comparison tray across /tools, /categories, and /india-ai
+---
+
+<div 
+  id="floatingCompareDock" 
+  class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 hidden max-w-xl w-[95vw] bg-[#09090B] text-white border border-neutral-700 rounded-2xl shadow-2xl p-3 sm:p-3.5 transition-all duration-200 animate-in fade-in slide-in-from-bottom-3"
+>
+  <div class="flex items-center justify-between gap-3">
+    
+    <!-- Left: Selected Tools Items with Favicons -->
+    <div class="flex items-center gap-2 min-w-0 overflow-x-auto scrollbar-none py-0.5">
+      <span class="text-[11px] font-mono font-bold text-slate-400 shrink-0 uppercase tracking-wider hidden sm:inline">
+        Compare:
+      </span>
+      <div id="compareDockItems" class="flex items-center gap-2 shrink-0">
+        <!-- Dynamically injected chips -->
+      </div>
+    </div>
+
+    <!-- Right: Action Buttons -->
+    <div class="flex items-center gap-2 shrink-0">
+      <button
+        type="button"
+        id="clearCompareDockBtn"
+        onclick="window.clearCompareDock && window.clearCompareDock()"
+        class="text-[11px] font-mono text-slate-400 hover:text-white px-2 py-1 rounded transition-colors cursor-pointer"
+        title="Clear comparison dock"
+      >
+        Clear
+      </button>
+
+      <a
+        href="/compare"
+        id="launchCompareBtn"
+        class="px-3.5 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 shrink-0"
+      >
+        <span>Compare Side-by-Side</span>
+        <span class="font-mono text-[10px] bg-blue-800 px-1.5 py-0.2 rounded-full" id="compareDockCount">0/4</span>
+        <span>&rarr;</span>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<script is:inline>
+  (function() {
+    var STORAGE_KEY = 'aio_compare_tools';
+
+    function getCompareList() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveCompareList(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('aio:compare-update', { detail: { list: list } }));
+      renderCompareDock();
+    }
+
+    window.addToCompare = function(slug, name, websiteUrl) {
+      var list = getCompareList();
+      if (list.some(function(item) { return item.slug === slug; })) {
+        // Toggle removal
+        list = list.filter(function(item) { return item.slug !== slug; });
+      } else {
+        if (list.length >= 4) {
+          alert('You can compare a maximum of 4 tools side-by-side.');
+          return;
+        }
+        list.push({ slug: slug, name: name, websiteUrl: websiteUrl });
+      }
+      saveCompareList(list);
+    };
+
+    window.removeFromCompare = function(slug) {
+      var list = getCompareList().filter(function(item) { return item.slug !== slug; });
+      saveCompareList(list);
+    };
+
+    window.clearCompareDock = function() {
+      saveCompareList([]);
+    };
+
+    function renderCompareDock() {
+      var dock = document.getElementById('floatingCompareDock');
+      var container = document.getElementById('compareDockItems');
+      var countEl = document.getElementById('compareDockCount');
+      var launchBtn = document.getElementById('launchCompareBtn');
+      if (!dock || !container) return;
+
+      var list = getCompareList();
+
+      if (list.length === 0) {
+        dock.classList.add('hidden');
+        return;
+      }
+
+      dock.classList.remove('hidden');
+      if (countEl) countEl.textContent = list.length + '/4';
+
+      var slugs = list.map(function(item) { return item.slug; }).join(',');
+      if (launchBtn) launchBtn.setAttribute('href', '/compare?tools=' + encodeURIComponent(slugs));
+
+      container.innerHTML = list.map(function(item) {
+        var domain = 'ai';
+        try {
+          domain = new URL(item.websiteUrl || '').hostname.replace('www.', '');
+        } catch(e) {
+          domain = item.slug + '.com';
+        }
+        var favicon = 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=64';
+
+        return (
+          '<div class="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-neutral-800 border border-neutral-700 text-xs font-semibold shrink-0">' +
+            '<img src="' + favicon + '" class="w-3.5 h-3.5 rounded object-contain" alt="' + item.name + '" onerror="this.style.display=\'none\';" />' +
+            '<span class="truncate max-w-[80px] sm:max-w-[100px]">' + item.name + '</span>' +
+            '<button type="button" onclick="window.removeFromCompare(\'' + item.slug + '\')" class="text-slate-400 hover:text-red-400 ml-0.5 cursor-pointer">&times;</button>' +
+          '</div>'
+        );
+      }).join('');
+
+      // Update any [+ Compare] buttons on page
+      document.querySelectorAll('.tool-compare-btn').forEach(function(btn) {
+        var slug = btn.getAttribute('data-tool-slug');
+        if (list.some(function(item) { return item.slug === slug; })) {
+          btn.textContent = '✓ Compared';
+          btn.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+          btn.classList.remove('bg-white', 'text-slate-700');
+        } else {
+          btn.textContent = '+ Compare';
+          btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+          btn.classList.add('bg-white', 'text-slate-700');
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', renderCompareDock);
+    } else {
+      renderCompareDock();
+    }
+
+    window.addEventListener('aio:compare-update', renderCompareDock);
+  })();
+</script>

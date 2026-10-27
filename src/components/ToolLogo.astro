@@ -18,9 +18,9 @@ try {
 }
 
 const sizeClasses = {
-  sm: 'w-7 h-7 text-xs rounded-sm',
-  md: 'w-11 h-11 text-sm rounded-md',
-  lg: 'w-16 h-16 md:w-20 md:h-20 text-xl rounded-xl'
+  sm: 'w-7 h-7 text-xs rounded-lg',
+  md: 'w-10 h-10 text-sm rounded-xl',
+  lg: 'w-16 h-16 md:w-20 md:h-20 text-xl rounded-2xl'
 };
 
 const imgSizes = {
@@ -29,18 +29,19 @@ const imgSizes = {
   lg: 'w-10 h-10 md:w-12 md:h-12'
 };
 
-const logoSrc = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+const googleFavicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+const ddgFavicon = `https://icons.duckduckgo.com/ip3/${domain}.ico`;
 ---
 
-<div class={`bg-canvas-elevated border border-hairline flex items-center justify-center shrink-0 overflow-hidden shadow-2xs relative ${sizeClasses[size]} ${customClass}`}>
+<div class={`bg-white border border-[#E2E8F0] flex items-center justify-center shrink-0 overflow-hidden shadow-2xs relative ${sizeClasses[size]} ${customClass}`}>
   <img 
-    src={logoSrc} 
+    src={googleFavicon} 
     alt={`${name} official logo`} 
     loading="lazy"
     class={`object-contain ${imgSizes[size]}`}
-    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+    onerror={`if (!this.dataset.ddgTried) { this.dataset.ddgTried = 'true'; this.src = '${ddgFavicon}'; } else { this.style.display = 'none'; if (this.nextElementSibling) this.nextElementSibling.style.display = 'flex'; }`}
   />
-  <span class="hidden font-mono font-bold text-ink uppercase items-center justify-center">
+  <span class="hidden font-mono font-black text-[#2563EB] uppercase items-center justify-center">
     {name.charAt(0)}
   </span>
 </div>

@@ -22,6 +22,19 @@ const templates = WORKFLOWS_DATA.map(w => ({
 >
   <Header currentPath="/workflows" />
 
+  <!-- Top Sub-Navigation Tabs -->
+  <div class="border-b border-[#E2E8F0] bg-white sticky top-14 z-20 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto flex items-center gap-2 py-2 text-xs overflow-x-auto no-scrollbar font-sans">
+      <a href="/workflows" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-[#09090B] hover:bg-slate-50 font-medium shrink-0">
+        16 Production Blueprints
+      </a>
+      <a href="/workflows/builder" class="px-3 py-1.5 rounded-lg bg-blue-50 text-[#2563EB] font-bold shrink-0 flex items-center gap-1">
+        <span>Interactive Workflow Studio</span>
+        <span class="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-emerald-50 text-emerald-700 font-bold">STUDIO</span>
+      </a>
+    </div>
+  </div>
+
   <main class="w-full flex flex-col min-h-screen bg-canvas">
     
     <!-- Studio Header -->
@@ -51,6 +64,18 @@ const templates = WORKFLOWS_DATA.map(w => ({
               <option value={t.id}>Template: {t.title}</option>
             ))}
           </select>
+
+          <button 
+            type="button" 
+            id="downloadSkillBtn" 
+            class="px-3.5 py-2 rounded-lg bg-surface border border-hairline hover:border-primary text-ink hover:text-primary text-xs font-semibold transition-colors cursor-pointer shadow-xs inline-flex items-center gap-1.5"
+            title="Download Cursor/Antigravity Agent Skill file"
+          >
+            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            <span>Export SKILL.md</span>
+          </button>
 
           <button 
             type="button" 
@@ -285,13 +310,14 @@ const templates = WORKFLOWS_DATA.map(w => ({
     const stepsContainer = document.getElementById('stepsContainer');
     const stepCountBadge = document.getElementById('stepCountBadge');
     const addStepBtn = document.getElementById('addStepBtn');
-    const templateSelect = document.getElementById('templateSelect');
-    const wfNameInput = document.getElementById('wfNameInput');
-    const wfGoalInput = document.getElementById('wfGoalInput');
-    const systemPromptInput = document.getElementById('systemPromptInput');
+    const templateSelect = document.getElementById('templateSelect') as HTMLSelectElement | null;
+    const wfNameInput = document.getElementById('wfNameInput') as HTMLInputElement | null;
+    const wfGoalInput = document.getElementById('wfGoalInput') as HTMLInputElement | null;
+    const systemPromptInput = document.getElementById('systemPromptInput') as HTMLTextAreaElement | null;
     const apiSchemaPreview = document.getElementById('apiSchemaPreview');
     const copySchemaBtn = document.getElementById('copySchemaBtn');
     const saveWorkflowBtn = document.getElementById('saveWorkflowBtn');
+    const downloadSkillBtn = document.getElementById('downloadSkillBtn');
 
     // Telemetry Elements
     const econModel = document.getElementById('econModel');
@@ -441,15 +467,19 @@ const templates = WORKFLOWS_DATA.map(w => ({
     });
 
     // Template Loader
-    templateSelect?.addEventListener('change', (e) => {
-      const selectedId = e.target.value;
+    function loadTemplate(selectedId: string) {
       if (!selectedId) return;
-
-      const template = templates.find(t => t.id === selectedId);
+      const template = templates.find((t: any) => t.id === selectedId);
       if (template) {
+        if (templateSelect) templateSelect.value = selectedId;
         if (wfNameInput) wfNameInput.value = template.title;
         if (systemPromptInput) systemPromptInput.value = template.systemPrompt;
-        currentSteps = template.steps.map((s, i) => ({
+        if (wfGoalInput) wfGoalInput.value = template.userPromptTemplate;
+        if (wfCategorySelect) {
+          const matchingOption = Array.from(wfCategorySelect.options).find(o => o.value.toLowerCase().includes(template.category.toLowerCase().split(' ')[0]));
+          if (matchingOption) wfCategorySelect.value = matchingOption.value;
+        }
+        currentSteps = template.steps.map((s: any, i: number) => ({
           id: i + 1,
           title: s.title,
           type: s.type || 'AI Model',
@@ -459,6 +489,11 @@ const templates = WORKFLOWS_DATA.map(w => ({
         }));
         renderSteps();
       }
+    }
+
+    templateSelect?.addEventListener('change', (e) => {
+      const target = e.target as HTMLSelectElement;
+      loadTemplate(target.value);
     });
 
     // Telemetry & Schema Calculation
@@ -505,6 +540,58 @@ const templates = WORKFLOWS_DATA.map(w => ({
         navigator.clipboard.writeText(apiSchemaPreview.textContent || '');
         alert('API Payload Schema copied to clipboard!');
       }
+    });
+
+    // Export SKILL.md for Cursor / Antigravity Agent
+    downloadSkillBtn?.addEventListener('click', () => {
+      const name = wfNameInput?.value || 'Custom Pipeline';
+      const cleanId = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      const category = (document.getElementById('wfCategorySelect') as HTMLSelectElement)?.value || 'General';
+      const goal = wfGoalInput?.value || 'Automated multi-step pipeline execution';
+      const sysPrompt = systemPromptInput?.value || '';
+
+      const stepsList = currentSteps.map((s, i) => {
+        return `### Step ${i + 1}: ${s.title}\n- **Type**: \`${s.type}\`\n- **Model**: \`${s.model !== 'none' ? s.model : 'Native Logic / Webhook'}\`\n- **Output Format**: \`${s.outputFormat || 'Structured JSON'}\`\n- **Prompt / Implementation Instruction**:\n\`\`\`text\n${s.prompt || 'No instruction specified.'}\n\`\`\`\n`;
+      }).join('\n');
+
+      const content = `---
+name: ${name}
+description: ${goal}
+category: ${category}
+---
+
+# ${name}
+
+> ${goal}
+
+## Architecture & Node Flow
+This AI Agent Skill defines an automated pipeline with ${currentSteps.length} nodes running in production.
+
+## System Prompt & Guardrails
+\`\`\`text
+${sysPrompt}
+\`\`\`
+
+## Step-by-Step Node Execution
+${stepsList}
+
+## Production API Payload Schema
+\`\`\`json
+${apiSchemaPreview?.textContent || '{}'}
+\`\`\`
+
+*Exported from AIO AI Workflow Studio (https://aio-ai.pages.dev)*
+`;
+
+      const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${cleanId || 'workflow'}.skill.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     });
 
     // Test Runner Simulator Execution
@@ -571,13 +658,19 @@ const templates = WORKFLOWS_DATA.map(w => ({
         const existing = existingStr ? JSON.parse(existingStr) : [];
         existing.unshift(newSavedWf);
         localStorage.setItem('aio_user_workflows', JSON.stringify(existing));
-        alert(`Workflow "${newSavedWf.title}" saved to your personal history! View it anytime under Profile &gt; My Workflows.`);
+        alert(`Workflow "${newSavedWf.title}" saved to your personal history! View it anytime under Profile > My Workflows.`);
       } catch (e) {
         alert('Saved to current session.');
       }
     });
 
-    // Initial render
-    renderSteps();
+    // Check URL search params for ?template=[id]
+    const urlParams = new URLSearchParams(window.location.search);
+    const templateParam = urlParams.get('template');
+    if (templateParam) {
+      loadTemplate(templateParam);
+    } else {
+      renderSteps();
+    }
   });
 </script>

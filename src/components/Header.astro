@@ -8,9 +8,9 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
 ---
 
 <header class="bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 md:px-6 py-2.5 sticky top-0 z-40 transition-colors">
-  <div class="flex items-center justify-between gap-4 w-full">
+  <div class="flex items-center justify-between gap-3 sm:gap-4 w-full">
     
-    <!-- Left: Universal Sidebar Toggle + Brand Logo -->
+    <!-- Left: Universal Sidebar Toggle + Brand Logo (Hidden on desktop when sidebar is rendered) -->
     <div class="flex items-center gap-3 shrink-0">
       {!hideSidebarToggle && (
         <button
@@ -27,7 +27,8 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
         </button>
       )}
 
-      <a href="/dashboard" class="flex items-center gap-2.5 group" id="headerBrandLink">
+      <!-- Only visible on mobile/tablet or when sidebar is fully collapsed -->
+      <a href="/dashboard" class="flex lg:hidden items-center gap-2.5 group" id="headerBrandLink">
         <div class="w-7 h-7 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-black text-xs tracking-tight shadow-xs group-hover:bg-[#2563EB] transition-colors">
           AI
         </div>
@@ -57,57 +58,34 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
       </button>
     </div>
 
-    <!-- Right: AI Finder CTA + Docs + Submit + Auth Controls -->
+    <!-- Right Controls: Free Mode Toggle + Currency + Auth Controls -->
     <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-      <!-- Quick AI Finder Button -->
-      <a
-        href="/finder"
-        class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold bg-[#2563EB] text-white hover:bg-[#1D4ED8] px-3 py-1.5 rounded-lg shadow-xs transition-colors"
+      
+      <!-- TAAFT-Inspired Global Free & Open-Source Mode Toggle -->
+      <button
+        type="button"
+        id="freeModeToggleBtn"
+        onclick="window.toggleFreeMode && window.toggleFreeMode()"
+        class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] text-slate-700 hover:text-[#09090B] hover:bg-slate-50 transition-all cursor-pointer shadow-xs"
+        title="Toggle 100% Free & Open-Source Tools Only"
       >
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
-        </svg>
-        <span>AI Finder</span>
-      </a>
+        <span class="w-2 h-2 rounded-full bg-slate-300 transition-colors" id="freeModeIndicator"></span>
+        <span id="freeModeLabel">⚡ Free Mode</span>
+      </button>
 
-      <!-- Pricing Link -->
-      <a
-        href="/pricing"
-        class={`hidden md:inline-flex text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors ${
-          currentPath.startsWith('/pricing')
-            ? 'text-[#2563EB] bg-[#EFF6FF]'
-            : 'text-slate-600 hover:text-ink hover:bg-slate-100'
-        }`}
+      <!-- Currency Switcher Toggle (INR ₹ / USD $) -->
+      <button
+        type="button"
+        id="currencyToggleBtn"
+        onclick="window.toggleCurrency && window.toggleCurrency()"
+        class="inline-flex items-center gap-1 text-xs font-mono font-bold px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] bg-white text-slate-700 hover:border-slate-400 transition-all cursor-pointer shadow-xs"
+        title="Toggle Pricing Currency (INR / USD)"
       >
-        Pricing
-      </a>
+        <span id="headerCurrencyText">₹ INR</span>
+      </button>
 
-      <!-- Docs Link -->
-      <a
-        href="/docs"
-        class={`hidden md:inline-flex text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors ${
-          currentPath.startsWith('/docs')
-            ? 'text-[#2563EB] bg-[#EFF6FF]'
-            : 'text-slate-600 hover:text-ink hover:bg-slate-100'
-        }`}
-      >
-        Docs
-      </a>
-
-      <!-- Submit Resource Button -->
-      <a
-        href="/submit"
-        class={`hidden lg:inline-flex text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] transition-colors ${
-          currentPath.startsWith('/submit')
-            ? 'bg-[#EFF6FF] text-[#2563EB] border-[#BFDBFE]'
-            : 'bg-white text-slate-700 hover:text-ink hover:border-slate-300'
-        }`}
-      >
-        Submit Tool +
-      </a>
-
-      <!-- Auth State Control -->
-      <div id="headerAuthNav" class="flex items-center gap-2 border-l border-[#E2E8F0] pl-2 sm:pl-3">
+      <!-- Auth State Control & Interactive User Dropdown -->
+      <div id="headerAuthNav" class="flex items-center gap-2 border-l border-[#E2E8F0] pl-2 sm:pl-3 relative">
         <!-- Logged Out View -->
         <a
           href={`/login?redirect=${encodeURIComponent(currentPath === '/' ? '/dashboard' : currentPath)}`}
@@ -121,19 +99,109 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
           id="headerSignupLink"
           class="bg-[#09090B] text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-neutral-800 transition-colors shadow-xs"
         >
-          Get Started Free
+          Get Started
         </a>
 
-        <!-- Logged In View -->
-        <a
-          href="/profile"
-          id="headerProfileLink"
-          class="hidden items-center gap-1.5 text-xs text-ink font-semibold px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] bg-[#F8FAFF] hover:border-[#BFDBFE] transition-colors"
-          title="Account Profile & Settings"
-        >
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span id="headerProfileHandle">Profile</span>
-        </a>
+        <!-- Logged In View: Profile Pill with Interactive Dropdown -->
+        <div class="relative hidden" id="headerProfileWrapper">
+          <button
+            type="button"
+            id="headerProfileBtn"
+            onclick="window.toggleProfileMenu && window.toggleProfileMenu()"
+            class="flex items-center gap-2 text-xs font-semibold px-2.5 py-1 rounded-xl border border-[#E2E8F0] bg-[#F8FAFF] hover:border-[#BFDBFE] hover:bg-white transition-all shadow-xs cursor-pointer"
+            aria-expanded="false"
+            aria-haspopup="true"
+          >
+            <!-- Real Avatar / Initials -->
+            <div class="w-6 h-6 rounded-full overflow-hidden bg-[#2563EB] text-white flex items-center justify-center font-bold text-[11px] shrink-0" id="headerAvatarContainer">
+              <span id="headerAvatarInitials">H</span>
+              <img id="headerAvatarImg" class="w-full h-full object-cover hidden" alt="User avatar" />
+            </div>
+
+            <!-- Full Name with max-w truncation (No hard 10-char slicing!) -->
+            <span id="headerProfileName" class="max-w-[130px] sm:max-w-[160px] truncate text-[#09090B] font-bold">
+              Harshil Patel
+            </span>
+
+            <!-- Verified Badge -->
+            <span class="hidden md:inline-flex text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-blue-50 text-[#2563EB] border border-blue-200">
+              Verified
+            </span>
+
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div 
+            id="headerProfileDropdown"
+            class="hidden absolute right-0 mt-2 w-56 bg-white border border-[#E2E8F0] rounded-2xl shadow-xl py-2 z-50 text-xs animate-in fade-in slide-in-from-top-1 duration-150"
+          >
+            <div class="px-4 py-2 border-b border-[#E2E8F0] mb-1">
+              <div class="font-bold text-[#09090B] truncate" id="dropdownUserName">Harshil Patel</div>
+              <div class="text-[11px] text-slate-500 font-mono truncate" id="dropdownUserEmail">harshilpival@gmail.com</div>
+              <div class="mt-1 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span class="text-[10px] font-mono text-emerald-600 font-bold uppercase">Builder Mode Active</span>
+              </div>
+            </div>
+
+            <a href="/dashboard" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 hover:text-[#2563EB] hover:bg-[#F8FAFF] transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+              </svg>
+              <span>Command Center</span>
+            </a>
+
+            <a href="/profile" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 hover:text-[#2563EB] hover:bg-[#F8FAFF] transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+              </svg>
+              <span>My Profile & History</span>
+            </a>
+
+            <a href="/stack-builder" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 hover:text-[#2563EB] hover:bg-[#F8FAFF] transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
+              </svg>
+              <span>My Stacks</span>
+            </a>
+
+            <a href="/profile#bookmarks" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 hover:text-[#2563EB] hover:bg-[#F8FAFF] transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+              </svg>
+              <span>Saved Bookmarks</span>
+            </a>
+
+            <!-- Admin Link (Only for authorized admin emails) -->
+            <a 
+              href="/admin" 
+              id="dropdownAdminLink" 
+              class="hidden items-center gap-2.5 px-4 py-2 text-purple-700 bg-purple-50 hover:bg-purple-100 font-bold transition-colors"
+            >
+              <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              </svg>
+              <span>Admin Console</span>
+            </a>
+
+            <div class="border-t border-[#E2E8F0] my-1"></div>
+
+            <button
+              type="button"
+              onclick="window.handleSignOut && window.handleSignOut()"
+              class="w-full flex items-center gap-2.5 px-4 py-2 text-red-600 hover:bg-red-50 text-left transition-colors font-medium cursor-pointer"
+            >
+              <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+              </svg>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -141,66 +209,162 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
 </header>
 
 <script is:inline>
-  function checkHeaderAuth() {
-    var loginLink = document.getElementById('headerLoginLink');
-    var signupLink = document.getElementById('headerSignupLink');
-    var dashboardLink = document.getElementById('headerDashboardLink');
-    var profileLink = document.getElementById('headerProfileLink');
-    var profileHandle = document.getElementById('headerProfileHandle');
-    var brandLink = document.getElementById('headerBrandLink');
+  (function() {
+    // 1. TAAFT-Inspired Free Mode State
+    window.toggleFreeMode = function() {
+      var isFree = localStorage.getItem('aio_free_mode') === 'true';
+      var newMode = !isFree;
+      localStorage.setItem('aio_free_mode', String(newMode));
+      updateFreeModeUI(newMode);
+      window.dispatchEvent(new CustomEvent('aio:freemode', { detail: { enabled: newMode } }));
+    };
 
-    var localUserStr = localStorage.getItem('aio_user');
-    var isAuth = false;
-    var user = null;
-    if (localUserStr) {
-      try {
-        user = JSON.parse(localUserStr);
-        isAuth = true;
-      } catch (e) {}
-    }
-    if (!isAuth) {
-      for (var i = 0; i < localStorage.length; i++) {
-        var k = localStorage.key(i);
-        if (k && (k === 'supabase.auth.token' || (k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1))) {
-          isAuth = true;
-          try {
-            var parsedToken = JSON.parse(localStorage.getItem(k));
-            var tokenUser = parsedToken.user || (parsedToken.currentSession && parsedToken.currentSession.user);
-            if (tokenUser) {
-              user = {
-                name: tokenUser.user_metadata?.full_name || tokenUser.email?.split('@')[0],
-                email: tokenUser.email
-              };
-            }
-          } catch(e) {}
-          break;
+    function updateFreeModeUI(enabled) {
+      var ind = document.getElementById('freeModeIndicator');
+      var btn = document.getElementById('freeModeToggleBtn');
+      if (ind && btn) {
+        if (enabled) {
+          ind.classList.remove('bg-slate-300');
+          ind.classList.add('bg-emerald-500');
+          btn.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-800');
+        } else {
+          ind.classList.remove('bg-emerald-500');
+          ind.classList.add('bg-slate-300');
+          btn.classList.remove('bg-emerald-50', 'border-emerald-300', 'text-emerald-800');
         }
       }
     }
 
-    if (isAuth) {
-      if (loginLink) loginLink.classList.add('hidden');
-      if (signupLink) signupLink.classList.add('hidden');
-      if (profileLink) {
-        profileLink.classList.remove('hidden');
-        profileLink.classList.add('inline-flex');
-      }
-      if (profileHandle && user && (user.name || user.email)) {
-        var namePart = user.name || user.email.split('@')[0];
-        profileHandle.textContent = namePart.substring(0, 10);
-      }
-      if (brandLink) brandLink.setAttribute('href', '/dashboard');
-    } else {
-      if (loginLink) loginLink.classList.remove('hidden');
-      if (signupLink) signupLink.classList.remove('hidden');
-      if (profileLink) profileLink.classList.add('hidden');
-      if (brandLink) brandLink.setAttribute('href', '/');
-    }
-  }
+    // 2. Currency Switcher State
+    window.toggleCurrency = function() {
+      var curr = localStorage.getItem('aio_currency') || 'INR';
+      var next = curr === 'INR' ? 'USD' : 'INR';
+      localStorage.setItem('aio_currency', next);
+      updateCurrencyUI(next);
+      window.dispatchEvent(new CustomEvent('aio:currency', { detail: { currency: next } }));
+    };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', checkHeaderAuth);
-  } else {
-    checkHeaderAuth();
-  }
+    function updateCurrencyUI(curr) {
+      var el = document.getElementById('headerCurrencyText');
+      if (el) el.textContent = curr === 'INR' ? '₹ INR' : '$ USD';
+    }
+
+    // 3. User Profile Dropdown
+    window.toggleProfileMenu = function() {
+      var dd = document.getElementById('headerProfileDropdown');
+      if (dd) {
+        var isClosed = dd.classList.contains('hidden');
+        if (isClosed) {
+          dd.classList.remove('hidden');
+        } else {
+          dd.classList.add('hidden');
+        }
+      }
+    };
+
+    document.addEventListener('click', function(e) {
+      var wrapper = document.getElementById('headerProfileWrapper');
+      var dd = document.getElementById('headerProfileDropdown');
+      if (wrapper && dd && !wrapper.contains(e.target)) {
+        dd.classList.add('hidden');
+      }
+    });
+
+    // 4. Global Sign Out
+    window.handleSignOut = function() {
+      localStorage.removeItem('aio_user');
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && (k.startsWith('sb-') || k === 'supabase.auth.token')) {
+          localStorage.removeItem(k);
+        }
+      }
+      window.location.href = '/';
+    };
+
+    // 5. Auth State Synchronizer (Reads session cleanly with no substring slicing)
+    function syncHeaderAuth() {
+      var loginLink = document.getElementById('headerLoginLink');
+      var signupLink = document.getElementById('headerSignupLink');
+      var profileWrapper = document.getElementById('headerProfileWrapper');
+      var profileName = document.getElementById('headerProfileName');
+      var dropdownName = document.getElementById('dropdownUserName');
+      var dropdownEmail = document.getElementById('dropdownUserEmail');
+      var avatarInitials = document.getElementById('headerAvatarInitials');
+      var avatarImg = document.getElementById('headerAvatarImg');
+      var adminLink = document.getElementById('dropdownAdminLink');
+      var brandLink = document.getElementById('headerBrandLink');
+
+      var user = null;
+      try {
+        var localUserStr = localStorage.getItem('aio_user');
+        if (localUserStr) {
+          user = JSON.parse(localUserStr);
+        } else {
+          for (var i = 0; i < localStorage.length; i++) {
+            var k = localStorage.key(i);
+            if (k && (k === 'supabase.auth.token' || (k.startsWith('sb-') && k.endsWith('-auth-token')))) {
+              var parsed = JSON.parse(localStorage.getItem(k));
+              var tokenUser = parsed.user || (parsed.currentSession && parsed.currentSession.user);
+              if (tokenUser) {
+                var meta = tokenUser.user_metadata || {};
+                user = {
+                  name: meta.full_name || meta.name || tokenUser.email?.split('@')[0] || 'Builder',
+                  email: tokenUser.email || '',
+                  avatarUrl: meta.avatar_url || meta.picture || ''
+                };
+              }
+              break;
+            }
+          }
+        }
+      } catch (e) {}
+
+      var isAuth = Boolean(user && (user.name || user.email));
+
+      if (isAuth) {
+        if (loginLink) loginLink.classList.add('hidden');
+        if (signupLink) signupLink.classList.add('hidden');
+        if (profileWrapper) profileWrapper.classList.remove('hidden');
+
+        var fullName = user.name || (user.email ? user.email.split('@')[0] : 'Builder');
+        if (profileName) profileName.textContent = fullName;
+        if (dropdownName) dropdownName.textContent = fullName;
+        if (dropdownEmail) dropdownEmail.textContent = user.email || '';
+
+        var firstLetter = fullName.charAt(0).toUpperCase();
+        if (avatarInitials) avatarInitials.textContent = firstLetter;
+
+        if (user.avatarUrl && avatarImg) {
+          avatarImg.src = user.avatarUrl;
+          avatarImg.classList.remove('hidden');
+          if (avatarInitials) avatarInitials.classList.add('hidden');
+        }
+
+        // Admin privilege check
+        var isAdmin = (user.email === 'harshilpival@gmail.com') || (user.isAdmin === true);
+        if (adminLink && isAdmin) {
+          adminLink.classList.remove('hidden');
+          adminLink.classList.add('flex');
+        }
+
+        if (brandLink) brandLink.setAttribute('href', '/dashboard');
+      } else {
+        if (loginLink) loginLink.classList.remove('hidden');
+        if (signupLink) signupLink.classList.remove('hidden');
+        if (profileWrapper) profileWrapper.classList.add('hidden');
+        if (brandLink) brandLink.setAttribute('href', '/');
+      }
+
+      // Initialize Free Mode and Currency UI
+      updateFreeModeUI(localStorage.getItem('aio_free_mode') === 'true');
+      updateCurrencyUI(localStorage.getItem('aio_currency') || 'INR');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', syncHeaderAuth);
+    } else {
+      syncHeaderAuth();
+    }
+  })();
 </script>

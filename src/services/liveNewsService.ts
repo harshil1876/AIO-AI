@@ -137,6 +137,40 @@ export async function fetchLiveAINews(): Promise<LiveNewsItem[]> {
     console.warn('Live Dev.to articles fetch notice:', err);
   }
 
+  // 4. Fetch from GitHub Flagship AI Releases
+  try {
+    const flagshipRepos = ['ollama/ollama', 'vllm-project/vllm', 'comfyanonymous/ComfyUI'];
+    for (const repo of flagshipRepos) {
+      try {
+        const ghRes = await fetch(`https://api.github.com/repos/${repo}/releases?per_page=1`, {
+          headers: { 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (ghRes.ok) {
+          const releases = await ghRes.json();
+          if (Array.isArray(releases) && releases[0]) {
+            const rel = releases[0];
+            const timeMs = new Date(rel.published_at).getTime();
+            items.push({
+              id: `gh-rel-${rel.id}`,
+              title: `[Release] ${repo}: ${rel.name || rel.tag_name}`,
+              url: rel.html_url,
+              source: 'GitHub AI Releases',
+              sourceBadge: '[GitHub Release]',
+              timestampMs: timeMs,
+              timeAgo: formatTimeAgo(timeMs),
+              category: 'Model Releases',
+              upvotes: 25,
+              commentsCount: 0,
+              isBreaking: true
+            });
+          }
+        }
+      } catch (e) {}
+    }
+  } catch (err) {
+    console.warn('GitHub releases fetch notice:', err);
+  }
+
   // Deduplicate by normalized title
   const seen = new Set<string>();
   const uniqueItems = items.filter(item => {

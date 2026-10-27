@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { CREATORS_DATA, type CreatorData } from '../../data/creatorsData';
+import { getCreatorAvatar } from '../../services/youtubeLiveService';
 import { TOOLS_DATA } from '../../data/seedData';
 import { WORKFLOWS_DATA } from '../../data/workflowsData';
 
@@ -52,9 +53,13 @@ const matchingWorkflows = WORKFLOWS_DATA.filter(w =>
       <div class="bg-canvas-elevated border border-hairline rounded-lg p-6 sm:p-8 shadow-xs">
         <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 pb-6 border-b border-hairline">
           <div class="flex items-start gap-4">
-            <div class="w-14 h-14 rounded-md bg-canvas text-ink border border-hairline shrink-0 flex items-center justify-center font-bold text-xl font-mono shadow-xs">
-              {creator.channelName.substring(0, 2).toUpperCase()}
-            </div>
+            <img 
+              src={getCreatorAvatar(creator.handle, creator.avatarUrl)} 
+              alt={creator.channelName} 
+              class="w-16 h-16 rounded-xl border border-hairline bg-surface object-cover shrink-0 shadow-xs" 
+              loading="lazy" 
+              onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent(this.alt) + '&background=2563EB&color=fff&size=128';"
+            />
             <div>
               <div class="flex flex-wrap items-center gap-2 mb-1.5">
                 <h1 class="text-2xl sm:text-3xl font-semibold text-ink tracking-tight">

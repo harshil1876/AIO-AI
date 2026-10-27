@@ -127,6 +127,18 @@ const n8nWorkflowExport = {
             <span>Open in Studio &amp; Test</span>
           </a>
 
+          <!-- Download SKILL.md for Cursor / Claude Code -->
+          <button 
+            type="button"
+            id="downloadSkillMdBtn"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs px-4 py-2.5 rounded-md shadow-xs transition-colors cursor-pointer inline-flex items-center gap-1.5"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            <span id="skillBtnLabel">Download SKILL.md</span>
+          </button>
+
           <!-- 1-Click Valid n8n JSON Copy (Competitor Blueprint Feature) -->
           <button 
             type="button"
@@ -578,6 +590,63 @@ const n8nWorkflowExport = {
               if (n8nBtnLabel) n8nBtnLabel.textContent = 'Copy Valid n8n JSON';
             }, 2500);
           });
+        }
+      });
+    }
+
+    const downloadSkillBtn = document.getElementById('downloadSkillMdBtn');
+    if (downloadSkillBtn) {
+      downloadSkillBtn.addEventListener('click', () => {
+        const wf = workflowData;
+        const skillContent = `---
+name: ${wf.title}
+description: ${wf.goal}
+category: ${wf.category}
+difficulty: ${wf.difficulty}
+tools: [${(wf.toolsUsed || []).map(t => t.name).join(', ')}]
+---
+
+# ${wf.title}
+${wf.goal}
+
+## Architectural Execution Steps
+${(wf.steps || []).map((s, i) => `### Step ${i + 1}: ${s.title}
+- Tool / Runtime: ${s.toolName || s.type}
+- Input: ${s.inputFormat || 'User Prompt'}
+- Output: ${s.outputFormat || 'Structured JSON'}
+- Instruction:
+\`\`\`
+${s.promptTemplate || s.desc || 'Standard prompt'}
+\`\`\`
+`).join('\n')}
+
+## Recommended System Prompt
+\`\`\`
+${wf.systemPrompt || 'You are an autonomous execution agent configured for this production workflow.'}
+\`\`\`
+
+## API Payload Schema (JSON)
+\`\`\`json
+${JSON.stringify(wf.apiPayloadSchema || {}, null, 2)}
+\`\`\`
+
+## Production Guardrails
+- Use local models (Ollama/vLLM) where practical to guarantee $0 execution cost and zero data leakage.
+- Validate output schema with TypeScript or Zod before committing changes.
+`;
+
+        const blob = new Blob([skillContent], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `SKILL_${wf.id}.md`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        const label = document.getElementById('skillBtnLabel');
+        if (label) {
+          label.textContent = '✓ SKILL.md Downloaded!';
+          setTimeout(() => { label.textContent = 'Download SKILL.md'; }, 2500);
         }
       });
     }

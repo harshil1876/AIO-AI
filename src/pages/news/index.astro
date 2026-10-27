@@ -3,6 +3,8 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { NEWS_STORIES, type NewsStory } from '../../data/newsData';
+import { TOOLS_DATA } from '../../data/seedData';
+import { OPEN_SOURCE_REPOS } from '../../data/openSourceData';
 
 const topFiveStories = NEWS_STORIES.filter(s => s.isTopFive);
 const regularStories = NEWS_STORIES;
@@ -251,14 +253,29 @@ const categories = [
                 <p class="line-clamp-2 text-[11px] text-slate-600">{story.whyItMatters}</p>
               </div>
 
-              <!-- Attached Entity Chips -->
+              <!-- Attached Entity Chips with Smart Entity Graph Resolution -->
               {story.relatedEntities && story.relatedEntities.length > 0 && (
                 <div class="flex flex-wrap gap-1 mb-3">
-                  {story.relatedEntities.map(entity => (
-                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
-                      #{entity}
-                    </span>
-                  ))}
+                  {story.relatedEntities.map(entity => {
+                    const clean = entity.toLowerCase().trim();
+                    let targetUrl = `/tools?q=${encodeURIComponent(clean)}`;
+                    if (TOOLS_DATA.some(t => t.slug === clean || t.name.toLowerCase() === clean)) {
+                      targetUrl = `/tools/${clean}`;
+                    } else if (OPEN_SOURCE_REPOS.some(r => r.slug === clean || r.name.toLowerCase() === clean)) {
+                      targetUrl = `/open-source/${clean}`;
+                    } else if (clean.includes('token') || clean.includes('model') || clean.includes('pricing')) {
+                      targetUrl = `/token-calculator`;
+                    }
+                    return (
+                      <a 
+                        href={targetUrl}
+                        class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-[#2563EB] hover:bg-blue-100 border border-blue-200 transition-colors font-semibold inline-flex items-center gap-0.5"
+                      >
+                        <span>#{entity}</span>
+                        <span class="text-[8px]">&rarr;</span>
+                      </a>
+                    );
+                  })}
                 </div>
               )}
             </div>

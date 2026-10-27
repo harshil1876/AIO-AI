@@ -1,0 +1,269 @@
+---
+// Reusable Slide-Over Quickstart Drawer for Open-Source Repositories
+---
+
+<!-- Backdrop -->
+<div 
+  id="quickstartDrawerBackdrop" 
+  class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-200"
+  aria-hidden="true"
+></div>
+
+<!-- Slide-Over Drawer Container -->
+<div 
+  id="quickstartDrawerPanel" 
+  class="fixed inset-y-0 right-0 w-full max-w-lg bg-white border-l border-[#E2E8F0] shadow-2xl z-50 flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out"
+  role="dialog" 
+  aria-modal="true" 
+  aria-labelledby="drawerRepoName"
+>
+  <!-- Drawer Header -->
+  <div class="px-6 py-5 border-b border-[#E2E8F0] bg-slate-50 flex items-start justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <span id="drawerRepoLang" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-50 text-[#2563EB] border border-blue-200 uppercase">
+          Python
+        </span>
+        <span id="drawerRepoCategory" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700">
+          LLM Runtime
+        </span>
+      </div>
+      <h2 id="drawerRepoName" class="text-xl font-black text-[#09090B] tracking-tight">
+        ollama
+      </h2>
+      <p id="drawerRepoOwner" class="text-xs font-mono text-slate-500">
+        github.com/ollama/ollama
+      </p>
+    </div>
+
+    <button 
+      type="button" 
+      id="closeQuickstartDrawerBtn" 
+      class="p-2 rounded-lg text-slate-400 hover:text-[#09090B] hover:bg-slate-200/60 transition-colors cursor-pointer"
+      aria-label="Close Quickstart Drawer"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Telemetry Bar -->
+  <div class="px-6 py-2.5 bg-slate-100/70 border-b border-[#E2E8F0] flex items-center justify-between text-xs font-mono">
+    <div class="flex items-center gap-4">
+      <span class="font-bold text-[#09090B]" id="drawerStars">★ 115k</span>
+      <span class="text-slate-500" id="drawerForks">⑂ 9.5k</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-slate-500">Min VRAM:</span>
+      <span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[11px]" id="drawerMinVram">8GB</span>
+    </div>
+  </div>
+
+  <!-- Drawer Body -->
+  <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+    
+    <!-- One-Minute Summary -->
+    <div>
+      <h3 class="text-xs font-mono uppercase font-bold text-slate-500 mb-1.5">Overview</h3>
+      <p id="drawerDescription" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        Get up and running with Llama 3.3, Mistral, DeepSeek-R1, and other large language models locally.
+      </p>
+    </div>
+
+    <!-- Replaces Commercial Tool -->
+    <div class="p-3 rounded-lg bg-blue-50/60 border border-blue-100 text-xs">
+      <span class="font-mono text-[10px] text-blue-600 block uppercase font-bold mb-0.5">Commercial $0 Alternative To:</span>
+      <p id="drawerReplaces" class="font-semibold text-slate-800">
+        Replaces OpenAI API / Commercial LLM Gateway
+      </p>
+    </div>
+
+    <!-- 1-Line Run Locally Quickstart Command -->
+    <div>
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-xs font-mono uppercase font-bold text-slate-500 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>1-Line Quickstart Execution</span>
+        </h3>
+        <button 
+          type="button" 
+          id="copyCommandBtn" 
+          class="text-xs font-mono text-[#2563EB] hover:underline font-bold cursor-pointer inline-flex items-center gap-1"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
+          </svg>
+          <span id="copyCommandLabel">Copy</span>
+        </button>
+      </div>
+
+      <div class="relative group">
+        <pre class="p-3.5 rounded-lg bg-[#09090B] text-emerald-400 font-mono text-xs overflow-x-auto selection:bg-emerald-800 selection:text-white" id="drawerCommandCode">ollama run deepseek-r1:8b</pre>
+      </div>
+      <p class="text-[11px] text-slate-500 mt-1 font-mono">
+        Paste into Terminal or Command Prompt. Pre-requisites auto-verified.
+      </p>
+    </div>
+
+    <!-- Hardware Compatibility Checklist -->
+    <div class="border border-[#E2E8F0] rounded-xl p-4 bg-slate-50/50 space-y-2 text-xs">
+      <h3 class="font-mono uppercase font-bold text-slate-600 text-[11px]">Hardware &amp; Execution Profile</h3>
+      <div class="grid grid-cols-2 gap-3 text-xs">
+        <div>
+          <span class="text-slate-500 block text-[10px] font-mono">RECOMMENDED GPU:</span>
+          <span class="font-semibold text-slate-800" id="drawerGpuReq">Nvidia RTX 3060 / Apple M-Series</span>
+        </div>
+        <div>
+          <span class="text-slate-500 block text-[10px] font-mono">LICENSE:</span>
+          <span class="font-semibold text-slate-800" id="drawerLicense">MIT / Apache 2.0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live README.md Preview -->
+    <div>
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-xs font-mono uppercase font-bold text-slate-500">Live Repository README</h3>
+        <span class="text-[10px] font-mono text-slate-400" id="drawerReadmeStatus">Fetched from GitHub</span>
+      </div>
+      <div 
+        id="drawerReadmeContent" 
+        class="p-4 rounded-lg bg-slate-50 border border-[#E2E8F0] text-xs font-mono text-slate-700 max-h-60 overflow-y-auto whitespace-pre-wrap leading-relaxed"
+      >
+        Loading live documentation from GitHub...
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Drawer Footer Links -->
+  <div class="p-4 border-t border-[#E2E8F0] bg-slate-50 flex items-center justify-between gap-3">
+    <a 
+      href="#" 
+      id="drawerExternalGhLink" 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      class="flex-1 text-center py-2 px-3 rounded-lg bg-white border border-[#E2E8F0] hover:border-slate-400 text-xs font-semibold text-[#09090B] transition-colors"
+    >
+      View on GitHub &rarr;
+    </a>
+    <a 
+      href="#" 
+      id="drawerFullGuideLink" 
+      class="flex-1 text-center py-2 px-3 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-xs font-bold text-white transition-colors"
+    >
+      Full Setup Guide &rarr;
+    </a>
+  </div>
+</div>
+
+<script>
+  import { fetchRepoReadme } from '../services/githubLiveService';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const backdrop = document.getElementById('quickstartDrawerBackdrop');
+    const panel = document.getElementById('quickstartDrawerPanel');
+    const closeBtn = document.getElementById('closeQuickstartDrawerBtn');
+    const copyBtn = document.getElementById('copyCommandBtn');
+    const copyLabel = document.getElementById('copyCommandLabel');
+    const commandCode = document.getElementById('drawerCommandCode');
+
+    const drawerRepoName = document.getElementById('drawerRepoName');
+    const drawerRepoOwner = document.getElementById('drawerRepoOwner');
+    const drawerRepoLang = document.getElementById('drawerRepoLang');
+    const drawerRepoCategory = document.getElementById('drawerRepoCategory');
+    const drawerStars = document.getElementById('drawerStars');
+    const drawerForks = document.getElementById('drawerForks');
+    const drawerMinVram = document.getElementById('drawerMinVram');
+    const drawerDescription = document.getElementById('drawerDescription');
+    const drawerReplaces = document.getElementById('drawerReplaces');
+    const drawerGpuReq = document.getElementById('drawerGpuReq');
+    const drawerLicense = document.getElementById('drawerLicense');
+    const drawerReadmeContent = document.getElementById('drawerReadmeContent');
+    const drawerReadmeStatus = document.getElementById('drawerReadmeStatus');
+    const drawerExternalGhLink = document.getElementById('drawerExternalGhLink') as HTMLAnchorElement | null;
+    const drawerFullGuideLink = document.getElementById('drawerFullGuideLink') as HTMLAnchorElement | null;
+
+    function openDrawer(repoData: any) {
+      if (!panel || !backdrop) return;
+
+      if (drawerRepoName) drawerRepoName.textContent = repoData.name || repoData.slug;
+      if (drawerRepoOwner) drawerRepoOwner.textContent = repoData.repo ? `github.com/${repoData.repo}` : 'Open-Source Project';
+      if (drawerRepoLang) drawerRepoLang.textContent = repoData.primaryLanguage || 'Code';
+      if (drawerRepoCategory) drawerRepoCategory.textContent = repoData.category || 'Runtime';
+      if (drawerStars) drawerStars.textContent = `★ ${repoData.stars || '1k+'}`;
+      if (drawerForks) drawerForks.textContent = `⑂ ${repoData.forks || '500+'}`;
+      if (drawerMinVram) drawerMinVram.textContent = repoData.hardwareSpecs?.minVramGb || '8GB';
+      if (drawerDescription) drawerDescription.textContent = repoData.oneMinuteSummary || repoData.description || 'Open-source AI tool.';
+      if (drawerReplaces) drawerReplaces.textContent = repoData.replacesCommercialTool ? `Replaces ${repoData.replacesCommercialTool}` : 'Commercial Tool Alternative';
+      if (drawerGpuReq) drawerGpuReq.textContent = repoData.hardwareSpecs?.recommendedGpu || 'Nvidia RTX 3060+ / Apple M-series';
+      if (drawerLicense) drawerLicense.textContent = repoData.license || 'Open Source';
+
+      const cmd = repoData.quickstartCommands?.cli || repoData.quickstartCommands?.docker || `git clone ${repoData.url || 'https://github.com/' + repoData.repo}`;
+      if (commandCode) commandCode.textContent = cmd;
+
+      if (drawerExternalGhLink) drawerExternalGhLink.href = repoData.url || (repoData.repo ? `https://github.com/${repoData.repo}` : '#');
+      if (drawerFullGuideLink) drawerFullGuideLink.href = `/open-source/${repoData.slug}`;
+
+      // Reset README
+      if (drawerReadmeContent) drawerReadmeContent.textContent = 'Loading live documentation from GitHub...';
+      if (drawerReadmeStatus) drawerReadmeStatus.textContent = 'Connecting...';
+
+      // Show panel & backdrop
+      backdrop.classList.remove('hidden');
+      setTimeout(() => {
+        backdrop.classList.remove('opacity-0');
+        panel.classList.remove('translate-x-full');
+      }, 10);
+
+      // Async fetch README
+      if (repoData.repo) {
+        const [owner, name] = repoData.repo.split('/');
+        if (owner && name) {
+          fetchRepoReadme(owner, name).then((readme) => {
+            if (drawerReadmeContent) {
+              if (readme) {
+                drawerReadmeContent.textContent = readme.slice(0, 1500) + (readme.length > 1500 ? '\n\n... [Truncated. Click "View on GitHub" for full README]' : '');
+                if (drawerReadmeStatus) drawerReadmeStatus.textContent = 'Live Markdown';
+              } else {
+                drawerReadmeContent.textContent = 'README not directly retrievable via unauthenticated API. View full docs on GitHub.';
+                if (drawerReadmeStatus) drawerReadmeStatus.textContent = 'Fallback';
+              }
+            }
+          }).catch(() => {
+            if (drawerReadmeContent) drawerReadmeContent.textContent = 'Failed to load live README.';
+          });
+        }
+      }
+    }
+
+    function closeDrawer() {
+      if (!panel || !backdrop) return;
+      panel.classList.add('translate-x-full');
+      backdrop.classList.add('opacity-0');
+      setTimeout(() => {
+        backdrop.classList.add('hidden');
+      }, 300);
+    }
+
+    closeBtn?.addEventListener('click', closeDrawer);
+    backdrop?.addEventListener('click', closeDrawer);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeDrawer();
+    });
+
+    copyBtn?.addEventListener('click', () => {
+      if (!commandCode) return;
+      navigator.clipboard.writeText(commandCode.textContent || '');
+      if (copyLabel) copyLabel.textContent = 'Copied!';
+      setTimeout(() => {
+        if (copyLabel) copyLabel.textContent = 'Copy';
+      }, 2000);
+    });
+
+    // Expose global drawer trigger
+    (window as any).aioOpenQuickstartDrawer = openDrawer;
+  });
+</script>

@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Sidebar from '../components/Sidebar.astro';
 import CommandPalette from '../components/CommandPalette.astro';
 import AuthGateModal from '../components/AuthGateModal.astro';
+import CompareDock from '../components/CompareDock.astro';
 
 interface Props {
   title?: string;
@@ -128,5 +129,43 @@ const defaultJsonLd = jsonLd || {
     )}
     <CommandPalette />
     <AuthGateModal />
+    <CompareDock />
+
+    <script is:inline>
+      (function() {
+        // Global Tool Upvote Handler
+        window.toggleToolUpvote = function(slug) {
+          var key = 'aio_upvoted_' + slug;
+          var hasUpvoted = localStorage.getItem(key) === 'true';
+          var countEl = document.getElementById('upvote-' + slug);
+          var cur = countEl ? parseInt(countEl.textContent || '0', 10) : 0;
+
+          if (hasUpvoted) {
+            localStorage.removeItem(key);
+            if (countEl) countEl.textContent = String(Math.max(0, cur - 1));
+          } else {
+            localStorage.setItem(key, 'true');
+            if (countEl) countEl.textContent = String(cur + 1);
+          }
+        };
+
+        // Global Tool Bookmark Handler
+        window.toggleToolBookmark = function(slug) {
+          var bookmarks = JSON.parse(localStorage.getItem('aio_bookmarks') || '[]');
+          var isSaved = bookmarks.includes(slug);
+          if (isSaved) {
+            bookmarks = bookmarks.filter(function(s) { return s !== slug; });
+          } else {
+            bookmarks.push(slug);
+          }
+          localStorage.setItem('aio_bookmarks', JSON.stringify(bookmarks));
+          window.dispatchEvent(new CustomEvent('aio:bookmarks-update', { detail: { bookmarks: bookmarks } }));
+
+          // Update icon if present
+          var iconEl = document.getElementById('pin-icon-' + slug);
+          if (iconEl) iconEl.textContent = isSaved ? '📌' : '✓';
+        };
+      })();
+    </script>
   </body>
 </html>

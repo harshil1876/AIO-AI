@@ -206,12 +206,14 @@ const featureMatrix = [
             </ul>
           </div>
 
-          <a 
-            href="/dashboard" 
-            class="w-full py-2.5 rounded-xl bg-primary hover:bg-blue-700 text-white font-bold text-xs text-center transition-colors shadow-xs"
+          <button 
+            type="button" 
+            class="plan-upgrade-btn w-full py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs text-center transition-colors shadow-xs cursor-pointer"
+            data-plan="Builder Pro"
+            data-perks="Unlimited Workflow Exports, REST API Generator, Verified Builder Badge"
           >
-            Upgrade to Pro
-          </a>
+            Start 7-Day Free Trial
+          </button>
         </div>
 
         <!-- PLAN 3: CREATOR PRO -->
@@ -255,12 +257,14 @@ const featureMatrix = [
             </ul>
           </div>
 
-          <a 
-            href="/dashboard" 
-            class="w-full py-2.5 rounded-xl bg-ink hover:bg-neutral-800 text-white font-semibold text-xs text-center transition-colors shadow-xs"
+          <button 
+            type="button" 
+            class="plan-upgrade-btn w-full py-2.5 rounded-xl bg-[#09090B] hover:bg-neutral-800 text-white font-semibold text-xs text-center transition-colors shadow-xs cursor-pointer"
+            data-plan="Creator Suite"
+            data-perks="60+ Creator Tracks, Video Hook Blueprints, 3 Team Seats"
           >
-            Choose Creator Pro
-          </a>
+            Start 7-Day Free Trial
+          </button>
         </div>
 
         <!-- PLAN 4: TEAM / ENTERPRISE -->
@@ -377,6 +381,48 @@ const featureMatrix = [
   </main>
 
   <Footer />
+
+  <!-- Trial Activation Modal -->
+  <div id="trialModalBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-200" aria-hidden="true"></div>
+  <div id="trialModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white border border-[#E2E8F0] rounded-2xl shadow-2xl z-50 p-6 hidden flex flex-col gap-5">
+    <div class="flex items-start justify-between border-b border-[#E2E8F0] pb-3">
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-[#2563EB] text-[10px] font-mono font-bold mb-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>SANDBOX MODE &bull; ZERO RISK</span>
+        </div>
+        <h3 id="modalPlanTitle" class="text-xl font-black text-[#09090B]">Builder Pro</h3>
+      </div>
+      <button type="button" id="closeTrialModalBtn" class="text-slate-400 hover:text-[#09090B] p-1 cursor-pointer">
+        ✕
+      </button>
+    </div>
+
+    <div class="space-y-3 text-xs">
+      <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800">
+        <span class="font-bold block text-[11px] font-mono uppercase mb-0.5">7-Day Free Trial Active</span>
+        No credit card required. Instantly unlock full access across your workspace.
+      </div>
+      
+      <div>
+        <span class="font-mono text-[10px] uppercase font-bold text-slate-500 block mb-1">What's Unlocked:</span>
+        <p id="modalPlanPerks" class="font-medium text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+          Unlimited Workflow Exports, REST API Generator, Verified Builder Badge
+        </p>
+      </div>
+    </div>
+
+    <div class="pt-2 flex items-center justify-end gap-3 border-t border-[#E2E8F0]">
+      <button type="button" id="cancelTrialBtn" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
+        Cancel
+      </button>
+      <button type="button" id="confirmTrialBtn" class="px-5 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold transition-all shadow-xs cursor-pointer inline-flex items-center gap-1.5">
+        <span>Activate Free Trial</span>
+        <span>&rarr;</span>
+      </button>
+    </div>
+  </div>
+
 </Layout>
 
 <script>
@@ -428,6 +474,70 @@ const featureMatrix = [
       billingMonthlyBtn.className = 'billing-cycle-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-ink text-white transition-all cursor-pointer';
       billingAnnualBtn!.className = 'billing-cycle-btn px-4 py-1.5 rounded-xl text-xs font-medium text-mute hover:text-ink transition-all cursor-pointer flex items-center gap-1.5';
       updatePricingDisplay();
+
+    // Trial Modal Handling
+    const trialBackdrop = document.getElementById('trialModalBackdrop');
+    const trialModal = document.getElementById('trialModal');
+    const closeTrialModalBtn = document.getElementById('closeTrialModalBtn');
+    const cancelTrialBtn = document.getElementById('cancelTrialBtn');
+    const confirmTrialBtn = document.getElementById('confirmTrialBtn');
+    const modalPlanTitle = document.getElementById('modalPlanTitle');
+    const modalPlanPerks = document.getElementById('modalPlanPerks');
+
+    let currentSelectedPlan = 'Builder Pro';
+
+    function openModal(plan: string, perks: string) {
+      currentSelectedPlan = plan;
+      if (modalPlanTitle) modalPlanTitle.textContent = `${plan} Trial`;
+      if (modalPlanPerks) modalPlanPerks.textContent = perks;
+
+      if (trialBackdrop && trialModal) {
+        trialBackdrop.classList.remove('hidden');
+        trialModal.classList.remove('hidden');
+        setTimeout(() => {
+          trialBackdrop.classList.remove('opacity-0');
+        }, 10);
+      }
+    }
+
+    function closeModal() {
+      if (trialBackdrop && trialModal) {
+        trialBackdrop.classList.add('opacity-0');
+        setTimeout(() => {
+          trialBackdrop.classList.add('hidden');
+          trialModal.classList.add('hidden');
+        }, 200);
+      }
+    }
+
+    document.querySelectorAll('.plan-upgrade-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const plan = btn.getAttribute('data-plan') || 'Builder Pro';
+        const perks = btn.getAttribute('data-perks') || 'Full Access';
+        openModal(plan, perks);
+      });
+    });
+
+    closeTrialModalBtn?.addEventListener('click', closeModal);
+    cancelTrialBtn?.addEventListener('click', closeModal);
+    trialBackdrop?.addEventListener('click', closeModal);
+
+    confirmTrialBtn?.addEventListener('click', () => {
+      try {
+        localStorage.setItem('aio_user_plan', currentSelectedPlan.toLowerCase());
+        localStorage.setItem('aio_plan_trial_start', String(Date.now()));
+      } catch(e) {}
+
+      if (confirmTrialBtn) {
+        confirmTrialBtn.textContent = 'Trial Activated!';
+      }
+
+      setTimeout(() => {
+        alert(`🎉 7-Day Free Trial activated for ${currentSelectedPlan}! Welcome to Pro sandbox mode.`);
+        window.location.href = '/dashboard';
+      }, 400);
+    });
+
     });
 
     billingAnnualBtn?.addEventListener('click', () => {

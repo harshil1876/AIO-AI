@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import RepoQuickstartDrawer from '../../components/RepoQuickstartDrawer.astro';
 import { OPEN_SOURCE_REPOS } from '../../data/openSourceData';
 import { TOP_AI_DEVELOPERS_ORGS } from '../../services/githubLiveService';
 
@@ -163,12 +164,21 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
                   <div class="text-[10px] font-mono text-mute live-forks">{repo.forks} forks</div>
                 </div>
 
-                <a 
-                  href={`/open-source/${repo.slug}`} 
-                  class="bg-ink hover:bg-neutral-800 text-on-primary text-xs font-medium px-3.5 py-1.5 rounded-md shadow-xs transition-colors inline-flex items-center gap-1"
-                >
-                  Setup Guide &rarr;
-                </a>
+                <div class="flex items-center gap-2">
+                  <button 
+                    type="button" 
+                    class="quickstart-trigger-btn font-mono text-[11px] font-bold text-[#2563EB] hover:text-[#1D4ED8] bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-md transition-colors cursor-pointer inline-flex items-center gap-1"
+                    data-repo-json={JSON.stringify(repo)}
+                  >
+                    <span>&gt;_ Quickstart</span>
+                  </button>
+                  <a 
+                    href={`/open-source/${repo.slug}`} 
+                    class="bg-ink hover:bg-neutral-800 text-on-primary text-xs font-medium px-3.5 py-1.5 rounded-md shadow-xs transition-colors inline-flex items-center gap-1"
+                  >
+                    Setup Guide &rarr;
+                  </a>
+                </div>
               </div>
             </article>
           );
@@ -231,6 +241,7 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
     </div>
   </main>
 
+  <RepoQuickstartDrawer />
   <Footer />
 </Layout>
 
@@ -244,6 +255,23 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
     const devsSection = document.getElementById('devsSection');
     const languageFilter = document.getElementById('languageFilter') as HTMLSelectElement | null;
     const cards = document.querySelectorAll<HTMLElement>('.trending-card');
+
+    // Quickstart Drawer click handler
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement | null;
+      const btn = target?.closest('.quickstart-trigger-btn');
+      if (btn) {
+        const raw = btn.getAttribute('data-repo-json');
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if ((window as any).aioOpenQuickstartDrawer) {
+              (window as any).aioOpenQuickstartDrawer(parsed);
+            }
+          } catch(err) {}
+        }
+      }
+    });
 
     // Tab Switching
     tabRepos?.addEventListener('click', () => {

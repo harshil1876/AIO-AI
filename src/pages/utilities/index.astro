@@ -22,7 +22,7 @@ import Footer from '../../components/Footer.astro';
           Creator & Developer Utilities Suite
         </h1>
         <p class="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-          Eight essential client-side utilities engineered for prompt architects, content creators, and AI engineers. Complete with presets, instant copies, and zero data leaving your browser.
+          Nine essential client-side utilities engineered for prompt architects, content creators, and AI engineers. Complete with presets, instant copies, and zero data leaving your browser.
         </p>
 
         <!-- Quick Jump Bar -->
@@ -35,6 +35,7 @@ import Footer from '../../components/Footer.astro';
           <a href="#json-formatter" class="px-3 py-1.5 rounded-xl bg-white hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-semibold shadow-xs transition-colors">6. JSON-to-TypeScript</a>
           <a href="#qr-generator" class="px-3 py-1.5 rounded-xl bg-white hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-semibold shadow-xs transition-colors">7. QR Code Studio</a>
           <a href="#text-analyzer" class="px-3 py-1.5 rounded-xl bg-white hover:bg-[#EFF6FF] border border-[#E2E8F0] text-slate-700 hover:text-[#2563EB] font-semibold shadow-xs transition-colors">8. Text & Speaking Time</a>
+          <a href="#cursorrules-architect" class="px-3 py-1.5 rounded-xl bg-[#EFF6FF] border border-blue-200 text-[#2563EB] font-bold shadow-xs transition-colors">9. .cursorrules Architect</a>
         </div>
       </div>
     </section>
@@ -371,6 +372,74 @@ import Footer from '../../components/Footer.astro';
         </div>
       </section>
 
+      <!-- UTILITY 9: CURSOR RULES & ANTIGRAVITY SKILL ARCHITECT -->
+      <section class="bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-xs hover:shadow-sm transition-all" id="cursorrules-architect">
+        <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0] mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-[#2563EB]"></span>
+            <h2 class="text-base sm:text-lg font-bold text-ink uppercase font-mono">9. Cursor Rules (.cursorrules) &amp; Antigravity SKILL.md Architect</h2>
+          </div>
+          <span class="text-xs font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-semibold">AI IDE Config</span>
+        </div>
+
+        <p class="text-xs text-slate-600 mb-4">Generate verified, strict coding rules and agent skills for Cursor, Windsurf, Copilot, and Google Antigravity.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label class="block text-[11px] font-mono uppercase font-bold text-slate-600 mb-1">Target Stack / Framework:</label>
+            <select id="crStackSelect" class="w-full bg-[#F8FAFF] border border-[#E2E8F0] rounded-xl p-2.5 text-xs text-ink font-semibold outline-none focus:border-[#2563EB]">
+              <option value="astro-tailwind-supabase">Astro + Tailwind CSS v4 + Supabase</option>
+              <option value="nextjs-app-router">Next.js 15 (App Router) + TypeScript + Tailwind</option>
+              <option value="python-fastapi-langchain">Python FastAPI + LangGraph + LiteLLM</option>
+              <option value="react-vite-drizzle">React 19 + Vite + Drizzle ORM</option>
+              <option value="general-typescript">Fullstack TypeScript Strict Clean Code</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono uppercase font-bold text-slate-600 mb-1">AI Agent Persona:</label>
+            <select id="crPersonaSelect" class="w-full bg-[#F8FAFF] border border-[#E2E8F0] rounded-xl p-2.5 text-xs text-ink font-medium outline-none focus:border-[#2563EB]">
+              <option value="senior-staff">Senior Staff Systems Engineer</option>
+              <option value="zero-hallucination">Zero-Hallucination Production Architect</option>
+              <option value="security-auditor">OWASP &amp; Security Compliance Auditor</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono uppercase font-bold text-slate-600 mb-1">Export Target:</label>
+            <select id="crFormatSelect" class="w-full bg-[#F8FAFF] border border-[#E2E8F0] rounded-xl p-2.5 text-xs text-ink font-medium outline-none focus:border-[#2563EB]">
+              <option value="cursorrules">.cursorrules (Cursor / Windsurf)</option>
+              <option value="skill">SKILL.md (Antigravity Agent)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="relative group">
+          <pre id="crOutputCode" class="p-4 rounded-xl bg-[#09090B] text-slate-200 font-mono text-xs max-h-64 overflow-y-auto whitespace-pre-wrap leading-relaxed select-all border border-slate-800"></pre>
+        </div>
+
+        <div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <span class="text-[11px] font-mono text-slate-500">Drop directly into root folder of your workspace.</span>
+          <div class="flex items-center gap-2">
+            <button 
+              type="button" 
+              id="copyCrBtn" 
+              class="px-3.5 py-1.5 rounded-lg bg-white border border-[#E2E8F0] hover:border-[#2563EB] text-ink hover:text-[#2563EB] text-xs font-semibold font-mono transition-colors cursor-pointer shadow-xs"
+            >
+              Copy Code
+            </button>
+            <button 
+              type="button" 
+              id="downloadCrBtn" 
+              class="px-3.5 py-1.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-semibold font-mono transition-colors cursor-pointer shadow-xs inline-flex items-center gap-1.5"
+            >
+              <span>Download File</span>
+              <span>&darr;</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
     </div>
   </main>
 
@@ -575,6 +644,86 @@ Structure your response with clear markdown headings, bullet points, and code bl
       });
     }
   }
+
+  
+    // 9. Cursorrules & SKILL.md Architect
+    const crStack = document.getElementById('crStackSelect') as HTMLSelectElement | null;
+    const crPersona = document.getElementById('crPersonaSelect') as HTMLSelectElement | null;
+    const crFormat = document.getElementById('crFormatSelect') as HTMLSelectElement | null;
+    const crOutput = document.getElementById('crOutputCode');
+    const copyCrBtn = document.getElementById('copyCrBtn');
+    const downloadCrBtn = document.getElementById('downloadCrBtn');
+
+    function updateCr() {
+      const stack = crStack?.value || 'astro-tailwind-supabase';
+      const persona = crPersona?.value || 'senior-staff';
+      const format = crFormat?.value || 'cursorrules';
+
+      let out = '';
+      if (format === 'cursorrules') {
+        out = `# Cursor / Windsurf Rules for ${stack.toUpperCase()}
+# Role: ${persona === 'senior-staff' ? 'Senior Staff Systems Engineer' : 'Zero-Hallucination Architect'}
+
+## Core Philosophy
+- Write strictly typed TypeScript with zero 'any'.
+- Use modern ESM imports with explicit file extensions where required.
+- Maintain defensive error handling with structured try/catch and typed fallbacks.
+
+## Framework Constraints (${stack})
+- Enforce component modularity and isolate pure computational logic.
+- Do not add unverified npm packages; stick to core dependencies.
+- Ensure all environment variables are accessed strictly via type-safe configurations.
+
+## Behavioral Guardrails
+- Maintain documentation integrity: Never strip existing docstrings.
+- Always run tests and verify zero build regressions before committing.`;
+      } else {
+        out = `---
+name: ${stack}-architect
+description: Autonomous coding standards and skill instructions for ${stack}
+---
+
+# Agent Skill: ${stack.toUpperCase()} Production Architect
+
+## Persona
+Act as an elite ${persona} with deep domain expertise in ${stack}.
+
+## Execution Rules
+1. Zero Hallucination: Never invent CLI flags or nonexistent package exports.
+2. Test Verification: Execute test suite to confirm 100% assertions pass.
+3. Keep code clean, performant, and maintainable.`;
+      }
+
+      if (crOutput) crOutput.textContent = out;
+    }
+
+    crStack?.addEventListener('change', updateCr);
+    crPersona?.addEventListener('change', updateCr);
+    crFormat?.addEventListener('change', updateCr);
+    updateCr();
+
+    copyCrBtn?.addEventListener('click', () => {
+      if (crOutput) {
+        navigator.clipboard.writeText(crOutput.textContent || '');
+        copyCrBtn.textContent = 'Copied!';
+        setTimeout(() => { copyCrBtn.textContent = 'Copy Code'; }, 2000);
+      }
+    });
+
+    downloadCrBtn?.addEventListener('click', () => {
+      if (!crOutput) return;
+      const format = crFormat?.value || 'cursorrules';
+      const fileName = format === 'cursorrules' ? '.cursorrules' : 'SKILL.md';
+      const blob = new Blob([crOutput.textContent || ''], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setupUtilities);

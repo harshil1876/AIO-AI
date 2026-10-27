@@ -18,57 +18,36 @@ interface NavGroup {
   items: NavItem[];
 }
 
+// Consolidate 21-link sidebar into 10 clean, high-signal pillars across 4 groups
 const navGroups: NavGroup[] = [
   {
-    title: 'Discover',
+    title: 'Workspace',
     items: [
-      { href: '/dashboard', label: 'Home', icon: 'home' },
-      { href: '/analytics', label: 'Analytics & Insights', badge: 'LIVE', badgeColor: 'emerald', icon: 'bar-chart-2' },
-      { href: '/stack-builder', label: 'My Stack Builder', icon: 'layers' },
-      { href: '/tools', label: 'AI Tools Directory', badge: '113', badgeColor: 'blue', icon: 'grid' },
-      { href: '/finder', label: 'AI Intent Finder', icon: 'sparkles' },
-      { href: '/categories', label: 'Categories', badge: '13', icon: 'tag' },
-      { href: '/compare', label: 'Side-by-Side Compare', icon: 'scale' },
-      { href: '/tools?category=india-first', label: 'India-First AI', badge: '16', badgeColor: 'emerald', icon: 'flag' },
+      { href: '/dashboard', label: 'Command Center', icon: 'home' },
+      { href: '/stack-builder', label: 'My Stack Builder', badge: 'CUSTOM', badgeColor: 'blue', icon: 'layers' },
     ]
   },
   {
-    title: 'News & Intelligence',
+    title: 'Discover',
     items: [
-      { href: '/news', label: 'AI News Today', badge: 'NEW', badgeColor: 'blue', icon: 'newspaper' },
-      { href: '/open-source', label: 'Open-Source Hub', badge: '20+', icon: 'code' },
-      { href: '/open-source/trending', label: 'Trending GitHub', icon: 'trending' },
+      { href: '/tools', label: 'AI Tools Directory', badge: '113', badgeColor: 'blue', icon: 'grid' },
+      { href: '/finder', label: 'AI Intent Finder', badge: 'PRO', badgeColor: 'emerald', icon: 'sparkles' },
+      { href: '/open-source', label: 'Open-Source & VRAM', badge: '20+', icon: 'code' },
     ]
   },
   {
     title: 'Build & Automate',
     items: [
-      { href: '/workflows', label: 'AI Workflows', badge: '16+', badgeColor: 'blue', icon: 'arrows-split' },
-      { href: '/workflows/builder', label: 'Workflow Studio', badge: 'NEW', badgeColor: 'emerald', icon: 'zap' },
-      { href: '/token-calculator', label: 'LLM Token Calculator', icon: 'calculator' },
-      { href: '/utilities', label: 'Creator & Dev Utilities', badge: '8', icon: 'wrench' },
+      { href: '/workflows', label: 'Workflows & Skills', badge: '16', badgeColor: 'blue', icon: 'zap' },
+      { href: '/token-calculator', label: 'Token & Dev Utilities', badge: '26', icon: 'calculator' },
     ]
   },
   {
-    title: 'Learn & Community',
+    title: 'Pulse & Learn',
     items: [
-      { href: '/creators', label: 'AI & Tech Creators', badge: '60+', icon: 'video' },
-      { href: '/community', label: 'Community Hub', icon: 'chat' },
-    ]
-  },
-  {
-    title: 'Platform & Docs',
-    items: [
-      { href: '/pricing', label: 'Pricing & Plans', badge: 'PRO', badgeColor: 'blue', icon: 'credit-card' },
-      { href: '/docs', label: 'Documentation', icon: 'book' },
-      { href: '/submit', label: 'Submit Resource', icon: 'plus-circle' },
-      { href: '/admin', label: 'Admin Console', icon: 'shield' },
-    ]
-  },
-  {
-    title: 'Account',
-    items: [
-      { href: '/profile', label: 'Profile', icon: 'user' },
+      { href: '/news', label: 'AI News Gazette', badge: 'LIVE', badgeColor: 'emerald', icon: 'newspaper' },
+      { href: '/creators', label: 'Creators & Tutorials', badge: '62', icon: 'video' },
+      { href: '/community', label: 'Community & Submit', icon: 'chat' },
     ]
   }
 ];
@@ -78,6 +57,14 @@ function isItemActive(href: string, current: string): boolean {
   if (href.includes('?')) {
     return current === href.split('?')[0];
   }
+  // Group-level active states for consolidated pillars
+  if (href === '/tools' && (current.startsWith('/tools') || current.startsWith('/categories') || current.startsWith('/compare') || current.startsWith('/india-ai'))) return true;
+  if (href === '/open-source' && current.startsWith('/open-source')) return true;
+  if (href === '/workflows' && current.startsWith('/workflows')) return true;
+  if (href === '/token-calculator' && (current.startsWith('/token-calculator') || current.startsWith('/utilities'))) return true;
+  if (href === '/community' && (current.startsWith('/community') || current.startsWith('/submit') || current.startsWith('/docs') || current.startsWith('/pricing'))) return true;
+  if (href === '/dashboard' && (current === '/dashboard' || current.startsWith('/analytics') || current.startsWith('/profile'))) return true;
+
   return current === href || current.startsWith(`${href}/`);
 }
 ---
@@ -99,14 +86,14 @@ function isItemActive(href: string, current: string): boolean {
     <!-- Desktop Close / Collapse Button -->
     <button
       type="button"
-      id="closeSidebarBtn"
+      id="closeDesktopSidebarBtn"
       onclick="window.closeSidebar && window.closeSidebar()"
-      class="p-1.5 rounded-lg text-slate-500 hover:text-[#09090B] hover:bg-slate-100 transition-colors cursor-pointer"
-      title="Collapse Sidebar"
-      aria-label="Collapse Sidebar"
+      class="p-1.5 rounded-lg text-slate-400 hover:text-[#09090B] hover:bg-slate-100 transition-colors cursor-pointer"
+      title="Collapse navigation (Esc)"
+      aria-label="Collapse navigation"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
       </svg>
     </button>
   </div>
@@ -115,7 +102,7 @@ function isItemActive(href: string, current: string): boolean {
   <div class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
     {navGroups.map((group) => (
       <div>
-        <div class="px-2.5 mb-2 text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+        <div class="px-2.5 mb-1.5 text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
           {group.title}
         </div>
         <nav class="space-y-0.5">
@@ -124,78 +111,16 @@ function isItemActive(href: string, current: string): boolean {
             return (
               <a
                 href={item.href}
-                class={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-all ${
+                class={`flex items-center justify-between px-2.5 py-2 rounded-xl text-xs transition-all ${
                   active
-                    ? 'bg-[#EFF6FF] text-[#2563EB] font-bold border-l-4 border-[#2563EB] shadow-xs'
-                    : 'text-slate-600 hover:text-[#09090B] hover:bg-white hover:shadow-xs font-medium'
+                    ? 'bg-[#EFF6FF] text-[#2563EB] font-bold border-l-4 border-[#2563EB] shadow-2xs'
+                    : 'text-slate-600 hover:text-[#09090B] hover:bg-white font-medium hover:shadow-2xs'
                 }`}
               >
-                <div class="flex items-center gap-2.5 truncate">
-                  <!-- Icons -->
-                  {item.icon === 'layout-dashboard' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
-                    </svg>
-                  )}
-                  {item.icon === 'bar-chart-2' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-                    </svg>
-                  )}
+                <div class="flex items-center gap-2.5 min-w-0">
                   {item.icon === 'home' && (
                     <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                    </svg>
-                  )}
-                  {item.icon === 'grid' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
-                    </svg>
-                  )}
-                  {item.icon === 'sparkles' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-                    </svg>
-                  )}
-                  {item.icon === 'tag' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                    </svg>
-                  )}
-                  {item.icon === 'scale' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
-                    </svg>
-                  )}
-                  {item.icon === 'flag' && (
-                    <svg class="w-4 h-4 shrink-0 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5" />
-                    </svg>
-                  )}
-                  {item.icon === 'newspaper' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" />
-                    </svg>
-                  )}
-                  {item.icon === 'document-text' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-                  )}
-                  {item.icon === 'code' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
-                    </svg>
-                  )}
-                  {item.icon === 'trending' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
-                    </svg>
-                  )}
-                  {item.icon === 'arrows-split' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
                     </svg>
                   )}
                   {item.icon === 'layers' && (
@@ -203,14 +128,34 @@ function isItemActive(href: string, current: string): boolean {
                       <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
                     </svg>
                   )}
+                  {item.icon === 'grid' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V15.75ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H18a2.25 2.25 0 0 1-2.25-2.25V15.75Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'sparkles' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+                    </svg>
+                  )}
+                  {item.icon === 'code' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
+                    </svg>
+                  )}
+                  {item.icon === 'zap' && (
+                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                    </svg>
+                  )}
                   {item.icon === 'calculator' && (
                     <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-3-2.25V18m-3-2.25V18m3-6.75V12m-3-2.25V12m6 0V12m-9 9h12a2.25 2.25 0 0 0 2.25-2.25V5.25A2.25 2.25 0 0 0 19.5 3h-12A2.25 2.25 0 0 0 5.25 5.25v13.5A2.25 2.25 0 0 0 7.5 21Z" />
                     </svg>
                   )}
-                  {item.icon === 'wrench' && (
+                  {item.icon === 'newspaper' && (
                     <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.32l-3.276 3.277a1.5 1.5 0 0 1-2.12-2.122l3.276-3.276a4.5 4.5 0 0 0-6.32 4.486c.048.58.024 1.193-.14 1.743" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" />
                     </svg>
                   )}
                   {item.icon === 'video' && (
@@ -221,26 +166,6 @@ function isItemActive(href: string, current: string): boolean {
                   {item.icon === 'chat' && (
                     <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.502 49.188 49.188 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
-                    </svg>
-                  )}
-                  {item.icon === 'book' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-                    </svg>
-                  )}
-                  {item.icon === 'plus-circle' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg>
-                  )}
-                  {item.icon === 'user' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                    </svg>
-                  )}
-                  {item.icon === 'shield' && (
-                    <svg class="w-4 h-4 shrink-0 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
                     </svg>
                   )}
                   <span class="truncate">{item.label}</span>
@@ -265,39 +190,68 @@ function isItemActive(href: string, current: string): boolean {
         </nav>
       </div>
     ))}
+
+    <!-- Hidden Admin Link (Only revealed if authorized) -->
+    <div id="sidebarAdminGroup" class="hidden">
+      <div class="px-2.5 mb-1.5 text-[10px] font-mono uppercase tracking-wider text-purple-600 font-bold">
+        Admin Security
+      </div>
+      <a
+        href="/admin"
+        class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 transition-colors"
+      >
+        <svg class="w-4 h-4 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+        </svg>
+        <span>Admin Console</span>
+      </a>
+    </div>
   </div>
 
-  <!-- Bottom Workspace User Badge -->
+  <!-- Bottom Workspace User Badge & Auth State -->
   <div class="p-3 border-t border-[#E2E8F0] bg-white shrink-0" id="sidebarUserFooter">
-    <a href="/profile" class="flex items-center justify-between p-2 rounded-lg hover:bg-[#F8FAFF] transition-colors group">
-      <div class="flex items-center gap-2.5 min-w-0">
-        <div class="w-7 h-7 rounded-lg bg-[#2563EB] text-white flex items-center justify-center font-bold text-xs font-mono" id="sidebarAvatar">
-          U
+    <div class="flex items-center justify-between p-2 rounded-xl hover:bg-[#F8FAFF] transition-colors group">
+      <a href="/profile" class="flex items-center gap-2.5 min-w-0 flex-1">
+        <div class="w-8 h-8 rounded-full overflow-hidden bg-[#2563EB] text-white flex items-center justify-center font-bold text-xs shrink-0" id="sidebarAvatarContainer">
+          <span id="sidebarAvatar">U</span>
+          <img id="sidebarAvatarImg" class="w-full h-full object-cover hidden" alt="User avatar" />
         </div>
-        <div class="min-w-0">
+        <div class="min-w-0 flex-1">
           <div class="text-xs font-bold text-[#09090B] truncate" id="sidebarUserEmail">Guest Builder</div>
-          <div class="text-[10px] font-mono text-emerald-600 font-semibold" id="sidebarUserTier">Free Tier • Sign In</div>
+          <div class="text-[10px] font-mono text-slate-500 font-semibold truncate" id="sidebarUserTier">Free Tier • Sign In</div>
         </div>
-      </div>
-      <svg class="w-4 h-4 text-slate-400 group-hover:text-[#2563EB] transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-      </svg>
-    </a>
+      </a>
+      
+      <!-- Sign Out Button (Visible when logged in) -->
+      <button
+        type="button"
+        id="sidebarSignOutBtn"
+        onclick="window.handleSignOut && window.handleSignOut()"
+        class="hidden p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer shrink-0"
+        title="Sign Out of Workspace"
+        aria-label="Sign Out"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+        </svg>
+      </button>
+
+      <a href="/login" id="sidebarSignInBtn" class="text-xs text-[#2563EB] font-bold hover:underline shrink-0">
+        Sign In
+      </a>
+    </div>
   </div>
 </aside>
 
 <!-- Mobile Drawer Sidebar (Flyout with Backdrop) -->
 <div id="mobileSidebarDrawer" class="fixed inset-0 z-50 hidden lg:hidden">
-  <!-- Backdrop -->
   <div 
     id="mobileSidebarBackdrop" 
     class="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
     onclick="window.closeSidebar && window.closeSidebar()"
   ></div>
 
-  <!-- Drawer Body -->
   <div class="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-white border-r border-[#E2E8F0] flex flex-col shadow-2xl z-10 transition-transform">
-    <!-- Brand Header -->
     <div class="h-14 px-4 flex items-center justify-between border-b border-[#E2E8F0] shrink-0">
       <a href="/dashboard" class="flex items-center gap-2.5">
         <div class="w-7 h-7 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-black text-xs tracking-tight">
@@ -319,11 +273,10 @@ function isItemActive(href: string, current: string): boolean {
       </button>
     </div>
 
-    <!-- Navigation List -->
     <div class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
       {navGroups.map((group) => (
         <div>
-          <div class="px-2.5 mb-2 text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+          <div class="px-2.5 mb-1.5 text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
             {group.title}
           </div>
           <nav class="space-y-0.5">
@@ -332,7 +285,7 @@ function isItemActive(href: string, current: string): boolean {
               return (
                 <a
                   href={item.href}
-                  class={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs transition-all ${
+                  class={`flex items-center justify-between px-2.5 py-2 rounded-xl text-xs transition-all ${
                     active
                       ? 'bg-[#EFF6FF] text-[#2563EB] font-bold border-l-4 border-[#2563EB]'
                       : 'text-slate-600 hover:text-[#09090B] hover:bg-slate-50 font-medium'
@@ -352,28 +305,32 @@ function isItemActive(href: string, current: string): boolean {
         </div>
       ))}
     </div>
+
+    <!-- Mobile Drawer Footer -->
+    <div class="p-3 border-t border-[#E2E8F0] bg-[#F8FAFF] shrink-0">
+      <a href="/profile" class="flex items-center gap-2.5 p-2 rounded-xl bg-white border border-[#E2E8F0]">
+        <div class="w-7 h-7 rounded-full bg-[#2563EB] text-white flex items-center justify-center font-bold text-xs" id="mobileAvatar">
+          U
+        </div>
+        <div class="min-w-0 flex-1">
+          <div class="text-xs font-bold text-[#09090B] truncate" id="mobileUserEmail">Guest Builder</div>
+          <div class="text-[10px] text-slate-500 font-mono">My Workspace &rarr;</div>
+        </div>
+      </a>
+    </div>
   </div>
 </div>
 
 <script is:inline>
-  // Universal Instant Sidebar Controller for Desktop & Mobile
   (function() {
-    function getDesktopSidebar() {
-      return document.getElementById('desktopSidebar');
-    }
-    function getMobileDrawer() {
-      return document.getElementById('mobileSidebarDrawer');
-    }
+    function getDesktopSidebar() { return document.getElementById('desktopSidebar'); }
+    function getMobileDrawer() { return document.getElementById('mobileSidebarDrawer'); }
 
     window.closeSidebar = function() {
-      // 1. Mobile Drawer
-      var mobileDrawer = getMobileDrawer();
-      if (mobileDrawer) {
-        mobileDrawer.classList.add('hidden');
-      }
-
-      // 2. Desktop Sidebar (>= 1024px)
-      if (window.innerWidth >= 1024) {
+      if (window.innerWidth < 1024) {
+        var mobileDrawer = getMobileDrawer();
+        if (mobileDrawer) mobileDrawer.classList.add('hidden');
+      } else {
         var desktopSidebar = getDesktopSidebar();
         if (desktopSidebar) {
           desktopSidebar.classList.add('hidden');
@@ -386,9 +343,7 @@ function isItemActive(href: string, current: string): boolean {
     window.openSidebar = function() {
       if (window.innerWidth < 1024) {
         var mobileDrawer = getMobileDrawer();
-        if (mobileDrawer) {
-          mobileDrawer.classList.remove('hidden');
-        }
+        if (mobileDrawer) mobileDrawer.classList.remove('hidden');
       } else {
         var desktopSidebar = getDesktopSidebar();
         if (desktopSidebar) {
@@ -402,27 +357,18 @@ function isItemActive(href: string, current: string): boolean {
     window.toggleSidebar = function() {
       if (window.innerWidth < 1024) {
         var mobileDrawer = getMobileDrawer();
-        if (mobileDrawer) {
-          mobileDrawer.classList.toggle('hidden');
-        }
+        if (mobileDrawer) mobileDrawer.classList.toggle('hidden');
       } else {
         var desktopSidebar = getDesktopSidebar();
         if (desktopSidebar) {
           var isClosed = desktopSidebar.classList.contains('hidden');
-          if (isClosed) {
-            window.openSidebar();
-          } else {
-            window.closeSidebar();
-          }
+          if (isClosed) window.openSidebar();
+          else window.closeSidebar();
         }
       }
     };
 
-    // Alias for mobile backwards compatibility
-    window.toggleMobileSidebar = window.toggleSidebar;
-
-    // Restore desktop preference on load
-    function initSidebarState() {
+    function initSidebar() {
       var isClosed = localStorage.getItem('aio_sidebar_closed') === 'true';
       if (window.innerWidth >= 1024 && isClosed) {
         var desktopSidebar = getDesktopSidebar();
@@ -432,58 +378,77 @@ function isItemActive(href: string, current: string): boolean {
         }
       }
 
-      // Sync active user in sidebar
+      // Synchronize User in Sidebar Footer
       try {
-        var localUserStr = localStorage.getItem('aio_user');
         var user = null;
+        var localUserStr = localStorage.getItem('aio_user');
         if (localUserStr) {
           user = JSON.parse(localUserStr);
         } else {
           for (var i = 0; i < localStorage.length; i++) {
             var k = localStorage.key(i);
-            if (k && (k === 'supabase.auth.token' || (k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1))) {
-              try {
-                var parsed = JSON.parse(localStorage.getItem(k));
-                var tokenUser = parsed.user || (parsed.currentSession && parsed.currentSession.user);
-                if (tokenUser) {
-                  user = {
-                    name: tokenUser.user_metadata?.full_name || tokenUser.email?.split('@')[0],
-                    email: tokenUser.email,
-                    authProvider: 'google'
-                  };
-                }
-              } catch(e) {}
+            if (k && (k === 'supabase.auth.token' || (k.startsWith('sb-') && k.endsWith('-auth-token')))) {
+              var parsed = JSON.parse(localStorage.getItem(k));
+              var tokenUser = parsed.user || (parsed.currentSession && parsed.currentSession.user);
+              if (tokenUser) {
+                var meta = tokenUser.user_metadata || {};
+                user = {
+                  name: meta.full_name || meta.name || tokenUser.email?.split('@')[0] || 'Builder',
+                  email: tokenUser.email || '',
+                  avatarUrl: meta.avatar_url || meta.picture || ''
+                };
+              }
               break;
             }
           }
         }
 
-        if (user) {
+        if (user && (user.name || user.email)) {
           var emailEl = document.getElementById('sidebarUserEmail');
           var tierEl = document.getElementById('sidebarUserTier');
           var avatarEl = document.getElementById('sidebarAvatar');
-          var brandLink = document.getElementById('desktopBrandLink');
-          if (emailEl) emailEl.textContent = user.name || (user.email ? user.email.split('@')[0] : 'Member');
-          if (tierEl) tierEl.textContent = user.authProvider === 'google' ? 'Google Account' : 'Verified Member';
-          if (avatarEl && (user.name || user.email)) {
-            avatarEl.textContent = (user.name || user.email).charAt(0).toUpperCase();
+          var avatarImg = document.getElementById('sidebarAvatarImg');
+          var signInBtn = document.getElementById('sidebarSignInBtn');
+          var signOutBtn = document.getElementById('sidebarSignOutBtn');
+          var mobileEmail = document.getElementById('mobileUserEmail');
+          var mobileAvatar = document.getElementById('mobileAvatar');
+          var adminGroup = document.getElementById('sidebarAdminGroup');
+
+          var fullName = user.name || (user.email ? user.email.split('@')[0] : 'Harshil Patel');
+          if (emailEl) emailEl.textContent = fullName;
+          if (mobileEmail) mobileEmail.textContent = fullName;
+          if (tierEl) tierEl.textContent = user.email ? user.email : 'Verified Builder';
+
+          var initial = fullName.charAt(0).toUpperCase();
+          if (avatarEl) avatarEl.textContent = initial;
+          if (mobileAvatar) mobileAvatar.textContent = initial;
+
+          if (user.avatarUrl && avatarImg) {
+            avatarImg.src = user.avatarUrl;
+            avatarImg.classList.remove('hidden');
+            if (avatarEl) avatarEl.classList.add('hidden');
           }
-          if (brandLink) brandLink.setAttribute('href', '/dashboard');
+
+          if (signInBtn) signInBtn.classList.add('hidden');
+          if (signOutBtn) signOutBtn.classList.remove('hidden');
+
+          // Reveal Admin link ONLY for authorized admin
+          var isAdmin = (user.email === 'harshilpival@gmail.com') || (user.isAdmin === true);
+          if (adminGroup && isAdmin) {
+            adminGroup.classList.remove('hidden');
+          }
         }
       } catch (e) {}
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initSidebarState);
+      document.addEventListener('DOMContentLoaded', initSidebar);
     } else {
-      initSidebarState();
+      initSidebar();
     }
 
-    // Close on Escape key
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        window.closeSidebar();
-      }
+      if (e.key === 'Escape') window.closeSidebar();
     });
   })();
 </script>
