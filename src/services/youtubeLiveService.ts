@@ -31,21 +31,17 @@ export function formatSubscriberCount(count: number): string {
 }
 
 /**
- * Batch refreshes YouTube channel statistics using YouTube Data API v3
- * Uses 1 quota unit for up to 50 channels.
+ * Batch refreshes YouTube channel statistics.
+ * Client requests are routed through the server-side proxy (/api/youtube/stats)
+ * so YOUTUBE_API_KEY is NEVER exposed in browser JavaScript (PRD Sec 35).
  */
 export async function batchRefreshCreatorStats(
   handles: string[]
 ): Promise<Record<string, LiveChannelStats>> {
-  const apiKey = 
-    (typeof import.meta !== 'undefined' && import.meta.env?.PUBLIC_YOUTUBE_API_KEY) ||
-    (typeof process !== 'undefined' ? process.env?.PUBLIC_YOUTUBE_API_KEY : undefined);
-
   const results: Record<string, LiveChannelStats> = {};
   const cachePrefix = 'aio_yt_stat_';
   const TTL = 24 * 60 * 60 * 1000; // 24-hour cache
 
-  // Check cache first
   const missingHandles: string[] = [];
   if (typeof window !== 'undefined') {
     for (const h of handles) {
@@ -62,15 +58,34 @@ export async function batchRefreshCreatorStats(
       } catch (e) {}
       missingHandles.push(clean);
     }
-  } else {
-    missingHandles.push(...handles.map(h => h.replace(/^@/, '')));
+
+    if (missingHandles.length === 0) return results;
+
+    try {
+      const res = await fetch(`/api/youtube/stats?handles=${encodeURIComponent(missingHandles.slice(0, 25).join(','))}`);
+      if (res.ok) {
+        const data = await res.json();
+        const statsMap = (data.stats || {}) as Record<string, LiveChannelStats>;
+        Object.entries(statsMap).forEach(([h, statObj]) => {
+          results[h] = statObj;
+          try {
+            localStorage.setItem(`${cachePrefix}${h}`, JSON.stringify(statObj));
+          } catch {}
+        });
+      }
+    } catch (err) {
+      console.warn('Server YouTube proxy unavailable; using verified static creator metrics:', err);
+    }
+    return results;
   }
 
+  // Server-side direct fetch using private YOUTUBE_API_KEY
+  const apiKey = typeof process !== 'undefined' ? process.env?.YOUTUBE_API_KEY : undefined;
+  missingHandles.push(...handles.map(h => h.replace(/^@/, '')));
   if (missingHandles.length === 0 || !apiKey) {
     return results;
   }
 
-  // Fetch in batches of up to 50
   for (let i = 0; i < missingHandles.length; i += 50) {
     const batch = missingHandles.slice(i, i + 50);
     for (const handle of batch) {
@@ -83,7 +98,7 @@ export async function batchRefreshCreatorStats(
         const item = data.items?.[0];
         if (item) {
           const subs = parseInt(item.statistics?.subscriberCount || '0', 10);
-          const statObj: LiveChannelStats = {
+          results[handle] = {
             channelId: item.id,
             handle,
             subscriberCount: subs,
@@ -93,12 +108,6 @@ export async function batchRefreshCreatorStats(
             avatarUrl: item.snippet?.thumbnails?.high?.url || item.snippet?.thumbnails?.default?.url || getCreatorAvatar(handle),
             lastUpdated: Date.now()
           };
-          results[handle] = statObj;
-          if (typeof window !== 'undefined') {
-            try {
-              localStorage.setItem(`${cachePrefix}${handle}`, JSON.stringify(statObj));
-            } catch (e) {}
-          }
         }
       } catch (err) {
         console.warn(`YouTube API query failed for @${handle}:`, err);

@@ -153,8 +153,8 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
             class="hidden absolute right-0 mt-2 w-60 bg-white border border-[#E2E8F0] rounded-2xl shadow-xl py-2 z-50 text-xs animate-in fade-in slide-in-from-top-1 duration-150"
           >
             <div class="px-4 py-2 border-b border-[#E2E8F0] mb-1">
-              <div class="font-bold text-[#09090B] truncate" id="dropdownUserName">Harshil Patel</div>
-              <div class="text-[11px] text-slate-500 font-mono truncate" id="dropdownUserEmail">harshilpival@gmail.com</div>
+              <div class="font-bold text-[#09090B] truncate" id="dropdownUserName">Workspace Member</div>
+              <div class="text-[11px] text-slate-500 font-mono truncate" id="dropdownUserEmail">Sign in to sync</div>
               <div class="mt-1 flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                 <span class="text-[10px] font-mono text-emerald-600 font-bold uppercase">Builder Mode Active</span>
@@ -386,8 +386,8 @@ const { currentPath = Astro.url.pathname, hideSidebarToggle = false } = Astro.pr
           if (avatarInitials) avatarInitials.classList.add('hidden');
         }
 
-        // Admin privilege check
-        var isAdmin = (user.email === 'harshilpival@gmail.com') || (user.isAdmin === true);
+        // Admin privilege check (resolved from authenticated session claims, never hardcoded PII)
+        var isAdmin = user.isAdmin === true;
         if (adminLink && isAdmin) {
           adminLink.classList.remove('hidden');
           adminLink.classList.add('flex');

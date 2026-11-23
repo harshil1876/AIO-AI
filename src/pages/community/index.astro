@@ -4,19 +4,19 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { COMMUNITY_POSTS, COMMUNITY_LEADERBOARD, REPUTATION_RULES } from '../../data/communityData';
 
-// 10 Pre-Seeded Community Spaces
+// 10 Curated Community Spaces (Zero Fabricated Member Counts)
 const COMMUNITY_SPACES = [
-  { id: 'all', name: 'All Spaces', slug: 'all', icon: '🌐', members: '12.4k' },
-  { id: 'c-ai-engineering', name: 'c/AIEngineering', slug: 'ai-engineering', icon: '⚡', members: '4.8k', desc: 'Core LLMs, prompt systems, and enterprise inference scaling.' },
-  { id: 'c-open-source', name: 'c/OpenSourceHub', slug: 'open-source-hub', icon: '📦', members: '3.9k', desc: 'Self-hostable weights, Ollama, ComfyUI, and vLLM recipes.' },
-  { id: 'c-robotics', name: 'c/RoboticsAndHardware', slug: 'robotics-hardware', icon: '🤖', members: '1.8k', desc: 'Embodied AI, GPU clusters, CUDA drivers, and VRAM math.' },
-  { id: 'c-indic-ai', name: 'c/IndicAI', slug: 'indic-ai', icon: '🇮🇳', members: '2.5k', desc: 'Sovereign models, Bhashini, Sarvam, and 22 Indic vernaculars.' },
-  { id: 'c-agents', name: 'c/AgentFrameworks', slug: 'agent-frameworks', icon: '🔄', members: '3.2k', desc: 'LangGraph, CrewAI, AutoGen, and multi-agent coordination.' },
-  { id: 'c-local-llms', name: 'c/LocalLLMs', slug: 'local-llms', icon: '🖥️', members: '4.1k', desc: 'DeepSeek-R1, Llama 3.3, and GGUF quantization tuning.' },
-  { id: 'c-fine-tuning', name: 'c/FineTuning', slug: 'fine-tuning', icon: '🎯', members: '1.9k', desc: 'LoRA, Unsloth, synthetic datasets, and evaluation benchmarks.' },
-  { id: 'c-rag', name: 'c/RAGSystems', slug: 'rag-systems', icon: '📚', members: '2.7k', desc: 'Vector databases, hybrid dense/sparse search, and rerankers.' },
-  { id: 'c-creator-tech', name: 'c/CreatorTech', slug: 'creator-tech', icon: '🎬', members: '2.1k', desc: 'Video generation, ElevenLabs TTS, and automated Shorts engines.' },
-  { id: 'c-saas-scaling', name: 'c/SaaSScaling', slug: 'saas-scaling', icon: '🚀', members: '1.6k', desc: 'Indie hacker launches, pricing models, and token margins.' }
+  { id: 'all', name: 'All Spaces', slug: 'all', icon: '🌐', badge: 'Feed' },
+  { id: 'c-ai-engineering', name: 'c/AIEngineering', slug: 'ai-engineering', icon: '⚡', badge: 'LLMs', desc: 'Core LLMs, prompt systems, and enterprise inference scaling.' },
+  { id: 'c-open-source', name: 'c/OpenSourceHub', slug: 'open-source-hub', icon: '📦', badge: 'OSS', desc: 'Self-hostable weights, Ollama, ComfyUI, and vLLM recipes.' },
+  { id: 'c-robotics', name: 'c/RoboticsAndHardware', slug: 'robotics-hardware', icon: '🤖', badge: 'GPU', desc: 'Embodied AI, GPU clusters, CUDA drivers, and VRAM math.' },
+  { id: 'c-indic-ai', name: 'c/IndicAI', slug: 'indic-ai', icon: '🇮🇳', badge: 'India', desc: 'Sovereign models, Bhashini, Sarvam, and 22 Indic vernaculars.' },
+  { id: 'c-agents', name: 'c/AgentFrameworks', slug: 'agent-frameworks', icon: '🔄', badge: 'Agents', desc: 'LangGraph, CrewAI, AutoGen, and multi-agent coordination.' },
+  { id: 'c-local-llms', name: 'c/LocalLLMs', slug: 'local-llms', icon: '🖥️', badge: 'Local', desc: 'DeepSeek-R1, Llama 3.3, and GGUF quantization tuning.' },
+  { id: 'c-fine-tuning', name: 'c/FineTuning', slug: 'fine-tuning', icon: '🎯', badge: 'LoRA', desc: 'LoRA, Unsloth, synthetic datasets, and evaluation benchmarks.' },
+  { id: 'c-rag', name: 'c/RAGSystems', slug: 'rag-systems', icon: '📚', badge: 'RAG', desc: 'Vector databases, hybrid dense/sparse search, and rerankers.' },
+  { id: 'c-creator-tech', name: 'c/CreatorTech', slug: 'creator-tech', icon: '🎬', badge: 'Media', desc: 'Video generation, ElevenLabs TTS, and automated Shorts engines.' },
+  { id: 'c-saas-scaling', name: 'c/SaaSScaling', slug: 'saas-scaling', icon: '🚀', badge: 'SaaS', desc: 'Indie hacker launches, pricing models, and token margins.' }
 ];
 
 const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Repo', 'Share Workflow'];
@@ -95,7 +95,7 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
                   <span class="truncate">{space.name}</span>
                 </div>
                 <span class={`text-[10px] font-mono ${idx === 0 ? 'text-blue-200' : 'text-slate-400'}`}>
-                  {space.members}
+                  {space.badge}
                 </span>
               </button>
             ))}
@@ -421,6 +421,7 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
 <script>
   import { validateContentSafety } from '../../utils/moderationFilter';
   import { supabase } from '../../lib/supabase';
+  import { escapeHtml, sanitizeSlug } from '../../utils/security';
 
   document.addEventListener('DOMContentLoaded', async () => {
     const composerTabs = document.querySelectorAll<HTMLButtonElement>('.composer-tab');
@@ -453,21 +454,32 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
     // Hydrate Custom Spaces from localStorage
     try {
       const customSpaces = JSON.parse(localStorage.getItem('aio_custom_spaces') || '[]');
-      const spaceNav = document.getElementById('spacesListNav');
+      const spaceNav = document.getElementById('spacesNavList');
       if (spaceNav && customSpaces.length > 0) {
         customSpaces.forEach((sp: any) => {
+          const safeSpSlug = sanitizeSlug(sp.slug || sp.name);
+          if (!safeSpSlug) return;
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'space-tab-btn w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-50 cursor-pointer';
-          btn.setAttribute('data-space', sp.slug);
-          btn.innerHTML = `<span class="truncate">c/${sp.slug}</span><span class="text-[10px] font-mono text-slate-400">0</span>`;
-          btn.addEventListener('click', () => filterBySpace(sp.slug, btn));
+          btn.setAttribute('data-space', safeSpSlug);
+          btn.innerHTML = `<span class="truncate">c/${escapeHtml(safeSpSlug)}</span><span class="text-[10px] font-mono text-slate-400">New</span>`;
+          btn.addEventListener('click', () => filterBySpace(safeSpSlug, btn));
           spaceNav.appendChild(btn);
         });
       }
     } catch(e) {}
 
-    // Hydrate Persisted Posts from localStorage
+    // Hydrate Live Posts from Server API + localStorage backup
+    try {
+      const apiRes = await fetch('/api/community/posts');
+      if (apiRes.ok) {
+        const payload = await apiRes.json();
+        if (Array.isArray(payload.posts) && postStream) {
+          payload.posts.forEach((p: any) => renderPostInDom(p, false));
+        }
+      }
+    } catch(e) {}
     try {
       const persistedPosts = JSON.parse(localStorage.getItem('aio_community_posts') || '[]');
       if (postStream && persistedPosts.length > 0) {
@@ -477,9 +489,10 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
       }
     } catch(e) {}
 
-    // Handle space invite link on load (?space=...&invite=true)
+    // Handle space invite link on load (?space=...&invite=true) safely (zero Reflected XSS)
     const urlParams = new URLSearchParams(window.location.search);
-    const inviteSpace = urlParams.get('space');
+    const inviteSpaceRaw = urlParams.get('space');
+    const inviteSpace = inviteSpaceRaw ? sanitizeSlug(inviteSpaceRaw) : '';
     const isInvite = urlParams.get('invite') === 'true';
 
     if (inviteSpace) {
@@ -490,7 +503,15 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
       if (isInvite) {
         const welcomeBanner = document.createElement('div');
         welcomeBanner.className = 'p-3 rounded-xl bg-blue-600 text-white font-mono text-xs font-bold mb-4 flex items-center justify-between shadow-md';
-        welcomeBanner.innerHTML = `<span>👋 You were invited to join c/${inviteSpace}! Welcome to the workspace.</span><button onclick="this.parentElement.remove()" class="text-white hover:text-blue-200 cursor-pointer">&times;</button>`;
+        const span = document.createElement('span');
+        span.textContent = `👋 You were invited to join c/${inviteSpace}! Welcome to the workspace.`;
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'text-white hover:text-blue-200 cursor-pointer';
+        closeBtn.textContent = '×';
+        closeBtn.addEventListener('click', () => welcomeBanner.remove());
+        welcomeBanner.appendChild(span);
+        welcomeBanner.appendChild(closeBtn);
         postStream?.parentElement?.insertBefore(welcomeBanner, postStream);
       }
     }
@@ -554,20 +575,20 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
             <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
             </svg>
-            <span class="text-xs font-mono font-bold text-slate-900 mt-1 vote-count">${post.upvotes || 1}</span>
+            <span class="text-xs font-mono font-bold text-slate-900 mt-1 vote-count">${Number(post.upvotes) || 1}</span>
           </button>
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 mb-2 flex-wrap text-xs">
-              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 uppercase">${post.type || 'Discussion'}</span>
-              <span class="font-bold text-slate-900">${post.author}</span>
-              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">${post.authorRole || 'Practitioner'}</span>
-              <span class="text-slate-400 font-mono text-[11px]">&bull; ${post.publishedAt || 'Just now'}</span>
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 uppercase">${escapeHtml(post.type || 'Discussion')}</span>
+              <span class="font-bold text-slate-900">${escapeHtml(post.author || post.author_name || 'Community Builder')}</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">${escapeHtml(post.authorRole || 'Practitioner')}</span>
+              <span class="text-slate-400 font-mono text-[11px]">&bull; ${escapeHtml(post.publishedAt || 'Just now')}</span>
             </div>
-            <h2 class="text-base font-black text-slate-900 mb-2 leading-snug hover:text-blue-600 transition-colors cursor-pointer">${post.title}</h2>
-            <p class="text-xs text-slate-600 leading-relaxed mb-4 whitespace-pre-wrap">${post.content}</p>
+            <h2 class="text-base font-black text-slate-900 mb-2 leading-snug hover:text-blue-600 transition-colors cursor-pointer">${escapeHtml(post.title)}</h2>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4 whitespace-pre-wrap">${escapeHtml(post.content)}</p>
             <div class="flex items-center justify-between gap-2 flex-wrap pt-3 border-t border-slate-100">
-              <span class="text-[11px] text-slate-600 bg-slate-50 px-2.5 py-0.5 rounded-md border border-slate-200 font-mono">#${post.space || 'general'}</span>
-              <span class="text-xs font-mono text-slate-400">0 replies</span>
+              <span class="text-[11px] text-slate-600 bg-slate-50 px-2.5 py-0.5 rounded-md border border-slate-200 font-mono">#${escapeHtml(post.space || post.category || 'general')}</span>
+              <span class="text-xs font-mono text-slate-400">${Number(post.comment_count || 0)} replies</span>
             </div>
           </div>
         </div>
@@ -608,16 +629,36 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
         tags: [currentSpace]
       };
 
-      // 1. Persist to Supabase if session available
+      // 1. Persist via validated Server API -> Supabase PostgreSQL (matching exact schema columns)
       try {
-        await supabase.from('community_posts').insert([{
-          title: title,
-          content: content,
-          space: currentSpace,
-          author: postObj.author
-        }]);
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData?.session?.access_token;
+        const apiResp = await fetch('/api/community/posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({
+            title,
+            content,
+            category: currentSpace,
+            type: activeMode,
+            authorName: postObj.author
+          })
+        });
+        if (!apiResp.ok) {
+          // Direct Supabase fallback using real schema column names
+          await supabase.from('community_posts').insert([{
+            title,
+            content,
+            category: currentSpace,
+            type: activeMode,
+            author_name: postObj.author
+          }]);
+        }
       } catch(err) {
-        console.warn('Supabase community_posts insertion fallback:', err);
+        console.warn('Community post persistence fallback:', err);
       }
 
       // 2. Persist to localStorage
@@ -718,7 +759,8 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
       const name = nameInput?.value.trim();
       if (!name) return;
 
-      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const slug = sanitizeSlug(name);
+      if (!slug) return;
       const newSpace = { name, slug, count: 0 };
 
       try {
@@ -728,13 +770,13 @@ const postTypes = ['All', 'Discussion', 'Project / SaaS Launch', 'Open-Source Re
       } catch(e) {}
 
       // Prepend to spaces list
-      const spaceNav = document.getElementById('spacesListNav');
+      const spaceNav = document.getElementById('spacesNavList');
       if (spaceNav) {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'space-tab-btn w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all bg-slate-900 text-white shadow-xs cursor-pointer';
         btn.setAttribute('data-space', slug);
-        btn.innerHTML = `<span class="truncate">c/${slug}</span><span class="text-[10px] font-mono text-slate-400">0</span>`;
+        btn.innerHTML = `<span class="truncate">c/${escapeHtml(slug)}</span><span class="text-[10px] font-mono text-slate-400">New</span>`;
         btn.addEventListener('click', () => filterBySpace(slug, btn));
         spaceNav.appendChild(btn);
         filterBySpace(slug, btn);

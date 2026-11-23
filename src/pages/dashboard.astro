@@ -66,10 +66,10 @@ const starterTools = starterToolSlugs.map(slug => {
           <a href="/pricing" class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold transition-colors">
             Free Plan Tier &bull; Upgrade &rarr;
           </a>
-          <span class="text-xs text-slate-400 font-mono hidden sm:inline" id="userEmailDisplay">harshilpival@gmail.com</span>
+          <span class="text-xs text-slate-400 font-mono hidden sm:inline" id="userEmailDisplay">Signed-in session</span>
         </div>
         <h1 class="text-2xl sm:text-4xl font-black text-[#09090B] tracking-tight">
-          Welcome back, <span id="userNameDisplay" class="text-[#2563EB]">Harshil Patel</span>
+          Welcome back, <span id="userNameDisplay" class="text-[#2563EB]">Builder</span>
         </h1>
         <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-xl leading-relaxed">
           Your personal command center for multi-model workflows, stack cost optimization, and open-source intelligence.
@@ -451,6 +451,44 @@ const starterTools = starterToolSlugs.map(slug => {
           </div>
         </div>
 
+        <!-- Module F: My AI Personalization, Collections & Topic Following (PRD Sec 07 & 23) -->
+        <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+            <h2 class="text-xs font-mono uppercase font-bold text-slate-500">My AI Personalization</h2>
+            <span class="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">Explainable Feed</span>
+          </div>
+
+          <div class="space-y-2">
+            <span class="text-[11px] font-mono text-slate-500 block">Follow topics to personalize your feed:</span>
+            <div class="flex flex-wrap gap-1.5" id="dashTopicFollowGroup">
+              {['AI Coding', 'Open Source', 'Video AI', 'India AI', 'Agents', 'Local LLMs'].map((topic) => (
+                <button
+                  type="button"
+                  data-follow-topic={topic}
+                  class="dash-topic-btn px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 hover:border-blue-500 text-[11px] font-bold text-slate-700 cursor-pointer transition-colors"
+                >
+                  + {topic}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div id="dashPersonalizedFeed" class="space-y-2 text-xs">
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-500">
+              Select topics above to generate transparent recommendations.
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-[#E2E8F0] space-y-2">
+            <span class="text-[11px] font-mono font-bold text-slate-600 block">Create Shareable Collection:</span>
+            <div class="flex gap-1.5">
+              <input type="text" id="dashNewCollectionTitle" placeholder="e.g. Zero-Cost Video Stack" class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:border-blue-600" />
+              <button type="button" id="dashCreateCollectionBtn" class="px-3 py-1.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold cursor-pointer">Save</button>
+            </div>
+            <div id="dashCollectionsStatus" class="text-[10px] font-mono text-emerald-700"></div>
+          </div>
+        </div>
+
       </aside>
 
     </div>
@@ -462,6 +500,7 @@ const starterTools = starterToolSlugs.map(slug => {
 <script>
   import { supabase } from '../lib/supabase';
   import { fetchLiveAINews } from '../services/liveNewsService';
+  import { escapeHtml, safeExternalUrl } from '../utils/security';
 
   async function initDashboard() {
     const nameDisplay = document.getElementById('userNameDisplay');
@@ -636,22 +675,22 @@ const starterTools = starterToolSlugs.map(slug => {
           const top4 = liveItems.slice(0, 4);
           newsContainer.innerHTML = top4.map(item => `
             <a 
-              href="${item.url}" 
+              href="${escapeHtml(safeExternalUrl(item.url))}" 
               target="_blank"
               rel="noopener noreferrer"
               class="block p-4 rounded-xl border border-[#E2E8F0] hover:border-[#2563EB] hover:bg-[#F8FAFF] transition-all group"
             >
               <div class="flex items-center gap-2 mb-1 flex-wrap">
                 <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
-                  ${item.sourceBadge}
+                  ${escapeHtml(item.sourceBadge)}
                 </span>
                 <span class="text-[10px] font-mono text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full">
-                  ${item.category}
+                  ${escapeHtml(item.category)}
                 </span>
-                <span class="text-[11px] font-mono text-slate-400">• ${item.timeAgo}</span>
+                <span class="text-[11px] font-mono text-slate-400">• ${escapeHtml(item.timeAgo)}</span>
               </div>
               <h3 class="text-xs sm:text-sm font-bold text-[#09090B] group-hover:text-[#2563EB] transition-colors line-clamp-1">
-                ${item.title}
+                ${escapeHtml(item.title)}
               </h3>
               <div class="mt-1 flex items-center justify-between text-[11px] text-slate-500">
                 <span>Verified Source</span>
@@ -664,6 +703,92 @@ const starterTools = starterToolSlugs.map(slug => {
     } catch (e) {
       console.warn('Dashboard live news hydration notice:', e);
     }
+
+    // 6. Hydrate My AI Personalization (Follow Topics + Explainable Recommendations + Collections)
+    const savedTopicsKey = 'aio_followed_topics';
+    let activeTopics: string[] = [];
+    try {
+      activeTopics = JSON.parse(localStorage.getItem(savedTopicsKey) || '["AI Coding","Open Source"]');
+    } catch { activeTopics = ['AI Coding', 'Open Source']; }
+
+    async function refreshPersonalizedFeed() {
+      const feedEl = document.getElementById('dashPersonalizedFeed');
+      document.querySelectorAll<HTMLButtonElement>('.dash-topic-btn').forEach((btn) => {
+        const topic = btn.getAttribute('data-follow-topic') || '';
+        const active = activeTopics.includes(topic);
+        btn.textContent = active ? `✓ ${topic}` : `+ ${topic}`;
+        btn.className = active
+          ? 'dash-topic-btn px-2.5 py-1 rounded-lg border border-blue-600 bg-blue-50 text-[11px] font-bold text-blue-700 cursor-pointer transition-colors'
+          : 'dash-topic-btn px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 hover:border-blue-500 text-[11px] font-bold text-slate-700 cursor-pointer transition-colors';
+      });
+      if (!feedEl) return;
+      try {
+        const res = await fetch(`/api/personalization?topics=${encodeURIComponent(activeTopics.join(','))}`);
+        if (res.ok) {
+          const data = await res.json();
+          const recs = data?.feed?.recommendations || [];
+          if (recs.length > 0) {
+            feedEl.innerHTML = recs.slice(0, 3).map((r: any) => `
+              <a href="/tools/${encodeURIComponent(r.slug)}" class="block p-2.5 rounded-xl border border-slate-200 hover:border-blue-500 bg-slate-50/70 transition-all">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="font-bold text-slate-900">${escapeHtml(r.name)}</span>
+                  <span class="text-[10px] font-mono text-blue-700 font-bold">${Number(r.score)}/100</span>
+                </div>
+                <div class="text-[10px] text-emerald-700 font-mono mt-0.5">${escapeHtml(r.reason)}</div>
+              </a>
+            `).join('');
+          }
+        }
+      } catch {}
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('.dash-topic-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const topic = btn.getAttribute('data-follow-topic') || '';
+        if (!topic) return;
+        activeTopics = activeTopics.includes(topic)
+          ? activeTopics.filter((t) => t !== topic)
+          : [...activeTopics, topic];
+        try { localStorage.setItem(savedTopicsKey, JSON.stringify(activeTopics)); } catch {}
+        refreshPersonalizedFeed();
+        try {
+          const { data: sd } = await supabase.auth.getSession();
+          const tok = sd?.session?.access_token;
+          if (tok) {
+            await fetch('/api/personalization', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tok}` },
+              body: JSON.stringify({ action: 'toggle_follow', targetType: 'topic', targetSlug: topic }),
+            });
+          }
+        } catch {}
+      });
+    });
+
+    document.getElementById('dashCreateCollectionBtn')?.addEventListener('click', async () => {
+      const input = document.getElementById('dashNewCollectionTitle') as HTMLInputElement | null;
+      const status = document.getElementById('dashCollectionsStatus');
+      const title = input?.value.trim() || '';
+      if (!title) return;
+      try {
+        const existing = JSON.parse(localStorage.getItem('aio_user_collections') || '[]');
+        existing.unshift({ title, createdAt: new Date().toISOString() });
+        localStorage.setItem('aio_user_collections', JSON.stringify(existing));
+        const { data: sd } = await supabase.auth.getSession();
+        const tok = sd?.session?.access_token;
+        if (tok) {
+          await fetch('/api/personalization', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tok}` },
+            body: JSON.stringify({ action: 'create_collection', title, isPublic: true }),
+          });
+        }
+        if (input) input.value = '';
+        if (status) status.textContent = `✓ Collection "${title}" saved!`;
+      } catch {}
+    });
+
+    refreshPersonalizedFeed();
   }
 
   if (document.readyState === 'loading') {

@@ -1,10 +1,11 @@
-import { pgTable, serial, text, varchar, timestamp, boolean, integer, numeric, jsonb, primaryKey } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, varchar, timestamp, boolean, integer, numeric, jsonb, primaryKey, uuid } from 'drizzle-orm/pg-core';
 
 // -------------------------------------------------------------
 // 1. Users & Profiles
 // -------------------------------------------------------------
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
+  authId: uuid('auth_id').unique(),
   email: varchar('email', { length: 255 }).notNull().unique(),
   role: varchar('role', { length: 50 }).default('user'), // 'user' | 'moderator' | 'admin'
   plan: varchar('plan', { length: 50 }).default('free'), // 'free' | 'pro' | 'creator_pro' | 'business'
@@ -358,5 +359,99 @@ export const analyticsEvents = pgTable('analytics_events', {
   entityType: varchar('entity_type', { length: 50 }),
   entitySlug: varchar('entity_slug', { length: 255 }),
   metadata: jsonb('metadata').$type<any>().default({}),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// -------------------------------------------------------------
+// 10. Personalization, Newsletter, Billing & Audit Tables (PRD Sec 32)
+// -------------------------------------------------------------
+export const collections = pgTable('collections', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  slug: varchar('slug', { length: 255 }).notNull().unique(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  isPublic: boolean('is_public').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const collectionItems = pgTable('collection_items', {
+  id: serial('id').primaryKey(),
+  collectionId: integer('collection_id').references(() => collections.id, { onDelete: 'cascade' }).notNull(),
+  entityType: varchar('entity_type', { length: 50 }).notNull(),
+  entitySlug: varchar('entity_slug', { length: 255 }).notNull(),
+  note: text('note'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const follows = pgTable('follows', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  targetType: varchar('target_type', { length: 50 }).notNull(), // 'topic' | 'creator' | 'tool' | 'repo'
+  targetSlug: varchar('target_slug', { length: 255 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const userHistory = pgTable('user_history', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  actionType: varchar('action_type', { length: 50 }).notNull(), // 'view' | 'finder_query' | 'compare'
+  entityType: varchar('entity_type', { length: 50 }),
+  entitySlug: varchar('entity_slug', { length: 255 }),
+  queryText: text('query_text'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const newsletterSubscribers = pgTable('newsletter_subscribers', {
+  id: serial('id').primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  cadence: varchar('cadence', { length: 20 }).default('weekly'), // 'daily' | 'weekly'
+  topics: jsonb('topics').$type<string[]>().default(['AI News', 'Open Source', 'Workflows']),
+  status: varchar('status', { length: 20 }).default('active'), // 'active' | 'unsubscribed'
+  unsubscribeToken: varchar('unsubscribe_token', { length: 128 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const entitlements = pgTable('entitlements', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull().unique(),
+  plan: varchar('plan', { length: 50 }).notNull().default('free'), // 'free' | 'pro' | 'creator_pro' | 'business'
+  status: varchar('status', { length: 30 }).notNull().default('active'),
+  provider: varchar('provider', { length: 30 }), // 'razorpay' | 'stripe'
+  providerCustomerId: varchar('provider_customer_id', { length: 255 }),
+  providerSubscriptionId: varchar('provider_subscription_id', { length: 255 }),
+  currency: varchar('currency', { length: 10 }).default('USD'),
+  currentPeriodEnd: timestamp('current_period_end'),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const verificationRecords = pgTable('verification_records', {
+  id: serial('id').primaryKey(),
+  entityType: varchar('entity_type', { length: 50 }).notNull(),
+  entitySlug: varchar('entity_slug', { length: 255 }).notNull(),
+  status: varchar('status', { length: 50 }).notNull(),
+  sourceUrl: varchar('source_url', { length: 500 }),
+  checkedFields: jsonb('checked_fields').$type<string[]>().default([]),
+  verifierId: integer('verifier_id').references(() => users.id, { onDelete: 'set null' }),
+  checkedAt: timestamp('checked_at').defaultNow(),
+});
+
+export const moderationActions = pgTable('moderation_actions', {
+  id: serial('id').primaryKey(),
+  moderatorId: integer('moderator_id').references(() => users.id, { onDelete: 'set null' }),
+  targetType: varchar('target_type', { length: 50 }).notNull(),
+  targetId: integer('target_id').notNull(),
+  action: varchar('action', { length: 50 }).notNull(),
+  reason: text('reason'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const priceAlerts = pgTable('price_alerts', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  toolSlug: varchar('tool_slug', { length: 255 }).notNull(),
+  alertType: varchar('alert_type', { length: 50 }).default('price_drop'),
+  isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at').defaultNow(),
 });

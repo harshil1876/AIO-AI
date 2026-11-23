@@ -52,7 +52,7 @@ const categories = await getAllCategories();
             Sign In with Administrator Account
           </a>
           <p class="text-[11px] text-slate-400">
-            Authorized administrator email: <span class="font-mono text-slate-600">harshilpival@gmail.com</span>
+            Access is verified cryptographically via server-side Supabase JWT and PostgreSQL Row Level Security.
           </p>
         </div>
       </div>
@@ -310,6 +310,8 @@ const categories = await getAllCategories();
 
 <script>
   import { supabase } from '../lib/supabase';
+  import { verifyAdminSession } from '../lib/authClient';
+  import { escapeHtml, safeExternalUrl } from '../utils/security';
 
   document.addEventListener('DOMContentLoaded', () => {
     const gateScreen = document.getElementById('adminGateScreen');
@@ -319,17 +321,15 @@ const categories = await getAllCategories();
 
     // Cryptographically verified Admin Authentication via Supabase Auth Server (No localStorage spoofing)
     async function checkAdminAuth() {
-      const ADMIN_EMAILS = ['harshilpival@gmail.com', 'admin@aio-ai.pages.dev'];
       let isAdminUser = false;
       let userEmail = '';
 
       try {
         if (roleBadge) roleBadge.textContent = 'Verifying Session with Auth Server...';
-        const { data, error } = await supabase.auth.getUser();
-        const user = data?.user;
-        if (!error && user && user.email) {
-          userEmail = user.email.toLowerCase().trim();
-          isAdminUser = ADMIN_EMAILS.includes(userEmail);
+        isAdminUser = await verifyAdminSession();
+        if (isAdminUser) {
+          const { data } = await supabase.auth.getUser();
+          userEmail = data?.user?.email?.toLowerCase().trim() || 'Authorized Admin';
         }
       } catch (err) {
         console.warn('Admin cryptographic verification notice:', err);
@@ -423,27 +423,29 @@ const categories = await getAllCategories();
 
         let html = '';
 
-        // Render Draft Tools
+        // Render Draft Tools (HTML-escaped + URL-validated to prevent Stored XSS)
         draftTools.forEach((t: any) => {
+          const safeUrl = safeExternalUrl(t.website_url);
+          const safeId = Number(t.id) || 0;
           html += `
-            <div class="p-4 rounded-xl bg-surface border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs" data-item-type="tool" data-item-id="${t.id}">
+            <div class="p-4 rounded-xl bg-surface border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs" data-item-type="tool" data-item-id="${safeId}">
               <div>
                 <div class="flex items-center gap-2 mb-1">
                   <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-blue-50 text-blue-700 border border-blue-200 font-bold">New Tool Draft</span>
-                  <span class="font-bold text-ink">${t.name}</span>
-                  <span class="text-slate-400 font-mono text-[11px]">(${t.slug})</span>
+                  <span class="font-bold text-ink">${escapeHtml(t.name)}</span>
+                  <span class="text-slate-400 font-mono text-[11px]">(${escapeHtml(t.slug)})</span>
                 </div>
-                <p class="text-neutral-600 text-[11px] mb-1">${t.tagline || t.description || 'No description provided'}</p>
+                <p class="text-neutral-600 text-[11px] mb-1">${escapeHtml(t.tagline || t.description || 'No description provided')}</p>
                 <div class="flex items-center gap-3 text-[10px] text-slate-400 font-mono">
-                  <span>URL: <a href="${t.website_url}" target="_blank" class="text-blue-600 hover:underline">${t.website_url}</a></span>
-                  <span>Pricing: ${t.pricing_state || 'unknown'}</span>
+                  <span>URL: <a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">${escapeHtml(safeUrl)}</a></span>
+                  <span>Pricing: ${escapeHtml(t.pricing_state || 'unknown')}</span>
                 </div>
               </div>
               <div class="flex items-center gap-2 shrink-0">
-                <button onclick="window.approveDraftTool(${t.id})" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors cursor-pointer">
-                  Approve & Publish
+                <button type="button" data-admin-action="approve-tool" data-id="${safeId}" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors cursor-pointer">
+                  Approve &amp; Publish
                 </button>
-                <button onclick="window.rejectDraftTool(${t.id})" class="px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-neutral-600 hover:text-ink text-xs font-medium transition-colors cursor-pointer">
+                <button type="button" data-admin-action="reject-tool" data-id="${safeId}" class="px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-neutral-600 hover:text-ink text-xs font-medium transition-colors cursor-pointer">
                   Dismiss
                 </button>
               </div>
@@ -451,24 +453,27 @@ const categories = await getAllCategories();
           `;
         });
 
-        // Render Corrections
+        // Render Corrections (HTML-escaped + URL-validated)
         pendingCorrections.forEach((c: any) => {
+          const safeProof = c.proof_url ? safeExternalUrl(c.proof_url) : '';
+          const safeId = Number(c.id) || 0;
+          const safeUserId = c.user_id ? Number(c.user_id) : '';
           html += `
-            <div class="p-4 rounded-xl bg-surface border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs" data-item-type="correction" data-item-id="${c.id}">
+            <div class="p-4 rounded-xl bg-surface border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs" data-item-type="correction" data-item-id="${safeId}">
               <div>
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-amber-50 text-amber-700 border border-amber-200 font-bold">${c.field_name || 'Correction'}</span>
-                  <span class="font-bold text-ink">Tool: ${c.tool_slug}</span>
-                  <span class="text-slate-400 font-mono text-[11px]">${c.author_email || 'Anonymous'}</span>
+                  <span class="px-2 py-0.5 rounded font-mono text-[10px] bg-amber-50 text-amber-700 border border-amber-200 font-bold">${escapeHtml(c.field_name || 'Correction')}</span>
+                  <span class="font-bold text-ink">Tool: ${escapeHtml(c.tool_slug)}</span>
+                  <span class="text-slate-400 font-mono text-[11px]">${escapeHtml(c.author_email || 'Anonymous')}</span>
                 </div>
-                <p class="text-neutral-600 text-[11px] mb-1">Suggested: ${c.suggested_value}</p>
-                ${c.proof_url ? `<span class="text-[10px] text-slate-400 font-mono">Proof: <a href="${c.proof_url}" target="_blank" class="text-blue-600 hover:underline">${c.proof_url}</a></span>` : ''}
+                <p class="text-neutral-600 text-[11px] mb-1">Suggested: ${escapeHtml(c.suggested_value)}</p>
+                ${safeProof && safeProof !== '#' ? `<span class="text-[10px] text-slate-400 font-mono">Proof: <a href="${escapeHtml(safeProof)}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">${escapeHtml(safeProof)}</a></span>` : ''}
               </div>
               <div class="flex items-center gap-2 shrink-0">
-                <button onclick="window.approveCorrection(${c.id}, ${c.user_id || 'null'})" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors cursor-pointer">
+                <button type="button" data-admin-action="approve-correction" data-id="${safeId}" data-user-id="${safeUserId}" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors cursor-pointer">
                   Approve (+50 Rep)
                 </button>
-                <button onclick="window.rejectCorrection(${c.id})" class="px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-neutral-600 hover:text-ink text-xs font-medium transition-colors cursor-pointer">
+                <button type="button" data-admin-action="reject-correction" data-id="${safeId}" class="px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-neutral-600 hover:text-ink text-xs font-medium transition-colors cursor-pointer">
                   Dismiss
                 </button>
               </div>
@@ -479,9 +484,24 @@ const categories = await getAllCategories();
         moderationItems.innerHTML = html;
       } catch (err: any) {
         console.error('Moderation load error:', err);
-        moderationItems.innerHTML = `<div class="p-4 bg-red-50 text-red-700 rounded-xl text-xs">Failed to load live moderation queue: ${err.message}</div>`;
+        moderationItems.innerHTML = `<div class="p-4 bg-red-50 text-red-700 rounded-xl text-xs">Failed to load live moderation queue: ${escapeHtml(err?.message || 'Unknown error')}</div>`;
       }
     }
+
+    // Delegated click handler (eliminates inline onclick XSS vectors)
+    moderationItems?.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement)?.closest<HTMLButtonElement>('[data-admin-action]');
+      if (!btn) return;
+      const action = btn.getAttribute('data-admin-action');
+      const id = Number(btn.getAttribute('data-id') || '0');
+      const uidRaw = btn.getAttribute('data-user-id');
+      const userId = uidRaw ? Number(uidRaw) : null;
+      if (!id) return;
+      if (action === 'approve-tool') (window as any).approveDraftTool(id);
+      if (action === 'reject-tool') (window as any).rejectDraftTool(id);
+      if (action === 'approve-correction') (window as any).approveCorrection(id, userId);
+      if (action === 'reject-correction') (window as any).rejectCorrection(id);
+    });
 
     // Window handlers for approvals and dismissals
     (window as any).approveDraftTool = async function(toolId: number) {
@@ -665,10 +685,10 @@ const categories = await getAllCategories();
 
           return `
             <tr class="${isValid ? 'bg-emerald-500/5' : 'bg-red-500/5'}">
-              <td class="p-2.5 font-bold">${row.name || 'Missing Name'}</td>
-              <td class="p-2.5 text-neutral-500">${row.slug || 'Missing Slug'}</td>
-              <td class="p-2.5 truncate max-w-[150px]">${row.websiteUrl || row.website_url || 'Bad URL'}</td>
-              <td class="p-2.5">${row.category || 'general-chatbots'}</td>
+              <td class="p-2.5 font-bold">${escapeHtml(row.name || 'Missing Name')}</td>
+              <td class="p-2.5 text-neutral-500">${escapeHtml(row.slug || 'Missing Slug')}</td>
+              <td class="p-2.5 truncate max-w-[150px]">${escapeHtml(row.websiteUrl || row.website_url || 'Bad URL')}</td>
+              <td class="p-2.5">${escapeHtml(row.category || 'general-chatbots')}</td>
               <td class="p-2.5">
                 <span class="${isValid ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold'}">
                   ${isValid ? 'Passed' : 'Rejected'}

@@ -105,6 +105,33 @@ const learningTracks = [
       </div>
     </section>
 
+    <!-- SIDE-BY-SIDE CREATOR INTELLIGENCE COMPARATOR (PRD SEC 20 & 46) -->
+    <section class="card-aurora p-6 sm:p-8 space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+        <div>
+          <span class="text-[10px] font-mono font-bold uppercase text-blue-600">Creator Intelligence • PRD Sec 20</span>
+          <h2 class="text-xl font-black text-slate-900 tracking-tight">Side-by-Side Channel Comparator</h2>
+          <p class="text-xs text-slate-500">Compare any two verified AI educators across audience scale, focus category, region, and teaching depth.</p>
+        </div>
+        <span class="text-[10px] font-mono text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg">Metrics labeled as public estimates</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        <select id="compareCreatorA" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-bold text-slate-800 cursor-pointer">
+          {CREATORS_DATA.map((c, idx) => (
+            <option value={c.slug} selected={idx === 0}>{c.name} ({c.subscribers} • {c.category})</option>
+          ))}
+        </select>
+        <select id="compareCreatorB" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-bold text-slate-800 cursor-pointer">
+          {CREATORS_DATA.map((c, idx) => (
+            <option value={c.slug} selected={idx === 1}>{c.name} ({c.subscribers} • {c.category})</option>
+          ))}
+        </select>
+      </div>
+
+      <div id="creatorCompareMatrix" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs"></div>
+    </section>
+
     <!-- Multi-Facet Search & Filter Toolbar -->
     <section class="card-aurora p-5 space-y-4" id="creatorsCatalog">
       <!-- Top Row: Search Input + Select Dropdowns -->
@@ -510,6 +537,42 @@ const learningTracks = [
       currentPage = 1;
       applyFilters();
     });
+
+    // Side-by-Side Creator Comparator Logic (PRD Sec 20)
+    const creatorA = document.getElementById('compareCreatorA') as HTMLSelectElement | null;
+    const creatorB = document.getElementById('compareCreatorB') as HTMLSelectElement | null;
+    const compareMatrix = document.getElementById('creatorCompareMatrix');
+
+    function renderCreatorComparison() {
+      if (!creatorA || !creatorB || !compareMatrix) return;
+      const slugs = [creatorA.value, creatorB.value];
+      compareMatrix.innerHTML = slugs
+        .map((sl) => {
+          const card = Array.from(cards).find((c) => c.querySelector(`a[href="/creators/${sl}"]`));
+          const name = card?.getAttribute('data-name') || sl;
+          const cat = card?.getAttribute('data-category') || 'AI Education';
+          const region = card?.getAttribute('data-country') || 'Global';
+          const lang = card?.getAttribute('data-lang') || 'English';
+          const tier = card?.getAttribute('data-tier') || '100K+';
+          return `
+            <div class="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between">
+                <a href="/creators/${encodeURIComponent(sl)}" class="text-sm font-black text-slate-900 hover:text-blue-600 capitalize">${name.replace(/</g, '&lt;')}</a>
+                <span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-mono text-[10px] font-bold">${tier.replace(/</g, '&lt;')}</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-[11px] font-mono">
+                <div><span class="text-slate-400 block">Category</span><strong class="text-slate-800">${cat.replace(/</g, '&lt;')}</strong></div>
+                <div><span class="text-slate-400 block">Region</span><strong class="text-slate-800">${region.replace(/</g, '&lt;')}</strong></div>
+                <div><span class="text-slate-400 block">Language</span><strong class="text-slate-800">${lang.replace(/</g, '&lt;')}</strong></div>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+    }
+    creatorA?.addEventListener('change', renderCreatorComparison);
+    creatorB?.addEventListener('change', renderCreatorComparison);
+    renderCreatorComparison();
 
     // Initial Hydration
     applyFilters();

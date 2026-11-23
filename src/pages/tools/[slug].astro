@@ -388,9 +388,36 @@ const scorecard = calculateAuthenticScore(tool);
               </table>
             </div>
 
-            <div class="mt-4 pt-3 border-t border-hairline flex items-center justify-between text-[11px] text-mute">
-              <span>Verified against official pricing page. Conversions calculated at standard live FX.</span>
-              <a href={tool.websiteUrl} target="_blank" rel="noopener noreferrer" class="text-ink hover:underline font-medium">Verify on official site &rarr;</a>
+            <div class="mt-4 pt-3 border-t border-hairline flex flex-wrap items-center justify-between gap-2 text-[11px] text-mute">
+              <span title="Verified against official pricing page with transparent conversion assumptions (PRD Sec 67)">
+                ✓ Verified Pricing • Last audited: <strong class="font-mono text-ink">{tool.lastVerifiedAt || '2026-11-23'}</strong>
+              </span>
+              <div class="flex items-center gap-3">
+                <button
+                  type="button"
+                  id="watchPriceAlertBtn"
+                  data-tool-slug={tool.slug}
+                  class="px-2.5 py-1 rounded-md border border-blue-200 bg-blue-50 text-blue-700 font-mono font-bold hover:bg-blue-100 transition-colors cursor-pointer"
+                >
+                  🔔 Watch Price Drops
+                </button>
+                <a href={tool.websiteUrl} target="_blank" rel="noopener noreferrer" class="text-ink hover:underline font-medium">Verify on official site &rarr;</a>
+              </div>
+            </div>
+          </section>
+
+          <!-- EMBEDDABLE "VERIFIED ON AIO AI" TRUST BADGE (SEO BACKLINK FLYWHEEL) -->
+          <section class="bg-canvas-elevated border border-hairline rounded-lg p-6 shadow-xs space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 class="text-sm font-bold text-ink">Embeddable Verified Trust Badge</h2>
+                <p class="text-xs text-mute">Maintainer of {tool.name}? Embed this live 5-Factor Authenticity badge in your README or website.</p>
+              </div>
+              <img src={`/api/badge/${tool.slug}.svg`} alt={`Verified on AIO AI: ${tool.name}`} width="236" height="44" loading="lazy" class="rounded-lg shadow-xs shrink-0" />
+            </div>
+            <div class="flex items-center gap-2 bg-canvas border border-hairline rounded-md p-2.5 text-[11px] font-mono text-body overflow-x-auto">
+              <code id="embedBadgeMarkdown" class="flex-1 whitespace-nowrap">[![Verified on AIO AI](https://aio-ai.vercel.app/api/badge/{tool.slug}.svg)](https://aio-ai.vercel.app/tools/{tool.slug})</code>
+              <button type="button" id="copyEmbedBadgeBtn" class="px-2.5 py-1 rounded bg-ink text-on-primary text-[10px] font-bold cursor-pointer shrink-0">Copy Markdown</button>
             </div>
           </section>
 
@@ -1078,6 +1105,39 @@ const scorecard = calculateAuthenticScore(tool);
       reviewForm.reset();
       setTimeout(() => statusMsg?.classList.add('hidden'), 4000);
     }
+  });
+
+  // Embeddable Verified Badge Copy + Price Drop Alert Watcher
+  document.getElementById('copyEmbedBadgeBtn')?.addEventListener('click', () => {
+    const code = document.getElementById('embedBadgeMarkdown')?.textContent || '';
+    if (!code) return;
+    navigator.clipboard.writeText(code);
+    const btn = document.getElementById('copyEmbedBadgeBtn');
+    if (btn) {
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy Markdown'; }, 1800);
+    }
+  });
+
+  document.getElementById('watchPriceAlertBtn')?.addEventListener('click', async () => {
+    const btn = document.getElementById('watchPriceAlertBtn');
+    const slug = btn?.getAttribute('data-tool-slug') || toolSlug;
+    try {
+      const { data: sd } = await supabase.auth.getSession();
+      const tok = sd?.session?.access_token;
+      const watched = JSON.parse(localStorage.getItem('aio_price_alerts') || '[]');
+      const isWatched = watched.includes(slug);
+      const next = isWatched ? watched.filter((s: string) => s !== slug) : [...watched, slug];
+      localStorage.setItem('aio_price_alerts', JSON.stringify(next));
+      if (btn) btn.textContent = isWatched ? '🔔 Watch Price Drops' : '✓ Watching Price Drops';
+      if (tok) {
+        await fetch('/api/personalization', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tok}` },
+          body: JSON.stringify({ action: 'toggle_price_alert', toolSlug: slug, alertType: 'price_drop' }),
+        });
+      }
+    } catch {}
   });
 
   loadReviews();

@@ -19,6 +19,8 @@ import { NEWS_STORIES } from '../src/data/newsData';
 import { COMMUNITY_POSTS, COMMUNITY_LEADERBOARD } from '../src/data/communityData';
 import { calculateAuthenticScore } from '../src/services/dataService';
 import { validateContentSafety } from '../src/utils/moderationFilter';
+import { escapeHtml, safeExternalUrl } from '../src/utils/security';
+import { runFinderEngine } from '../src/lib/server/finderEngine';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -434,6 +436,131 @@ const analyticsContent = fs.readFileSync(path.resolve('src/pages/analytics.astro
 assert(
   analyticsContent.includes('updateCategoryCurrency') && analyticsContent.includes('toolsAreaPath'),
   'analytics.astro binds interactive controls to dynamic SVG curve recomputation and currency updates'
+);
+
+// ----------------------------------------------------------------------------
+// SUITE 9: Global Scale Security, Hybrid SSR APIs, Finder v2, Utilities & CI
+// ----------------------------------------------------------------------------
+console.log('\n[Suite 9: Global Security Hardening, Hybrid SSR APIs & PRD Full Parity]');
+
+// 1. Runtime XSS & URL Protocol Sanitizer
+assert(
+  escapeHtml('<script>alert("xss")</script>') === '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;',
+  'escapeHtml() neutralizes HTML & script injection payloads'
+);
+assert(
+  safeExternalUrl('javascript:alert(1)') === '#' &&
+  safeExternalUrl('data:text/html,hi') === '#' &&
+  safeExternalUrl('https://github.com/ollama/ollama') === 'https://github.com/ollama/ollama',
+  'safeExternalUrl() blocks javascript:/data: URIs while preserving valid HTTPS URLs'
+);
+
+// 2. Zero Client-Side Secret Exposure (PUBLIC_GITHUB_TOKEN / PUBLIC_YOUTUBE_API_KEY)
+const ghServiceSrc = fs.readFileSync(path.resolve('src/services/githubLiveService.ts'), 'utf8');
+const ytServiceSrc = fs.readFileSync(path.resolve('src/services/youtubeLiveService.ts'), 'utf8');
+assert(
+  !ghServiceSrc.includes('PUBLIC_GITHUB_TOKEN') && !ytServiceSrc.includes('PUBLIC_YOUTUBE_API_KEY'),
+  'Zero PUBLIC_GITHUB_TOKEN or PUBLIC_YOUTUBE_API_KEY exposed in client-bundled services'
+);
+
+// 3. Zero Static Hardcoded Personal Email in UI Templates
+assert(
+  !headerContent.includes('harshilpival@gmail.com') &&
+  !dashboardContent.includes('harshilpival@gmail.com') &&
+  !profileContent.includes('harshilpival@gmail.com'),
+  'Static HTML templates contain zero hardcoded personal email PII'
+);
+
+// 4. Hardened RLS Migration 0004 (Fixes UUID-vs-int & drops %admin% wildcard)
+const rls0004Path = path.resolve('drizzle/0004_harden_rls_and_prd_tables.sql');
+assert(fs.existsSync(rls0004Path), '0004_harden_rls_and_prd_tables.sql migration exists');
+const rls0004 = fs.readFileSync(rls0004Path, 'utf8');
+assert(
+  rls0004.includes('current_app_user_id()') &&
+  rls0004.includes('is_app_admin()') &&
+  rls0004.includes('DROP POLICY IF EXISTS "admin_read_reports"') &&
+  rls0004.includes('DROP POLICY IF EXISTS "delete_bookmarks"'),
+  '0004 migration fixes UUID-vs-int ownership helpers and drops vulnerable permissive RLS policies'
+);
+
+// 5. Security Headers (CSP + HSTS) & Vercel Cron
+const vercelCfg = fs.readFileSync(path.resolve('vercel.json'), 'utf8');
+assert(
+  vercelCfg.includes('Content-Security-Policy') &&
+  vercelCfg.includes('Strict-Transport-Security') &&
+  vercelCfg.includes('/api/cron/sync'),
+  'vercel.json enforces CSP, HSTS, and scheduled /api/cron/sync freshness job'
+);
+
+// 6. Hybrid SSR Adapter & Complete Server API Surface
+const astroCfg = fs.readFileSync(path.resolve('astro.config.mjs'), 'utf8');
+assert(astroCfg.includes('@astrojs/vercel'), 'astro.config.mjs enables Vercel Hybrid SSR adapter');
+
+const serverApiEndpoints = [
+  'src/pages/api/finder.ts',
+  'src/pages/api/catalog/tools.ts',
+  'src/pages/api/github/trending.ts',
+  'src/pages/api/youtube/stats.ts',
+  'src/pages/api/community/posts.ts',
+  'src/pages/api/personalization.ts',
+  'src/pages/api/newsletter/subscribe.ts',
+  'src/pages/api/billing/checkout.ts',
+  'src/pages/api/billing/webhook.ts',
+  'src/pages/api/workflows/[id]/export.ts',
+  'src/pages/api/badge/[slug].svg.ts',
+  'src/pages/api/mcp.ts',
+  'src/pages/api/cron/sync.ts',
+];
+for (const ep of serverApiEndpoints) {
+  assert(fs.existsSync(path.resolve(ep)), `Server API endpoint exists: ${ep}`);
+}
+
+// 7. Runtime Multi-Entity AI Finder Engine (PRD Sec 08)
+const finderIndiaResult = runFinderEngine({
+  query: 'Hindi regional voiceover and YouTube shorts automation on free tier',
+  persona: 'creator',
+  budget: 'free',
+  indiaFocus: true,
+});
+assert(
+  finderIndiaResult.matchedTools.length >= 4 &&
+  finderIndiaResult.matchedRepos.length >= 3 &&
+  finderIndiaResult.matchedCreators.length >= 2 &&
+  finderIndiaResult.whyRecommended.length >= 2 &&
+  finderIndiaResult.tiers.A.steps.length === 3,
+  'Multi-Entity AI Finder returns explainable cross-entity tools, repos, workflows, creators & 3 budget tiers'
+);
+
+// 8. 13 Full-Spectrum Utilities (9 Pro Dev + 4 Everyday Client-Side PRD Sec 24)
+assert(
+  utilitiesContent.includes('pdf-toolkit') &&
+  utilitiesContent.includes('image-optimizer') &&
+  utilitiesContent.includes('qr-studio') &&
+  utilitiesContent.includes('social-caption-studio'),
+  'Utilities Suite includes all 4 Everyday Private PRD tools (PDF, Image, QR, Social Captions)'
+);
+
+// 9. Creator Comparator, Personalization & Billing Checkout Wiring
+const creatorsIdxContent = fs.readFileSync(path.resolve('src/pages/creators/index.astro'), 'utf8');
+const pricingContent = fs.readFileSync(path.resolve('src/pages/pricing.astro'), 'utf8');
+const newsIdxContent = fs.readFileSync(path.resolve('src/pages/news/index.astro'), 'utf8');
+assert(
+  creatorsIdxContent.includes('compareCreatorA') && creatorsIdxContent.includes('creatorCompareMatrix'),
+  'creators/index.astro implements Side-by-Side Creator Intelligence Comparator (PRD Sec 20)'
+);
+assert(
+  pricingContent.includes('/api/billing/checkout') && dashboardContent.includes('/api/personalization'),
+  'pricing.astro wires live Razorpay/Stripe checkout & dashboard.astro wires My AI personalization'
+);
+assert(
+  newsIdxContent.includes('/api/newsletter/subscribe') && !newsIdxContent.includes('ISSUE #284'),
+  'news/index.astro uses dynamic edition stamps and wires Topic-Based Newsletter subscriptions'
+);
+
+// 10. Automated GitHub Actions CI/CD Pipeline
+assert(
+  fs.existsSync(path.resolve('.github/workflows/ci.yml')),
+  'GitHub Actions CI/CD pipeline (.github/workflows/ci.yml) exists'
 );
 
 // ----------------------------------------------------------------------------

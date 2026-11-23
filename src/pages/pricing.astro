@@ -557,8 +557,9 @@ const featureMatrix = [
       billingMonthlyBtn.className = 'billing-cycle-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-ink text-white transition-all cursor-pointer';
       billingAnnualBtn!.className = 'billing-cycle-btn px-4 py-1.5 rounded-xl text-xs font-medium text-mute hover:text-ink transition-all cursor-pointer flex items-center gap-1.5';
       updatePricingDisplay();
+    });
 
-    // Trial Modal Handling
+    // Live Billing Checkout & Trial Modal Handling (Razorpay INR + Stripe USD)
     const trialBackdrop = document.getElementById('trialModalBackdrop');
     const trialModal = document.getElementById('trialModal');
     const closeTrialModalBtn = document.getElementById('closeTrialModalBtn');
@@ -569,9 +570,16 @@ const featureMatrix = [
 
     let currentSelectedPlan = 'Builder Pro';
 
+    function mapPlanSlug(label: string): 'pro' | 'creator_pro' | 'business' {
+      const lower = label.toLowerCase();
+      if (lower.includes('creator')) return 'creator_pro';
+      if (lower.includes('team') || lower.includes('enterprise') || lower.includes('business')) return 'business';
+      return 'pro';
+    }
+
     function openModal(plan: string, perks: string) {
       currentSelectedPlan = plan;
-      if (modalPlanTitle) modalPlanTitle.textContent = `${plan} Trial`;
+      if (modalPlanTitle) modalPlanTitle.textContent = `${plan} Checkout (${isUSD ? 'USD / Stripe' : 'INR / Razorpay'})`;
       if (modalPlanPerks) modalPlanPerks.textContent = perks;
 
       if (trialBackdrop && trialModal) {
@@ -605,22 +613,42 @@ const featureMatrix = [
     cancelTrialBtn?.addEventListener('click', closeModal);
     trialBackdrop?.addEventListener('click', closeModal);
 
-    confirmTrialBtn?.addEventListener('click', () => {
+    confirmTrialBtn?.addEventListener('click', async () => {
+      if (confirmTrialBtn) confirmTrialBtn.textContent = 'Connecting Payment Gateway...';
       try {
-        localStorage.setItem('aio_user_plan', currentSelectedPlan.toLowerCase());
-        localStorage.setItem('aio_plan_trial_start', String(Date.now()));
-      } catch(e) {}
+        const { supabase } = await import('../lib/supabase');
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData?.session?.access_token;
 
-      if (confirmTrialBtn) {
-        confirmTrialBtn.textContent = 'Trial Activated!';
+        const res = await fetch('/api/billing/checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            plan: mapPlanSlug(currentSelectedPlan),
+            billingCycle: isAnnual ? 'annual' : 'monthly',
+            currency: isUSD ? 'USD' : 'INR',
+          }),
+        });
+
+        const payload = await res.json();
+        if (res.status === 401) {
+          window.location.href = '/login?redirect=/pricing';
+          return;
+        }
+        if (payload.checkoutUrl) {
+          window.location.href = payload.checkoutUrl;
+          return;
+        }
+        if (confirmTrialBtn) confirmTrialBtn.textContent = 'Checkout Ready';
+        alert(payload.message || `Checkout prepared for ${currentSelectedPlan} (${isUSD ? 'USD' : 'INR'}).`);
+        closeModal();
+      } catch (err) {
+        if (confirmTrialBtn) confirmTrialBtn.textContent = 'Activate Plan';
+        alert('Unable to reach checkout server right now. Please sign in and retry.');
       }
-
-      setTimeout(() => {
-        alert(`🎉 7-Day Free Trial activated for ${currentSelectedPlan}! Welcome to Pro sandbox mode.`);
-        window.location.href = '/dashboard';
-      }, 400);
-    });
-
     });
 
     billingAnnualBtn?.addEventListener('click', () => {

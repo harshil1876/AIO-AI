@@ -72,10 +72,9 @@ function getGitHubHeaders(): Record<string, string> {
   const headers: Record<string, string> = {
     'Accept': 'application/vnd.github.v3+json'
   };
-  const token = (typeof import.meta !== 'undefined' && import.meta.env?.PUBLIC_GITHUB_TOKEN) || 
-                (typeof process !== 'undefined' ? process.env?.PUBLIC_GITHUB_TOKEN : undefined);
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+  // Strictly server-only token; NEVER read public client tokens in browser bundles (PRD Sec 35)
+  if (typeof window === 'undefined' && typeof process !== 'undefined' && process.env?.GITHUB_TOKEN) {
+    headers['Authorization'] = `Bearer ${process.env.GITHUB_TOKEN}`;
   }
   return headers;
 }
@@ -460,6 +459,25 @@ export async function fetchLiveGitHubTrendingRepos(
         };
       }
     } catch(e) {}
+  }
+
+  // On the browser, prefer our server-side /api/github/trending proxy (uses private GITHUB_TOKEN)
+  if (typeof window !== 'undefined') {
+    try {
+      const proxyRes = await fetch(
+        `/api/github/trending?range=${encodeURIComponent(dateRange)}&language=${encodeURIComponent(language)}`
+      );
+      if (proxyRes.ok) {
+        const proxyData = await proxyRes.json();
+        if (proxyData && Array.isArray(proxyData.items) && proxyData.items.length > 0) {
+          try {
+            localStorage.setItem(cacheKey, JSON.stringify(proxyData.items));
+            localStorage.setItem(timeKey, String(Date.now()));
+          } catch {}
+          return proxyData;
+        }
+      }
+    } catch {}
   }
 
   // Calculate cutoff ISO date

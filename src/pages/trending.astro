@@ -266,6 +266,7 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
     fetchLiveGitHubTrendingDevelopers, 
     fetchLiveRepoStats 
   } from '../services/githubLiveService';
+  import { escapeHtml, safeExternalUrl } from '../utils/security';
 
   document.addEventListener('DOMContentLoaded', () => {
     const tabRepos = document.getElementById('tabRepos');
@@ -338,12 +339,23 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
 
         // Render dynamically if live items returned
         if (res.items && res.items.length > 0 && reposSection) {
-          reposSection.innerHTML = res.items.map((repo, idx) => `
+          reposSection.innerHTML = res.items.map((repo, idx) => {
+            const safeUrl = safeExternalUrl(repo.url);
+            const repoPayload = escapeHtml(JSON.stringify({
+              name: repo.name,
+              repo: repo.fullName,
+              stars: repo.formattedStars,
+              url: safeUrl,
+              description: repo.description,
+              hardwareSpecs: { minVramGb: 8, recommendedGpu: 'RTX 3060+ / Apple M-series' },
+              quickstartCommands: { cli: `git clone ${safeUrl}`, docker: `docker run -d ${repo.name}:latest` }
+            }));
+            return `
             <article 
               class="trending-card card-aurora p-5 sm:p-6 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
-              data-owner="${repo.owner}"
-              data-repo="${repo.name}"
-              data-language="${repo.language.toLowerCase()}"
+              data-owner="${escapeHtml(repo.owner)}"
+              data-repo="${escapeHtml(repo.name)}"
+              data-language="${escapeHtml(repo.language.toLowerCase())}"
             >
               <div class="flex items-start gap-4 min-w-0">
                 <span class="w-8 h-8 rounded-xl bg-slate-100 text-slate-900 font-mono font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 border border-slate-200">
@@ -352,33 +364,33 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
                 <div class="space-y-1.5 min-w-0">
                   <div class="flex flex-wrap items-center gap-2">
                     <h2 class="text-base font-black text-slate-900 hover:text-blue-600 transition-colors">
-                      <a href="${repo.url}" target="_blank" rel="noopener noreferrer">${repo.name}</a>
+                      <a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(repo.name)}</a>
                     </h2>
-                    <span class="text-xs font-mono text-slate-400 font-medium">${repo.fullName}</span>
+                    <span class="text-xs font-mono text-slate-400 font-medium">${escapeHtml(repo.fullName)}</span>
                     <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
                       ${repo.isLiveApi ? 'GitHub Live' : 'Verified Hub'}
                     </span>
                   </div>
 
                   <p class="text-xs text-slate-600 line-clamp-2 max-w-3xl leading-relaxed">
-                    ${repo.description}
+                    ${escapeHtml(repo.description)}
                   </p>
 
                   <div class="flex flex-wrap items-center gap-4 text-xs font-mono text-slate-500 pt-1">
                     <div class="flex items-center gap-1.5 font-bold text-slate-800">
                       <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
-                      <span>${repo.language}</span>
+                      <span>${escapeHtml(repo.language)}</span>
                     </div>
                     <div class="flex items-center gap-1">
                       <span>★</span>
-                      <span>${repo.formattedStars}</span>
+                      <span>${escapeHtml(repo.formattedStars)}</span>
                     </div>
                     <div class="flex items-center gap-1">
                       <span>⑂</span>
-                      <span>${repo.formattedForks} forks</span>
+                      <span>${escapeHtml(repo.formattedForks)} forks</span>
                     </div>
                     <div class="text-slate-400">
-                      Pushed ${repo.updatedAt}
+                      Pushed ${escapeHtml(repo.updatedAt)}
                     </div>
                   </div>
                 </div>
@@ -388,7 +400,7 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
                 <div class="text-right">
                   <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono text-xs font-bold">
                     <span>🔥</span>
-                    <span>${repo.velocityStars}</span>
+                    <span>${escapeHtml(repo.velocityStars)}</span>
                   </div>
                   <div class="text-[10px] text-slate-400 font-mono mt-0.5">${currentRange === 'daily' ? 'past 24h' : currentRange === 'monthly' ? 'this month' : 'this week'}</div>
                 </div>
@@ -397,12 +409,12 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
                   <button 
                     type="button" 
                     class="quickstart-trigger-btn bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl shadow-xs transition-colors cursor-pointer"
-                    data-repo-json='${JSON.stringify({ name: repo.name, repo: repo.fullName, stars: repo.formattedStars, url: repo.url, description: repo.description, hardwareSpecs: { minVramGb: 8, recommendedGpu: "RTX 3060+ / Apple M-series" }, quickstartCommands: { cli: `git clone ${repo.url}`, docker: `docker run -d ${repo.name}:latest` } })}'
+                    data-repo-json="${repoPayload}"
                   >
                     Quickstart ⚡
                   </button>
                   <a 
-                    href="${repo.url}" 
+                    href="${escapeHtml(safeUrl)}" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl shadow-xs transition-colors inline-flex items-center gap-1"
@@ -413,7 +425,7 @@ const languages = ['All Languages', 'Python', 'TypeScript', 'Rust', 'C++', 'Jupy
                 </div>
               </div>
             </article>
-          `).join('');
+          `; }).join('');
         }
       } catch(err) {
         console.error('Failed refreshing live trending telemetry:', err);

@@ -68,6 +68,34 @@ export function getStaticPaths() {
       category: 'Agent Systems',
       tagline: 'Generate production-grade SKILL.md definitions with YAML frontmatter and execution conditions.',
       icon: '🤖'
+    },
+    {
+      slug: 'pdf-toolkit',
+      name: 'Private PDF Merge, Split & Image-to-PDF Studio',
+      category: 'Everyday Productivity',
+      tagline: 'Merge multiple PDFs, extract specific page ranges, or convert PNG/JPG images into a clean PDF — 100% offline in your browser.',
+      icon: '📄'
+    },
+    {
+      slug: 'image-optimizer',
+      name: 'Image Resizer, Compressor & WebP Converter',
+      category: 'Creator & Everyday',
+      tagline: 'Resize, compress, and convert images to WebP, JPEG, or PNG with live before/after byte savings — zero server uploads.',
+      icon: '🖼️'
+    },
+    {
+      slug: 'qr-studio',
+      name: 'High-Resolution QR Code Studio (SVG & PNG)',
+      category: 'Everyday Productivity',
+      tagline: 'Generate crisp vector SVG and high-DPI PNG QR codes for URLs, Wi-Fi, UPI payments, or tool share links.',
+      icon: '📱'
+    },
+    {
+      slug: 'social-caption-studio',
+      name: 'YouTube Title, Description & Social Caption Studio',
+      category: 'Creator Growth',
+      tagline: 'Generate CTR-optimized YouTube titles, chapter descriptions, LinkedIn hooks, and X/Instagram threads with real-time platform limits.',
+      icon: '✍️'
     }
   ];
 
@@ -96,7 +124,7 @@ const { util, allUtilities } = Astro.props;
         <span class="text-slate-800 font-bold">{util.name}</span>
       </div>
       <a href="/utilities" class="text-blue-600 hover:underline font-bold">
-        &larr; All 9 Utilities
+        &larr; All 13 Utilities
       </a>
     </div>
 
@@ -832,9 +860,169 @@ Please let me know if you want me to generate the SQL migration script.`}</texta
         </section>
       )}
 
+      <!-- 10. PRIVATE PDF TOOLKIT (PRD SEC 24 — 100% IN-BROWSER PDF-LIB) -->
+      {util.slug === 'pdf-toolkit' && (
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div class="lg:col-span-6 card-aurora p-6 sm:p-8 space-y-5">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h2 class="text-base font-black text-slate-900">1. Merge Multiple PDFs</h2>
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">Zero Uploads</span>
+            </div>
+            <input type="file" id="pdfMergeInput" accept="application/pdf" multiple class="w-full text-xs bg-white border border-slate-200 rounded-xl p-3 cursor-pointer" />
+            <div id="pdfMergeList" class="text-xs font-mono text-slate-500">Select 2 or more PDF files to combine into a single document.</div>
+            <button type="button" id="pdfMergeBtn" class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold cursor-pointer">
+              Merge &amp; Download Combined PDF
+            </button>
+          </div>
+
+          <div class="lg:col-span-6 card-aurora p-6 sm:p-8 space-y-5">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h2 class="text-base font-black text-slate-900">2. Image-to-PDF &amp; Page Splitter</h2>
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">Client-Side pdf-lib</span>
+            </div>
+            <div class="space-y-2 text-xs">
+              <label class="block font-mono uppercase font-bold text-slate-600">Convert PNG / JPG Images to PDF:</label>
+              <input type="file" id="imgToPdfInput" accept="image/png,image/jpeg" multiple class="w-full bg-white border border-slate-200 rounded-xl p-2.5 cursor-pointer" />
+              <button type="button" id="imgToPdfBtn" class="w-full py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold cursor-pointer">
+                Convert Selected Images &rarr; PDF
+              </button>
+            </div>
+            <div class="pt-4 border-t border-slate-200 space-y-2 text-xs">
+              <label class="block font-mono uppercase font-bold text-slate-600">Extract Page Range from PDF (e.g., 1-3):</label>
+              <div class="grid grid-cols-3 gap-2">
+                <input type="file" id="pdfSplitInput" accept="application/pdf" class="col-span-2 bg-white border border-slate-200 rounded-xl p-2 cursor-pointer" />
+                <input type="text" id="pdfSplitRange" value="1-2" placeholder="1-3" class="bg-white border border-slate-200 rounded-xl px-3 font-mono font-bold outline-none" />
+              </div>
+              <button type="button" id="pdfSplitBtn" class="w-full py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold cursor-pointer">
+                Extract Pages &amp; Download PDF
+              </button>
+              <div id="pdfStatusMsg" class="text-[11px] font-mono text-slate-500"></div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <!-- 11. IMAGE RESIZER & COMPRESSOR (PRD SEC 24 — CANVAS) -->
+      {util.slug === 'image-optimizer' && (
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div class="lg:col-span-5 card-aurora p-6 sm:p-8 space-y-4 text-xs">
+            <h2 class="text-base font-black text-slate-900">Resize, Compress &amp; Convert</h2>
+            <input type="file" id="imgOptFile" accept="image/*" class="w-full bg-white border border-slate-200 rounded-xl p-3 cursor-pointer" />
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Max Width (px):</label>
+                <input type="number" id="imgOptWidth" value="1280" min="64" max="4096" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-mono font-bold" />
+              </div>
+              <div>
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Output Format:</label>
+                <select id="imgOptFormat" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-bold cursor-pointer">
+                  <option value="image/webp">WebP (Smallest)</option>
+                  <option value="image/jpeg">JPEG</option>
+                  <option value="image/png">PNG (Lossless)</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between font-mono font-bold mb-1">
+                <span class="text-slate-600">Quality:</span>
+                <span id="imgOptQualityVal" class="text-blue-600">82%</span>
+              </div>
+              <input type="range" id="imgOptQuality" min="20" max="100" value="82" class="w-full cursor-pointer" />
+            </div>
+            <button type="button" id="imgOptRunBtn" class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold cursor-pointer">
+              Optimize &amp; Preview Image
+            </button>
+            <a id="imgOptDownloadLink" download="optimized-aio.webp" class="hidden w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-center">
+              Download Optimized File
+            </a>
+          </div>
+
+          <div class="lg:col-span-7 card-aurora p-6 sm:p-8 space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 text-xs font-mono">
+              <span class="font-bold text-slate-700">Live Compression Telemetry</span>
+              <span id="imgOptStats" class="text-emerald-700 font-bold">Upload any image to inspect byte savings</span>
+            </div>
+            <div class="min-h-64 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center p-4 overflow-hidden">
+              <img id="imgOptPreview" alt="Optimized preview" class="hidden max-h-80 rounded-xl shadow-md" />
+              <span id="imgOptPlaceholder" class="text-xs font-mono text-slate-400">Preview canvas ready (100% browser memory)</span>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <!-- 12. QR CODE STUDIO (PRD SEC 24 — QRCODE LIBRARY) -->
+      {util.slug === 'qr-studio' && (
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div class="lg:col-span-6 card-aurora p-6 sm:p-8 space-y-4 text-xs">
+            <h2 class="text-base font-black text-slate-900">QR Payload &amp; Styling</h2>
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">URL, Text, or UPI Payment String:</label>
+              <textarea id="qrInputText" rows="3" class="w-full bg-white border border-slate-200 rounded-xl p-3 font-mono outline-none">https://aio-ai.vercel.app</textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Foreground Color:</label>
+                <input type="color" id="qrFgColor" value="#09090B" class="w-full h-10 rounded-xl border border-slate-200 cursor-pointer" />
+              </div>
+              <div>
+                <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Background Color:</label>
+                <input type="color" id="qrBgColor" value="#FFFFFF" class="w-full h-10 rounded-xl border border-slate-200 cursor-pointer" />
+              </div>
+            </div>
+            <div class="flex gap-2 pt-2">
+              <button type="button" id="qrDownloadPngBtn" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold cursor-pointer">
+                Download PNG
+              </button>
+              <button type="button" id="qrDownloadSvgBtn" class="flex-1 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold cursor-pointer">
+                Download SVG
+              </button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-6 card-aurora p-6 sm:p-8 flex flex-col items-center justify-center space-y-4">
+            <span class="text-xs font-mono font-bold uppercase text-slate-500">Live Scannable QR Preview</span>
+            <canvas id="qrCanvas" class="rounded-2xl border border-slate-200 shadow-sm bg-white p-3"></canvas>
+          </div>
+        </section>
+      )}
+
+      <!-- 13. SOCIAL CAPTION & YOUTUBE METADATA STUDIO (PRD SEC 24) -->
+      {util.slug === 'social-caption-studio' && (
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div class="lg:col-span-5 card-aurora p-6 sm:p-8 space-y-4 text-xs">
+            <h2 class="text-base font-black text-slate-900">Creator Copy &amp; Multi-Platform Formatter</h2>
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Topic / Launch Announcement:</label>
+              <input type="text" id="scsTopic" value="Comparing DeepSeek-R1 vs Claude Sonnet for local coding agents" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-bold outline-none" />
+            </div>
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Key Takeaway / Proof Point:</label>
+              <textarea id="scsTakeaway" rows="3" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 outline-none">68% lower token spend with zero privacy compromise on a 16GB laptop.</textarea>
+            </div>
+            <div>
+              <label class="block font-mono uppercase font-bold text-slate-600 mb-1">Target Platform:</label>
+              <select id="scsPlatform" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-bold cursor-pointer">
+                <option value="youtube">YouTube Title + SEO Description + Chapters</option>
+                <option value="x">X / Twitter Thread (280-char split)</option>
+                <option value="linkedin">LinkedIn Thought-Leadership Post</option>
+                <option value="instagram">Instagram / Shorts Reel Caption</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 card-aurora p-6 sm:p-8 space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 text-xs font-mono">
+              <span id="scsCharLimit" class="font-bold text-emerald-700">Within platform limit</span>
+              <button type="button" id="scsCopyBtn" class="text-blue-600 font-bold hover:underline cursor-pointer">Copy Copy Deck</button>
+            </div>
+            <pre id="scsOutput" class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs h-80 overflow-y-auto whitespace-pre-wrap leading-relaxed select-all"></pre>
+          </div>
+        </section>
+      )}
+
     </div>
 
-    <!-- Bottom Carousel of the other 8 utilities -->
+    <!-- Bottom Carousel of the other utilities -->
     <section class="card-aurora p-6 sm:p-8 space-y-4">
       <h2 class="text-base font-black text-slate-900">Explore Other Dedicated Utilities</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1485,5 +1673,220 @@ Please let me know if you want me to generate the SQL migration script.`}</texta
     });
     updateRsgStudio();
 
+  });
+</script>
+
+<script>
+  import { PDFDocument } from 'pdf-lib';
+  import QRCode from 'qrcode';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const pdfStatus = document.getElementById('pdfStatusMsg');
+    const pdfMergeInput = document.getElementById('pdfMergeInput') as HTMLInputElement | null;
+    const pdfMergeList = document.getElementById('pdfMergeList');
+    pdfMergeInput?.addEventListener('change', () => {
+      const files = Array.from(pdfMergeInput.files || []);
+      if (pdfMergeList) {
+        pdfMergeList.textContent = files.length
+          ? `${files.length} file(s) ready: ${files.map((f) => f.name).join(', ')}`
+          : 'Select 2 or more PDF files to combine.';
+      }
+    });
+
+    function triggerDownload(bytes: Uint8Array, filename: string, mime = 'application/pdf') {
+      const blob = new Blob([bytes as unknown as BlobPart], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    document.getElementById('pdfMergeBtn')?.addEventListener('click', async () => {
+      const files = Array.from(pdfMergeInput?.files || []);
+      if (files.length < 2) {
+        if (pdfStatus) pdfStatus.textContent = 'Please select at least 2 PDF files to merge.';
+        return;
+      }
+      try {
+        const merged = await PDFDocument.create();
+        for (const f of files) {
+          const doc = await PDFDocument.load(await f.arrayBuffer());
+          const pages = await merged.copyPages(doc, doc.getPageIndices());
+          pages.forEach((p) => merged.addPage(p));
+        }
+        const out = await merged.save();
+        triggerDownload(out, 'aio-merged.pdf');
+        if (pdfStatus) pdfStatus.textContent = `✓ Merged ${files.length} PDFs (${(out.byteLength / 1024).toFixed(1)} KB) locally.`;
+      } catch (err: any) {
+        if (pdfStatus) pdfStatus.textContent = `Merge failed: ${err?.message || 'Ensure PDFs are unencrypted.'}`;
+      }
+    });
+
+    document.getElementById('imgToPdfBtn')?.addEventListener('click', async () => {
+      const input = document.getElementById('imgToPdfInput') as HTMLInputElement | null;
+      const files = Array.from(input?.files || []);
+      if (!files.length) {
+        if (pdfStatus) pdfStatus.textContent = 'Please select one or more PNG/JPG images.';
+        return;
+      }
+      try {
+        const pdf = await PDFDocument.create();
+        for (const f of files) {
+          const buf = await f.arrayBuffer();
+          const img = f.type.includes('png') ? await pdf.embedPng(buf) : await pdf.embedJpg(buf);
+          const page = pdf.addPage([img.width, img.height]);
+          page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
+        }
+        const out = await pdf.save();
+        triggerDownload(out, 'aio-images.pdf');
+        if (pdfStatus) pdfStatus.textContent = `✓ Converted ${files.length} image(s) into a PDF locally.`;
+      } catch (err: any) {
+        if (pdfStatus) pdfStatus.textContent = `Conversion error: ${err?.message || 'Unsupported image format.'}`;
+      }
+    });
+
+    document.getElementById('pdfSplitBtn')?.addEventListener('click', async () => {
+      const input = document.getElementById('pdfSplitInput') as HTMLInputElement | null;
+      const rangeInput = document.getElementById('pdfSplitRange') as HTMLInputElement | null;
+      const file = input?.files?.[0];
+      if (!file) {
+        if (pdfStatus) pdfStatus.textContent = 'Please select a PDF file to extract pages from.';
+        return;
+      }
+      try {
+        const src = await PDFDocument.load(await file.arrayBuffer());
+        const total = src.getPageCount();
+        const parts = (rangeInput?.value || '1-1').split('-').map((n) => parseInt(n.trim(), 10));
+        const start = Math.max(1, Math.min(total, parts[0] || 1));
+        const end = Math.max(start, Math.min(total, parts[1] || start));
+        const indices: number[] = [];
+        for (let i = start - 1; i < end; i++) indices.push(i);
+        const dest = await PDFDocument.create();
+        const copied = await dest.copyPages(src, indices);
+        copied.forEach((p) => dest.addPage(p));
+        const out = await dest.save();
+        triggerDownload(out, `aio-pages-${start}-${end}.pdf`);
+        if (pdfStatus) pdfStatus.textContent = `✓ Extracted pages ${start}-${end} of ${total} locally.`;
+      } catch (err: any) {
+        if (pdfStatus) pdfStatus.textContent = `Split error: ${err?.message || 'Invalid PDF'}`;
+      }
+    });
+
+    const imgFile = document.getElementById('imgOptFile') as HTMLInputElement | null;
+    const imgQuality = document.getElementById('imgOptQuality') as HTMLInputElement | null;
+    const imgQualityVal = document.getElementById('imgOptQualityVal');
+    imgQuality?.addEventListener('input', () => {
+      if (imgQualityVal) imgQualityVal.textContent = `${imgQuality.value}%`;
+    });
+
+    document.getElementById('imgOptRunBtn')?.addEventListener('click', () => {
+      const file = imgFile?.files?.[0];
+      if (!file) return;
+      const maxW = parseInt((document.getElementById('imgOptWidth') as HTMLInputElement)?.value || '1280', 10) || 1280;
+      const format = (document.getElementById('imgOptFormat') as HTMLSelectElement)?.value || 'image/webp';
+      const quality = (parseInt(imgQuality?.value || '82', 10) || 82) / 100;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const scale = img.width > maxW ? maxW / img.width : 1;
+          const w = Math.round(img.width * scale);
+          const h = Math.round(img.height * scale);
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d')?.drawImage(img, 0, 0, w, h);
+          canvas.toBlob((blob) => {
+            if (!blob) return;
+            const outUrl = URL.createObjectURL(blob);
+            const preview = document.getElementById('imgOptPreview') as HTMLImageElement | null;
+            const placeholder = document.getElementById('imgOptPlaceholder');
+            const stats = document.getElementById('imgOptStats');
+            const dl = document.getElementById('imgOptDownloadLink') as HTMLAnchorElement | null;
+            if (preview) { preview.src = outUrl; preview.classList.remove('hidden'); }
+            placeholder?.classList.add('hidden');
+            const savedPct = Math.max(0, Math.round((1 - blob.size / file.size) * 100));
+            if (stats) stats.textContent = `${w}×${h}px • ${(file.size / 1024).toFixed(1)}KB → ${(blob.size / 1024).toFixed(1)}KB (${savedPct}% smaller)`;
+            if (dl) {
+              const ext = format.split('/')[1] || 'webp';
+              dl.href = outUrl;
+              dl.download = `aio-optimized.${ext}`;
+              dl.classList.remove('hidden');
+              dl.classList.add('block');
+            }
+          }, format, quality);
+        };
+        img.src = String(reader.result);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    const qrCanvas = document.getElementById('qrCanvas') as HTMLCanvasElement | null;
+    const qrInput = document.getElementById('qrInputText') as HTMLTextAreaElement | null;
+    const qrFg = document.getElementById('qrFgColor') as HTMLInputElement | null;
+    const qrBg = document.getElementById('qrBgColor') as HTMLInputElement | null;
+
+    async function renderQr() {
+      if (!qrCanvas || !qrInput) return;
+      const text = qrInput.value.trim() || 'https://aio-ai.vercel.app';
+      await QRCode.toCanvas(qrCanvas, text, {
+        width: 240,
+        margin: 2,
+        color: { dark: qrFg?.value || '#09090B', light: qrBg?.value || '#FFFFFF' },
+      });
+    }
+    [qrInput, qrFg, qrBg].forEach((el) => el?.addEventListener('input', renderQr));
+    renderQr();
+
+    document.getElementById('qrDownloadPngBtn')?.addEventListener('click', () => {
+      if (!qrCanvas) return;
+      const a = document.createElement('a');
+      a.href = qrCanvas.toDataURL('image/png');
+      a.download = 'aio-qr-code.png';
+      a.click();
+    });
+
+    document.getElementById('qrDownloadSvgBtn')?.addEventListener('click', async () => {
+      if (!qrInput) return;
+      const svg = await QRCode.toString(qrInput.value.trim() || 'https://aio-ai.vercel.app', {
+        type: 'svg',
+        color: { dark: qrFg?.value || '#09090B', light: qrBg?.value || '#FFFFFF' },
+      });
+      triggerDownload(new TextEncoder().encode(svg), 'aio-qr-code.svg', 'image/svg+xml');
+    });
+
+    const scsTopic = document.getElementById('scsTopic') as HTMLInputElement | null;
+    const scsTakeaway = document.getElementById('scsTakeaway') as HTMLTextAreaElement | null;
+    const scsPlatform = document.getElementById('scsPlatform') as HTMLSelectElement | null;
+    const scsOutput = document.getElementById('scsOutput');
+    const scsLimit = document.getElementById('scsCharLimit');
+
+    function updateSocialStudio() {
+      if (!scsOutput) return;
+      const topic = scsTopic?.value.trim() || 'AI Workflow Breakdown';
+      const proof = scsTakeaway?.value.trim() || 'Faster execution at zero cost.';
+      const plat = scsPlatform?.value || 'youtube';
+      let out = '';
+      if (plat === 'youtube') {
+        out = `=== 3 HIGH-CTR YOUTUBE TITLES ===\n1. ${topic} (Tested & Benchmarked)\n2. I Tested ${topic} — Here Is What Actually Works\n3. Stop Overpaying: ${topic} Step-by-Step\n\n=== SEO DESCRIPTION & CHAPTERS ===\n${proof}\n\n00:00 The Core Problem & Benchmark Setup\n01:20 Free Open-Source vs Paid Comparison\n04:10 Live Architecture & Token Cost Math\n07:30 Free Stack & Resources on AIO AI\n\n#AI #AIOAI #AITools #OpenSourceAI`;
+      } else if (plat === 'x') {
+        out = `1/ ${topic}\n\nResult: ${proof}\n\nHere is the 3-step breakdown 🧵👇\n\n2/ Most builders default to expensive SaaS seats before checking open-source alternatives and token economics.\n\n3/ Compare exact 5-factor scores, VRAM requirements & $0 swaps on AIO AI.`;
+      } else if (plat === 'linkedin') {
+        out = `${topic}\n\nMost teams burn budget on overlapping AI subscriptions.\n\nWhat changed when we benchmarked the stack:\n• ${proof}\n• Verified open-source fallbacks for privacy-sensitive workflows\n• Transparent USD/INR cost tracking per 1M tokens\n\nWhat is currently in your daily AI stack?`;
+      } else {
+        out = `${topic} ⚡\n\n${proof}\n\nSave this post for your next project and drop "STACK" in the comments for the full free breakdown.\n\n#AITools #AIWorkflows #Creators #Tech2026`;
+      }
+      scsOutput.textContent = out;
+      if (scsLimit) scsLimit.textContent = `${out.length} characters • Ready for ${plat.toUpperCase()}`;
+    }
+
+    [scsTopic, scsTakeaway, scsPlatform].forEach((el) => el?.addEventListener('input', updateSocialStudio));
+    document.getElementById('scsCopyBtn')?.addEventListener('click', () => {
+      if (scsOutput) navigator.clipboard.writeText(scsOutput.textContent || '');
+    });
+    updateSocialStudio();
   });
 </script>

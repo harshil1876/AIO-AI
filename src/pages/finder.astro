@@ -327,6 +327,44 @@ const TOP_25_TASKS = [
 
     </section>
 
+    <!-- LIVE EXPLAINABILITY & CROSS-ENTITY RECOMMENDATIONS (PRD SEC 08 & 28) -->
+    <section class="card-aurora p-6 sm:p-8 space-y-6" id="finderLiveGraphSection">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
+        <div>
+          <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-700">
+            Explainable Entity-Graph Intelligence • PRD Sec 08
+          </span>
+          <h2 class="text-xl font-black text-slate-900 tracking-tight mt-0.5">
+            Why This Stack Was Recommended
+          </h2>
+        </div>
+        <span id="finderEngineStatus" class="text-[11px] font-mono font-bold px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+          Live /api/finder Ready
+        </span>
+      </div>
+
+      <ul id="finderWhyList" class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-700">
+        <li class="p-3.5 rounded-xl bg-white border border-slate-200">Evaluating all 113 verified tools, 88 open-source repos, 16 workflows, and 103 educators.</li>
+        <li class="p-3.5 rounded-xl bg-white border border-slate-200">Deterministic 5-Factor Authenticity Scores with zero pay-to-win ranking bias.</li>
+        <li class="p-3.5 rounded-xl bg-white border border-slate-200">Transparent 3-tier cost comparison ($0 Open Source, Balanced Freemium, Enterprise).</li>
+      </ul>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+        <div class="space-y-3">
+          <h3 class="text-xs font-mono font-bold uppercase text-slate-500">Top Matched Verified Tools</h3>
+          <div id="finderMatchedTools" class="space-y-2.5 text-xs"></div>
+        </div>
+        <div class="space-y-3">
+          <h3 class="text-xs font-mono font-bold uppercase text-slate-500">Open-Source Alternatives &amp; Workflows</h3>
+          <div id="finderMatchedRepos" class="space-y-2.5 text-xs"></div>
+        </div>
+        <div class="space-y-3">
+          <h3 class="text-xs font-mono font-bold uppercase text-slate-500">Recommended Creators Who Teach This</h3>
+          <div id="finderMatchedCreators" class="space-y-2.5 text-xs"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- TAAFT-INSPIRED TOP 25 TASKS DIRECTORY TABLE -->
     <section class="card-aurora p-6 sm:p-8 space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
@@ -402,21 +440,24 @@ const TOP_25_TASKS = [
   <Footer />
 </Layout>
 
-<script is:inline>
-  document.addEventListener('DOMContentLoaded', function() {
-    var promptArea = document.getElementById('architectPrompt');
-    var runBtn = document.getElementById('runArchitectBtn');
-    var tierButtons = document.querySelectorAll('.tier-tab-btn');
-    var personaChips = document.querySelectorAll('.persona-chip');
-    var budgetChips = document.querySelectorAll('.budget-chip');
-    var presetButtons = document.querySelectorAll('.prompt-preset-btn');
-    var launchButtons = document.querySelectorAll('.launch-task-btn');
-    var tableFilter = document.getElementById('taskTableFilter');
+<script>
+  import { escapeHtml } from '../utils/security';
 
-    var currentTier = 'A';
+  document.addEventListener('DOMContentLoaded', function() {
+    var promptArea = document.getElementById('architectPrompt') as HTMLTextAreaElement | null;
+    var runBtn = document.getElementById('runArchitectBtn');
+    var tierButtons = document.querySelectorAll<HTMLButtonElement>('.tier-tab-btn');
+    var personaChips = document.querySelectorAll<HTMLButtonElement>('.persona-chip');
+    var budgetChips = document.querySelectorAll<HTMLButtonElement>('.budget-chip');
+    var presetButtons = document.querySelectorAll<HTMLButtonElement>('.prompt-preset-btn');
+    var launchButtons = document.querySelectorAll<HTMLButtonElement>('.launch-task-btn');
+    var tableFilter = document.getElementById('taskTableFilter') as HTMLInputElement | null;
+
+    var currentTier: 'A' | 'B' | 'C' = 'A';
     var currentIntent = 'Automated git pull request review and security scan';
     var currentPersona = 'engineer';
-    var currentBudget = 'free';
+    var currentBudget: 'free' | 'under50' | 'enterprise' = 'free';
+    var lastApiPayload: any = null;
 
     // Multi-Domain Blueprint Solutions Matrix
     var solutions = {
@@ -646,7 +687,138 @@ const TOP_25_TASKS = [
       }
     };
 
-    function updateArchitectView() {
+    function renderFromApiPayload(payload: any) {
+      if (!payload || !payload.tiers) return false;
+      var tierData = payload.tiers[currentTier] || payload.tiers.A;
+      if (!tierData) return false;
+
+      var setTxt = (id: string, val: string) => {
+        var el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+
+      setTxt('tierPill', tierData.pill);
+      setTxt('tierTitle', tierData.title);
+      setTxt('tierCost', tierData.estimatedMonthlyCost);
+      setTxt('tierDescription', tierData.costAssumptions);
+
+      var s1 = tierData.steps?.[0];
+      var s2 = tierData.steps?.[1];
+      var s3 = tierData.steps?.[2];
+      if (s1) { setTxt('step1Tool', `${s1.toolName} • ${s1.pricingLabel}`); setTxt('step1Desc', s1.reason); }
+      if (s2) { setTxt('step2Tool', `${s2.toolName} • ${s2.pricingLabel}`); setTxt('step2Desc', s2.reason); }
+      if (s3) { setTxt('step3Tool', `${s3.toolName} • ${s3.pricingLabel}`); setTxt('step3Desc', s3.reason); }
+
+      setTxt('kitHardware', tierData.requiredCredentials?.[0] || '8GB+ RAM / Cloud API');
+      setTxt('kitSovereignty', currentTier === 'A' ? '100% Open / Self-Hostable' : 'Cloud API + Audit Controls');
+      setTxt('kitSetupTime', `${tierData.difficulty} Setup`);
+      setTxt('kitCliCommand', tierData.cliCommand);
+      setTxt('kitPromptText', tierData.starterPrompt);
+      document.getElementById('loadStackArchitectBtn')?.setAttribute('href', tierData.stackBuilderUrl || '/stack-builder');
+
+      var statusEl = document.getElementById('finderEngineStatus');
+      if (statusEl) {
+        statusEl.textContent = payload.llmEnhanced
+          ? `${payload.engineVersion} + LLM Reasoning`
+          : `${payload.engineVersion} • ${(payload.detectedIntents || []).join(', ').toUpperCase() || 'GENERAL'}`;
+      }
+
+      var whyEl = document.getElementById('finderWhyList');
+      if (whyEl && Array.isArray(payload.whyRecommended)) {
+        whyEl.innerHTML = payload.whyRecommended
+          .slice(0, 3)
+          .map((w: string) => `<li class="p-3.5 rounded-xl bg-white border border-slate-200 leading-relaxed"><span class="text-emerald-600 font-bold mr-1">✓</span>${escapeHtml(w)}</li>`)
+          .join('');
+      }
+
+      var toolsEl = document.getElementById('finderMatchedTools');
+      if (toolsEl && Array.isArray(payload.matchedTools)) {
+        toolsEl.innerHTML = payload.matchedTools
+          .slice(0, 4)
+          .map((t: any) => `
+            <a href="/tools/${encodeURIComponent(t.slug)}" class="block p-3 rounded-xl bg-white border border-slate-200 hover:border-blue-500 transition-all">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-bold text-slate-900">${escapeHtml(t.name)}</span>
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700">${Number(t.score)}/100</span>
+              </div>
+              <p class="text-[11px] text-slate-500 line-clamp-1 mt-0.5">${escapeHtml(t.tagline)}</p>
+              <div class="mt-1.5 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                <span>${escapeHtml(t.pricingType)}</span>
+                <span class="text-emerald-700">${escapeHtml(t.matchReasons?.[0] || 'Verified')}</span>
+              </div>
+            </a>
+          `)
+          .join('');
+      }
+
+      var reposEl = document.getElementById('finderMatchedRepos');
+      if (reposEl) {
+        var repoHtml = (payload.matchedRepos || []).slice(0, 2).map((r: any) => `
+          <a href="/open-source/${encodeURIComponent(r.slug)}" class="block p-3 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 transition-all">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-slate-900">${escapeHtml(r.name)}</span>
+              <span class="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">★ ${escapeHtml(r.stars)}</span>
+            </div>
+            <div class="text-[10px] font-mono text-slate-500 mt-1">${escapeHtml(r.license)} • Min VRAM: ${escapeHtml(r.minVramGb)}</div>
+          </a>
+        `).join('');
+        var wfHtml = (payload.matchedWorkflows || []).slice(0, 2).map((wf: any) => `
+          <a href="/workflows/${encodeURIComponent(wf.id)}" class="block p-3 rounded-xl bg-blue-50/50 border border-blue-200 hover:border-blue-500 transition-all">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-slate-900">${escapeHtml(wf.title)}</span>
+              <span class="text-[10px] font-mono text-blue-700">Workflow ↗</span>
+            </div>
+            <div class="text-[10px] font-mono text-slate-500 mt-1">${escapeHtml(wf.category)} • ${escapeHtml(wf.estimatedCost)}</div>
+          </a>
+        `).join('');
+        reposEl.innerHTML = repoHtml + wfHtml;
+      }
+
+      var creatorsEl = document.getElementById('finderMatchedCreators');
+      if (creatorsEl && Array.isArray(payload.matchedCreators)) {
+        creatorsEl.innerHTML = payload.matchedCreators
+          .slice(0, 4)
+          .map((c: any) => `
+            <a href="/creators/${encodeURIComponent(c.slug)}" class="block p-3 rounded-xl bg-white border border-slate-200 hover:border-purple-500 transition-all">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-bold text-slate-900">${escapeHtml(c.name)}</span>
+                <span class="text-[10px] font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded">${escapeHtml(c.subscribers)}</span>
+              </div>
+              <div class="text-[10px] font-mono text-slate-500 mt-1">${escapeHtml(c.handle)} • ${escapeHtml(c.category)}</div>
+            </a>
+          `)
+          .join('');
+      }
+      return true;
+    }
+
+    async function updateArchitectView(refetch = true) {
+      // Try live server /api/finder across ALL 113+ tools, 88+ repos, 16 workflows & 103 creators
+      if (refetch) {
+        var statusEl = document.getElementById('finderEngineStatus');
+        if (statusEl) statusEl.textContent = 'Querying Live Entity Graph...';
+        try {
+          var res = await fetch('/api/finder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              query: currentIntent,
+              persona: currentPersona,
+              budget: currentBudget,
+              indiaFocus: /india|hindi|indic|sarvam|bhashini|inr/i.test(currentIntent)
+            })
+          });
+          if (res.ok) {
+            lastApiPayload = await res.json();
+            if (renderFromApiPayload(lastApiPayload)) return;
+          }
+        } catch (err) {
+          // Offline/static fallback below
+        }
+      } else if (lastApiPayload && renderFromApiPayload(lastApiPayload)) {
+        return;
+      }
+
       var q = currentIntent.toLowerCase();
       var solKey = 'code';
       if (q.includes('video') || q.includes('short') || q.includes('reel') || q.includes('media') || q.includes('youtube')) {
@@ -657,30 +829,30 @@ const TOP_25_TASKS = [
         solKey = 'rag';
       }
 
-      var domainSolutions = solutions[solKey] || solutions.code;
+      var domainSolutions = (solutions as any)[solKey] || solutions.code;
       var data = domainSolutions[currentTier] || domainSolutions.A;
 
       // Update Header
-      document.getElementById('tierPill').textContent = data.pill;
-      document.getElementById('tierTitle').textContent = data.title;
-      document.getElementById('tierCost').textContent = data.cost;
-      document.getElementById('tierDescription').textContent = data.desc;
+      document.getElementById('tierPill')!.textContent = data.pill;
+      document.getElementById('tierTitle')!.textContent = data.title;
+      document.getElementById('tierCost')!.textContent = data.cost;
+      document.getElementById('tierDescription')!.textContent = data.desc;
 
       // Update 3 Steps
-      document.getElementById('step1Tool').textContent = data.step1Tool;
-      document.getElementById('step1Desc').textContent = data.step1Desc;
-      document.getElementById('step2Tool').textContent = data.step2Tool;
-      document.getElementById('step2Desc').textContent = data.step2Desc;
-      document.getElementById('step3Tool').textContent = data.step3Tool;
-      document.getElementById('step3Desc').textContent = data.step3Desc;
+      document.getElementById('step1Tool')!.textContent = data.step1Tool;
+      document.getElementById('step1Desc')!.textContent = data.step1Desc;
+      document.getElementById('step2Tool')!.textContent = data.step2Tool;
+      document.getElementById('step2Desc')!.textContent = data.step2Desc;
+      document.getElementById('step3Tool')!.textContent = data.step3Tool;
+      document.getElementById('step3Desc')!.textContent = data.step3Desc;
 
       // Update Right Kit
-      document.getElementById('kitHardware').textContent = data.hardware;
-      document.getElementById('kitSovereignty').textContent = data.sovereignty;
-      document.getElementById('kitSetupTime').textContent = data.setup;
-      document.getElementById('kitCliCommand').textContent = data.cli;
-      document.getElementById('kitPromptText').textContent = data.prompt;
-      document.getElementById('loadStackArchitectBtn').setAttribute('href', data.stackUrl);
+      document.getElementById('kitHardware')!.textContent = data.hardware;
+      document.getElementById('kitSovereignty')!.textContent = data.sovereignty;
+      document.getElementById('kitSetupTime')!.textContent = data.setup;
+      document.getElementById('kitCliCommand')!.textContent = data.cli;
+      document.getElementById('kitPromptText')!.textContent = data.prompt;
+      document.getElementById('loadStackArchitectBtn')!.setAttribute('href', data.stackUrl);
     }
 
     // Persona Chips
@@ -707,7 +879,7 @@ const TOP_25_TASKS = [
           c.className = 'budget-chip px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-400 font-medium text-xs cursor-pointer';
         });
         chip.className = 'budget-chip px-3.5 py-1.5 rounded-xl border border-emerald-600 bg-emerald-50 text-emerald-800 font-bold text-xs cursor-pointer shadow-xs';
-        currentBudget = chip.getAttribute('data-budget') || 'free';
+        currentBudget = (chip.getAttribute('data-budget') as 'free' | 'under50' | 'enterprise') || 'free';
         currentTier = currentBudget === 'free' ? 'A' : currentBudget === 'under50' ? 'B' : 'C';
         tierButtons.forEach(function(b) {
           if (b.getAttribute('data-tier') === currentTier) {
@@ -727,8 +899,8 @@ const TOP_25_TASKS = [
           b.className = 'tier-tab-btn flex-1 py-2 px-3 rounded-xl text-slate-600 hover:text-slate-900 cursor-pointer';
         });
         btn.className = 'tier-tab-btn flex-1 py-2 px-3 rounded-xl bg-white text-blue-700 shadow-xs border border-blue-300 cursor-pointer font-bold';
-        currentTier = btn.getAttribute('data-tier') || 'A';
-        updateArchitectView();
+        currentTier = (btn.getAttribute('data-tier') as 'A' | 'B' | 'C') || 'A';
+        updateArchitectView(false);
       });
     });
 
@@ -774,8 +946,8 @@ const TOP_25_TASKS = [
 
     // Table Search Filter
     tableFilter?.addEventListener('input', function(e) {
-      var q = e.target.value.toLowerCase().trim();
-      document.querySelectorAll('.task-table-row').forEach(function(row) {
+      var q = ((e.target as HTMLInputElement)?.value || '').toLowerCase().trim();
+      document.querySelectorAll<HTMLElement>('.task-table-row').forEach(function(row) {
         var text = row.getAttribute('data-search-term') || '';
         row.style.display = text.includes(q) ? '' : 'none';
       });

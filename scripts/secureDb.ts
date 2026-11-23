@@ -20,7 +20,8 @@ async function applyRls() {
   const migrationFiles = [
     'drizzle/0001_enable_rls_policies.sql',
     'drizzle/0002_sync_auth_users_trigger.sql',
-    'drizzle/0003_strict_admin_rls.sql'
+    'drizzle/0003_strict_admin_rls.sql',
+    'drizzle/0004_harden_rls_and_prd_tables.sql'
   ];
 
   for (const file of migrationFiles) {
